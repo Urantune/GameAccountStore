@@ -1,7 +1,6 @@
-package webBackEnd.Entity;
+package webBackEnd.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

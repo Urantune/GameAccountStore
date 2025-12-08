@@ -1,7 +1,6 @@
-package webBackEnd.Entity;
+package webBackEnd.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
