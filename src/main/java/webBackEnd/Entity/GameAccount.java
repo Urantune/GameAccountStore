@@ -1,0 +1,142 @@
+package webBackEnd.Entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = "GameAccount")
+public class GameAccount {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", columnDefinition = "uniqueidentifier",nullable = false)
+    private UUID id;
+    @Column(name = "gameName",nullable = false)
+    private String gameName;
+    @Column(name = "gameUserName",nullable = false)
+    private String gameAccount;
+    @Column(name = "gamePassword",nullable = false)
+    private String gamePassword;
+    @Column(name = "price",nullable = false)
+    private BigDecimal price;
+    @Column(name = "typeGame")
+    private String type;
+    @Column(name = "description", columnDefinition = "VARCHAR(MAX)")
+    private String description;
+    @Column(name = "created",nullable = false)
+    private LocalDateTime createdDate;
+    @Column(name = "updated")
+    private LocalDateTime updatedDate;
+    @Column(name = "durationAccount")
+    private LocalDateTime duration;
+    @Column(name = "status")
+    private String status;
+
+    public GameAccount() {
+    }
+
+    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, BigDecimal price, String type, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status) {
+        this.id = id;
+        this.gameName = gameName;
+        this.gameAccount = gameAccount;
+        this.gamePassword = gamePassword;
+        this.price = price;
+        this.type = type;
+        this.description = description;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.duration = duration;
+        this.status = status;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
+    }
+
+    public String getGameAccount() {
+        return gameAccount;
+    }
+
+    public void setGameAccount(String gameAccount) {
+        this.gameAccount = gameAccount;
+    }
+
+    public String getGamePassword() {
+        return gamePassword;
+    }
+
+    public void setGamePassword(String gamePassword) {
+        this.gamePassword = gamePassword;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public LocalDateTime getDuration() {
+        return duration;
+    }
+
+    public void setDuration(LocalDateTime duration) {
+        this.duration = duration;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+}

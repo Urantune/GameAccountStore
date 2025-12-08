@@ -1,0 +1,346 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #0f1c2e !important;
+    .container, .content, .main {
+        background: transparent !important;
+    }
+
+}
+
+#loginModal .modal-header {
+    background: linear-gradient(135deg, #0d47a1, #1a237e);
+    color: #fff;
+    border-bottom: none;
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* white close button for contrast */
+#loginModal .modal-header .btn-close {
+    filter: invert(1);
+    position: absolute;
+    right: 1rem;
+}
+
+/* Slim modal */
+#loginModal .modal-dialog {
+    max-width: 380px;
+    margin: 1.75rem auto;
+}
+
+/* Modal content */
+#loginModal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    border: none;
+    background: rgba(13, 71, 161, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+/* Modal body */
+#loginModal .modal-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+/* Input fields */
+#loginModal .form-control {
+    background: #2c3e50;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+#loginModal .form-control:focus {
+    border: 1px solid #ff9800;
+    box-shadow: 0 0 6px rgba(255, 152, 0, 0.5);
+}
+
+/* Labels */
+#loginModal .form-label {
+    font-weight: 500;
+    color: white;
+    display: block;
+    text-align: left;
+}
+
+/* Login button */
+#loginModal .btn-primary {
+    border-radius: 10px;
+    padding: 0.5rem 1.2rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #0d47a1, #1a237e);
+    border: none;
+    transition: 0.3s;
+}
+
+#loginModal .btn-primary:hover {
+    background: linear-gradient(135deg, #1565c0, #0d47a1);
+    transform: translateY(-2px);
+}
+
+/* Center buttons and link */
+#loginModal .d-flex {
+    justify-content: center;
+    gap: 1rem;
+}
+
+/* Forgot link */
+#loginModal a.text-decoration-none {
+    font-size: 0.9rem;
+    color: white;
+    transition: color 0.3s;
+}
+
+#loginModal a.text-decoration-none:hover {
+    color: #ff9800;
+    text-decoration: underline;
+}
+
+.logo-link {
+    text-decoration: none !important;
+    color: inherit; /* Giữ nguyên màu chữ h3 */
+}
+
+.logo-link:hover {
+    color: #00e0ff; /* Thêm hiệu ứng hover nếu muốn */
+    text-shadow: 0 0 10px #00e0ff;
+}
+
+/* Nền xanh đen chuyển sắc */
+.custom-footer {
+    background: linear-gradient(135deg, #0b0f29, #1b2347);
+    border-top: 2px solid #1e3a8a;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 -2px 20px rgba(0, 150, 255, 0.15);
+}
+
+/* Hiệu ứng text neon */
+.neon-text {
+    color: #4f9eff;
+    text-shadow: 0 0 5px #4f9eff, 0 0 15px #4f9eff, 0 0 25px #007bff;
+    animation: flicker 3s infinite;
+}
+
+/* Hiệu ứng chớp sáng nhẹ */
+@keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+    }
+    20%, 24%, 55% {
+        opacity: 0.6;
+    }
+}
+
+/* Tiêu đề có ánh sáng */
+.glow-title {
+    text-shadow: 0 0 8px rgba(79, 158, 255, 0.8);
+}
+
+/* Liên kết chân trang */
+.footer-link {
+    color: #adb5bd;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 0;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.footer-link:hover {
+    color: #4f9eff;
+    transform: translateX(4px);
+}
+
+/* Icon mạng xã hội */
+.social-icons {
+    display: flex;
+    gap: 18px;
+    margin-top: 10px;
+}
+
+.social-link {
+    color: #ffffffcc;
+    font-size: 1.6rem;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+.social-link:hover {
+    color: #4f9eff;
+    transform: scale(1.25) rotate(8deg);
+    text-shadow: 0 0 15px #4f9eff;
+}
+
+/* Glow tên tác giả */
+.text-glow {
+    color: #4f9eff;
+    text-shadow: 0 0 10px #4f9eff;
+}
+
+.qr-img {
+    margin-top: 15px;
+    width: 160px;
+    border-radius: 5px;
+}
+
+
+
+
+#registerModal .modal-content {
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    border: none;
+    background: rgba(13, 71, 161, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+#registerModal .modal-header {
+    background: linear-gradient(135deg, #0d47a1, #1a237e);
+    color: white;
+    border-bottom: none;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#registerModal .modal-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+#registerModal .modal-header .btn-close {
+    position: absolute;
+    right: 1rem;
+    filter: brightness(0) invert(1);
+}
+
+#registerModal .modal-body {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 0 0 20px 20px;
+}
+
+#registerModal .form-control {
+    background: #2c3e50;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+#registerModal .form-control:focus {
+    border: 1px solid #ff9800;
+    box-shadow: 0 0 5px rgba(255, 152, 0, 0.5);
+}
+
+#registerModal .form-label {
+    font-weight: 500;
+}
+
+#registerModal .btn-success {
+    border-radius: 12px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #0d47a1, #1a237e);
+    border: none;
+    transition: 0.3s;
+}
+
+#registerModal .btn-success:hover {
+    background: linear-gradient(135deg, #1565c0, #0d47a1);
+    transform: translateY(-2px);
+}
+
+#registerAlert .alert {
+    border-radius: 12px;
+    font-size: 0.95rem;
+    padding: 0.8rem 1rem;
+}
+
+#registerModal .form-control {
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
+    border: 1px solid #cfd8dc;
+    background: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+#registerModal .form-control:focus {
+    border-color: #0d47a1;
+    box-shadow: 0 0 8px rgba(13, 71, 161, 0.3);
+}
+
+#registerModal .btn-sendcode {
+    border-radius: 12px;
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #1565c0, #0d47a1);
+    border: none;
+    color: #fff;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+#registerModal .btn-sendcode:hover {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    transform: translateY(-2px);
+}
+
+
+/* Nút Cart màu xanh lá */
+.btn-cart {
+    background: #146c43;
+    color: #fff !important;
+    border: none !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.btn-cart:hover {
+    background: linear-gradient(90deg, #20c997, #28a745);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+    color: #fff !important;
+}
+/* ===== MENU GIỮA ===== */
+.navbar-nav .nav-link {
+    text-transform: uppercase;         /* In hoa toàn bộ */
+    font-size: 1.1rem;                 /* To chữ hơn một chút */
+    font-weight: 700;                  /* Đậm hơn */
+    letter-spacing: 0.5px;             /* Giãn nhẹ chữ cho đẹp */
+    transition: color 0.3s ease, transform 0.2s ease, border-bottom 0.2s ease;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent; /* Gạch chân ẩn ban đầu */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #0dcaf0;                    /* Màu cyan sáng khi hover */
+    transform: translateY(-2px);
+    border-bottom: 2px solid #0dcaf0;  /* Gạch sáng khi hover */
+}
+
+
+
+
+
+
+/* có thể thêm vào <style> sẵn có */
+.btn-link { color:#66c0f4; text-decoration:none; }
+.btn-link:hover { text-decoration:underline; }
+
