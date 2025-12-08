@@ -18,10 +18,6 @@ public class GameDetail {
     private GameAccount gameAccount;
     @Column(name = "imageMain", nullable = false)
     private String mainImage;
-    @Column(name = "imageVV")
-    private String imageVV;
-    @Column(name = "imageUrl")
-    private String imageUrl;
     @Column(name = "rank")
     private String rank;
     @Column(name = "skins")
@@ -34,12 +30,10 @@ public class GameDetail {
     public GameDetail() {
     }
 
-    public GameDetail(UUID id, GameAccount gameAccount, String mainImage, String imageVV, String imageUrl, String rank, String skin, String level, String items) {
+    public GameDetail(UUID id, GameAccount gameAccount, String mainImage,  String rank, String skin, String level, String items) {
         this.id = id;
         this.gameAccount = gameAccount;
         this.mainImage = mainImage;
-        this.imageVV = imageVV;
-        this.imageUrl = imageUrl;
         this.rank = rank;
         this.skin = skin;
         this.level = level;
@@ -68,22 +62,6 @@ public class GameDetail {
 
     public void setMainImage(String mainImage) {
         this.mainImage = mainImage;
-    }
-
-    public String getImageVV() {
-        return imageVV;
-    }
-
-    public void setImageVV(String imageVV) {
-        this.imageVV = imageVV;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public String getRank() {
