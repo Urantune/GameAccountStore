@@ -5,9 +5,10 @@ import org.springframework.stereotype.Repository;
 import webBackEnd.entity.Users;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UsersRepositories extends JpaRepository<Users,Integer> {
+public interface UsersRepositories extends JpaRepository<Users, UUID> {
     Users getUserByUsernameIgnoreCase(String username);
     Optional<Users> findByEmailIgnoreCase(String email);
     boolean existsByUsername(String username);

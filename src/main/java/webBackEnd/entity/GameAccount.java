@@ -33,11 +33,13 @@ public class GameAccount {
     private LocalDateTime duration;
     @Column(name = "status")
     private String status;
+    @Column(name = "classify")
+    private String classify;
 
     public GameAccount() {
     }
 
-    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, BigDecimal price, String type, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status) {
+    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, BigDecimal price, String type, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
         this.id = id;
         this.gameName = gameName;
         this.gameAccount = gameAccount;
@@ -49,6 +51,7 @@ public class GameAccount {
         this.updatedDate = updatedDate;
         this.duration = duration;
         this.status = status;
+        this.classify = classify;
     }
 
     public UUID getId() {
@@ -137,5 +140,11 @@ public class GameAccount {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    public String getClassify() {
+        return classify;
+    }
+    public void setClassify(String classify) {
+        this.classify = classify;
     }
 }

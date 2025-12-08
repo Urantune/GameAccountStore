@@ -22,9 +22,9 @@ public class RegisterController {
 
 
     @PostMapping
-    public @ResponseBody Map<String, String> register(@RequestParam String username, @RequestParam String email, @RequestParam String phone, @RequestParam String password, @RequestParam String confirmPassword) {
+    public @ResponseBody Map<String, String> register(@RequestParam String username, @RequestParam String email, @RequestParam String password, @RequestParam String confirmPassword) {
         Map<String, String> res = new HashMap<>();
-        if (username.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || email.isEmpty()) {
+        if (username.isEmpty()  || password.isEmpty() || confirmPassword.isEmpty() || email.isEmpty()) {
             res.put("error", "Please fill all the fields");
             return res;
         }
