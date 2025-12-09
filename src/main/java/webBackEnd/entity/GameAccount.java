@@ -21,8 +21,6 @@ public class GameAccount {
     private String gamePassword;
     @Column(name = "price",nullable = false)
     private BigDecimal price;
-    @Column(name = "typeGame")
-    private String type;
     @Column(name = "description", columnDefinition = "VARCHAR(MAX)")
     private String description;
     @Column(name = "created",nullable = false)
@@ -39,13 +37,12 @@ public class GameAccount {
     public GameAccount() {
     }
 
-    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, BigDecimal price, String type, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
+    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
         this.id = id;
         this.gameName = gameName;
         this.gameAccount = gameAccount;
         this.gamePassword = gamePassword;
         this.price = price;
-        this.type = type;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -92,14 +89,6 @@ public class GameAccount {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public LocalDateTime getCreatedDate() {
