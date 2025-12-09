@@ -16,7 +16,7 @@ public interface GameAccountRepositories extends JpaRepository<GameAccount, UUID
     @Query(value = "SELECT TOP 20 * FROM GameAccount ORDER BY NEWID()", nativeQuery = true)
     List<GameAccount> findRandom20();
 
-
+    GameAccount getById(UUID id);
 
 
 }

@@ -37,32 +37,22 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/img/**","/bestseller/**", "/assets/**", "/lib/**", "/scss/**","/register","/register/**","/home/**").permitAll()
-                        .requestMatchers("/home/Admin/**").hasRole("ADMIN")
-                        .requestMatchers("/images/**", "/img/**", "/css/**", "/js/**", "/lib/**").permitAll()
+                        .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
+                        .requestMatchers("/images/**", "/img/**", "/css/**", "/js/**", "/lib/**", "/home/detail/**").permitAll()
                         .requestMatchers("/Staff/**").hasAnyRole("STAFF")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/home") // URL den trang index
                         .loginProcessingUrl("/login") // URL nhan form Login
-                        .usernameParameter("username") // Param email tu form
+                        .usernameParameter("email") // Param email tu form
                         .passwordParameter("password") // Param password tu form
-                        .defaultSuccessUrl("/redirectByRole", true)
                         .successHandler((req, res, auth) -> {
-                            res.setContentType("application/json");
                             res.setStatus(200);
-
-                            boolean isAdmin = auth.getAuthorities()
-                                    .stream()
-                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-
-                            String json = isAdmin ?
-                                    "{\"redirect\":\"/home/admin\"}" :
-                                    "{\"redirect\":\"/home\"}";
-
-                            res.getWriter().write(json);
                         })
-
+                        .failureHandler((req, res, ex) -> {
+                            res.setStatus(401);
+                        })
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
