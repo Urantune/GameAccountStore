@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Users")
-public class Users {
+@Table(name = "Customer")
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier", nullable = false)
+    @Column(name = "customerId", columnDefinition = "uniqueidentifier", nullable = false)
     private UUID id;
 
     @Column(name = "userName", nullable = false)
@@ -34,10 +34,10 @@ public class Users {
     @Column(name = "role",nullable = false)
     private String role;
 
-    public Users() {
+    public Customer() {
     }
 
-    public Users(UUID id, String username, String email, String password, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
+    public Customer(UUID id, String username, String email, String password, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
         this.id = id;
         this.username = username;
         this.email = email;

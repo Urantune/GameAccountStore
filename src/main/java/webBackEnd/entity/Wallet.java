@@ -11,11 +11,11 @@ import java.util.UUID;
 public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier")
+    @Column(name = "walletId", columnDefinition = "uniqueidentifier")
     private UUID id;
     @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id",nullable = false)
-    private Users users;
+    @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
+    private Customer users;
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
     @Column(name = "amount")
@@ -28,7 +28,7 @@ public class Wallet {
     public Wallet() {
     }
 
-    public Wallet(UUID id, Users users, BigDecimal balance, BigDecimal amount, LocalDateTime depositDate, LocalDateTime updatedAt) {
+    public Wallet(UUID id, Customer users, BigDecimal balance, BigDecimal amount, LocalDateTime depositDate, LocalDateTime updatedAt) {
         this.id = id;
         this.users = users;
         this.balance = balance;
@@ -45,11 +45,11 @@ public class Wallet {
         this.id = id;
     }
 
-    public Users getUsers() {
+    public Customer getUsers() {
         return users;
     }
 
-    public void setUsers(Users users) {
+    public void setUsers(Customer users) {
         this.users = users;
     }
 

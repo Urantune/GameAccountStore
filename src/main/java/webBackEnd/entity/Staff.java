@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Administrator")
-public class Administrator {
+@Table(name = "Staff")
+public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier",nullable = false)
+    @Column(name = "staffId", columnDefinition = "uniqueidentifier",nullable = false)
     private UUID id;
-    @Column(name = "username",nullable = false)
+    @Column(name = "staffName",nullable = false)
     private String username;
     @Column(name = "password",nullable = false)
     private String password;
@@ -23,10 +23,10 @@ public class Administrator {
     @Column(name = "status")
     private String status;
 
-    public Administrator() {
+    public Staff() {
     }
 
-    public Administrator(UUID id, String username, String password, String role, LocalDateTime created, String status) {
+    public Staff(UUID id, String username, String password, String role, LocalDateTime created, String status) {
         this.id = id;
         this.username = username;
         this.password = password;

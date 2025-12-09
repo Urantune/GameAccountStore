@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import webBackEnd.config.SecurityConfig;
-import webBackEnd.entity.Users;
+import webBackEnd.entity.Customer;
 import webBackEnd.repository.UsersRepositories;
 
 
@@ -71,7 +71,7 @@ public class RegisterController {
         }
 
         String hashPassword = securityConfig.passwordEncoder().encode(password);
-        Users user = new Users();
+        Customer user = new Customer();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(hashPassword);

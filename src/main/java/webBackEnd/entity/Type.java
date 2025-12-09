@@ -9,27 +9,23 @@ import java.util.UUID;
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier")
+    @Column(name = "typeId", columnDefinition = "uniqueidentifier")
     private UUID id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId", referencedColumnName = "id")
-    private GameAccount gameAccount;
-    @Column(name = "typeName", nullable = false)
-    private String typeName;
     @Column(name = "description")
     private String description;
     @Column(name = "status", nullable = false)
     private String status;
+    @Column(name = "typeName")
+    private String typeName;
 
     public Type() {
     }
 
-    public Type(UUID id, String status, String description, String categoryName, GameAccount gameAccount) {
+    public Type(UUID id, String description, String status, String typeName) {
         this.id = id;
-        this.status = status;
         this.description = description;
+        this.status = status;
         this.typeName = typeName;
-        this.gameAccount = gameAccount;
     }
 
     public UUID getId() {
@@ -40,14 +36,6 @@ public class Type {
         this.id = id;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -56,19 +44,19 @@ public class Type {
         this.description = description;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String categoryName) {
-        this.typeName = categoryName;
-    }
-
-    public GameAccount getGameAccount() {
-        return gameAccount;
-    }
-
-    public void setGameAccount(GameAccount gameAccount) {
-        this.gameAccount = gameAccount;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }

@@ -11,17 +11,17 @@ import java.util.UUID;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id",columnDefinition = "uniqueidentifier",nullable = false)
+    @Column(name = "orderId",columnDefinition = "uniqueidentifier",nullable = false)
     private UUID id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "id",nullable = false)
-    private Users user;
+    private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voucherId", referencedColumnName = "id")
     private Voucher voucher;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staffId",referencedColumnName = "id",nullable = false)
-    private Administrator staff;
+    private Staff staff;
     @Column(name = "totalPrice",nullable = false)
     private BigDecimal totalPrice;
     @Column(name = "orderType",nullable = false)
@@ -35,9 +35,9 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(UUID id, Users user, Voucher voucher, Administrator staff, BigDecimal totalPrice, String type, LocalDateTime createdDate, String status) {
+    public Orders(UUID id, Customer customer, Voucher voucher, Staff staff, BigDecimal totalPrice, String type, LocalDateTime createdDate, String status) {
         this.id = id;
-        this.user = user;
+        this.customer = customer;
         this.voucher = voucher;
         this.staff = staff;
         this.totalPrice = totalPrice;
@@ -54,12 +54,12 @@ public class Orders {
         this.id = id;
     }
 
-    public Users getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setCustomer(Customer user) {
+        this.customer = user;
     }
 
     public Voucher getVoucher() {
@@ -70,11 +70,11 @@ public class Orders {
         this.voucher = voucher;
     }
 
-    public Administrator getStaff() {
+    public Staff getStaff() {
         return staff;
     }
 
-    public void setStaff(Administrator staff) {
+    public void setStaff(Staff staff) {
         this.staff = staff;
     }
 

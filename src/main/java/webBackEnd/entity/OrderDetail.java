@@ -10,13 +10,13 @@ import java.util.UUID;
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(name = "orderDetailId", nullable = false)
     private UUID id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderId", referencedColumnName = "id")
+    @JoinColumn(name = "orderId", referencedColumnName = "orderId", nullable = false)
     private Orders order;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gameId", referencedColumnName = "id")
+    @JoinColumn(name = "gameId", referencedColumnName = "gameId", nullable = false)
     private GameAccount gameAccount;
     @Column(name = "endDate")
     private Date endDate;

@@ -11,17 +11,12 @@ import java.util.UUID;
 public class GameAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier",nullable = false)
+    @Column(name = "gameAccountId", columnDefinition = "uniqueidentifier",nullable = false)
     private UUID id;
-    @Column(name = "gameName",nullable = false)
-    private String gameName;
     @Column(name = "gameUserName",nullable = false)
     private String gameAccount;
     @Column(name = "gamePassword",nullable = false)
     private String gamePassword;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "typeId", referencedColumnName = "id",nullable = false)
-    private Type type;
     @Column(name = "price",nullable = false)
     private BigDecimal price;
     @Column(name = "description", columnDefinition = "VARCHAR(MAX)")
@@ -36,24 +31,45 @@ public class GameAccount {
     private String status;
     @Column(name = "classify")
     private String classify;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gameId",referencedColumnName ="gameId", nullable = false)
+    private Game game;
+    @Column(name = "imageMain")
+    private String imageMain;
+    @Column(name = "rank")
+    private String rank;
+    @Column(name = "skins")
+    private int skin;
+    @Column(name = "level")
+    private int lovel;
+    @Column(name = "items")
+    private int items;
+
+
+
+
 
     public GameAccount() {
     }
 
 
-    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, Type type, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
+    public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items) {
         this.id = id;
-        this.gameName = gameName;
         this.gameAccount = gameAccount;
         this.gamePassword = gamePassword;
-        this.type = type;
         this.price = price;
         this.description = description;
         this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
         this.duration = duration;
-        this.status = status;
+        this.updatedDate = updatedDate;
         this.classify = classify;
+        this.status = status;
+        this.game = game;
+        this.imageMain = imageMain;
+        this.rank = rank;
+        this.skin = skin;
+        this.lovel = lovel;
+        this.items = items;
     }
 
     public UUID getId() {
@@ -62,14 +78,6 @@ public class GameAccount {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
     }
 
     public String getGameAccount() {
@@ -96,12 +104,12 @@ public class GameAccount {
         this.price = price;
     }
 
-    public Type getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -110,14 +118,6 @@ public class GameAccount {
 
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public LocalDateTime getUpdatedDate() {
@@ -143,10 +143,60 @@ public class GameAccount {
     public void setStatus(String status) {
         this.status = status;
     }
+
     public String getClassify() {
         return classify;
     }
+
     public void setClassify(String classify) {
         this.classify = classify;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public String getImageMain() {
+        return imageMain;
+    }
+
+    public void setImageMain(String imageMain) {
+        this.imageMain = imageMain;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public int getSkin() {
+        return skin;
+    }
+
+    public void setSkin(int skin) {
+        this.skin = skin;
+    }
+
+    public int getLovel() {
+        return lovel;
+    }
+
+    public void setLovel(int lovel) {
+        this.lovel = lovel;
+    }
+
+    public int getItems() {
+        return items;
+    }
+
+    public void setItems(int items) {
+        this.items = items;
     }
 }

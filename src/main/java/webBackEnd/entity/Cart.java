@@ -10,13 +10,13 @@ import java.util.UUID;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(name = "cartId", nullable = false)
     private UUID id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "id",nullable = false)
-    private Users user;
+    @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
+    private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "gameId", referencedColumnName = "gameId",nullable = false)
     private GameAccount gameAccount;
     @Column(name = "Datecreate",nullable = false)
     private LocalDateTime createdAt;
@@ -24,9 +24,9 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(UUID id, Users user, GameAccount gameAccount, LocalDateTime createdAt) {
+    public Cart(UUID id, Customer customer, GameAccount gameAccount, LocalDateTime createdAt) {
         this.id = id;
-        this.user = user;
+        this.customer = customer;
         this.gameAccount = gameAccount;
         this.createdAt = createdAt;
     }
@@ -39,12 +39,12 @@ public class Cart {
         this.id = id;
     }
 
-    public Users getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setCustomer(Customer user) {
+        this.customer = user;
     }
 
     public GameAccount getGameAccount() {
