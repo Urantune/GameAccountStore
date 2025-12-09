@@ -6,6 +6,7 @@ import webBackEnd.entity.GameAccount;
 import webBackEnd.repository.GameAccountRepositories;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GameAccountService {
@@ -17,4 +18,9 @@ public class GameAccountService {
     public List<GameAccount> get20Profuct(){
         return gameAccountRepositories.findRandom20();
     }
+
+    public GameAccount findGameAccountById(UUID id){
+        return gameAccountRepositories.getById(id);
+    }
+
 }

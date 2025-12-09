@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Account Detail</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Google Web Fonts (giữ giống index nếu bạn dùng) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+            rel="stylesheet">
+
+    <!-- Icon Font -->
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"/>
+
+    <!-- Libraries Stylesheet (giống index) -->
+    <link href="/lib/animate/animate.min.css" rel="stylesheet">
+    <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Bootstrap & Template Stylesheet -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+
+    <style>
+        .game-detail-wrapper {
+            min-height: 70vh;
+        }
+        .game-img {
+            width: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .game-price {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- ===== HEADER ĐƠN GIẢN MÀU CAM (giống theme) ===== -->
+<div class="container-fluid bg-primary text-white py-2">
+    <div class="d-flex justify-content-between align-items-center px-4">
+        <div>
+            <small>About / Contact</small>
+        </div>
+        <div>
+            <small>Call Us: (+84) 341907984</small>
+        </div>
+        <div>
+            <small>My Dashboard</small>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-primary px-4">
+    <a class="navbar-brand text-white fw-bold" href="#">
+        <i class="fa fa-bolt me-2"></i>Electro
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link text-white" href="#">Home</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="#">Shop</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="#">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+<!-- ===== HEADER END ===== -->
+
+<!-- ===== GAME ACCOUNT DETAIL ===== -->
+<div class="container game-detail-wrapper py-5">
+    <div class="row g-4">
+
+        <!-- HÌNH ẢNH -->
+        <div class="col-md-5">
+            <!-- sau này bạn đổi path theo gameName/id -->
+            <img src="/img/aov/demo-aov-account.png"
+                 alt="Garena Liên Quân"
+                 class="game-img shadow">
+        </div>
+
+        <!-- THÔNG TIN -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+
+                    <span class="badge bg-success mb-2">Còn hàng</span>
+
+                    <h2 class="mb-1 text-dark">
+                        Game Account: Garena Liên Quân
+                    </h2>
+                    <p class="text-muted mb-3">
+                        Server: Việt Nam · Rank: Kim Cương · 50 skins
+                    </p>
+
+                    <hr>
+
+                    <p class="mb-1">
+                        <strong>Account Username:</strong>
+                        <span class="ms-1">acc_demo_lienquan</span>
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Password:</strong>
+                        <span class="ms-1">123456demo</span>
+                    </p>
+
+                    <p class="mt-3 mb-1">
+                        <strong>Mô tả:</strong>
+                    </p>
+                    <p class="text-muted">
+                        Tài khoản Liên Quân full tướng, nhiều trang phục hiếm,
+                        đã liên kết Facebook, chưa vi phạm điều khoản, có thể đổi mật khẩu/Email.
+                    </p>
+
+                    <hr>
+
+                    <div class="d-flex align-items-baseline mb-3">
+                        <span class="game-price text-danger">150.000</span>
+                        <span class="ms-1">VND</span>
+                    </div>
+
+                    <button class="btn btn-warning w-100 text-uppercase fw-bold">
+                        Mua ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ===== GAME ACCOUNT DETAIL END ===== -->
+
+<!-- ===== FOOTER ĐƠN GIẢN MÀU XÁM + CAM ===== -->
+<div class="container-fluid bg-dark text-light mt-5 pt-5 pb-3">
+    <div class="container">
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <h4 class="text-white mb-3">Address</h4>
+                <p class="mb-1">123 Street New York, USA</p>
+            </div>
+            <div class="col-md-3">
+                <h4 class="text-white mb-3">Mail Us</h4>
+                <p class="mb-1">info@example.com</p>
+            </div>
+            <div class="col-md-3">
+                <h4 class="text-white mb-3">Telephone</h4>
+                <p class="mb-1">(+012) 3456 7890</p>
+            </div>
+            <div class="col-md-3">
+                <h4 class="text-white mb-3">Yoursite@ex.com</h4>
+                <p class="mb-1">(+012) 3456 7890</p>
+            </div>
+        </div>
+
+        <div class="border-top border-secondary pt-3 d-flex justify-content-between">
+            <small>© Your Site Name, All right reserved.</small>
+            <small>Designed by HTML Codex. Distributed by ThemeWagon</small>
+        </div>
+    </div>
+</div>
+<!-- ===== FOOTER END ===== -->
+
+<!-- JS -->
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/lib/wow/wow.min.js"></script>
+<script src="/lib/owlcarousel/owl.carousel.min.js"></script>
+
+</body>
+</html>
