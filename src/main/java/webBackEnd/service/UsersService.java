@@ -12,18 +12,16 @@ import webBackEnd.repository.UsersRepositories;
 public class UsersService implements UserDetailsService {
     @Autowired
     private UsersRepositories usersRepositories;
-
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Users user = usersRepositories.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
-
+        Users user = usersRepositories.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
+                .withUsername(user.getUsername())
                 .password(user.getPassword())
-                .authorities("ROLE_USER") // quyền mặc định
+                .roles(user.getRole())
                 .build();
     }
 }

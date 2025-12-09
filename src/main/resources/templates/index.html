@@ -47,9 +47,9 @@
                 <!--Khi submit form action gửi về SecurytiConfig kiểm tra-->
                 <form id="loginForm">
                     <div class="mb-3">
-                        <label for="loginEmail" class="form-label">Email:</label>
-                        <input type="email" name="email" class="form-control" id="loginEmail"
-                               placeholder="Nhập email của bạn" required>
+                        <label for="loginUsername" class="form-label">Username:</label>
+                        <input type="username" name="username" class="form-control" id="loginUsername"
+                               placeholder="Nhập username của bạn" required>
                     </div>
                     <div class="mb-3">
                         <label for="loginPassword" class="form-label">Mật khẩu:</label>
@@ -2078,7 +2078,7 @@
     document.getElementById("loginForm").addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const email = document.getElementById("loginEmail").value;
+        const username = document.getElementById("loginUsername").value;
         const password = document.getElementById("loginPassword").value;
 
         fetch("/login", {
@@ -2088,18 +2088,11 @@
                 "Content-Type": "application/x-www-form-urlencoded",
                 "X-Requested-With": "XMLHttpRequest"
             },
-            body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
         })
-            .then(res => {
-                if (res.status === 200) {
-                    window.location.href = "/home";
-                } else {
-                    const errDiv = document.getElementById("loginError");
-                    errDiv.textContent = "Email hoặc mật khẩu không đúng!";
-                    errDiv.classList.remove("d-none");
-
-                    setTimeout(() => errDiv.classList.add("d-none"), 3000);
-                }
+            .then(res => res.json())
+            .then(data => {
+                window.location.href = data.redirect;
             })
             .catch(err => console.error(err));
     });

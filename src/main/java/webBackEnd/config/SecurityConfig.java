@@ -37,7 +37,7 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/img/**","/bestseller/**", "/assets/**", "/lib/**", "/scss/**","/register","/register/**","/home/**").permitAll()
-                        .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
+                        .requestMatchers("/home/Admin/**").hasRole("ADMIN")
                         .requestMatchers("/images/**", "/img/**", "/css/**", "/js/**", "/lib/**").permitAll()
                         .requestMatchers("/Staff/**").hasAnyRole("STAFF")
                         .anyRequest().authenticated()
@@ -45,14 +45,24 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/home") // URL den trang index
                         .loginProcessingUrl("/login") // URL nhan form Login
-                        .usernameParameter("email") // Param email tu form
+                        .usernameParameter("username") // Param email tu form
                         .passwordParameter("password") // Param password tu form
+                        .defaultSuccessUrl("/redirectByRole", true)
                         .successHandler((req, res, auth) -> {
+                            res.setContentType("application/json");
                             res.setStatus(200);
+
+                            boolean isAdmin = auth.getAuthorities()
+                                    .stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+                            String json = isAdmin ?
+                                    "{\"redirect\":\"/home/admin\"}" :
+                                    "{\"redirect\":\"/home\"}";
+
+                            res.getWriter().write(json);
                         })
-                        .failureHandler((req, res, ex) -> {
-                            res.setStatus(401);
-                        })
+
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

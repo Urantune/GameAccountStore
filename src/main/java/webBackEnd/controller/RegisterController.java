@@ -32,6 +32,9 @@ public class RegisterController {
             res.put("error", "Invalid username");
             return res;
         }
+        if(username.equalsIgnoreCase("Admin")){
+            res.put("error", "Username is already taken");
+        }
         if (username.startsWith(".") || username.startsWith("_") ||
                 username.endsWith(".") || username.endsWith("_")) {
             res.put("error", "Invalid username");

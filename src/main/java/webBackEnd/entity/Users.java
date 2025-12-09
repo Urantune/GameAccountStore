@@ -31,7 +31,21 @@ public class Users {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "role",nullable = false)
+    private String role;
+
     public Users() {
+    }
+
+    public Users(UUID id, String username, String email, String password, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.dateCreated = dateCreated;
+        this.dateUpdated = dateUpdated;
+        this.status = status;
+        this.role = role;
     }
 
     // Hàm tự set ngày khi tạo mới
@@ -102,5 +116,13 @@ public class Users {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
