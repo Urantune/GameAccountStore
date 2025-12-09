@@ -1,8 +1,22 @@
 package webBackEnd.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import webBackEnd.entity.GameAccount;
+
+import java.util.List;
+import java.util.UUID;
+
 @Repository
-public interface GameAccountRepositories extends JpaRepository<GameAccount,Integer> {
+public interface GameAccountRepositories extends JpaRepository<GameAccount, UUID> {
+
+
+
+    @Query(value = "SELECT TOP 20 * FROM GameAccount ORDER BY NEWID()", nativeQuery = true)
+    List<GameAccount> findRandom20();
+
+
+
+
 }

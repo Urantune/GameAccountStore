@@ -19,10 +19,11 @@ public class GameAccount {
     private String gameAccount;
     @Column(name = "gamePassword",nullable = false)
     private String gamePassword;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "typeId", referencedColumnName = "id",nullable = false)
+    private Type type;
     @Column(name = "price",nullable = false)
     private BigDecimal price;
-    @Column(name = "typeGame")
-    private String type;
     @Column(name = "description", columnDefinition = "VARCHAR(MAX)")
     private String description;
     @Column(name = "created",nullable = false)
@@ -39,13 +40,14 @@ public class GameAccount {
     public GameAccount() {
     }
 
-    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, BigDecimal price, String type, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
+
+    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, Type type, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
         this.id = id;
         this.gameName = gameName;
         this.gameAccount = gameAccount;
         this.gamePassword = gamePassword;
-        this.price = price;
         this.type = type;
+        this.price = price;
         this.description = description;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
@@ -94,11 +96,11 @@ public class GameAccount {
         this.price = price;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
