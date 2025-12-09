@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/img/**","/bestseller/**", "/assets/**", "/lib/**", "/scss/**","/register","/register/**","/home/**").permitAll()
                         .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
+                        .requestMatchers("/images/**", "/img/**", "/css/**", "/js/**", "/lib/**").permitAll()
                         .requestMatchers("/Staff/**").hasAnyRole("STAFF")
                         .anyRequest().authenticated()
                 )

@@ -6,10 +6,17 @@ import org.springframework.stereotype.Repository;
 import webBackEnd.entity.GameAccount;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface GameAccountRepositories extends JpaRepository<GameAccount,Integer> {
-    @Query("SELECT p.type, COUNT(p) FROM GameAccount p GROUP BY p.type")
-    List<Object[]> countProductsByType();
+public interface GameAccountRepositories extends JpaRepository<GameAccount, UUID> {
+
+
+
+    @Query(value = "SELECT TOP 20 * FROM GameAccount ORDER BY NEWID()", nativeQuery = true)
+    List<GameAccount> findRandom20();
+
+
+
 
 }

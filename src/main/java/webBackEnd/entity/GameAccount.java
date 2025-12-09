@@ -19,6 +19,9 @@ public class GameAccount {
     private String gameAccount;
     @Column(name = "gamePassword",nullable = false)
     private String gamePassword;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "typeId", referencedColumnName = "id",nullable = false)
+    private Type type;
     @Column(name = "price",nullable = false)
     private BigDecimal price;
     @Column(name = "description", columnDefinition = "VARCHAR(MAX)")
@@ -37,11 +40,13 @@ public class GameAccount {
     public GameAccount() {
     }
 
-    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
+
+    public GameAccount(UUID id, String gameName, String gameAccount, String gamePassword, Type type, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime updatedDate, LocalDateTime duration, String status, String classify) {
         this.id = id;
         this.gameName = gameName;
         this.gameAccount = gameAccount;
         this.gamePassword = gamePassword;
+        this.type = type;
         this.price = price;
         this.description = description;
         this.createdDate = createdDate;
@@ -89,6 +94,14 @@ public class GameAccount {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public LocalDateTime getCreatedDate() {
