@@ -18,5 +18,7 @@ public interface GameAccountRepositories extends JpaRepository<GameAccount, UUID
 
     GameAccount getById(UUID id);
 
+    List<GameAccount> findAllByGame_GameId(UUID gameId);
+
 
 }

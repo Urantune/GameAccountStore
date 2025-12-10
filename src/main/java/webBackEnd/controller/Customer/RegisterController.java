@@ -1,4 +1,4 @@
-package webBackEnd.controller;
+package webBackEnd.controller.Customer;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

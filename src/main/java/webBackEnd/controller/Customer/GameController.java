@@ -1,4 +1,4 @@
-package webBackEnd.controller;
+package webBackEnd.controller.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,23 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.service.GameAccountService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/home")
-public class GameDetailController {
-
+@RequestMapping(value = "/home")
+public class GameController {
     @Autowired
     private GameAccountService gameAccountService;
-
-
-    @GetMapping("/detail/{id}")
-    public String showGameDetail(@PathVariable("id") UUID id, Model model) {
-        GameAccount game = gameAccountService.findGameAccountById(id);
-        if (game == null) {
-            return "redirect:/game/list";
-        }
-        model.addAttribute("game", game);
-        return "GameAccountDetail";
+    @GetMapping("/game/{gameId}")
+    public String gameAOV(Model model, @PathVariable("gameId") UUID gameId){
+        List<GameAccount> game = gameAccountService.findAllByGameId(gameId);
+        model.addAttribute("gameId", game);
+        return "customer/GameAccount";
     }
 }
