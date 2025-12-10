@@ -1015,6 +1015,10 @@
 .navbar .nav-link.active {
     color: #ff7f00 !important;  /* nếu muốn mục đang active cũng màu cam */
 }
-
-
 /*** navbar end ***/
+
+.dropdown-fix {
+    right: 0 !important;      /* giữ ở sát avatar */
+    left: auto !important;    /* tránh bị ép qua trái */
+    margin-right: 20px;       /* đẩy menu vào trong tránh tràn màn hình */
+}
