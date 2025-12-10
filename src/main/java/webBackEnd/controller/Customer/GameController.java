@@ -21,6 +21,6 @@ public class GameController {
     public String gameAOV(Model model, @PathVariable("gameId") UUID gameId){
         List<GameAccount> game = gameAccountService.findAllByGameId(gameId);
         model.addAttribute("gameId", game);
-        return "GameAccount";
+        return "customer/GameAccount";
     }
 }

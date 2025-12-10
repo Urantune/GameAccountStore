@@ -34,7 +34,7 @@ public class HomeController {
         model.addAttribute("list20Product", gameAccountService.get20Profuct());
         List<Game> game = gameService.findAllGame();
         model.addAttribute("game", game);
-        return "index";
+        return "customer/index";
     }
 
 }
