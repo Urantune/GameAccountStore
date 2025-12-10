@@ -2,6 +2,7 @@ package webBackEnd.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.repository.GameAccountRepositories;
 
@@ -23,4 +24,7 @@ public class GameAccountService {
         return gameAccountRepositories.getById(id);
     }
 
+    public List<GameAccount> findAllByGameId(UUID gameId){
+        return gameAccountRepositories.findAllByGame_GameId(gameId);
+    }
 }

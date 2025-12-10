@@ -413,19 +413,19 @@
                                                      class="img-fluid w-100 rounded-top product-img"/>
                                                 <!-- Icon -->
                                                 <div class="product-details">
-<!--                                                    <a th:href="@{/home/productDetail/{id}(id=${p.id})}">-->
+                                                    <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}">
                                                         <i class="fa fa-eye fa-1x"></i>
-<!--                                                    </a>-->
+                                                    </a>
                                                 </div>
                                                 <div class="text-center rounded-bottom p-4">
-                                                    <a class="d-block h4"
+                                                    <a class="d-block h4 "
                                                        th:text="${p.gameName}"></a>
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- Bottom -->
                                         <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
-                                            <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
+                                            <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
                                                 <i class="fas fa-shopping-cart me-2"></i> View All Game Accounts
                                             </a>
                                         </div>
