@@ -22,15 +22,10 @@ public class GameDetailController {
     @GetMapping("/detail/{id}")
     public String showGameDetail(@PathVariable("id") UUID id, Model model) {
         GameAccount game = gameAccountService.findGameAccountById(id);
-
         if (game == null) {
-
             return "redirect:/game/list";
         }
-
-
         model.addAttribute("game", game);
-
         return "GameAccountDetail";
     }
 }

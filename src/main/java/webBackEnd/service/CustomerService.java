@@ -7,16 +7,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import webBackEnd.entity.Customer;
-import webBackEnd.repository.UsersRepositories;
+import webBackEnd.repository.CustomerRepositories;
 @Service()
-public class UsersService implements UserDetailsService {
+public class CustomerService implements UserDetailsService {
     @Autowired
-    private UsersRepositories usersRepositories;
+    private CustomerRepositories customerRepositories;
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        Customer user = usersRepositories.findByUsernameIgnoreCase(username)
+        Customer user = customerRepositories.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())

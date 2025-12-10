@@ -14,13 +14,13 @@ public class Orders {
     @Column(name = "orderId",columnDefinition = "uniqueidentifier",nullable = false)
     private UUID id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
     private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voucherId", referencedColumnName = "id")
+    @JoinColumn(name = "voucherId", referencedColumnName = "voucherId")
     private Voucher voucher;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staffId",referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "staffId",referencedColumnName = "staffId",nullable = false)
     private Staff staff;
     @Column(name = "totalPrice",nullable = false)
     private BigDecimal totalPrice;

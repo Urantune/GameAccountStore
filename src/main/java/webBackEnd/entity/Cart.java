@@ -11,12 +11,12 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "cartId", nullable = false)
-    private UUID id;
+    private UUID cartId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
     private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId", referencedColumnName = "gameId",nullable = false)
+    @JoinColumn(name = "gameAccountId", referencedColumnName = "gameAccountId",nullable = false)
     private GameAccount gameAccount;
     @Column(name = "Datecreate",nullable = false)
     private LocalDateTime createdAt;
@@ -24,19 +24,19 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(UUID id, Customer customer, GameAccount gameAccount, LocalDateTime createdAt) {
-        this.id = id;
+    public Cart(UUID cartId, Customer customer, GameAccount gameAccount, LocalDateTime createdAt) {
+        this.cartId = cartId;
         this.customer = customer;
         this.gameAccount = gameAccount;
         this.createdAt = createdAt;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getCartId() {
+        return cartId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setCartId(UUID id) {
+        this.cartId = id;
     }
 
     public Customer getCustomer() {

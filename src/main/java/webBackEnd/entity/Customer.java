@@ -11,7 +11,7 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "customerId", columnDefinition = "uniqueidentifier", nullable = false)
-    private UUID id;
+    private UUID customerId;
 
     @Column(name = "userName", nullable = false)
     private String username;
@@ -37,8 +37,8 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(UUID id, String username, String email, String password, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
-        this.id = id;
+    public Customer(UUID customerId, String username, String email, String password, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
+        this.customerId = customerId;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -62,12 +62,12 @@ public class Customer {
     }
 
     // Getter - Setter
-    public UUID getId() {
-        return id;
+    public UUID getCustomerId() {
+        return customerId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setCustomerId(UUID id) {
+        this.customerId = id;
     }
 
     public String getUsername() {

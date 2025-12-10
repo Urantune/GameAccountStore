@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class LoginController {
-
     @GetMapping("/redirectByRole")
     public String redirectByRole(Authentication auth) {
         boolean isAdmin = auth.getAuthorities()

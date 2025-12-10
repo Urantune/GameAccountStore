@@ -12,7 +12,7 @@ public class GameAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "gameAccountId", columnDefinition = "uniqueidentifier",nullable = false)
-    private UUID id;
+    private UUID gameAccountId;
     @Column(name = "gameUserName",nullable = false)
     private String gameAccount;
     @Column(name = "gamePassword",nullable = false)
@@ -32,7 +32,7 @@ public class GameAccount {
     @Column(name = "classify")
     private String classify;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId",referencedColumnName ="gameId", nullable = false)
+    @JoinColumn(name = "gameId", referencedColumnName = "gameId")
     private Game game;
     @Column(name = "imageMain")
     private String imageMain;
@@ -54,7 +54,7 @@ public class GameAccount {
 
 
     public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items) {
-        this.id = id;
+        this.gameAccountId = id;
         this.gameAccount = gameAccount;
         this.gamePassword = gamePassword;
         this.price = price;
@@ -73,11 +73,11 @@ public class GameAccount {
     }
 
     public UUID getId() {
-        return id;
+        return gameAccountId;
     }
 
     public void setId(UUID id) {
-        this.id = id;
+        this.gameAccountId = id;
     }
 
     public String getGameAccount() {

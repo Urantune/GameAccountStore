@@ -17,7 +17,7 @@ public class RentAccountGame {
     @JoinColumn(name = "customerId",nullable = false, referencedColumnName = "customerId")
     private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameAccountId",referencedColumnName = "gameAccountId")
+    @JoinColumn(name = "gameAccountId",referencedColumnName = "gameAccountId",nullable = false)
     private GameAccount gameAccount;
     @Column(name = "dateStart")
     private Date dateStart;

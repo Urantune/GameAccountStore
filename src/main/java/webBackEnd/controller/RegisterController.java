@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import webBackEnd.config.SecurityConfig;
 import webBackEnd.entity.Customer;
-import webBackEnd.repository.UsersRepositories;
+import webBackEnd.repository.CustomerRepositories;
 
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import java.util.Map;
 @RequestMapping(value = "/register")
 public class RegisterController {
     @Autowired
-    private UsersRepositories usersRepositories;
+    private CustomerRepositories customerRepositories;
     @Autowired
     private SecurityConfig securityConfig;
 
@@ -34,6 +34,7 @@ public class RegisterController {
         }
         if(username.equalsIgnoreCase("Admin")){
             res.put("error", "Username is already taken");
+            return res;
         }
         if (username.startsWith(".") || username.startsWith("_") ||
                 username.endsWith(".") || username.endsWith("_")) {
@@ -49,7 +50,7 @@ public class RegisterController {
             res.put("error", "Invalid username");
             return res;
         }
-        if (usersRepositories.existsByUsername(username)) {
+        if (customerRepositories.existsByUsername(username)) {
             res.put("error", "Username is already taken");
             return res;
         }
@@ -57,7 +58,7 @@ public class RegisterController {
             res.put("error", "Invalid email format");
             return res;
         }
-        if (usersRepositories.existsByEmail(email)) {
+        if (customerRepositories.existsByEmail(email)) {
             res.put("error", "Email is already taken");
             return res;
         }
@@ -74,8 +75,9 @@ public class RegisterController {
         Customer user = new Customer();
         user.setUsername(username);
         user.setEmail(email);
+        user.setRole("Customer");
         user.setPassword(hashPassword);
-        usersRepositories.save(user);
+        customerRepositories.save(user);
         res.put("success", "Register successfully! Please login.");
         return res;
     }

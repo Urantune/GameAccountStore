@@ -10,7 +10,7 @@ public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "typeId", columnDefinition = "uniqueidentifier")
-    private UUID id;
+    private UUID typeId;
     @Column(name = "description")
     private String description;
     @Column(name = "status", nullable = false)
@@ -21,19 +21,19 @@ public class Type {
     public Type() {
     }
 
-    public Type(UUID id, String description, String status, String typeName) {
-        this.id = id;
+    public Type(UUID typeId, String description, String status, String typeName) {
+        this.typeId = typeId;
         this.description = description;
         this.status = status;
         this.typeName = typeName;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getTypeId() {
+        return typeId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setTypeId(UUID id) {
+        this.typeId = id;
     }
 
     public String getDescription() {
