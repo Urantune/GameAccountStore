@@ -1,4 +1,4 @@
-package webBackEnd.controller;
+package webBackEnd.controller.Customer;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
