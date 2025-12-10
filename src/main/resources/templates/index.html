@@ -231,7 +231,7 @@
                             <div class="dropdown-menu m-0">
                                 <a href="bestseller.html" class="dropdown-item">Sản phẩm bán chạy</a>
                                 <a href="cart.html" class="dropdown-item">Giỏ hàng</a>
-                                <a href="cheackout.html" class="dropdown-item">Cheackout</a>
+                                <a href="cheackout.html" class="dropdown-item">Checkout</a>
                                 <a href="404.html" class="dropdown-item">404 Page</a>
                             </div>
                         </div>
@@ -272,7 +272,7 @@
                     </div>
                     <div class="col-xl-6 carousel-content p-4">
                         <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
-                            style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân </h4>
+                            style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản AOV </h4>
                         <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
                             giao dịch qua ATM</h1>
                         <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">Terms and Condition Apply</p>
@@ -298,7 +298,7 @@
         </div>
         <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s">
             <div class="carousel-header-banner h-100">
-                <img src="img/lqdemo3.jpg" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Image">
+                <img src="img/nak.jpg" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Image">
                 <div class="carousel-banner-offer">
                     <p class="text-primary fs-5 fw-bold mb-0">Ưu đãi đặc biệt</p>
                 </div>
@@ -390,57 +390,62 @@
     </div>
     <!-- Searvices End -->
     <!-- Our Products Start -->
+    <link rel="stylesheet" href="/css/product.css">
+
     <div class="container-fluid product py-5">
         <div class="container py-5">
             <div class="tab-class">
-                <div class="row g-4">
-                    <div class="col-lg-4 text-start">
-                        <h1>Our Game</h1>
-                    </div>
-                    <div class="tab-content">
-                        <!-- TẤT CẢ SẢN PHẨM -->
-                        <div id="tab-all" class="tab-pane fade show active p-0">
-                            <div class="row g-4">
-                                <!-- Vòng lặp -->
-                                <div class="col-md-6 col-lg-4 col-xl-3"
-                                     th:each="p, i : ${game}">
-                                    <div class="product-item rounded">
 
-                                        <div class="product-item-inner border rounded">
-                                            <div class="product-item-inner-item">
-                                                <!-- Ảnh cứng luân phiên -->
-                                                <img th:src="@{${i.index % 2 == 0 ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
-                                                     class="img-fluid w-100 rounded-top product-img"/>
-                                                <!-- Icon -->
-                                                <div class="product-details">
-<!--                                                    <a th:href="@{/home/productDetail/{id}(id=${p.id})}">-->
-                                                        <i class="fa fa-eye fa-1x"></i>
-<!--                                                    </a>-->
-                                                </div>
-                                                <div class="text-center rounded-bottom p-4">
-                                                    <a class="d-block h4"
-                                                       th:text="${p.gameName}"></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Bottom -->
-                                        <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
-                                            <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
-                                                <i class="fas fa-shopping-cart me-2"></i> View All Game Accounts
-                                            </a>
-                                        </div>
-                                        </div>
+                <!-- TITLE (center) -->
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="product-section-title">KHO TÀI KHOẢN GAME</h1>
+                    </div>
+                </div>
+
+                <!-- PRODUCT LIST - CENTERED -->
+                <div class="row justify-content-center">
+
+                    <!-- LOOP -->
+                    <div class="col-auto"
+                         th:each="p, i : ${game}">
+                        <div class="product-item rounded">
+
+                            <div class="product-item-inner border rounded position-relative">
+                                <div class="product-item-inner-item">
+
+                                    <!-- IMAGE -->
+                                    <img th:src="@{${i.index % 2 == 0 ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
+                                         class="img-fluid w-100 product-img">
+
+                                    <!-- ICON -->
+                                    <div class="product-details">
+                                        <i class="fa fa-eye fa-1x"></i>
+                                    </div>
+
+                                    <!-- GAME NAME -->
+                                    <div class="text-center rounded-bottom p-4">
+                                        <a class="d-block h4 game-title"
+                                           th:text="${p.gameName}"></a>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- BOTTOM BUTTON -->
+                            <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
+                                <a href="#"
+                                   class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
+                                    <i class="fas fa-shopping-cart me-2"></i> View All Game Accounts
+                                </a>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Our Products End -->
+    <!-- Our Products End -->
 
 
 <!-- Footer Start -->
