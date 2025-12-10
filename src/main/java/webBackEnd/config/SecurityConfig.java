@@ -50,7 +50,7 @@ public class SecurityConfig {
                             res.setContentType("application/json");
                             res.getWriter().write(
                                     auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
-                                            ? "{\"redirect\":\"/Admin/home\"}"
+                                            ? "{\"redirect\":\"/Admin\"}"
                                             : "{\"redirect\":\"/home\"}"
                             );
                         })
