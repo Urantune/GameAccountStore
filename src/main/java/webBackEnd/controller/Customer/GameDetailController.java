@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.service.GameAccountService;
-import webBackEnd.service.GameDetailService;
+
 
 import java.util.UUID;
 
@@ -18,8 +18,7 @@ public class GameDetailController {
 
     @Autowired
     private GameAccountService gameAccountService;
-    @Autowired
-    private GameDetailService gameDetailService;
+
 
 
     @GetMapping("/detail/{id}")

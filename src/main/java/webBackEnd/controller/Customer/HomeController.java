@@ -1,4 +1,4 @@
-package webBackEnd.controller;
+package webBackEnd.controller.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.repository.GameAccountRepositories;
 import webBackEnd.service.GameAccountService;
-import webBackEnd.service.GameDetailService;
+
 import webBackEnd.successfullyDat.PathCheck;
 
 @Controller
@@ -19,8 +19,6 @@ public class HomeController {
     @Autowired
     private GameAccountService gameAccountService;
 
-    @Autowired
-    private GameDetailService gameDetailService;
     @Autowired
     private PathCheck pathCheck;
 
