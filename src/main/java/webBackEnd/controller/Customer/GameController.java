@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.service.GameAccountService;
 
@@ -23,4 +25,13 @@ public class GameController {
         model.addAttribute("gameId", game);
         return "customer/GameAccount";
     }
+
+//    @GetMapping("/gameDetail/{id}")
+//    public String gameDetail(Model model, @RequestParam("gameDetail") UUID gameId){
+//        List<GameAccount> gameDetail = gameAccountService.findAllByGameId(gameId);
+//        Game game = new Game();
+//        model.addAttribute("gameDetail", gameDetail);
+//        model.addAttribute("gameName", game);
+//        return "customer/GameDetail";
+//    }
 }
