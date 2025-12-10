@@ -975,3 +975,46 @@
     }
 }
 /*** end format type game list ***/
+
+/*** navbar start ***/
+.navbar .nav-link {
+    color: #475569;          /* xám xanh nhạt */
+    font-size: 15px;
+}
+.navbar .nav-link:hover {
+    color: #0d6efd;
+}
+
+.navbar-nav .dropdown-menu {
+    border-radius: 10px;
+    padding: 10px 0;
+}
+
+.navbar-nav .dropdown-item {
+    padding: 8px 20px;
+}
+
+.navbar-brand img {
+    height: 250px;   /* chỉnh lớn tùy ý */
+    width: auto;
+}
+
+.navbar .nav-link {
+    color: #6c757d;   /* màu chữ bình thường */
+    font-weight: 600;
+}
+
+.navbar .nav-link:hover {
+    color: #ff7f00 !important;  /* màu cam khi hover */
+}
+
+.navbar .nav-link:focus {
+    color: #ff7f00 !important;  /* focus cũng màu cam */
+}
+
+.navbar .nav-link.active {
+    color: #ff7f00 !important;  /* nếu muốn mục đang active cũng màu cam */
+}
+
+
+/*** navbar end ***/

@@ -147,119 +147,131 @@
 <!-- Spinner End -->
 
 
-<!-- Topbar Start -->
-<div class="container-fluid px-5 d-none border-bottom d-lg-block">
-    <div class="row gx-0 align-items-center">
-        <div class="col-lg-4 text-center text-lg-start mb-lg-0">
-            <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <a th:href="@{/home/about}" class="text-muted me-2"> About</a><small> / </small>
-                <a th:href="@{/home/contact}" class="text-muted ms-2"> Contact</a>
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white px-4 py-2 shadow-sm">
+    <div class="container-fluid">
 
-            </div>
-        </div>
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="img/logo.png" alt="Logo"
+                 style="height:45px; width:auto;">
+        </a>
 
-        <div class="col-lg-4 text-center text-lg-end">
-            <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i
-                            class="fa fa-home me-2"></i>Quản lí</small></a>
-                    <div class="dropdown-menu rounded">
+        <!-- Toggle button mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                        <!-- Hiện nút Login khi chưa đăng nhập -->
-                        <a href="#" class="dropdown-item"
-                           data-bs-toggle="modal"
-                           data-bs-target="#loginModal"
-                           sec:authorize="isAnonymous()">
-                            Login
-                        </a>
+        <!-- Navbar Items -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center fw-semibold">
 
-                        <!-- Các mục chỉ xuất hiện khi đã đăng nhập -->
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Sản phẩm yêu thích</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Giỏ hàng của tôi</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Thông báo</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Cài đặt tài khoản</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Tài khoản của tôi</a>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/">
+                        <i class="fa fa-th-large me-1"></i> Trang Chủ
+                    </a>
+                </li>
 
-                        <!-- Logout chỉ hiện khi đã login -->
-                        <a th:href="@{/logout}" class="dropdown-item" sec:authorize="isAuthenticated()">
-                            Đăng xuất
-                        </a>
-                    </div>
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-th-large me-1"></i> Lịch Sử Mua Nick
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Lịch sử mua nick</a></li>
+                        <li><a class="dropdown-item" href="#">Lịch sử giao dịch</a></li>
+                    </ul>
+                </li>
 
-                </div>
-            </div>
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-truck me-1"></i> Dịch Vụ Khác
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Dịch vụ 1</a></li>
+                        <li><a class="dropdown-item" href="#">Dịch vụ 2</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-user me-1"></i> Tài Khoản
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-credit-card me-1"></i> Nạp Tiền
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Nạp ATM</a></li>
+                        <li><a class="dropdown-item" href="#">Nạp MOMO</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-coins me-1"></i> Dòng Tiền
+                    </a>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-newspaper me-1"></i> Tin Tức
+                    </a>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-globe me-1"></i>
+                    </a>
+                </li>
+
+            </ul>
+
+            <!-- User section -->
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+
+                <!-- Khi chưa đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Đăng nhập
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                Đăng ký
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Khi đã đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/images/avatar.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                        <li><a class="dropdown-item" href="#">Đơn hàng của tôi</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
         </div>
     </div>
-</div>
+</nav>
+<!-- Navbar End -->
 
-<!-- Navbar & Hero Start -->
-<div class="container-fluid nav-bar p-0">
-    <div class="row gx-0 bg-primary px-5 align-items-center">
-        <div class="col-lg-3 d-none d-lg-block">
-            <nav class="navbar navbar-light position-relative" style="width: 250px;">
-                <button class="navbar-toggler border-0 fs-4 w-100 px-0 text-start" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#allCat">
-                    <h4 class="m-0"><i class="fa fa-bars me-2"></i>Loại Game</h4>
-                </button>
-                <div class="collapse navbar-collapse rounded-bottom" id="allCat">
-                    <div class="navbar-nav ms-auto py-0">
-                        <ul class="list-unstyled categories-bars">
-                            <li>
-                                <div class="categories-bars-item">
-                                    <a href="#">Liên Quân</a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="categories-bars-item">
-                                    <a href="#">Free Fire</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
-        <div class="col-12 col-lg-9">
-            <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto py-0">
-                        <a href="index.html" class="nav-item nav-link active">Trang chủ</a>
-                        <a href="shop.html" class="nav-item nav-link">Cửa hàng</a>
-                        <a href="single.html" class="nav-item nav-link">Single Page</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu m-0">
-                                <a href="bestseller.html" class="dropdown-item">Sản phẩm bán chạy</a>
-                                <a href="cart.html" class="dropdown-item">Giỏ hàng</a>
-                                <a href="cheackout.html" class="dropdown-item">Checkout</a>
-                                <a href="404.html" class="dropdown-item">404 Page</a>
-                            </div>
-                        </div>
-                        <a href="contact.html" class="nav-item nav-link me-2">Contact</a>
-                        <div class="nav-item dropdown d-block d-lg-none mb-3">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Loại Game</a>
-                            <div class="dropdown-menu m-0">
-                                <ul class="list-unstyled categories-bars">
-                                    <li>
-                                        <div class="categories-bars-item">
-                                            <a href="#">Liên Quân</a>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="categories-bars-item">
-                                            <a href="#">Free Fire</a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-</div>
-<!-- Navbar & Hero End -->
 
 <!-- Carousel Start -->
 <div class="container-fluid carousel bg-light px-0">
