@@ -18,5 +18,10 @@ public class GameService {
         return gameRepositories.findAll();
     }
 
+    public Game findById(UUID gameId){
+        return gameRepositories.findByGameId(gameId).orElse(null);
+    }
+
+
 
 }
