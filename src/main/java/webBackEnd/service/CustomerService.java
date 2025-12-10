@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import webBackEnd.entity.Customer;
 import webBackEnd.repository.CustomerRepositories;
+
+import java.util.List;
+
 @Service()
 public class CustomerService implements UserDetailsService {
     @Autowired
@@ -22,5 +25,10 @@ public class CustomerService implements UserDetailsService {
                 .password(user.getPassword())
                 .roles(user.getRole())
                 .build();
+    }
+
+
+    public List<Customer> findAllCustomers() {
+        return customerRepositories.findAll();
     }
 }
