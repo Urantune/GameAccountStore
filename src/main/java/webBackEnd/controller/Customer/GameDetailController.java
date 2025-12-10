@@ -34,6 +34,6 @@ public class GameDetailController {
         model.addAttribute("game", game);
 
 
-        return "GameAccountDetail";
+        return "customer/GameAccountDetail";
     }
 }

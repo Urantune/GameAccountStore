@@ -319,7 +319,7 @@
 <!-- Carousel End -->
 
 <!-- Searvices Start -->
-<div class="container-fluid px-0">
+ <div class="container-fluid px-0">
     <div class="row g-0">
         <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
             <div class="p-4">
@@ -389,60 +389,334 @@
         </div>
     </div>
     <!-- Searvices End -->
-    <!-- Our Products Start -->
-    <div class="container-fluid product py-5">
-        <div class="container py-5">
-            <div class="tab-class">
-                <div class="row g-4">
-                    <div class="col-lg-4 text-start">
-                        <h1>Our Game</h1>
-                    </div>
-                    <div class="tab-content">
-                        <!-- TẤT CẢ SẢN PHẨM -->
-                        <div id="tab-all" class="tab-pane fade show active p-0">
-                            <div class="row g-4">
-                                <!-- Vòng lặp sản phẩm -->
-                                <div class="col-md-6 col-lg-4 col-xl-3" th:each="p : ${gameId}">
-                                    <div class="product-item rounded">
-                                        <div class="product-item-inner border rounded">
-                                            <div class="product-item-inner-item">
-                                                <!-- Ảnh -->
-                                                <img th:src="@{'/images/' + ${p.imageMain}}"
-                                                     class="img-fluid w-100 rounded-top product-img"/>
-                                                <div class="product-details">
-<!--                                                    <a th:href="@{/home/gameDetail/{id}(id=${p.productId})}">-->
-                                                        <i class="fa fa-eye fa-1x"></i>
-<!--                                                    </a>-->
-                                                </div>
-                                            </div>
-                                            <!-- Tên + giá -->
-                                            <div class="text-center rounded-bottom p-4">
-                                                <a class="d-block h4"
-                                                   th:text="${p.game.gameName}"></a>
 
-                                                <span class="text-primary fs-5"
-                                                      th:text="${#numbers.formatDecimal(p.price,0,'COMMA',0,'POINT')}">
-                                        </span>
-                                            </div>
-                                        </div>
-                                        <!-- Bottom section -->
-                                        <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
-                                            <a href="#" class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
-                                                <i class="fas fa-shopping-cart me-2"></i> Add To Cart
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- END vòng lặp -->
+    <!-- Our Products Start -->
+    <div class="container mt-5">
+        <h3 class="name-game mt-3" th:text="${gameName.gameName}">Tên game</h3>
+        <div class="row align-items-stretch g-3">
+            <div class="col-lg-4 col-md-6 d-flex equal-col">
+                <div class="card shadow p-3 w-100 h-100 d-flex flex-column media-card">
+                    <h4 class="text-glow mb-3">Hình ảnh & Video</h4>
+                    <div class="main-media-wrapper mb-3">
+                        <img id="mainImg"
+                             th:src="@{'/' + ${img.mainImage}}"
+                             src="/img/notfound.png"
+                             alt="Game"
+                             class="img-fluid rounded main-img shadow-sm"/>
+
+                    </div>
+                    <div class="thumbs-row d-flex justify-content-between gap-2">
+                        <video class="thumb thumb-video"
+                               muted autoplay loop
+                               onclick="openVideoModal(this.querySelector('source').src)">
+                            <source th:src="@{'/' + ${img.video}}" type="video/mp4"/>
+                        </video>
+
+
+                        <img class="thumb"
+                             th:src="@{'/' + ${img.imageOne}}"
+                             onclick="openImageModal(this.src)"
+                             alt="thumb 1"/>
+
+                        <img class="thumb"
+                             th:src="@{'/' + ${img.imageTwo}}"
+                             onclick="openImageModal(this.src)"
+                             alt="thumb 2"/>
+
+                        <img class="thumb"
+                             th:src="@{'/' + ${img.imageThree}}"
+                             onclick="openImageModal(this.src)"
+                             alt="thumb 3"/>
+
+
+                    </div>
+
+                </div>
+
+                <div class="modal fade" id="imageModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content bg-dark border-0">
+                            <div class="modal-body text-center p-0">
+                                <img id="modalImage" class="img-fluid rounded"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="videoModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content bg-dark border-0">
+                            <div class="modal-body p-0">
+                                <video id="modalVideo" class="w-100" controls muted autoplay></video>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <script>
+                function openImageModal(src) {
+                    const imgModal = new bootstrap.Modal(document.getElementById('imageModal'));
+                    const modalImg = document.getElementById('modalImage');
+                    modalImg.src = src;
+                    imgModal.show();
+                }
+                function openVideoModal(src) {
+                    const vidModal = new bootstrap.Modal(document.getElementById('videoModal'));
+                    const modalVideo = document.getElementById('modalVideo');
+                    modalVideo.src = src;
+                    vidModal.show();
+                    const videoEl = document.getElementById('videoModal');
+                    videoEl.addEventListener('hidden.bs.modal', () => {
+                        modalVideo.pause();
+                        modalVideo.currentTime = 0;
+                    }, { once: true });
+                }
+            </script>
+            <style>
+                .media-card { background: #0f1c2e; color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1rem; transition: all 0.3s ease; }
+                .media-card:hover { box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); }
+                .main-media-wrapper { flex-shrink: 0; position: relative; }
+                .main-img { width: 100%; height: auto; border-radius: 10px; object-fit: cover; cursor: pointer; transition: transform 0.3s ease, opacity 0.3s ease; }
+                .main-img:hover { transform: scale(1.02); opacity: 0.95; }
+                .thumbs-row { display: flex; justify-content: space-between; }
+                .thumb { width: 23%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease; border: 1px solid rgba(255, 255, 255, 0.1); }
+                .thumb:hover { transform: scale(1.05); opacity: 0.9; }
+                .thumb-video { width: 23%; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; }
+                #imageModal img, #videoModal video { max-height: 80vh; border-radius: 10px; object-fit: contain; }
+                .modal-content.bg-dark { background: #000; }
+                @media (max-width: 768px) { .thumb { width: 24%; } }
+            </style>
+
+            <div class="col-lg-4 col-md-6 d-flex equal-col">
+                <div class="card game-detail-card shadow-sm w-100 h-100 d-flex flex-column">
+                    <h4 class="text-glow mb-4">Thông tin chi tiết</h4>
+                    <ul class="list-unstyled text-light mb-4">
+                        <li class="mb-2"><strong> Giá:</strong> <span id="price" class="text-info" th:text="${game.price}">-</span></li>
+                        <li class="mb-2"><strong> Dung lượng:</strong> <span id="size" class="text-info" th:text="${game.deceptions[1]}">-</span></li>
+                        <li class="mb-2"><strong> Độ tuổi:</strong> <span id="age" class="text-info" th:text="${game.deceptions[4]}">-</span></li>
+                        <li class="mb-2"><strong> Lượt tải:</strong> <span id="downloads" class="text-info" th:text="${game.deceptions[2]}">-</span></li>
+                    </ul>
+                    <div class="description-box text-light p-3 mb-4">
+                        <strong class="text-primary">📝 Mô tả:</strong>
+                        <p class="mt-2 mb-0" id="description" th:text="${game.deceptions[0]}">-</p>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mt-auto"
+                         th:if="${session.userId != null and !canFeedbackandDownload}">
+                        <form id="buyForm" class="w-100"
+                              th:action="@{/welcome/buy}"
+                              method="post">
+
+                            <input type="hidden" name="selectedIds" th:value="${game.gameId}"/>
+
+
+                            <input type="hidden" th:if="${_csrf!=null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                            <button type="submit" class="btn btn-buy w-100">🛒 Mua ngay</button>
+                        </form>
+                        <form id="addCartForm" class="w-100"
+                              th:action="@{/welcome/addGameToCard/{game_id}(game_id=${game.gameId})}"
+                              method="post">
+                            <button type="submit" class="btn btn-cart w-100">➕ Thêm giỏ hàng</button>
+                        </form>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mt-auto"
+                         th:if="${session.userId != null and canFeedbackandDownload}">
+                        <a class="btn btn-download w-100"
+                           th:href="@{/api/files/download(path=${game.locate_game}, gameId=${game.gameId})}">
+                            ⬇️ Tải về
+                        </a>
+
+                        <div th:if="${!refund}">
+                            <form th:action="@{/welcome/refundGame}" method="get">
+                                <input type="hidden" name="gameId" th:value="${game.gameId}"/>
+                                <button type="submit" class="btn btn-danger w-100">
+                                    💸 Request refund
+                                </button>
+                            </form>
+                        </div>
+
+
+
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <style>
+                .game-detail-card { background-color: #132b47; border-radius: 18px; padding: 20px 24px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); transition: all 0.3s ease; }
+                .game-detail-card:hover { background-color: #1a3b61; border-color: rgba(0, 200, 255, 0.25); box-shadow: 0 0 25px rgba(0, 200, 255, 0.3); transform: translateY(-4px); }
+                .text-glow { color: #ffffff; text-shadow: 0 0 10px rgba(0, 200, 255, 0.5); font-weight: 600; }
+                .description-box { background-color: rgba(255, 255, 255, 0.05); border-left: 3px solid #00bfff; border-radius: 10px; font-size: 0.95rem; line-height: 1.5; }
+                .btn-buy { background-color: #00b36b; color: white; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; }
+                .btn-buy:hover { background-color: #00d182; box-shadow: 0 0 10px rgba(0, 255, 160, 0.4); transform: translateY(-2px); }
+                .btn-cart { background-color: #007bff; color: white; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; }
+                .btn-cart:hover { background-color: #2196f3; box-shadow: 0 0 10px rgba(0, 200, 255, 0.4); transform: translateY(-2px); }
+                .btn-download { background-color: #00bfff; color: white; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; }
+                .btn-download:hover { background-color: #1ec9ff; box-shadow: 0 0 10px rgba(0, 200, 255, 0.4); transform: translateY(-2px); }
+            </style>
+
+            <div class="col-lg-4 col-md-12 d-flex">
+                <div class="rating-card shadow-sm w-100 d-flex flex-column p-4 rounded-4">
+                    <form th:if="${session.userId != null and canFeedbackandDownload}"
+                          th:action="@{/welcome/gamedetail/{game_id}(game_id=${game.gameId})}"
+                          method="post" class="text-light flex-grow-1 d-flex flex-column">
+
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="mb-0 text-glow">Đánh giá của bạn</h5>
+                            <span id="ratingValue" class="small text-info"
+                                  th:text="(${myFeedback!=null}?${myFeedback.star}:0) + '/5'">(0/5)</span>
+                        </div>
+
+                        <div id="ratingStars" class="d-flex align-items-center gap-2 mb-3" aria-label="Chọn số sao">
+                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
+                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
+                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
+                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
+                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
+                        </div>
+
+                        <input type="hidden" name="star" id="inputStar"
+                               th:value="${myFeedback!=null?myFeedback.star:0}"/>
+
+                        <textarea name="comment" id="reviewText"
+                                  class="form-control review-textarea mb-3"
+                                  rows="5"
+                                  placeholder="Chia sẻ cảm nhận của bạn..."
+                                  th:text="${myFeedback!=null?myFeedback.comment:''}"></textarea>
+
+                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                            <small id="reviewCounter" class="text-muted">0/300</small>
+                            <button type="submit" class="btn btn-submit-review btn-sm">
+                                Đăng đánh giá
+                            </button>
+                        </div>
+                    </form>
+
+                    <div th:if="${session.userId == null or (session.userId != null and !canFeedbackandDownload)}" class="flex-grow-1 text-light">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="mb-0 text-glow">Đánh giá của người chơi</h5>
+                        </div>
+
+                        <div class="feedback-box border-top border-secondary-subtle pt-2"
+                             th:if="${listFeedback != null and #lists.size(listFeedback) > 0}">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <img src="/img/demo1.jpg" class="user-avatar" alt="">
+                                <strong th:text="${@gameCore.getUserName(listFeedback.get(0).userId)}"></strong>
+                                <span class="text-warning small ms-1">
+                                <span th:each="i : ${#numbers.sequence(1, (listFeedback.get(0).star != null ? listFeedback.get(0).star.intValue() : 0))}">★</span>
+                            </span>
+                                <small class="text-muted ms-auto">2 ngày trước</small>
+                            </div>
+                            <div class="small text-light opacity-75" th:text="${listFeedback.get(0).comment}"></div>
+                        </div>
+
+                        <div class="feedback-box border-top border-secondary-subtle pt-2 mt-2"
+                             th:if="${listFeedback != null and #lists.size(listFeedback) > 1}">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <img src="/img/demo2.jpg" class="user-avatar" alt="">
+                                <strong th:text="${@gameCore.getUserName(listFeedback.get(1).userId)}"></strong>
+                                <span class="text-warning small ms-1">
+                                <span th:each="i : ${#numbers.sequence(1, (listFeedback.get(1).star != null ? listFeedback.get(1).star.intValue() : 0))}">★</span>
+                            </span>
+                                <small class="text-muted ms-auto">1 tuần trước</small>
+                            </div>
+                            <div class="small text-light opacity-75" th:text="${listFeedback.get(1).comment}"></div>
+                        </div>
+
+                        <div th:if="${listFeedback == null or #lists.isEmpty(listFeedback)}"
+                             class="alert alert-info mt-3 py-2 px-3 bg-opacity-10 border-0 text-info">
+                            <i class="bi bi-info-circle me-1"></i> Chưa có đánh giá nào.
+                        </div>
+
+                        <div class="alert alert-dark mt-3 py-2 px-3 bg-opacity-25 border-0" th:if="${session.userId == null}">
+                            <i class="bi bi-info-circle me-1 text-info"></i>
+                            <span>Hãy <a href="?showForm=login" class="link-info fw-semibold">đăng nhập</a> để đánh giá và xem đánh giá của bạn bè.</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-link text-info mt-3 p-0 align-self-start fw-semibold"
+                            data-bs-toggle="modal" data-bs-target="#allReviewsModal">
+                        Xem tất cả đánh giá →
+                    </button>
+                </div>
+            </div>
+
+            <style>
+                .rating-card { background-color: #132b47; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 15px rgba(0, 0, 0, 0.6); transition: all 0.3s ease; }
+                .rating-card:hover { background-color: #1a3b61; border-color: rgba(0, 200, 255, 0.25); box-shadow: 0 0 25px rgba(0, 200, 255, 0.3); transform: translateY(-4px); }
+                .text-glow { color: #ffffff; text-shadow: 0 0 8px rgba(0, 200, 255, 0.5); }
+                .review-textarea { background-color: rgba(255, 255, 255, 0.05); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; resize: none; transition: 0.3s; }
+                .review-textarea:focus { background-color: rgba(255, 255, 255, 0.1); border-color: #00bfff; box-shadow: 0 0 10px rgba(0, 200, 255, 0.3); }
+                .star { background: none; border: none; color: #666; font-size: 1.5rem; transition: color 0.2s; }
+                .star:hover, .star.active { color: #ffcc00; transform: scale(1.1); }
+                .btn-submit-review { background-color: #00bfff; color: white; border: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; }
+                .btn-submit-review:hover { background-color: #1ec9ff; box-shadow: 0 0 10px rgba(0, 200, 255, 0.4); transform: translateY(-2px); }
+                .feedback-box { background-color: rgba(255, 255, 255, 0.03); border-radius: 10px; padding: 8px 12px; }
+                .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1); }
+            </style>
+
+            <div class="modal fade" id="allReviewsModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                    <div class="modal-content all-reviews-modal">
+                        <div class="modal-header border-0 border-bottom border-light-subtle">
+                            <h5 class="modal-title fw-semibold">
+                                <i class="bi bi-chat-square-text me-2 text-warning"></i> Tất cả đánh giá
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="allReviewsSummary" class="mb-3 small text-secondary"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .all-reviews-modal { background: #0f1c2e; color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1rem; box-shadow: 0 0 25px rgba(0, 0, 0, 0.6); }
+                .all-reviews-modal .modal-header { background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+                .all-reviews-modal .modal-title { font-weight: 600; color: #f5f5f5; }
+                .review-item { padding: 12px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); transition: all 0.2s ease; }
+                .review-item:hover { background: rgba(255, 255, 255, 0.07); transform: translateY(-2px); }
+                .review-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid rgba(255, 255, 255, 0.15); }
+                .review-comment { font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; }
+                .text-warning.small { letter-spacing: 2px; }
+                .modal-body::-webkit-scrollbar { width: 6px; }
+                .modal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+            </style>
         </div>
     </div>
-</div>
-</div>
+
+    <div th:if="${buyError}" id="buyAlert"
+         style="position: fixed; top: 20px; right: 20px; background: #f44336; color: white; padding: 15px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" th:text="${buyError}">
+    </div>
+    <script>
+        setTimeout(function () {
+            let alertBox = document.getElementById("buyAlert");
+            if (alertBox) {
+                alertBox.style.transition = "opacity 0.5s ease";
+                alertBox.style.opacity = "0";
+                setTimeout(() => alertBox.remove(), 500);
+            }
+        }, 3000);
+    </script>
+
+    <div th:if="${cartError}" id="cartAlert"
+         style="position: fixed; top: 70px; right: 20px; background: #fff3cd; color: black; padding: 15px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" th:text="${cartError}">
+    </div>
+    <script>
+        setTimeout(function () {
+            let alertBox = document.getElementById("cartAlert");
+            if (alertBox) {
+                alertBox.style.transition = "opacity 0.5s ease";
+                alertBox.style.opacity = "0";
+                setTimeout(() => alertBox.remove(), 500);
+            }
+        }, 3000);
+    </script>
+ <div/>
 <!-- Our Products End -->
 
 
