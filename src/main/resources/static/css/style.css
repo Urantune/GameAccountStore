@@ -908,3 +908,117 @@
 }
 
 /*** slider area end ***/
+
+/*** begin format type game list ***/
+/* TITLE */
+.product-section-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* CARD CONTAINER */
+.product-item {
+    max-width: 320px;
+    margin: 0 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* IMAGE BOX (crop + zoom) */
+.product-item-inner {
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
+.product-img {
+    display: block;
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    transform: scale(1);
+    transition: transform 0.45s ease;
+}
+
+/* Zoom khi hover */
+.product-item:hover .product-img {
+    transform: scale(1.06);
+}
+
+/* Game Name Style */
+.game-title {
+    font-weight: 600;
+    letter-spacing: .5px;
+    margin-top: 18px;
+}
+
+/* Bottom button */
+.product-item-add .btn {
+    display: inline-block;
+}
+
+/* Icon góc phải */
+.product-details {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+}
+
+/* Mobile responsive */
+@media (max-width: 576px) {
+    .product-img {
+        height: 180px;
+    }
+    .product-item {
+        max-width: 100%;
+        margin: 12px 0;
+    }
+}
+/*** end format type game list ***/
+
+/*** navbar start ***/
+.navbar .nav-link {
+    color: #475569;          /* xám xanh nhạt */
+    font-size: 15px;
+}
+.navbar .nav-link:hover {
+    color: #0d6efd;
+}
+
+.navbar-nav .dropdown-menu {
+    border-radius: 10px;
+    padding: 10px 0;
+}
+
+.navbar-nav .dropdown-item {
+    padding: 8px 20px;
+}
+
+.navbar-brand img {
+    height: 250px;   /* chỉnh lớn tùy ý */
+    width: auto;
+}
+
+.navbar .nav-link {
+    color: #6c757d;   /* màu chữ bình thường */
+    font-weight: 600;
+}
+
+.navbar .nav-link:hover {
+    color: #ff7f00 !important;  /* màu cam khi hover */
+}
+
+.navbar .nav-link:focus {
+    color: #ff7f00 !important;  /* focus cũng màu cam */
+}
+
+.navbar .nav-link.active {
+    color: #ff7f00 !important;  /* nếu muốn mục đang active cũng màu cam */
+}
+/*** navbar end ***/
+
+.dropdown-fix {
+    right: 0 !important;      /* giữ ở sát avatar */
+    left: auto !important;    /* tránh bị ép qua trái */
+    margin-right: 20px;       /* đẩy menu vào trong tránh tràn màn hình */
+}
