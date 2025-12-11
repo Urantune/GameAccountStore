@@ -25,5 +25,10 @@ public class TypeService {
     }
 
 
+    public Type findByTypeName(String name) {
+        return  typeRepositories.findByTypeName(name);
+    }
+
+
 
 }
