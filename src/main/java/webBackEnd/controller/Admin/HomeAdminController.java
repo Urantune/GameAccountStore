@@ -46,7 +46,7 @@ public class HomeAdminController {
 
     @GetMapping("/userList")
     public String userList(Model model) {
-
+        System.out.println();
         model.addAttribute("listUser", customerService.findAllCustomers());
         return "admin/UserList";
     }
@@ -89,11 +89,6 @@ public class HomeAdminController {
 
         return "redirect:/adminHome/userList";
     }
-
-
-
-
-
 
     @GetMapping("/gameSelect")
     public String selectGameAccount(Model model) {

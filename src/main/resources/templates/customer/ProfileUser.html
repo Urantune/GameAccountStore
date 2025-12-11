@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Profile User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <!-- CSRF -->
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/ProfileUser.css}">
+    <style>
+        .toast-message{position:fixed;right:16px;bottom:16px;opacity:0;transition:opacity .2s;z-index:2000;padding:8px 12px;border-radius:6px}
+        .toast-message.show{opacity:1}
+    </style>
+</head>
+ <body>
+   <div class="container">
+    <div class="card bg-dark text-light p-3 rounded-3 shadow" style="flex:1;">
+        <div class="avatar text-center">
+            <img src="/img/aov.jpg"
+                 alt="Avatar" id="currentAvatar" class="rounded-circle"
+                 style="width:120px;height:120px;object-fit:cover;border:2px solid #666;cursor:pointer;">
+        </div>
+
+        <input type="hidden" id="userIdHidden" th:value="${customer.getCustomerId()}"/>
+
+        <div class="d-flex align-items-center justify-content-center mt-2">
+            <h2 id="displayName" class="m-0" style="font-size:1.5rem;" th:text="${customer.username}">User Name</h2>
+        </div>
+        <!-- Modal chọn avatar -->
+        <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="avatarModalLabel">Chọn ảnh đại diện</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <form id="avatarForm">
+                            <div class="d-flex flex-wrap justify-content-center gap-2" id="avatarOptions"></div>
+                            <button type="submit" class="btn btn-success mt-3">Lưu ảnh</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info mt-3">
+            <p>Email: <span id="emailMasked" th:text="${customer.email}"></span></p>
+            <p>
+                Quốc gia: <span id="countryDisplay">----------</span>
+                <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#editCountryModal">⚙️</button>
+            </p>
+            <a th:href="@{/logout}" class="btn btn-outline-danger mt-2">Đăng xuất</a>
+        </div>
+    </div>
+
+    <div class="card" style="flex:2;">
+        <h2>🎮 Thư viện game</h2>
+        <div class="games" id="gameLibrary">
+            <div class="game-card"
+                 th:each="a : ${listGame}">
+
+                <p th:text="${a.game.gameName}">CS:GO</p>
+            </div>
+        </div>
+
+        <h2 style="margin-top:20px;">🏆 Thành tích</h2>
+        <div class="achievements">
+            <ul id="achievementList">
+                <li>🔥 Hoàn thành 100 giờ chơi GTA V</li>
+                <li>🎯 Rank Immortal trong Dota 2</li>
+                <li>⚡ MVP 50 trận trong CS:GO</li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="flex:1;">
+        <div id="walletCard" class="card wallet text-center p-4 shadow-lg" style="cursor:pointer;transition:transform .3s;">
+            <h2 class="mb-2" style="color:#222;">💰 Ví GamePay</h2>
+            <p class="text-muted mb-0" id="walletStatus">Chưa kích hoạt</p>
+        </div>
+
+        <div class="card transactions mt-3">
+            <h2>🧾 Thông tin</h2>
+            <a th:href="@{/welcome/transactions}"><h5 class="mt-2 text-white">1. Lịch sử giao dịch</h5></a>
+            <h5 class="mt-3 text-white">2. Game đã mua</h5>
+            <h5 class="mt-3 text-white">3. Yêu cầu hoàn tiền</h5>
+            <h5 class="mt-3 text-white">4. Giao dịch đang xử lý</h5>
+            <h5 class="mt-3 text-white">5. Thông báo</h5>
+        </div>
+
+        <div class="card settings">
+            <h2>⚙️ Cài đặt</h2>
+<!--            <a th:href="@{/welcome/editprofile/{id}(id=${user.id})}">-->
+<!--                <button id="btnChangePassword">Đổi mật khẩu</button>-->
+<!--            </a>-->
+            <button id="btnToggle2FA">Bật/Tắt 2FA</button>
+            <button id="btnDeleteAccount" class="btn btn-danger mt-2">Xóa tài khoản</button>
+        </div>
+    </div>
+   </div>
+
+   <div class="modal fade" id="editPhoneModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Nhập số điện thoại</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body"><input type="text" id="newPhone" class="form-control" placeholder="Nhập số điện thoại"></div>
+        <div class="modal-footer"><button type="button" class="btn btn-success" id="savePhoneBtn" data-bs-dismiss="modal">Lưu</button></div>
+    </div></div>
+    </div>
+
+   <div class="modal fade" id="editCountryModal" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Chọn quốc gia</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <select id="newCountry" class="form-select">
+                <option value="">-- Chọn quốc gia --</option>
+                <option value="Việt Nam">Việt Nam</option>
+                <option value="Hoa Kỳ">Hoa Kỳ</option>
+                <option value="Nhật Bản">Nhật Bản</option>
+                <option value="Hàn Quốc">Hàn Quốc</option>
+                <option value="Pháp">Pháp</option>
+                <option value="Anh">Anh</option>
+            </select>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-success" id="saveCountryBtn" data-bs-dismiss="modal">Lưu</button></div>
+    </div></div>
+    </div>
+
+<!-- MODAL XÓA USER -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title">Xóa tài khoản</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn chắc chắn muốn xóa tài khoản này không?</p>
+                <p class="text-warning mb-0">Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteUserBtn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pinPopup" class="modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center;">
+    <div style="background:radial-gradient(circle at top,#19002b 0%,#0a0a0a 100%);padding:30px;border-radius:10px;width:350px;text-align:center;">
+        <h5 style="color:#ffcd39;">Ví GamePay</h5>
+        <p class="text-white">Vui lòng nhập mật khẩu của ví</p>
+        <input type="password" id="walletPin" maxlength="4" class="form-control mb-3 text-center" style="letter-spacing:5px;font-size:20px;">
+        <div id="pinError" class="text-danger mb-2"></div>
+        <button class="btn btn-primary px-4" id="verifyPinBtn">Xác nhận</button>
+        <button class="btn btn-secondary px-3" id="closePinBtn">Hủy</button>
+    </div>
+</div>
+
+<div id="toast" class="toast-message"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+   <script>
+       const DEFAULT_AVATARS = [
+           '/img/b.jpg',
+           '/img/Khng_c_tiu_.jpg',
+           '/img/JoLong.jpg',
+           '/img/img1.jpg',
+           '/img/BiTrong.jpg',
+           '/img/5000.jpg'
+       ];
+
+    const STORAGE_KEYS = {
+        name: 'gs_profile_name',
+        email: 'gs_profile_email',
+        phone: 'gs_profile_phone',
+        country: 'gs_profile_country',
+        walletPin: 'gs_wallet_pin',
+        walletActive: 'gs_wallet_active'
+    };
+
+    const $ = (sel) => document.querySelector(sel);
+
+    function getCsrf(){
+        const token  = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+        return { token, header };
+    }
+
+    function maskEmail(email) {
+        if (!email || !email.includes('@')) return email || '';
+        const [name, domain] = email.split('@');
+        if (name.length <= 2) return '*@' + domain;
+        return name.slice(0,2) + '*'.repeat(Math.max(1, name.length-2)) + '@' + domain;
+    }
+
+    function showToast(msg, isError){
+        const t=$('#toast'); t.textContent=msg;
+        t.style.background = isError ? '#e74c3c' : '#2ecc71';
+        t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000);
+    }
+
+    function renderAvatarOptions(currentSrc) {
+        const wrap = document.getElementById('avatarOptions');
+        wrap.innerHTML = '';
+        DEFAULT_AVATARS.forEach(src => {
+            const label = document.createElement('label');
+            label.style.cursor='pointer';
+            label.innerHTML = `
+        <input type="radio" name="avatar" value="${src}" style="display:none;" ${src===currentSrc?'checked':''}>
+        <img src="${src}" class="rounded-circle border border-2"
+             style="width:80px;height:80px;cursor:pointer;border-color:${src===currentSrc?'lime':'transparent'};">
+      `;
+            label.querySelector('img').addEventListener('click', (e)=>{
+                wrap.querySelectorAll('img').forEach(i=>i.style.borderColor='transparent');
+                e.target.style.borderColor='lime';
+                label.querySelector('input').checked = true;
+                document.getElementById('currentAvatar').src = src;
+            });
+            wrap.appendChild(label);
+        });
+    }
+
+    function initProfile(){
+        const name = localStorage.getItem(STORAGE_KEYS.name) || $('#displayName')?.innerText || '';
+        const email = localStorage.getItem(STORAGE_KEYS.email) || $('#emailMasked')?.innerText || '';
+        const phone = localStorage.getItem(STORAGE_KEYS.phone) || '';
+        const country = localStorage.getItem(STORAGE_KEYS.country) || '';
+        if (name) $('#displayName').innerText = name;
+        if (email) $('#emailMasked').innerText = maskEmail(email);
+        if (document.getElementById('phoneDisplay')) {
+            document.getElementById('phoneDisplay').innerText = phone || '----------';
+        }
+        document.getElementById('countryDisplay').innerText = country || '----------';
+    }
+
+    document.getElementById('currentAvatar').addEventListener('click', ()=>{
+        const modalEl = document.getElementById('avatarModal');
+        const avatarModal = new bootstrap.Modal(modalEl);
+        const current = document.getElementById('currentAvatar').getAttribute('src');
+        renderAvatarOptions(current);
+        avatarModal.show();
+    });
+
+    document.getElementById('avatarForm').addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        const chosen = document.querySelector('input[name="avatar"]:checked');
+        if (!chosen) return;
+
+        const userId = document.getElementById('userIdHidden').value;
+        const avatarPath = chosen.value;
+
+        try{
+            const fd = new FormData();
+            fd.append('avatarPath', avatarPath);
+            const res = await fetch(`/welcome/profile/${userId}/avatar`, { method:'POST', body: fd });
+            const data = await res.json();
+            if (!res.ok || !data.success){
+                showToast(data.error || 'Cập nhật avatar thất bại', true);
+                return;
+            }
+            document.getElementById('currentAvatar').src = data.avatar;
+            showToast('✅ Cập nhật avatar thành công!', false);
+            bootstrap.Modal.getInstance(document.getElementById('avatarModal')).hide();
+        }catch(err){
+            showToast('Lỗi mạng khi cập nhật avatar', true);
+        }
+    });
+
+    function isWalletActivated(){ return localStorage.getItem(STORAGE_KEYS.walletActive) === 'true'; }
+    function updateWalletUI(){ document.getElementById('walletStatus').textContent = isWalletActivated() ? 'Đã kích hoạt' : 'Chưa kích hoạt'; }
+
+    document.getElementById('savePhoneBtn')?.addEventListener('click', ()=>{
+        const v = document.getElementById('newPhone').value.trim();
+        if (v){ localStorage.setItem(STORAGE_KEYS.phone, v); document.getElementById('phoneDisplay').innerText = v; showToast('✅ Lưu số điện thoại!', false); }
+    });
+    document.getElementById('saveCountryBtn').addEventListener('click', ()=>{
+        const v = document.getElementById('newCountry').value;
+        if (v){ localStorage.setItem(STORAGE_KEYS.country, v); document.getElementById('countryDisplay').innerText = v; showToast('✅ Cập nhật quốc gia!', false); }
+    });
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+        initProfile();
+        updateWalletUI();
+        const walletCard = document.getElementById('walletCard');
+        const activateModalEl = document.getElementById('activateWalletModal');
+        let activateModal = null;
+        if (activateModalEl) {
+            activateModal = new bootstrap.Modal(activateModalEl);
+        }
+
+        walletCard.addEventListener('click', ()=>{
+            if (isWalletActivated()) {
+                openPinPopup();
+            } else if (activateModal) {
+                activateModal.show();
+            }
+        });
+
+        document.getElementById('activateWalletForm')?.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const pin = document.getElementById('pinCode').value;
+            if(!/^\d{4}$/.test(pin)){ showToast('⚠️ Mật khẩu phải gồm đúng 4 chữ số!', true); return; }
+            localStorage.setItem(STORAGE_KEYS.walletPin, pin);
+            localStorage.setItem(STORAGE_KEYS.walletActive, 'true');
+            updateWalletUI();
+            if (activateModal) activateModal.hide();
+            showToast('✅ Ví GamePay đã được kích hoạt!', false);
+        });
+
+        document.getElementById('verifyPinBtn').addEventListener('click', verifyPin);
+        document.getElementById('closePinBtn').addEventListener('click', closePinPopup);
+
+        const deleteBtn = document.getElementById('btnDeleteAccount');
+        const deleteModalEl = document.getElementById('deleteUserModal');
+        const deleteModal = new bootstrap.Modal(deleteModalEl);
+        const confirmDeleteBtn = document.getElementById('confirmDeleteUserBtn');
+
+        deleteBtn.addEventListener('click', ()=>{
+            deleteModal.show();
+        });
+
+        confirmDeleteBtn.addEventListener('click', async ()=>{
+            const userId = document.getElementById('userIdHidden').value;
+            try {
+                const csrf = getCsrf();
+                const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                if (csrf.token && csrf.header) {
+                    headers[csrf.header] = csrf.token;
+                }
+
+                const res = await fetch(`/welcome/profile/${userId}/delete`, {
+                    method: 'POST',
+                    headers
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast('✅ Đã gửi email xác nhận xoá tài khoản. Vui lòng kiểm tra hộp thư!', false);
+                    deleteModal.hide();
+                    window.location.href = data.redirectUrl || '/welcome';
+                } else {
+                    showToast(data.error || 'Xóa tài khoản thất bại!', true);
+                }
+            } catch (e) {
+                showToast('Lỗi mạng khi xóa tài khoản!', true);
+            }
+        });
+    });
+
+    function openPinPopup(){ document.getElementById('pinPopup').style.display='flex'; document.getElementById('walletPin').value=''; document.getElementById('pinError').textContent=''; }
+    function closePinPopup(){ document.getElementById('pinPopup').style.display='none'; }
+    function verifyPin(){
+        const pin = document.getElementById('walletPin').value.trim();
+        const saved = localStorage.getItem(STORAGE_KEYS.walletPin);
+        if (pin === saved) window.location.href='/welcome/gamePay';
+        else document.getElementById('pinError').textContent='PIN không đúng. Vui lòng thử lại.';
+    }
+</script>
+<script th:src="@{/Accest/JS/code.js}"></script>
+</body>
+</html>

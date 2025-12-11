@@ -41,16 +41,9 @@
             Game Account List
             <span th:if="${gameName != null}" th:text="' - ' + ${gameName}"></span>
         </h5>
-        <div class="d-flex gap-2">
-            <a th:href="@{/adminHome/createGameAccount}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-plus-circle me-1"></i>Create Voucher
-            </a>
-
-            <a th:href="@{/adminHome}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
-            </a>
-
-        </div>
+        <a th:href="@{/adminHome/gameList}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Game Select
+        </a>
     </div>
 
     <div class="table-responsive bg-white rounded-3 shadow-sm p-3">
