@@ -16,8 +16,6 @@ public class Wallet {
     @OneToOne
     @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
     private Customer users;
-    @Column(name = "balance", nullable = false)
-    private BigDecimal balance;
     @Column(name = "amount")
     private BigDecimal amount;
     @Column(name = "depositDate")
@@ -28,10 +26,9 @@ public class Wallet {
     public Wallet() {
     }
 
-    public Wallet(UUID id, Customer users, BigDecimal balance, BigDecimal amount, LocalDateTime depositDate, LocalDateTime updatedAt) {
+    public Wallet(UUID id, Customer users, BigDecimal amount, LocalDateTime depositDate, LocalDateTime updatedAt) {
         this.id = id;
         this.users = users;
-        this.balance = balance;
         this.amount = amount;
         this.depositDate = depositDate;
         this.dateCreated = updatedAt;
@@ -51,14 +48,6 @@ public class Wallet {
 
     public void setUsers(Customer users) {
         this.users = users;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
     }
 
     public BigDecimal getAmount() {
