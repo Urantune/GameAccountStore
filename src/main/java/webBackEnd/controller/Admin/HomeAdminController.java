@@ -88,11 +88,6 @@ public class HomeAdminController {
         return "redirect:/adminHome/userList";
     }
 
-
-
-
-
-
     @GetMapping("/gameSelect")
     public String selectGameAccount(Model model) {
 
