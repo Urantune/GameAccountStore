@@ -44,7 +44,7 @@ public class HomeAdminController {
 
     @GetMapping("/userList")
     public String userList(Model model) {
-
+        System.out.println();
         model.addAttribute("listUser", customerService.findAllCustomers());
         return "admin/UserList";
     }
