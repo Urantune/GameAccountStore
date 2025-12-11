@@ -50,6 +50,11 @@
         .badge-status {
             font-size: 0.8rem;
         }
+
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
     </style>
 </head>
 
@@ -67,82 +72,157 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">User List</h5>
+
+        <select id="searchType" class="form-select form-select-sm me-2" style="width: 150px;">
+            <option value="username">Username</option>
+            <option value="email">Email</option>
+            <option value="status">Status</option>
+        </select>
+
+        <input type="text" id="searchInput" class="form-control form-control-sm"
+               placeholder="Search username..." style="width: 220px;">
+
         <a th:href="@{/adminHome}" class="btn btn-sm btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i>Back to Admin
         </a>
     </div>
 
     <div class="table-responsive bg-white rounded-3 shadow-sm p-3">
-        <table class="table table-hover align-middle mb-0">
+        <table id="userTable" class="table table-hover align-middle mb-0">
             <thead>
             <tr>
                 <th style="width: 60px;">#</th>
-                <th>Username</th>
-                <th>Email</th>
+
+                <!-- SORT BY USERNAME -->
+                <th class="sortable" onclick="sortTable(1)">
+                    Username <i class="bi bi-arrow-down-up"></i>
+                </th>
+
+                <!-- SORT BY EMAIL -->
+                <th class="sortable" onclick="sortTable(2)">
+                    Email <i class="bi bi-arrow-down-up"></i>
+                </th>
+
                 <th style="width: 140px;">Status</th>
                 <th style="width: 160px;" class="text-center">Actions</th>
             </tr>
             </thead>
+
             <tbody>
             <tr th:each="u, index : ${listUser}">
                 <td th:text="${index.index + 1}"></td>
 
-                <!-- username -->
                 <td th:text="${u.username}">username</td>
 
-                <!-- email -->
                 <td th:text="${u.email}">email@example.com</td>
 
-                <!-- status -->
                 <td>
-        <span class="badge badge-status"
-              th:classappend="${u.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
-              th:text="${u.status}">
-        </span>
+                    <span class="badge badge-status"
+                          th:classappend="${u.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
+                          th:text="${u.status}">
+                    </span>
                 </td>
 
-                <!-- Actions -->
                 <td class="text-center">
-
-                    <!-- INFO button -->
                     <a th:href="@{'/adminHome/users/' + ${u.customerId}}"
                        class="btn btn-sm btn-outline-primary me-1"
                        title="View Info">
                         <i class="bi bi-info-circle"></i>
                     </a>
 
-                    <!-- CLOCK button -->
                     <a th:href="@{'/admin/users/history/' + ${u.customerId}}"
                        class="btn btn-sm btn-outline-secondary me-1"
                        title="History / Activities">
                         <i class="bi bi-clock-history"></i>
                     </a>
 
-                    <!-- EDIT button -->
                     <a th:href="@{'/adminHome/editusers/' + ${u.customerId}}"
                        class="btn btn-sm btn-outline-warning"
                        title="Edit User">
                         <i class="bi bi-pencil-square"></i>
                     </a>
-
                 </td>
-
             </tr>
 
-            <!-- If list empty -->
             <tr th:if="${#lists.isEmpty(listUser)}">
                 <td colspan="5" class="text-center text-muted py-4">No users found.</td>
             </tr>
             </tbody>
-
         </table>
     </div>
 </div>
 
-<!-- BOTTOM ORANGE BAR -->
 <div class="bar-bottom"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function sortTable(columnIndex) {
+        const table = document.getElementById("userTable");
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr"))
+            .filter(row => row.children.length > 1);
+
+        let asc = table.getAttribute("data-sort-col") != columnIndex ||
+            table.getAttribute("data-sort-dir") === "desc";
+
+        rows.sort((a, b) => {
+            let cellA = a.children[columnIndex].innerText.trim().toLowerCase();
+            let cellB = b.children[columnIndex].innerText.trim().toLowerCase();
+            return asc ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+
+        table.setAttribute("data-sort-col", columnIndex);
+        table.setAttribute("data-sort-dir", asc ? "asc" : "desc");
+    }
+
+    const searchInput = document.getElementById("searchInput");
+    const searchType = document.getElementById("searchType");
+
+    searchInput.addEventListener("keyup", function () {
+        const value = this.value.trim().toLowerCase();
+        const type = searchType.value;
+        const table = document.getElementById("userTable");
+        const rows = table.querySelectorAll("tbody tr:not(.no-data)");
+
+        rows.forEach(row => {
+            let cellValue = "";
+
+            if (type === "username") {
+                cellValue = row.children[1].innerText.toLowerCase();
+            }
+            if (type === "email") {
+                cellValue = row.children[2].innerText.toLowerCase();
+            }
+            if (type === "status") {
+                cellValue = row.children[3].innerText.toLowerCase();
+            }
+
+            if (cellValue.includes(value)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        checkNoResult();
+    });
+
+    function checkNoResult() {
+        const table = document.getElementById("userTable");
+        const rows = table.querySelectorAll("tbody tr:not(.no-data)");
+        const noDataRow = table.querySelector("tbody tr.no-data");
+        let visible = 0;
+
+        rows.forEach(r => {
+            if (r.style.display !== "none") visible++;
+        });
+
+        noDataRow.style.display = visible === 0 ? "" : "none";
+    }
+</script>
 
 </body>
 </html>
