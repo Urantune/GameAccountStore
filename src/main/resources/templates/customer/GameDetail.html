@@ -147,713 +147,220 @@
 <!-- Spinner End -->
 
 
-<!-- Topbar Start -->
-<div class="container-fluid px-5 d-none border-bottom d-lg-block">
-    <div class="row gx-0 align-items-center">
-        <div class="col-lg-4 text-center text-lg-start mb-lg-0">
-            <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <a th:href="@{/home/about}" class="text-muted me-2"> About</a><small> / </small>
-                <a th:href="@{/home/contact}" class="text-muted ms-2"> Contact</a>
-
-            </div>
-        </div>
-
-        <div class="col-lg-4 text-center text-lg-end">
-            <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <div class="dropdown">
-                    <a href="#" class="dropdown-toggle text-muted ms-2" data-bs-toggle="dropdown"><small><i
-                            class="fa fa-home me-2"></i>Quản lí</small></a>
-                    <div class="dropdown-menu rounded">
-
-                        <!-- Hiện nút Login khi chưa đăng nhập -->
-                        <a href="#" class="dropdown-item"
-                           data-bs-toggle="modal"
-                           data-bs-target="#loginModal"
-                           sec:authorize="isAnonymous()">
-                            Login
-                        </a>
-
-                        <!-- Các mục chỉ xuất hiện khi đã đăng nhập -->
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Sản phẩm yêu thích</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Giỏ hàng của tôi</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Thông báo</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Cài đặt tài khoản</a>
-                        <a href="#" class="dropdown-item" sec:authorize="isAuthenticated()">Tài khoản của tôi</a>
-
-                        <!-- Logout chỉ hiện khi đã login -->
-                        <a th:href="@{/logout}" class="dropdown-item" sec:authorize="isAuthenticated()">
-                            Đăng xuất
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Navbar & Hero Start -->
-<div class="container-fluid nav-bar p-0">
-    <div class="row gx-0 bg-primary px-5 align-items-center">
-        <div class="col-lg-3 d-none d-lg-block">
-            <nav class="navbar navbar-light position-relative" style="width: 250px;">
-                <button class="navbar-toggler border-0 fs-4 w-100 px-0 text-start" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#allCat">
-                    <h4 class="m-0"><i class="fa fa-bars me-2"></i>Loại Game</h4>
-                </button>
-                <div class="collapse navbar-collapse rounded-bottom" id="allCat">
-                    <div class="navbar-nav ms-auto py-0">
-                        <ul class="list-unstyled categories-bars">
-                            <li>
-                                <div class="categories-bars-item">
-                                    <a href="#">Liên Quân</a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="categories-bars-item">
-                                    <a href="#">Free Fire</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
-        <div class="col-12 col-lg-9">
-            <nav class="navbar navbar-expand-lg navbar-light bg-primary ">
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto py-0">
-                        <a href="index.html" class="nav-item nav-link active">Trang chủ</a>
-                        <a href="shop.html" class="nav-item nav-link">Cửa hàng</a>
-                        <a href="single.html" class="nav-item nav-link">Single Page</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu m-0">
-                                <a href="bestseller.html" class="dropdown-item">Sản phẩm bán chạy</a>
-                                <a href="cart.html" class="dropdown-item">Giỏ hàng</a>
-                                <a href="cheackout.html" class="dropdown-item">Cheackout</a>
-                                <a href="404.html" class="dropdown-item">404 Page</a>
-                            </div>
-                        </div>
-                        <a href="contact.html" class="nav-item nav-link me-2">Contact</a>
-                        <div class="nav-item dropdown d-block d-lg-none mb-3">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Loại Game</a>
-                            <div class="dropdown-menu m-0">
-                                <ul class="list-unstyled categories-bars">
-                                    <li>
-                                        <div class="categories-bars-item">
-                                            <a href="#">Liên Quân</a>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="categories-bars-item">
-                                            <a href="#">Free Fire</a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+<nav class="navbar navbar-expand-lg bg-white px-4 py-2 shadow-sm">
+    <div class="container-fluid">
+
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="img/logoFinal.png" alt="Logo"
+                 style="height:100px; width:auto;">
+        </a>
+
+        <!-- Toggle button mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Items -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center fw-semibold">
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/home">
+                        <i class="fa fa-th-large me-1"></i> Trang Chủ
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-th-large me-1"></i> Lịch Sử Mua Tài Khoản
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                        <li><a class="dropdown-item" href="#">AOV</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-truck me-1"></i> Dịch Vụ Khác
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Cày Thuê</a></li>
+                        <li><a class="dropdown-item" href="#">Cho Thuê Tài Khoản</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-user me-1"></i> Tài Khoản
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-credit-card me-1"></i> Nạp Tiền
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Thẻ Cào</a></li>
+                        <li><a class="dropdown-item" href="#">Ngân Hàng</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-coins me-1"></i> Dòng Tiền
+                    </a>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-newspaper me-1"></i> Tin Tức
+                    </a>
+                </li>
+            </ul>
+
+            <!-- User section -->
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+
+                <!-- Khi chưa đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Đăng nhập
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                Đăng ký
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Khi đã đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
         </div>
     </div>
-</div>
+</nav>
 <!-- Navbar & Hero End -->
 
-<!-- Carousel Start -->
-<div class="container-fluid carousel bg-light px-0">
-    <div class="row g-0 justify-content-end">
-        <div class="col-12 col-lg-7 col-xl-9">
-            <div class="header-carousel owl-carousel bg-light py-5">
-                <div class="row g-0 header-carousel-item align-items-center">
-                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                        <img src="img/lqdemo1.jpg" class="img-fluid w-100" alt="Image">
-                    </div>
-                    <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
-                            style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân </h4>
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
-                            giao dịch qua ATM</h1>
-                        <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">Terms and Condition Apply</p>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
-                           href="#">Mua ngay</a>
-                    </div>
-                </div>
-                <div class="row g-0 header-carousel-item align-items-center">
-                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                        <img src="img/ffdemo1.jpg" class="img-fluid w-100" alt="Image">
-                    </div>
-                    <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
-                            style="letter-spacing: 3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
-                            giao dịch qua ATM</h1>
-                        <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">Terms and Condition Apply</p>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
-                           href="#">Mua ngay</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s">
-            <div class="carousel-header-banner h-100">
-                <img src="img/lqdemo3.jpg" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Image">
-                <div class="carousel-banner-offer">
-                    <p class="text-primary fs-5 fw-bold mb-0">Ưu đãi đặc biệt</p>
-                </div>
-                <div class="carousel-banner">
-                    <div class="carousel-banner-content text-center p-4">
-                        <a href="#" class="d-block mb-2">Loại tài khoản</a>
-                        <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần <br> G2356</a>
-                        <del class="me-2 text-white fs-5">2.500.000 VND</del>
-                        <span class="me-2 text-white fs-5">1.999.000 VND</span>
-                    </div>
-                    <a href="#" class="btn btn-primary rounded-pill py-2 px-4"><i
-                            class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ hàng</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Carousel End -->
-
-<!-- Searvices Start -->
- <div class="container-fluid px-0">
-    <div class="row g-0">
-        <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
-            <div class="p-4">
-                <div class="d-inline-flex align-items-center">
-                    <img src="img/money.png" width="32" height="32" alt="money icon">
-                    <div class="ms-4">
-                        <h6 class="text-uppercase mb-2">Miễn phí đổi trả</h6>
-                        <p class="mb-0">Chính sách hoàn tiền trong vòng 30 ngày!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
-            <div class="p-4">
-                <div class="d-flex align-items-center">
-                    <img src="img/customer-service.png" width="32" height="32" alt="customer-service icon">
-                    <div class="ms-4">
-                        <h6 class="text-uppercase mb-2">Hỗ trợ 24/7</h6>
-                        <p class="mb-0">Luôn sẵn sàng hỗ trợ bạn mọi lúc!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.4s">
-            <div class="p-4">
-                <div class="d-flex align-items-center">
-                    <img src="img/atm-card.png" width="32" height="32" alt="atm-card icon">
-                    <div class="ms-4">
-                        <h6 class="text-uppercase mb-2">Nhận mã giảm giá</h6>
-                        <p class="mb-0">Có thể nhận mã giảm giá khi mua hàng</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.5s">
-            <div class="p-4">
-                <div class="d-flex align-items-center">
-                    <img src="img/padlock.png" width="32" height="32" alt="padlock icon">
-                    <div class="ms-4">
-                        <h6 class="text-uppercase mb-2">Bảo mật thanh toán</h6>
-                        <p class="mb-0">Chúng tôi luôn đặt vấn đề này lên hàng đầu</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.6s">
-            <div class="p-4">
-                <div class="d-flex align-items-center">
-                    <img src="img/insurance.png" width="32" height="32" alt="insurance icon">
-                    <div class="ms-4">
-                        <h6 class="text-uppercase mb-2">Dịch vụ online</h6>
-                        <p class="mb-0">Cho thuê tài khoản game theo sở thích!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
-            <div class="p-4">
-                <div class="d-flex align-items-center">
-                    <img src="img/hot-sale.png" width="32" height="32" alt="hot-sale icon">
-                    <div class="ms-4">
-                        <h6 class="text-uppercase mb-2">Chiết khấu khi nạp tiền</h6>
-                        <p class="mb-0">Nhận được khuyến mãi khi nạp tiền vào shop qua ATM!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Searvices End -->
-
     <!-- Our Products Start -->
-    <div class="container mt-5">
-        <h3 class="name-game mt-3" th:text="${gameName.gameName}">Tên game</h3>
-        <div class="row align-items-stretch g-3">
-            <div class="col-lg-4 col-md-6 d-flex equal-col">
-                <div class="card shadow p-3 w-100 h-100 d-flex flex-column media-card">
-                    <h4 class="text-glow mb-3">Hình ảnh & Video</h4>
-                    <div class="main-media-wrapper mb-3">
-                        <img id="mainImg"
-                             th:src="@{'/' + ${img.mainImage}}"
-                             src="/img/notfound.png"
-                             alt="Game"
-                             class="img-fluid rounded main-img shadow-sm"/>
+     <section class="py-5">
+         <div class="container px-4 px-lg-5 my-5">
+             <div class="row g-4">
+                 <!-- ======================= CỘT TRÁI: MAIN IMAGE ======================= -->
+                 <div class="col-md-5">
+                     <div class="main-img-wrapper mb-3">
+                         <img th:src="@{'/images/' + ${p.imageMain}}" class="img-fluid rounded shadow" />
+                     </div>
+                     <!-- Popup xem ảnh lớn -->
+                     <div id="imagePreview" class="img-popup" onclick="closePreview()">
+                         <img id="previewImg">
+                     </div>
+                 </div>
+                 <!-- ======================= CỘT PHẢI: THÔNG TIN ACCOUNT ======================= -->
+                 <div class="col-md-7">
+                     <!-- Tên game -->
+                     <h3 class="fw-bold mb-3" th:text="${p.game.gameName}"></h3>
+                     <!-- Giá -->
+                     <div class="fs-4 mb-4">
+                    <span class="text-danger fw-bold"
+                          th:text="'Giá: ' + ${#numbers.formatDecimal(p.price,0,'POINT',2,'COMMA')} + 'đ'"></span>
+                     </div>
+                     <!-- Rank -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Rank:</span>
+                         <span th:text="${p.rank}"></span>
+                     </div>
+                     <!-- Skins -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Số lượng Skin:</span>
+                         <span th:text="${p.skin}"></span>
+                     </div>
+                     <!-- Level -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Level:</span>
+                         <span th:text="${p.lovel}"></span>
+                     </div>
+                     <!-- Items -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Cấp Vip:</span>
+                         <span th:text="${p.items}"></span>
+                     </div>
+                     <!-- Nút mua -->
+                     <div class="d-flex mt-4">
+                         <button class="btn btn-dark me-2" type="button">
+                             <i class="bi-cart-fill me-1"></i> Buy now
+                         </button>
 
-                    </div>
-                    <div class="thumbs-row d-flex justify-content-between gap-2">
-                        <video class="thumb thumb-video"
-                               muted autoplay loop
-                               onclick="openVideoModal(this.querySelector('source').src)">
-                            <source th:src="@{'/' + ${img.video}}" type="video/mp4"/>
-                        </video>
-
-
-                        <img class="thumb"
-                             th:src="@{'/' + ${img.imageOne}}"
-                             onclick="openImageModal(this.src)"
-                             alt="thumb 1"/>
-
-                        <img class="thumb"
-                             th:src="@{'/' + ${img.imageTwo}}"
-                             onclick="openImageModal(this.src)"
-                             alt="thumb 2"/>
-
-                        <img class="thumb"
-                             th:src="@{'/' + ${img.imageThree}}"
-                             onclick="openImageModal(this.src)"
-                             alt="thumb 3"/>
-
-
-                    </div>
-
-                </div>
-
-                <div class="modal fade" id="imageModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content bg-dark border-0">
-                            <div class="modal-body text-center p-0">
-                                <img id="modalImage" class="img-fluid rounded"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="videoModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content bg-dark border-0">
-                            <div class="modal-body p-0">
-                                <video id="modalVideo" class="w-100" controls muted autoplay></video>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script>
-                function openImageModal(src) {
-                    const imgModal = new bootstrap.Modal(document.getElementById('imageModal'));
-                    const modalImg = document.getElementById('modalImage');
-                    modalImg.src = src;
-                    imgModal.show();
-                }
-                function openVideoModal(src) {
-                    const vidModal = new bootstrap.Modal(document.getElementById('videoModal'));
-                    const modalVideo = document.getElementById('modalVideo');
-                    modalVideo.src = src;
-                    vidModal.show();
-                    const videoEl = document.getElementById('videoModal');
-                    videoEl.addEventListener('hidden.bs.modal', () => {
-                        modalVideo.pause();
-                        modalVideo.currentTime = 0;
-                    }, { once: true });
-                }
-            </script>
-            <style>
-                .media-card { background: #0f1c2e; color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1rem; transition: all 0.3s ease; }
-                .media-card:hover { box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); }
-                .main-media-wrapper { flex-shrink: 0; position: relative; }
-                .main-img { width: 100%; height: auto; border-radius: 10px; object-fit: cover; cursor: pointer; transition: transform 0.3s ease, opacity 0.3s ease; }
-                .main-img:hover { transform: scale(1.02); opacity: 0.95; }
-                .thumbs-row { display: flex; justify-content: space-between; }
-                .thumb { width: 23%; aspect-ratio: 1 / 1; border-radius: 8px; object-fit: cover; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease; border: 1px solid rgba(255, 255, 255, 0.1); }
-                .thumb:hover { transform: scale(1.05); opacity: 0.9; }
-                .thumb-video { width: 23%; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer; }
-                #imageModal img, #videoModal video { max-height: 80vh; border-radius: 10px; object-fit: contain; }
-                .modal-content.bg-dark { background: #000; }
-                @media (max-width: 768px) { .thumb { width: 24%; } }
-            </style>
-
-            <div class="col-lg-4 col-md-6 d-flex equal-col">
-                <div class="card game-detail-card shadow-sm w-100 h-100 d-flex flex-column">
-                    <h4 class="text-glow mb-4">Thông tin chi tiết</h4>
-                    <ul class="list-unstyled text-light mb-4">
-                        <li class="mb-2"><strong> Giá:</strong> <span id="price" class="text-info" th:text="${game.price}">-</span></li>
-                        <li class="mb-2"><strong> Dung lượng:</strong> <span id="size" class="text-info" th:text="${game.deceptions[1]}">-</span></li>
-                        <li class="mb-2"><strong> Độ tuổi:</strong> <span id="age" class="text-info" th:text="${game.deceptions[4]}">-</span></li>
-                        <li class="mb-2"><strong> Lượt tải:</strong> <span id="downloads" class="text-info" th:text="${game.deceptions[2]}">-</span></li>
-                    </ul>
-                    <div class="description-box text-light p-3 mb-4">
-                        <strong class="text-primary">📝 Mô tả:</strong>
-                        <p class="mt-2 mb-0" id="description" th:text="${game.deceptions[0]}">-</p>
-                    </div>
-
-                    <div class="d-flex flex-column gap-2 mt-auto"
-                         th:if="${session.userId != null and !canFeedbackandDownload}">
-                        <form id="buyForm" class="w-100"
-                              th:action="@{/welcome/buy}"
-                              method="post">
-
-                            <input type="hidden" name="selectedIds" th:value="${game.gameId}"/>
+                         <button class="btn btn-outline-dark" type="button">
+                             <i class="bi-cart-fill me-1"></i> Add to cart
+                         </button>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </section>
 
 
-                            <input type="hidden" th:if="${_csrf!=null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                            <button type="submit" class="btn btn-buy w-100">🛒 Mua ngay</button>
-                        </form>
-                        <form id="addCartForm" class="w-100"
-                              th:action="@{/welcome/addGameToCard/{game_id}(game_id=${game.gameId})}"
-                              method="post">
-                            <button type="submit" class="btn btn-cart w-100">➕ Thêm giỏ hàng</button>
-                        </form>
-                    </div>
-
-                    <div class="d-flex flex-column gap-2 mt-auto"
-                         th:if="${session.userId != null and canFeedbackandDownload}">
-                        <a class="btn btn-download w-100"
-                           th:href="@{/api/files/download(path=${game.locate_game}, gameId=${game.gameId})}">
-                            ⬇️ Tải về
-                        </a>
-
-                        <div th:if="${!refund}">
-                            <form th:action="@{/welcome/refundGame}" method="get">
-                                <input type="hidden" name="gameId" th:value="${game.gameId}"/>
-                                <button type="submit" class="btn btn-danger w-100">
-                                    💸 Request refund
-                                </button>
-                            </form>
-                        </div>
-
-
-
-                    </div>
-
-
-
-                </div>
-            </div>
-
-            <style>
-                .game-detail-card { background-color: #132b47; border-radius: 18px; padding: 20px 24px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); transition: all 0.3s ease; }
-                .game-detail-card:hover { background-color: #1a3b61; border-color: rgba(0, 200, 255, 0.25); box-shadow: 0 0 25px rgba(0, 200, 255, 0.3); transform: translateY(-4px); }
-                .text-glow { color: #ffffff; text-shadow: 0 0 10px rgba(0, 200, 255, 0.5); font-weight: 600; }
-                .description-box { background-color: rgba(255, 255, 255, 0.05); border-left: 3px solid #00bfff; border-radius: 10px; font-size: 0.95rem; line-height: 1.5; }
-                .btn-buy { background-color: #00b36b; color: white; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; }
-                .btn-buy:hover { background-color: #00d182; box-shadow: 0 0 10px rgba(0, 255, 160, 0.4); transform: translateY(-2px); }
-                .btn-cart { background-color: #007bff; color: white; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; }
-                .btn-cart:hover { background-color: #2196f3; box-shadow: 0 0 10px rgba(0, 200, 255, 0.4); transform: translateY(-2px); }
-                .btn-download { background-color: #00bfff; color: white; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; }
-                .btn-download:hover { background-color: #1ec9ff; box-shadow: 0 0 10px rgba(0, 200, 255, 0.4); transform: translateY(-2px); }
-            </style>
-
-            <div class="col-lg-4 col-md-12 d-flex">
-                <div class="rating-card shadow-sm w-100 d-flex flex-column p-4 rounded-4">
-                    <form th:if="${session.userId != null and canFeedbackandDownload}"
-                          th:action="@{/welcome/gamedetail/{game_id}(game_id=${game.gameId})}"
-                          method="post" class="text-light flex-grow-1 d-flex flex-column">
-
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h5 class="mb-0 text-glow">Đánh giá của bạn</h5>
-                            <span id="ratingValue" class="small text-info"
-                                  th:text="(${myFeedback!=null}?${myFeedback.star}:0) + '/5'">(0/5)</span>
-                        </div>
-
-                        <div id="ratingStars" class="d-flex align-items-center gap-2 mb-3" aria-label="Chọn số sao">
-                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
-                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
-                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
-                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
-                            <button type="button" class="star"><i class="bi bi-star-fill"></i></button>
-                        </div>
-
-                        <input type="hidden" name="star" id="inputStar"
-                               th:value="${myFeedback!=null?myFeedback.star:0}"/>
-
-                        <textarea name="comment" id="reviewText"
-                                  class="form-control review-textarea mb-3"
-                                  rows="5"
-                                  placeholder="Chia sẻ cảm nhận của bạn..."
-                                  th:text="${myFeedback!=null?myFeedback.comment:''}"></textarea>
-
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <small id="reviewCounter" class="text-muted">0/300</small>
-                            <button type="submit" class="btn btn-submit-review btn-sm">
-                                Đăng đánh giá
-                            </button>
-                        </div>
-                    </form>
-
-                    <div th:if="${session.userId == null or (session.userId != null and !canFeedbackandDownload)}" class="flex-grow-1 text-light">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h5 class="mb-0 text-glow">Đánh giá của người chơi</h5>
-                        </div>
-
-                        <div class="feedback-box border-top border-secondary-subtle pt-2"
-                             th:if="${listFeedback != null and #lists.size(listFeedback) > 0}">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <img src="/img/demo1.jpg" class="user-avatar" alt="">
-                                <strong th:text="${@gameCore.getUserName(listFeedback.get(0).userId)}"></strong>
-                                <span class="text-warning small ms-1">
-                                <span th:each="i : ${#numbers.sequence(1, (listFeedback.get(0).star != null ? listFeedback.get(0).star.intValue() : 0))}">★</span>
-                            </span>
-                                <small class="text-muted ms-auto">2 ngày trước</small>
-                            </div>
-                            <div class="small text-light opacity-75" th:text="${listFeedback.get(0).comment}"></div>
-                        </div>
-
-                        <div class="feedback-box border-top border-secondary-subtle pt-2 mt-2"
-                             th:if="${listFeedback != null and #lists.size(listFeedback) > 1}">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <img src="/img/demo2.jpg" class="user-avatar" alt="">
-                                <strong th:text="${@gameCore.getUserName(listFeedback.get(1).userId)}"></strong>
-                                <span class="text-warning small ms-1">
-                                <span th:each="i : ${#numbers.sequence(1, (listFeedback.get(1).star != null ? listFeedback.get(1).star.intValue() : 0))}">★</span>
-                            </span>
-                                <small class="text-muted ms-auto">1 tuần trước</small>
-                            </div>
-                            <div class="small text-light opacity-75" th:text="${listFeedback.get(1).comment}"></div>
-                        </div>
-
-                        <div th:if="${listFeedback == null or #lists.isEmpty(listFeedback)}"
-                             class="alert alert-info mt-3 py-2 px-3 bg-opacity-10 border-0 text-info">
-                            <i class="bi bi-info-circle me-1"></i> Chưa có đánh giá nào.
-                        </div>
-
-                        <div class="alert alert-dark mt-3 py-2 px-3 bg-opacity-25 border-0" th:if="${session.userId == null}">
-                            <i class="bi bi-info-circle me-1 text-info"></i>
-                            <span>Hãy <a href="?showForm=login" class="link-info fw-semibold">đăng nhập</a> để đánh giá và xem đánh giá của bạn bè.</span>
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn btn-link text-info mt-3 p-0 align-self-start fw-semibold"
-                            data-bs-toggle="modal" data-bs-target="#allReviewsModal">
-                        Xem tất cả đánh giá →
-                    </button>
-                </div>
-            </div>
-
-            <style>
-                .rating-card { background-color: #132b47; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 15px rgba(0, 0, 0, 0.6); transition: all 0.3s ease; }
-                .rating-card:hover { background-color: #1a3b61; border-color: rgba(0, 200, 255, 0.25); box-shadow: 0 0 25px rgba(0, 200, 255, 0.3); transform: translateY(-4px); }
-                .text-glow { color: #ffffff; text-shadow: 0 0 8px rgba(0, 200, 255, 0.5); }
-                .review-textarea { background-color: rgba(255, 255, 255, 0.05); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; resize: none; transition: 0.3s; }
-                .review-textarea:focus { background-color: rgba(255, 255, 255, 0.1); border-color: #00bfff; box-shadow: 0 0 10px rgba(0, 200, 255, 0.3); }
-                .star { background: none; border: none; color: #666; font-size: 1.5rem; transition: color 0.2s; }
-                .star:hover, .star.active { color: #ffcc00; transform: scale(1.1); }
-                .btn-submit-review { background-color: #00bfff; color: white; border: none; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; }
-                .btn-submit-review:hover { background-color: #1ec9ff; box-shadow: 0 0 10px rgba(0, 200, 255, 0.4); transform: translateY(-2px); }
-                .feedback-box { background-color: rgba(255, 255, 255, 0.03); border-radius: 10px; padding: 8px 12px; }
-                .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1); }
-            </style>
-
-            <div class="modal fade" id="allReviewsModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                    <div class="modal-content all-reviews-modal">
-                        <div class="modal-header border-0 border-bottom border-light-subtle">
-                            <h5 class="modal-title fw-semibold">
-                                <i class="bi bi-chat-square-text me-2 text-warning"></i> Tất cả đánh giá
-                            </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="allReviewsSummary" class="mb-3 small text-secondary"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <style>
-                .all-reviews-modal { background: #0f1c2e; color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 1rem; box-shadow: 0 0 25px rgba(0, 0, 0, 0.6); }
-                .all-reviews-modal .modal-header { background: rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-                .all-reviews-modal .modal-title { font-weight: 600; color: #f5f5f5; }
-                .review-item { padding: 12px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); transition: all 0.2s ease; }
-                .review-item:hover { background: rgba(255, 255, 255, 0.07); transform: translateY(-2px); }
-                .review-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 1px solid rgba(255, 255, 255, 0.15); }
-                .review-comment { font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; }
-                .text-warning.small { letter-spacing: 2px; }
-                .modal-body::-webkit-scrollbar { width: 6px; }
-                .modal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-            </style>
-        </div>
-    </div>
-
-    <div th:if="${buyError}" id="buyAlert"
-         style="position: fixed; top: 20px; right: 20px; background: #f44336; color: white; padding: 15px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" th:text="${buyError}">
-    </div>
-    <script>
-        setTimeout(function () {
-            let alertBox = document.getElementById("buyAlert");
-            if (alertBox) {
-                alertBox.style.transition = "opacity 0.5s ease";
-                alertBox.style.opacity = "0";
-                setTimeout(() => alertBox.remove(), 500);
-            }
-        }, 3000);
-    </script>
-
-    <div th:if="${cartError}" id="cartAlert"
-         style="position: fixed; top: 70px; right: 20px; background: #fff3cd; color: black; padding: 15px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" th:text="${cartError}">
-    </div>
-    <script>
-        setTimeout(function () {
-            let alertBox = document.getElementById("cartAlert");
-            if (alertBox) {
-                alertBox.style.transition = "opacity 0.5s ease";
-                alertBox.style.opacity = "0";
-                setTimeout(() => alertBox.remove(), 500);
-            }
-        }, 3000);
-    </script>
- <div/>
-<!-- Our Products End -->
+     <!-- Our Products End -->
 
 
 <!-- Footer Start -->
-<div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
-    <div class="container py-5">
-        <div class="row g-4 rounded mb-5" style="background: rgba(255, 255, 255, .03);">
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-white">Address</h4>
-                        <p class="mb-2">123 Street New York.USA</p>
-                    </div>
-                </div>
+<div class="container-fluid footer py-5" data-wow-delay="0.5s" style="background:#111;">
+    <div class="container py-4">
+
+        <!-- TOP SECTION -->
+        <div class="row g-4 text-center text-white align-items-center">
+
+            <!-- Logo + Text -->
+            <div class="col-lg-6 d-flex flex-column align-items-center">
+                <img src="img/logoFinal.png" class="footer-logo mb-3" style="width: 120px; height: auto;">
+                <h5 class="fw-bold">Shop Tài Khoản Game Giao Dịch Tự Động Uy Tín Số 1 Việt Nam.</h5>
             </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fas fa-envelope fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-white">Mail Us</h4>
-                        <p class="mb-2">info@example.com</p>
-                    </div>
+
+            <!-- Support -->
+            <div class="col-lg-6 text-white">
+                <h3 class="fw-bold">LIÊN HỆ HỖ TRỢ</h3>
+                <p class="mt-3 mb-4">
+                    Liên hệ ngay bộ phận CSKH để được tư vấn và giải đáp.
+                    Chúng tôi sẽ hỗ trợ và giải đáp yêu cầu của bạn sớm nhất có thể!
+                </p>
+
+                <div class="phone-btn">
+                    <i class="fa fa-phone"></i> 0923445566
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fa fa-phone-alt fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-white">Telephone</h4>
-                        <p class="mb-2">(+012) 3456 7890</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fab fa-firefox-browser fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-white">Yoursite@ex.com</h4>
-                        <p class="mb-2">(+012) 3456 7890</p>
-                    </div>
-                </div>
+
             </div>
         </div>
-        <div class="row g-5">
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <div class="footer-item">
-                        <h4 class="text-primary mb-4">Newsletter</h4>
-                        <p class="mb-3">Dolor amet sit justo amet elitr clita ipsum elitr est.Lorem ipsum dolor sit
-                            amet, consectetur adipiscing elit consectetur adipiscing elit.</p>
-                        <div class="position-relative mx-auto rounded-pill">
-                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text"
-                                   placeholder="Enter your email">
-                            <button type="button"
-                                    class="btn btn-primary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">
-                                SignUp
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <h4 class="text-primary mb-4">Customer Service</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Contact Us</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Returns</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Order History</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Site Map</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Testimonials</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> My Account</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Unsubscribe Notification</a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <h4 class="text-primary mb-4">Information</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> About Us</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Delivery infomation</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Privacy Policy</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Warranty</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> FAQ</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Seller Login</a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <h4 class="text-primary mb-4">Extras</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Brands</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Gift Vouchers</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Affiliates</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Wishlist</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Order History</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
-                </div>
-            </div>
+        <div class="footer-bottom mt-5 d-flex justify-content-between text-white">
+            <span>Phát triển bởi đội ngũ <strong>Urantune</strong></span>
+            <span>Phiên bản <strong>1.1</strong></span>
         </div>
     </div>
 </div>
 <!-- Footer End -->
-
-
-<!-- Copyright Start -->
-<div class="container-fluid copyright py-4">
-    <div class="container">
-        <div class="row g-4 align-items-center">
-            <div class="col-md-6 text-center text-md-start mb-md-0">
-                    <span class="text-white"><a href="#" class="border-bottom text-white"><i
-                            class="fas fa-copyright text-light me-2"></i>Your Site Name</a>, All right
-                        reserved.</span>
-            </div>
-            <div class="col-md-6 text-center text-md-end text-white">
-
-                <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
-                <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
-                <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                Designed By <a class="border-bottom text-white" href="https://htmlcodex.com">HTML Codex</a>.
-                Distributed By <a class="border-bottom text-white" href="https://themewagon.com">ThemeWagon</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Copyright End -->
 
 
 <!-- JavaScript Libraries -->

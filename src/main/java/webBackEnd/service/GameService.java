@@ -18,9 +18,10 @@ public class GameService {
         return gameRepositories.findAll();
     }
 
-    public Game findGameByGameName(String gameName){
-        return gameRepositories.findByGameName(gameName);
+    public Game findById(UUID gameId){
+        return gameRepositories.findByGameId(gameId).orElse(null);
     }
+
 
 
 }
