@@ -91,19 +91,36 @@
 
             <div class="row g-3">
 
-                <!-- ID (readonly) -->
+                <!-- ID (locked) -->
                 <div class="col-md-6">
                     <label class="form-label">Game Account ID</label>
-                    <input type="text" class="form-control value-readonly"
-                           th:field="*{id}" readonly>
+                    <div class="input-group">
+                        <input type="text" class="form-control value-readonly"
+                               th:value="*{id}" disabled>
+                        <span class="input-group-text bg-light">
+            <i class="bi bi-lock-fill"></i>
+        </span>
+                    </div>
+                    <!-- Hidden để vẫn gửi id lên server -->
+                    <input type="hidden" th:field="*{id}">
                 </div>
 
+
                 <!-- Game Username -->
+
                 <div class="col-md-6">
                     <label class="form-label">Game Username</label>
-                    <input type="text" class="form-control"
-                           th:field="*{gameAccount}" placeholder="Game login username">
+                    <div class="input-group">
+                        <input type="text" class="form-control value-readonly"
+                               th:value="*{gameAccount}" disabled>
+                        <span class="input-group-text bg-light">
+            <i class="bi bi-lock-fill"></i>
+        </span>
+                    </div>
+                    <!-- Hidden để vẫn gửi username lên server nếu cần -->
+                    <input type="hidden" th:field="*{gameAccount}">
                 </div>
+
 
                 <!-- Game Password -->
                 <div class="col-md-6">
@@ -235,9 +252,11 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-check-circle me-1"></i>Save
                     </button>
-                    <a th:href="@{/adminHome/gameAccountSelect}" class="btn btn-secondary">
+                    <a th:href="@{/adminHome/gameList(nameGame=${game.gameName})}"
+                       class="btn btn-secondary">
                         Cancel
                     </a>
+
                 </div>
 
             </div>

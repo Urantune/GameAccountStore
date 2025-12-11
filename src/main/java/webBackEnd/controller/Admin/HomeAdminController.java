@@ -6,17 +6,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.Game;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.entity.Type;
-import webBackEnd.service.CustomerService;
-import webBackEnd.service.GameAccountService;
-import webBackEnd.service.GameService;
-import webBackEnd.service.TypeService;
+import webBackEnd.entity.*;
+import webBackEnd.service.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Controller
@@ -35,6 +30,13 @@ public class HomeAdminController {
 
     @Autowired
     private TypeService typeService;
+
+
+    @Autowired
+    private VoucherService voucherService;
+
+    @Autowired
+    private AdministratorService administratorService;
 
 
     @GetMapping("")
@@ -202,6 +204,156 @@ public class HomeAdminController {
         String gameName = existing.getGame().getGameName();
         return "redirect:/adminHome/gameList?nameGame=" + gameName;
     }
+
+
+    @GetMapping("/listVoucher")
+    public  String listVoucher(Model model) {
+
+        model.addAttribute("listVoucher", voucherService.getAllVoucher());
+        return  "admin/VoucherList";
+    }
+
+    @GetMapping("/voucherDetail/{id}")
+    public String voucherDetail(@PathVariable("id") UUID id, Model model) {
+
+        Voucher voucher = voucherService.getVoucherById(id);
+
+
+        model.addAttribute("voucher", voucher);
+
+        return "admin/VoucherDetail";
+    }
+
+    @GetMapping("/voucherUpdate/{id}")
+    public String voucherUpdate(@PathVariable("id") UUID id, Model model) {
+
+        Voucher voucher = voucherService.getVoucherById(id);
+        if (voucher == null) {
+            throw new RuntimeException("Voucher not found with id: " + id);
+        }
+
+        model.addAttribute("voucher", voucher);
+        return "admin/VoucherUpdate";
+    }
+
+    @PostMapping("/saveVoucher")
+    public String saveVoucherUpdate(
+            @RequestParam("id") UUID id,
+            @RequestParam("voucherName") String voucherName,
+            @RequestParam("value") int value,
+            @RequestParam("startDate")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date startDate,
+            @RequestParam("endDate")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") java.util.Date endDate
+    ) {
+
+        Voucher existing = voucherService.getVoucherById(id);
+        if (existing == null) {
+            throw new RuntimeException("Voucher not found with id: " + id);
+        }
+
+        existing.setVoucherName(voucherName);
+        existing.setValue(value);
+        existing.setStartDate(startDate);
+        existing.setEndDate(endDate);
+        existing.setUpdateDate(LocalDateTime.now());
+
+
+        voucherService.save(existing);
+
+        return "redirect:/adminHome/listVoucher";
+    }
+
+    @GetMapping("/createVoucher")
+    public String createVoucher(Model model) {
+
+        Voucher voucher = new Voucher();
+        model.addAttribute("voucher", voucher);
+        return "admin/CreateVoucher";
+    }
+
+    @PostMapping("/saveNewVoucher")
+    public String saveNewVoucher(
+            @RequestParam String voucherName,
+            @RequestParam int value,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+
+        Voucher voucher = new Voucher();
+        voucher.setVoucherName(voucherName);
+        voucher.setValue(value);
+        voucher.setStartDate(startDate);
+        voucher.setEndDate(endDate);
+        voucher.setUpdateDate(LocalDateTime.now());
+
+        Staff s = administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B"));
+        voucher.setStaff(s);
+
+        voucherService.save(voucher);
+
+        return "redirect:/adminHome/listVoucher";
+    }
+
+
+
+    @GetMapping("/createGameAccount")
+    public String showCreateGameAccountForm(Model model) {
+
+        GameAccount gameAccount = new GameAccount();
+        gameAccount.setStatus("ACTIVE");
+        gameAccount.setClassify("STUDENT");
+
+        model.addAttribute("gameAccount", gameAccount);
+
+        model.addAttribute("games", gameService.findAllGame());
+        model.addAttribute("types", typeService.getAllType());
+
+        model.addAttribute("ranks", java.util.List.of(
+                "UNRANKED",
+                "BRONZE III", "BRONZE II", "BRONZE I",
+                "SILVER III", "SILVER II", "SILVER I",
+                "GOLD III", "GOLD II", "GOLD I",
+                "PLATINUM III", "PLATINUM II", "PLATINUM I",
+                "DIAMOND III", "DIAMOND II", "DIAMOND I",
+                "MASTER", "CONQUEROR"
+        ));
+
+        model.addAttribute("classifies", java.util.List.of("STUDENT", "PREMIUM", "VIP", "BUDGET"));
+
+        return "admin/CreateGameAccount";
+    }
+
+    @PostMapping("/saveNewGameAccount")
+    public String saveNewGameAccount(
+            @ModelAttribute("gameAccount") GameAccount form,
+            @RequestParam("gameId") UUID gameId,
+            @RequestParam("category") String category
+    ) {
+
+        Game game = gameService.findById(gameId);
+        if (game == null) {
+            throw new RuntimeException("Game not found with id: " + gameId);
+        }
+
+        Type type = typeService.findByTypeName(category);
+        if (type != null) {
+            game.setTypeId(type);
+        }
+
+        form.setId(null);
+        form.setGame(game);
+        form.setCreatedDate(LocalDateTime.now());
+        form.setUpdatedDate(LocalDateTime.now());
+
+        gameAccountService.save(form);
+
+        return "redirect:/adminHome/gameList?nameGame=" + game.getGameName();
+    }
+
+
+
+
+
 
 
 

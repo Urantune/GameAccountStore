@@ -2,10 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Game Accounts</title>
+    <title>Manage Vouchers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -18,9 +17,24 @@
             display: flex;
             flex-direction: column;
         }
-        .bar-top { width: 100%; height: 70px; background: var(--orange); display: flex; align-items: center; padding-left: 30px; }
-        .bar-bottom { width: 100%; height: 70px; background: var(--orange); margin-top: auto; }
-        .content-wrapper { padding: 30px 40px 20px 40px; flex: 1; }
+        .bar-top {
+            width: 100%;
+            height: 70px;
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            padding-left: 30px;
+        }
+        .bar-bottom {
+            width: 100%;
+            height: 70px;
+            background: var(--orange);
+            margin-top: auto;
+        }
+        .content-wrapper {
+            padding: 30px 40px 20px 40px;
+            flex: 1;
+        }
         .table thead { background-color: #ffe0cc; }
         .badge-status { font-size: 0.8rem; }
         th.sortable { cursor: pointer; user-select: none; }
@@ -31,18 +45,17 @@
 
 <div class="bar-top">
     <h4 class="text-white m-0">
-        <i class="bi bi-controller me-2"></i> Manage Game Accounts
+        <i class="bi bi-ticket-perforated me-2"></i> Manage Vouchers
     </h4>
 </div>
 
 <div class="content-wrapper container-fluid">
+
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">
-            Game Account List
-            <span th:if="${gameName != null}" th:text="' - ' + ${gameName}"></span>
-        </h5>
+        <h5 class="mb-0">Voucher List</h5>
+
         <div class="d-flex gap-2">
-            <a th:href="@{/adminHome/createGameAccount}" class="btn btn-sm btn-outline-secondary">
+            <a th:href="@{/adminHome/createVoucher}" class="btn btn-sm btn-outline-secondary">
                 <i class="bi bi-plus-circle me-1"></i>Create Voucher
             </a>
 
@@ -54,58 +67,47 @@
     </div>
 
     <div class="table-responsive bg-white rounded-3 shadow-sm p-3">
-        <table class="table table-hover align-middle mb-0" id="gameTable">
+        <table class="table table-hover align-middle mb-0" id="voucherTable">
             <thead>
             <tr>
                 <th style="width: 50px;">#</th>
-
-                <th class="sortable">Game Account</th>
-                <th class="sortable">Game</th>
-                <th class="sortable" style="width: 100px;">Price</th>
-                <th class="sortable" style="width: 100px;">Rank</th>
-                <th class="sortable" style="width: 90px;">Skins</th>
-                <th class="sortable" style="width: 90px;">Level</th>
-                <th class="sortable" style="width: 120px;">Status</th>
-
-                <th style="width: 190px;" class="text-center">Actions</th>
+                <th class="sortable">Voucher Name</th>
+                <th class="sortable" style="width: 90px;">Value</th>
+                <th class="sortable" style="width: 130px;">Start Date</th>
+                <th class="sortable" style="width: 130px;">End Date</th>
+                <th class="sortable" style="width: 170px;">Last Updated</th>
+                <th class="sortable" style="width: 150px;">Staff</th>
+                <th style="width: 170px;" class="text-center">Actions</th>
             </tr>
             </thead>
 
             <tbody>
-            <tr th:each="g, index : ${listGame}">
+            <tr th:each="v, index : ${listVoucher}">
                 <td th:text="${index.index + 1}"></td>
-
-                <td th:text="${g.gameAccount}"></td>
-                <td th:text="${g.game != null ? g.game.gameName : 'N/A'}"></td>
-                <td th:text="${#numbers.formatDecimal(g.price, 0, 'POINT', 0, 'POINT')}"></td>
-                <td th:text="${g.rank}"></td>
-                <td th:text="${g.skin}"></td>
-                <td th:text="${g.lovel}"></td>
-
-                <td>
-                    <span class="badge badge-status"
-                          th:classappend="${g.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
-                          th:text="${g.status}">
-                    </span>
-                </td>
+                <td th:text="${v.voucherName}"></td>
+                <td th:text="${v.value + '%'}"></td>
+                <td th:text="${#dates.format(v.startDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${#dates.format(v.endDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${v.updateDate != null ? #temporals.format(v.updateDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
+                <td th:text="${v.staff != null ? v.staff.username : 'N/A'}"></td>
 
                 <td class="text-center">
-                    <a th:href="@{/adminHome/gameDetail/{id}(id=${g.id})}" class="btn btn-sm btn-outline-primary me-1">
+                    <a th:href="@{/adminHome/voucherDetail/{id}(id=${v.id})}"
+                       class="btn btn-sm btn-outline-primary me-1">
                         <i class="bi bi-info-circle"></i>
                     </a>
 
-                    <a th:href="@{'/admin/game-accounts/history/' + ${g.id}}" class="btn btn-sm btn-outline-secondary me-1">
-                        <i class="bi bi-clock-history"></i>
-                    </a>
-
-                    <a th:href="@{/adminHome/gameUpdate/{id}(id = ${g.getId()})}" class="btn btn-sm btn-outline-warning">
+                    <a th:href="@{/adminHome/voucherUpdate/{id}(id=${v.id})}"
+                       class="btn btn-sm btn-outline-warning">
                         <i class="bi bi-pencil-square"></i>
                     </a>
                 </td>
             </tr>
 
-            <tr th:if="${#lists.isEmpty(listGame)}">
-                <td colspan="9" class="text-center text-muted py-4">No game accounts found.</td>
+            <tr th:if="${#lists.isEmpty(listVoucher)}">
+                <td colspan="8" class="text-center text-muted py-4">
+                    No vouchers found.
+                </td>
             </tr>
             </tbody>
         </table>
@@ -117,37 +119,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const table = document.getElementById("gameTable");
+    const table = document.getElementById("voucherTable");
     const sortableHeaders = table.querySelectorAll("th.sortable");
     const allHeaders = Array.from(table.querySelectorAll("thead th.sortable"));
-
-    // thứ tự rank fix cứng
-    const rankOrder = [
-        "UNRANKED",
-        "BRONZE III",
-        "BRONZE II",
-        "BRONZE I",
-        "SILVER III",
-        "SILVER II",
-        "SILVER I",
-        "GOLD III",
-        "GOLD II",
-        "GOLD I",
-        "PLATINUM III",
-        "PLATINUM II",
-        "PLATINUM I",
-        "DIAMOND III",
-        "DIAMOND II",
-        "DIAMOND I",
-        "MASTER",
-        "CONQUEROR"
-    ];
 
     function getCellText(td) {
         if (!td) return "";
         const ds = td.querySelector('[data-sort]');
         if (ds) return (ds.dataset.sort || ds.textContent || "").trim();
-
         let txt = td.textContent || "";
         return txt.replace(/\s+/g, " ").trim();
     }
@@ -156,7 +135,6 @@
         if (s == null) return NaN;
         const cleaned = ("" + s).replace(/[^\d\.,\-]/g, "");
         if (cleaned === "") return NaN;
-
         if (cleaned.includes('.') && cleaned.includes(',')) {
             return Number(cleaned.replace(/\./g, '').replace(',', '.'));
         }
@@ -173,7 +151,8 @@
             const colIndex = allHeaders.indexOf(header) + 1;
             if (colIndex === -1) return;
 
-            const rows = [...table.querySelectorAll("tbody tr")].filter(r => r.children.length > 1);
+            const rows = [...table.querySelectorAll("tbody tr")]
+                .filter(r => r.children.length > 1);
 
             const isAsc = header.classList.contains("asc");
             const direction = isAsc ? -1 : 1;
@@ -191,21 +170,12 @@
                 const cellA = getCellText(a.children[colIndex]).toUpperCase();
                 const cellB = getCellText(b.children[colIndex]).toUpperCase();
 
-                // ⭐ SORT RANK THEO THỨ TỰ CUSTOM
-                if (header.dataset.original.toLowerCase() === "rank") {
-                    const indexA = rankOrder.indexOf(cellA);
-                    const indexB = rankOrder.indexOf(cellB);
-                    return (indexA - indexB) * direction;
-                }
-
-                // số
                 const nA = parseNumberForSort(cellA);
                 const nB = parseNumberForSort(cellB);
                 if (!isNaN(nA) && !isNaN(nB)) {
                     return (nA - nB) * direction;
                 }
 
-                // text
                 return cellA.localeCompare(cellB, undefined, { sensitivity: "base" }) * direction;
             });
 
