@@ -869,8 +869,6 @@
 /*** copyright end ***/
 
 /*** slider area begin ***/
-
-
 .offer-card {
     padding: 28px !important;
     display: flex;
@@ -1013,12 +1011,56 @@
 }
 
 .navbar .nav-link.active {
-    color: #ff7f00 !important;  /* nếu muốn mục đang active cũng màu cam */
+    color: #ff7f00 !important;
 }
 /*** navbar end ***/
 
 .dropdown-fix {
-    right: 0 !important;      /* giữ ở sát avatar */
-    left: auto !important;    /* tránh bị ép qua trái */
-    margin-right: 20px;       /* đẩy menu vào trong tránh tràn màn hình */
+    right: 0 !important;
+    left: auto !important;
+    margin-right: 20px;
 }
+
+.phone-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 2px solid #000;
+    background-color: #000;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.phone-btn:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Tăng độ mượt cho slide ngang */
+.carousel .carousel-inner {
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); /* easing mượt hơn mặc định */
+}
+
+.carousel-item img {
+    will-change: transform; /* tối ưu GPU, slide mượt */
+}
+
+/* Tiêu đề Our Game màu cam đậm và lớn */
+.game-title {
+    color: #FF6600; /* cam đậm */
+    font-weight: bold;
+    font-size: 2.5rem;
+}
+
+/* Optional: thêm khoảng cách giữa các sản phẩm */
+.product-item {
+    transition: transform 0.3s ease;
+}
+
+.product-item:hover {
+    transform: translateY(-5px); /* hover nhẹ, tạo cảm giác sống động */
+}
+
