@@ -18,16 +18,13 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "gameId", referencedColumnName = "gameAccountId")
     private GameAccount gameAccount;
-    @Column(name = "endDate")
-    private Date endDate;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(UUID id, Orders order, Date endDate, GameAccount gameAccount) {
+    public OrderDetail(UUID id, Orders order, GameAccount gameAccount) {
         this.id = id;
         this.order = order;
-        this.endDate = endDate;
         this.gameAccount = gameAccount;
     }
 
@@ -55,12 +52,5 @@ public class OrderDetail {
         this.gameAccount = gameAccount;
     }
 
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
 }
 
