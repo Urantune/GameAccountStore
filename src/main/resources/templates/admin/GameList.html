@@ -10,10 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        :root {
-            --orange: #ff7a2f;
-        }
-
+        :root { --orange: #ff7a2f; }
         body {
             background: #f5f5f5;
             font-family: "Roboto", sans-serif;
@@ -21,54 +18,27 @@
             display: flex;
             flex-direction: column;
         }
-
-        .bar-top {
-            width: 100%;
-            height: 70px;
-            background: var(--orange);
-            display: flex;
-            align-items: center;
-            padding-left: 30px;
-        }
-
-        .bar-bottom {
-            width: 100%;
-            height: 70px;
-            background: var(--orange);
-            margin-top: auto;
-        }
-
-        .content-wrapper {
-            padding: 30px 40px 20px 40px;
-            flex: 1;
-        }
-
-        .table thead {
-            background-color: #ffe0cc;
-        }
-
-        .badge-status {
-            font-size: 0.8rem;
-        }
+        .bar-top { width: 100%; height: 70px; background: var(--orange); display: flex; align-items: center; padding-left: 30px; }
+        .bar-bottom { width: 100%; height: 70px; background: var(--orange); margin-top: auto; }
+        .content-wrapper { padding: 30px 40px 20px 40px; flex: 1; }
+        .table thead { background-color: #ffe0cc; }
+        .badge-status { font-size: 0.8rem; }
+        th.sortable { cursor: pointer; user-select: none; }
     </style>
 </head>
 
 <body>
 
-<!-- TOP ORANGE BAR -->
 <div class="bar-top">
     <h4 class="text-white m-0">
         <i class="bi bi-controller me-2"></i> Manage Game Accounts
     </h4>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="content-wrapper container-fluid">
-
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">
             Game Account List
-            <!-- nếu có truyền gameName thì hiện -->
             <span th:if="${gameName != null}" th:text="' - ' + ${gameName}"></span>
         </h5>
         <a th:href="@{/admin/game-accounts}" class="btn btn-sm btn-outline-secondary">
@@ -77,17 +47,19 @@
     </div>
 
     <div class="table-responsive bg-white rounded-3 shadow-sm p-3">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle mb-0" id="gameTable">
             <thead>
             <tr>
                 <th style="width: 50px;">#</th>
-                <th>Game Account</th>
-                <th>Game</th>
-                <th style="width: 100px;">Price</th>
-                <th style="width: 100px;">Rank</th>
-                <th style="width: 90px;">Skins</th>
-                <th style="width: 90px;">Level</th>
-                <th style="width: 120px;">Status</th>
+
+                <th class="sortable">Game Account</th>
+                <th class="sortable">Game</th>
+                <th class="sortable" style="width: 100px;">Price</th>
+                <th class="sortable" style="width: 100px;">Rank</th>
+                <th class="sortable" style="width: 90px;">Skins</th>
+                <th class="sortable" style="width: 90px;">Level</th>
+                <th class="sortable" style="width: 120px;">Status</th>
+
                 <th style="width: 190px;" class="text-center">Actions</th>
             </tr>
             </thead>
@@ -96,25 +68,13 @@
             <tr th:each="g, index : ${listGame}">
                 <td th:text="${index.index + 1}"></td>
 
-                <!-- gameAccount (tên acc game) -->
-                <td th:text="${g.gameAccount}">GameAccount001</td>
+                <td th:text="${g.gameAccount}"></td>
+                <td th:text="${g.game != null ? g.game.gameName : 'N/A'}"></td>
+                <td th:text="${#numbers.formatDecimal(g.price, 0, 'POINT', 0, 'POINT')}"></td>
+                <td th:text="${g.rank}"></td>
+                <td th:text="${g.skin}"></td>
+                <td th:text="${g.lovel}"></td>
 
-                <!-- game name (nếu có quan hệ Game) -->
-                <td th:text="${g.game != null ? g.game.gameName : 'N/A'}">AOV</td>
-
-                <!-- price -->
-                <td th:text="${g.price}">100000</td>
-
-                <!-- rank -->
-                <td th:text="${g.rank}">Diamond</td>
-
-                <!-- skins -->
-                <td th:text="${g.skin}">50</td>
-
-                <!-- level -->
-                <td th:text="${g.lovel}">30</td>
-
-                <!-- status -->
                 <td>
                     <span class="badge badge-status"
                           th:classappend="${g.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
@@ -122,35 +82,21 @@
                     </span>
                 </td>
 
-                <!-- Actions -->
                 <td class="text-center">
-
-                    <!-- INFO button -->
-                    <a th:href="@{/adminHome/gameDetail/{id}(id=${g.id})}"
-                       class="btn btn-sm btn-outline-primary me-1"
-                       title="View Info">
+                    <a th:href="@{/adminHome/gameDetail/{id}(id=${g.id})}" class="btn btn-sm btn-outline-primary me-1">
                         <i class="bi bi-info-circle"></i>
                     </a>
 
-
-                    <!-- CLOCK button -->
-                    <a th:href="@{'/admin/game-accounts/history/' + ${g.id}}"
-                       class="btn btn-sm btn-outline-secondary me-1"
-                       title="History / Activities">
+                    <a th:href="@{'/admin/game-accounts/history/' + ${g.id}}" class="btn btn-sm btn-outline-secondary me-1">
                         <i class="bi bi-clock-history"></i>
                     </a>
 
-                    <!-- EDIT button -->
-                    <a th:href="@{'/admin/game-accounts/edit/' + ${g.id}}"
-                       class="btn btn-sm btn-outline-warning"
-                       title="Edit Game Account">
+                    <a th:href="@{'/admin/game-accounts/edit/' + ${g.id}}" class="btn btn-sm btn-outline-warning">
                         <i class="bi bi-pencil-square"></i>
                     </a>
-
                 </td>
             </tr>
 
-            <!-- If list empty -->
             <tr th:if="${#lists.isEmpty(listGame)}">
                 <td colspan="9" class="text-center text-muted py-4">No game accounts found.</td>
             </tr>
@@ -159,10 +105,108 @@
     </div>
 </div>
 
-<!-- BOTTOM ORANGE BAR -->
 <div class="bar-bottom"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const table = document.getElementById("gameTable");
+    const sortableHeaders = table.querySelectorAll("th.sortable");
+    const allHeaders = Array.from(table.querySelectorAll("thead th.sortable"));
+
+    // thứ tự rank fix cứng
+    const rankOrder = [
+        "UNRANKED",
+        "BRONZE III",
+        "BRONZE II",
+        "BRONZE I",
+        "SILVER III",
+        "SILVER II",
+        "SILVER I",
+        "GOLD III",
+        "GOLD II",
+        "GOLD I",
+        "PLATINUM III",
+        "PLATINUM II",
+        "PLATINUM I",
+        "DIAMOND III",
+        "DIAMOND II",
+        "DIAMOND I",
+        "MASTER",
+        "CONQUEROR"
+    ];
+
+    function getCellText(td) {
+        if (!td) return "";
+        const ds = td.querySelector('[data-sort]');
+        if (ds) return (ds.dataset.sort || ds.textContent || "").trim();
+
+        let txt = td.textContent || "";
+        return txt.replace(/\s+/g, " ").trim();
+    }
+
+    function parseNumberForSort(s) {
+        if (s == null) return NaN;
+        const cleaned = ("" + s).replace(/[^\d\.,\-]/g, "");
+        if (cleaned === "") return NaN;
+
+        if (cleaned.includes('.') && cleaned.includes(',')) {
+            return Number(cleaned.replace(/\./g, '').replace(',', '.'));
+        }
+        if (cleaned.includes(',') && !cleaned.includes('.')) {
+            return Number(cleaned.replace(',', '.'));
+        }
+        return Number(cleaned.replace(/,/g, ''));
+    }
+
+    sortableHeaders.forEach(header => {
+        if (!header.dataset.original) header.dataset.original = header.textContent.trim();
+
+        header.addEventListener("click", () => {
+            const colIndex = allHeaders.indexOf(header) + 1;
+            if (colIndex === -1) return;
+
+            const rows = [...table.querySelectorAll("tbody tr")].filter(r => r.children.length > 1);
+
+            const isAsc = header.classList.contains("asc");
+            const direction = isAsc ? -1 : 1;
+
+            sortableHeaders.forEach(h => {
+                h.classList.remove("asc", "desc");
+                h.textContent = h.dataset.original;
+            });
+
+            header.classList.toggle("asc", direction === 1);
+            header.classList.toggle("desc", direction === -1);
+            header.textContent = header.dataset.original + (direction === 1 ? " ▲" : " ▼");
+
+            rows.sort((a, b) => {
+                const cellA = getCellText(a.children[colIndex]).toUpperCase();
+                const cellB = getCellText(b.children[colIndex]).toUpperCase();
+
+                // ⭐ SORT RANK THEO THỨ TỰ CUSTOM
+                if (header.dataset.original.toLowerCase() === "rank") {
+                    const indexA = rankOrder.indexOf(cellA);
+                    const indexB = rankOrder.indexOf(cellB);
+                    return (indexA - indexB) * direction;
+                }
+
+                // số
+                const nA = parseNumberForSort(cellA);
+                const nB = parseNumberForSort(cellB);
+                if (!isNaN(nA) && !isNaN(nB)) {
+                    return (nA - nB) * direction;
+                }
+
+                // text
+                return cellA.localeCompare(cellB, undefined, { sensitivity: "base" }) * direction;
+            });
+
+            const tbody = table.querySelector("tbody");
+            rows.forEach(r => tbody.appendChild(r));
+        });
+    });
+</script>
 
 </body>
 </html>
