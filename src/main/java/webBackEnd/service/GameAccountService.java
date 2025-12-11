@@ -31,4 +31,9 @@ public class GameAccountService {
     public List<GameAccount> findGameAccountByGame(Game game){
         return gameAccountRepositories.findAllByGame(game);
     }
+
+    public void save(GameAccount gameAccount){
+        gameAccountRepositories.save(gameAccount);
+    }
+
 }
