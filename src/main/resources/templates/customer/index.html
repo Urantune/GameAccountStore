@@ -228,7 +228,7 @@
                 <!-- Khi chưa đăng nhập -->
                 <li class="nav-item dropdown" sec:authorize="isAnonymous()">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold">Khách</span>
                     </a>
                     <ul class="dropdown-menu dropdown-fix">
@@ -247,18 +247,16 @@
 
                 <!-- Khi đã đăng nhập -->
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold" th:text="${#authentication.name}"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                        <li><a class="dropdown-item" th:href="@{/home/profile/{id}(id=${currentUser.customerId})}">Thông tin tài khoản</a></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
                     </ul>
                 </li>
-
             </ul>
-
         </div>
     </div>
 </nav>

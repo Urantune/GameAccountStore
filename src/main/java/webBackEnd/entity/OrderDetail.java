@@ -16,7 +16,7 @@ public class OrderDetail {
     @JoinColumn(name = "orderId", referencedColumnName = "orderId", nullable = false)
     private Orders order;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gameAccountId", referencedColumnName = "gameAccountId", nullable = false)
+    @JoinColumn(name = "gameId", referencedColumnName = "gameAccountId")
     private GameAccount gameAccount;
     @Column(name = "endDate")
     private Date endDate;
