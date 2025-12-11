@@ -42,8 +42,8 @@ public class GameAccount {
     private int skin;
     @Column(name = "level")
     private int lovel;
-    @Column(name = "items")
-    private int items;
+    @Column(name = "vip")
+    private int vip;
 
 
 
@@ -69,7 +69,7 @@ public class GameAccount {
         this.rank = rank;
         this.skin = skin;
         this.lovel = lovel;
-        this.items = items;
+        this.vip = items;
     }
 
     public UUID getId() {
@@ -193,10 +193,10 @@ public class GameAccount {
     }
 
     public int getItems() {
-        return items;
+        return vip;
     }
 
     public void setItems(int items) {
-        this.items = items;
+        this.vip = items;
     }
 }
