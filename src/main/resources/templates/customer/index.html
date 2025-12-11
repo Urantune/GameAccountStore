@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
-    <title>Cửa Hàng bán tài khoản Game</title>
+    <title>Cửa Hàng bán Tài Khoản Game</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -153,8 +153,8 @@
 
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center" href="/home">
-            <img src="img/logo.png" alt="Logo"
-                 style="height:80px; width:auto;">
+            <img src="img/logoFinal.png" alt="Logo"
+                 style="height:100px; width:auto;">
         </a>
 
         <!-- Toggle button mobile -->
@@ -175,11 +175,11 @@
 
                 <li class="nav-item dropdown mx-3">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-th-large me-1"></i> Lịch Sử
+                        <i class="fa fa-th-large me-1"></i> Lịch Sử Mua Tài Khoản
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Lịch sử mua nick</a></li>
-                        <li><a class="dropdown-item" href="#">Lịch sử nạp tiền</a></li>
+                        <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                        <li><a class="dropdown-item" href="#">AOV</a></li>
                     </ul>
                 </li>
 
@@ -231,7 +231,7 @@
                         <img src="img/guest.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold">Khách</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <ul class="dropdown-menu dropdown-fix">
                         <li>
                             <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
                                 Đăng nhập
@@ -253,7 +253,6 @@
                     </a>
                     <ul class="dropdown-menu dropdown-fix">
                         <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
-                        <li><a class="dropdown-item" href="#">Đơn hàng của tôi</a></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
                     </ul>
                 </li>
@@ -278,8 +277,7 @@
                         <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
                             style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân </h4>
                         <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
-                            giao dịch qua ATM</h1>
-                        <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">Terms and Condition Apply</p>
+                            giao dịch qua thẻ ngân hàng</h1>
                         <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
                            href="#">Mua ngay</a>
                     </div>
@@ -292,8 +290,7 @@
                         <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
                             style="letter-spacing: 3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
                         <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
-                            giao dịch qua ATM</h1>
-                        <p class="text-dark wow fadeInRight" data-wow-delay="0.5s">Terms and Condition Apply</p>
+                            giao dịch qua thẻ ngân hàng</h1>
                         <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
                            href="#">Mua ngay</a>
                     </div>
@@ -308,8 +305,8 @@
                 </div>
                 <div class="carousel-banner">
                     <div class="carousel-banner-content text-center p-4">
-                        <a href="#" class="d-block mb-2">Loại tài khoản</a>
-                        <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần <br> G2356</a>
+                        <a href="#" class="d-block mb-2">Loại trang phục</a>
+                        <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
                         <del class="me-2 text-white fs-5">2.500.000 VND</del>
                         <span class="me-2 text-white fs-5">1.999.000 VND</span>
                     </div>
@@ -322,7 +319,7 @@
 </div>
 <!-- Carousel End -->
 
-<!-- Searvices Start -->
+<!-- Services Start -->
 <div class="container-fluid px-0">
     <div class="row g-0">
         <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
@@ -397,57 +394,63 @@
     <div class="container-fluid product py-5">
         <div class="container py-5">
             <div class="tab-class">
+
+                <!-- Căn giữa tiêu đề -->
                 <div class="row g-4">
-                    <div class="col-lg-4 text-start">
+                    <div class="col-12 text-center">
                         <h1>Our Game</h1>
                     </div>
+                </div>
 
-                    <div class="tab-content">
-                        <!-- TẤT CẢ SẢN PHẨM -->
-                        <div id="tab-all" class="tab-pane fade show active p-0">
-                            <div class="row g-4">
+                <div class="tab-content">
+                    <!-- TẤT CẢ SẢN PHẨM -->
+                    <div id="tab-all" class="tab-pane fade show active p-0">
 
-                                <!-- Vòng lặp -->
-                                <div class="col-md-6 col-lg-4 col-xl-3"
-                                     th:each="p, i : ${game}">
+                        <!-- Căn giữa các card game -->
+                        <div class="row g-4 justify-content-center">
 
-                                    <div class="product-item rounded">
-                                        <div class="product-item-inner border rounded">
-                                            <div class="product-item-inner-item">
+                            <!-- Vòng lặp -->
+                            <div class="col-md-6 col-lg-4 col-xl-3"
+                                 th:each="p, i : ${game}">
 
-                                                <!-- Ảnh cứng luân phiên -->
-                                                <img th:src="@{${i.index % 2 == 0 ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
-                                                     class="img-fluid w-100 rounded-top product-img"/>
+                                <div class="product-item rounded">
+                                    <div class="product-item-inner border rounded">
+                                        <div class="product-item-inner-item">
 
-                                                <!-- Icon -->
-                                                <div class="product-details">
-                                                    <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}">
-                                                        <i class="fa fa-eye fa-1x"></i>
-                                                    </a>
-                                                </div>
+                                            <!-- Ảnh cứng luân phiên -->
+                                            <img th:src="@{${i.index % 2 == 0 ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
+                                                 class="img-fluid w-100 rounded-top product-img"/>
 
-                                                <div class="text-center rounded-bottom p-4">
-                                                    <a class="d-block h4" th:text="${p.gameName}"></a>
-                                                </div>
-
+                                            <!-- Icon -->
+                                            <div class="product-details">
+                                                <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}">
+                                                    <i class="fa fa-eye fa-1x"></i>
+                                                </a>
                                             </div>
-                                        </div>
 
-                                        <!-- Bottom -->
-                                        <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
-                                            <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}"
-                                               class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
-                                                <i class="fas fa-shopping-cart me-2"></i>
-                                                View All Game Accounts
-                                            </a>
+                                            <div class="text-center rounded-bottom p-4">
+                                                <a class="d-block h4" th:text="${p.gameName}"></a>
+                                            </div>
+
                                         </div>
+                                    </div>
+
+                                    <!-- Bottom -->
+                                    <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
+                                        <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}"
+                                           class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
+                                            <i class="fas fa-shopping-cart me-2"></i>
+                                            View All Game Accounts
+                                        </a>
                                     </div>
                                 </div>
                             </div>
+                            <!-- end each -->
+
                         </div>
                     </div>
-
                 </div>
+
             </div>
         </div>
     </div>
@@ -456,140 +459,39 @@
 
 
 <!-- Footer Start -->
-<div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
-    <div class="container py-5">
-        <div class="row g-4 rounded mb-5" style="background: rgba(255, 255, 255, .03);">
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+    <div class="container-fluid footer py-5" data-wow-delay="0.5s" style="background:#111;">
+        <div class="container py-4">
+
+            <!-- TOP SECTION -->
+            <div class="row g-4 text-center text-white align-items-center">
+
+                <!-- Logo + Text -->
+                <div class="col-lg-6 d-flex flex-column align-items-center">
+                    <img src="img/logoFinal.png" class="footer-logo mb-3" style="width: 120px; height: auto;">
+                    <h5 class="fw-bold">Shop Tài Khoản Game Giao Dịch Tự Động Uy Tín Số 1 Việt Nam.</h5>
+                </div>
+
+                <!-- Support -->
+                <div class="col-lg-6 text-white">
+                    <h3 class="fw-bold">LIÊN HỆ HỖ TRỢ</h3>
+                    <p class="mt-3 mb-4">
+                        Liên hệ ngay bộ phận CSKH để được tư vấn và giải đáp.
+                        Chúng tôi sẽ hỗ trợ và giải đáp yêu cầu của bạn sớm nhất có thể!
+                    </p>
+
+                    <div class="phone-btn">
+                        <i class="fa fa-phone"></i> 0923445566
                     </div>
-                    <div>
-                        <h4 class="text-white">Address</h4>
-                        <p class="mb-2">123 Street New York.USA</p>
-                    </div>
+
                 </div>
             </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fas fa-envelope fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-white">Mail Us</h4>
-                        <p class="mb-2">info@example.com</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fa fa-phone-alt fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-white">Telephone</h4>
-                        <p class="mb-2">(+012) 3456 7890</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="rounded p-4">
-                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4"
-                         style="width: 70px; height: 70px;">
-                        <i class="fab fa-firefox-browser fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-white">Yoursite@ex.com</h4>
-                        <p class="mb-2">(+012) 3456 7890</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row g-5">
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <div class="footer-item">
-                        <h4 class="text-primary mb-4">Newsletter</h4>
-                        <p class="mb-3">Dolor amet sit justo amet elitr clita ipsum elitr est.Lorem ipsum dolor sit
-                            amet, consectetur adipiscing elit consectetur adipiscing elit.</p>
-                        <div class="position-relative mx-auto rounded-pill">
-                            <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5" type="text"
-                                   placeholder="Enter your email">
-                            <button type="button"
-                                    class="btn btn-primary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">
-                                SignUp
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <h4 class="text-primary mb-4">Customer Service</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Contact Us</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Returns</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Order History</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Site Map</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Testimonials</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> My Account</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Unsubscribe Notification</a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <h4 class="text-primary mb-4">Information</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> About Us</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Delivery infomation</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Privacy Policy</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Terms & Conditions</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Warranty</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> FAQ</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Seller Login</a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-6 col-xl-3">
-                <div class="footer-item d-flex flex-column">
-                    <h4 class="text-primary mb-4">Extras</h4>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Brands</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Gift Vouchers</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Affiliates</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Wishlist</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Order History</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
-                    <a href="#" class=""><i class="fas fa-angle-right me-2"></i> Track Your Order</a>
-                </div>
+            <div class="footer-bottom mt-5 d-flex justify-content-between text-white">
+                <span>Phát triển bởi đội ngũ <strong>Urantune</strong></span>
+                <span>Phiên bản <strong>1.1</strong></span>
             </div>
         </div>
     </div>
-</div>
 <!-- Footer End -->
-
-
-<!-- Copyright Start -->
-<div class="container-fluid copyright py-4">
-    <div class="container">
-        <div class="row g-4 align-items-center">
-            <div class="col-md-6 text-center text-md-start mb-md-0">
-                    <span class="text-white"><a href="#" class="border-bottom text-white"><i
-                            class="fas fa-copyright text-light me-2"></i>Your Site Name</a>, All right
-                        reserved.</span>
-            </div>
-            <div class="col-md-6 text-center text-md-end text-white">
-
-                <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
-                <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
-                <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                Designed By <a class="border-bottom text-white" href="https://htmlcodex.com">HTML Codex</a>.
-                Distributed By <a class="border-bottom text-white" href="https://themewagon.com">ThemeWagon</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Copyright End -->
-
 
 <!-- JavaScript Libraries -->
 <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
