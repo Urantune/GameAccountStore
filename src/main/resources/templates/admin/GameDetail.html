@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Game Detail</title>
+    <title>gameAccount Detail</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap + Icons -->
@@ -75,7 +75,7 @@
 <!-- TOP BAR -->
 <div class="bar-top">
     <h4 class="text-white m-0">
-        <i class="bi bi-controller me-2"></i> Game Information
+        <i class="bi bi-controller me-2"></i> gameAccount Information
     </h4>
 </div>
 
@@ -83,46 +83,58 @@
 <div class="content-wrapper container">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">Game Detail</h5>
-        <a th:href="@{/adminHome/gameSelect}" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Back to Game List
+        <h5 class="mb-0">gameAccount Detail</h5>
+        <a th:href="@{/adminHome/gameAccountSelect}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to gameAccount List
         </a>
     </div>
 
     <div class="info-card">
 
-        <!-- Game ID -->
+        <!-- gameAccount ID -->
         <div class="row info-row">
-            <div class="col-4 info-label">Game ID</div>
-            <div class="col-8 info-value" th:text="${game.gameId}">123</div>
+            <div class="col-4 info-label">gameAccount ID</div>
+            <div class="col-8 info-value" th:text="${gameAccount.id}">123</div>
         </div>
 
-        <!-- Game Name -->
+        <!-- gameName-->
         <div class="row info-row">
             <div class="col-4 info-label">Game Name</div>
-            <div class="col-8 info-value" th:text="${game.gameName}">Arena of Valor</div>
+            <div class="col-8 info-value" th:text="${game.getGameName()}">123</div>
+        </div>
+
+
+
+
+
+        <!-- gameAccount Name -->
+        <div class="row info-row">
+            <div class="col-4 info-label">gameAccount Name</div>
+            <div class="col-8 info-value" th:text="${gameAccount.gameAccount}">Arena of Valor</div>
         </div>
 
         <!-- Category / Genre -->
         <div class="row info-row">
             <div class="col-4 info-label">Category</div>
-            <div class="col-8 info-value" th:text="${game.category}">MOBA</div>
+            <div class="col-8 info-value" th:text="${type.typeName}">MOBA</div>
         </div>
 
         <!-- Description -->
         <div class="row info-row">
             <div class="col-4 info-label">Description</div>
-            <div class="col-8 info-value" th:text="${game.description}">5v5 MOBA mobile game...</div>
+            <div class="col-8 info-value" th:text="${gameAccount.description}">
+                5v5 MOBA mobile gameAccount...
+            </div>
         </div>
 
         <!-- Status -->
         <div class="row info-row">
             <div class="col-4 info-label">Status</div>
             <div class="col-8">
-                <span class="badge badge-status"
-                      th:classappend="${game.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
-                      th:text="${game.status}">
-                </span>
+        <span class="badge badge-status"
+              th:classappend="${gameAccount.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
+              th:text="${gameAccount.status}">
+        </span>
             </div>
         </div>
 
@@ -130,7 +142,7 @@
         <div class="row info-row">
             <div class="col-4 info-label">Date Created</div>
             <div class="col-8 info-value"
-                 th:text="${#temporals.format(game.dateCreated, 'yyyy-MM-dd HH:mm:ss')}">
+                 th:text="${#temporals.format(gameAccount.createdDate, 'yyyy-MM-dd HH:mm:ss')}">
                 2025-01-01 10:00:00
             </div>
         </div>
@@ -139,10 +151,11 @@
         <div class="row info-row">
             <div class="col-4 info-label">Last Updated</div>
             <div class="col-8 info-value"
-                 th:text="${#temporals.format(game.dateUpdated, 'yyyy-MM-dd HH:mm:ss')}">
+                 th:text="${#temporals.format(gameAccount.updatedDate, 'yyyy-MM-dd HH:mm:ss')}">
                 2025-01-02 15:30:00
             </div>
         </div>
+
 
     </div>
 

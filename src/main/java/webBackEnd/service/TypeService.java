@@ -17,4 +17,13 @@ import java.util.UUID;
 @Service
 public class TypeService {
 
+    @Autowired
+    private TypeRepositories typeRepositories;
+
+    public Type findById(UUID id) {
+        return typeRepositories.findByTypeId(id);
+    }
+
+
+
 }

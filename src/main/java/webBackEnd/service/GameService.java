@@ -22,6 +22,10 @@ public class GameService {
         return gameRepositories.findByGameId(gameId).orElse(null);
     }
 
+    public Game findGameByGameName(String gameName){
+        return gameRepositories.findByGameName(gameName);
+    }
+
 
 
 }

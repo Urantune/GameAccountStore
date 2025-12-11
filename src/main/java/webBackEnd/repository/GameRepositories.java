@@ -14,5 +14,8 @@ public interface GameRepositories extends JpaRepository<Game,String> {
     Optional<Game> findByGameId(UUID id);
 
 
+    Game findByGameName(String name);
+
+
 
 }

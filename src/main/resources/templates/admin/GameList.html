@@ -126,11 +126,12 @@
                 <td class="text-center">
 
                     <!-- INFO button -->
-                    <a th:href="@{'/adminHome/gameDetail/{id}'(id=${g.id})}"
+                    <a th:href="@{/adminHome/gameDetail/{id}(id=${g.id})}"
                        class="btn btn-sm btn-outline-primary me-1"
                        title="View Info">
                         <i class="bi bi-info-circle"></i>
                     </a>
+
 
                     <!-- CLOCK button -->
                     <a th:href="@{'/admin/game-accounts/history/' + ${g.id}}"
@@ -150,7 +151,7 @@
             </tr>
 
             <!-- If list empty -->
-            <tr th:if="${#lists.isEmpty(listGameAccount)}">
+            <tr th:if="${#lists.isEmpty(listGame)}">
                 <td colspan="9" class="text-center text-muted py-4">No game accounts found.</td>
             </tr>
             </tbody>

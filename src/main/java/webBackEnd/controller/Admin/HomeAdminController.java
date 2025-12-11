@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.entity.Type;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
 import webBackEnd.service.GameService;
+import webBackEnd.service.TypeService;
 
 import java.util.UUID;
 
@@ -30,6 +32,9 @@ public class HomeAdminController {
 
     @Autowired
     private GameService gameService;
+
+    @Autowired
+    private TypeService typeService;
 
 
     @GetMapping("")
@@ -77,10 +82,18 @@ public class HomeAdminController {
         return "admin/GameList";
     }
 
-    @GetMapping("/gameDetail/{id}" )
-    public String gameDetails(@PathVariable("id") UUID id, Model model){
+    @GetMapping("/gameDetail/{id}")
+    public String gameDetails(@PathVariable("id") UUID id, Model model) {
+
         GameAccount gameAccount = gameAccountService.findGameAccountById(id);
-        model.addAttribute("gameDetails", gameAccount);
+
+        Game game = gameAccount.getGame();
+        Type type = game.getTypeId();
+
+        model.addAttribute("gameAccount", gameAccount);
+        model.addAttribute("game", game);
+        model.addAttribute("type", type);
+
         return "admin/GameDetail";
     }
 
