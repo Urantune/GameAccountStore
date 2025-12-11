@@ -10,13 +10,13 @@ import java.util.UUID;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
-    private UUID id;
+    @Column(name = "cartId", nullable = false)
+    private UUID cartId;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", referencedColumnName = "id",nullable = false)
-    private Users user;
+    @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
+    private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "gameAccountId", referencedColumnName = "gameAccountId",nullable = false)
     private GameAccount gameAccount;
     @Column(name = "Datecreate",nullable = false)
     private LocalDateTime createdAt;
@@ -24,27 +24,27 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(UUID id, Users user, GameAccount gameAccount, LocalDateTime createdAt) {
-        this.id = id;
-        this.user = user;
+    public Cart(UUID cartId, Customer customer, GameAccount gameAccount, LocalDateTime createdAt) {
+        this.cartId = cartId;
+        this.customer = customer;
         this.gameAccount = gameAccount;
         this.createdAt = createdAt;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getCartId() {
+        return cartId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setCartId(UUID id) {
+        this.cartId = id;
     }
 
-    public Users getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setCustomer(Customer user) {
+        this.customer = user;
     }
 
     public GameAccount getGameAccount() {

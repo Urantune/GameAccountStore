@@ -11,18 +11,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import webBackEnd.service.UsersService;
+import webBackEnd.service.CustomerService;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
     @Autowired
-    private UsersService usersService;
+    private CustomerService customerService;
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        builder.userDetailsService(usersService)
+        builder.userDetailsService(customerService)
                 .passwordEncoder(passwordEncoder());
         return builder.build();
     }
@@ -34,34 +36,57 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/img/**","/bestseller/**", "/assets/**", "/lib/**", "/scss/**","/register","/register/**","/home/**").permitAll()
-                        .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
-                        .requestMatchers("/images/**", "/img/**", "/css/**", "/js/**", "/lib/**", "/home/detail/**").permitAll()
-                        .requestMatchers("/Staff/**").hasAnyRole("STAFF")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/home") // URL den trang index
-                        .loginProcessingUrl("/login") // URL nhan form Login
-                        .usernameParameter("email") // Param email tu form
-                        .passwordParameter("password") // Param password tu form
-                        .successHandler((req, res, auth) -> {
-                            res.setStatus(200);
-                        })
-                        .failureHandler((req, res, ex) -> {
-                            res.setStatus(401);
-                        })
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/home?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .clearAuthentication(true)
-                        .permitAll()
-                )
-                .build();
+        http.csrf(csrf -> csrf.disable());
+
+        http.authorizeHttpRequests(auth -> auth
+                // static + public
+                .requestMatchers(
+                        "/css/**", "/js/**", "/img/**",
+                        "/bestseller/**", "/assets/**", "/lib/**",
+                        "/scss/**", "/images/**"
+                ).permitAll()
+                .requestMatchers("/register", "/register/**").permitAll()
+                .requestMatchers("/home", "/home/**").permitAll()
+
+                // 👉 CHO PHÉP /adminHome KHÔNG CẦN LOGIN
+                .requestMatchers("/adminHome", "/adminHome/**").permitAll()
+
+                // bảo vệ các URL khác
+                .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
+                .requestMatchers("/Staff/**").hasRole("STAFF")
+                .anyRequest().authenticated()
+        );
+
+        http.formLogin(form -> form
+                .loginPage("/home")              // trang login
+                .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler((req, res, auth) -> {
+                    res.setContentType("application/json");
+                    res.getWriter().write(
+                            auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
+                                    ? "{\"redirect\":\"/Admin\"}"
+                                    : "{\"redirect\":\"/home\"}"
+                    );
+                })
+                .failureHandler((req, res, ex) -> {
+                    res.setContentType("application/json");
+                    res.setStatus(401);
+                    res.getWriter().write("{\"error\":\"Error username or password\"}");
+                })
+                .permitAll() // 🟢 rất quan trọng – cho phép ai cũng gọi /home, /login
+        );
+
+        http.logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/home?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
+                .permitAll()
+        );
+
+        return http.build();
     }
 }

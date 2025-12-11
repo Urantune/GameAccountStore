@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Users")
-public class Users {
+@Table(name = "Customer")
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier", nullable = false)
-    private UUID id;
+    @Column(name = "customerId", columnDefinition = "uniqueidentifier", nullable = false)
+    private UUID customerId;
 
     @Column(name = "userName", nullable = false)
     private String username;
@@ -31,7 +31,21 @@ public class Users {
     @Column(name = "status")
     private String status;
 
-    public Users() {
+    @Column(name = "role",nullable = false)
+    private String role;
+
+    public Customer() {
+    }
+
+    public Customer(UUID customerId, String username, String email, String password, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
+        this.customerId = customerId;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.dateCreated = dateCreated;
+        this.dateUpdated = dateUpdated;
+        this.status = status;
+        this.role = role;
     }
 
     // Hàm tự set ngày khi tạo mới
@@ -48,12 +62,12 @@ public class Users {
     }
 
     // Getter - Setter
-    public UUID getId() {
-        return id;
+    public UUID getCustomerId() {
+        return customerId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setCustomerId(UUID id) {
+        this.customerId = id;
     }
 
     public String getUsername() {
@@ -102,5 +116,13 @@ public class Users {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

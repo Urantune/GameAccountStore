@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <title>Cửa Hàng bán tài khoản Game</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" th:href="@{https://fonts.googleapis.com}">
+    <link rel="preconnect" th:href="@{https://fonts.gstatic.com}" crossorigin>
+    <link
+            th:href="@{https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap}"
+            rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" th:href="@{https://use.fontawesome.com/releases/v5.15.4/css/all.css}"/>
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css}" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
+    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <!-- Template Swiper Img -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+</head>
+
+<body>
+<!--Model Login Start-->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Hiển thị lỗi -->
+                <div id="loginError" class="alert alert-danger d-none"></div>
+                <!--Khi submit form action gửi về SecurytiConfig kiểm tra-->
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="loginUsername" class="form-label">Username:</label>
+                        <input name="username" class="form-control" id="loginUsername"
+                               placeholder="Nhập username của bạn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Mật khẩu:</label>
+                        <input type="password" name="password" class="form-control" id="loginPassword"
+                               placeholder="Nhập mật khẩu" required>
+                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký
+                    ngay</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Model Login End-->
+
+
+<!--Model Register Start-->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div th:if="${error}" class="alert alert-danger">
+                    <span th:text="${error}"></span>
+                </div>
+                <div th:if="${success}" class="alert alert-success text-center">
+                    <p th:text="${success}"></p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Tên người dùng:</label>
+                        <input name="username" type="text" class="form-control" id="registerUsername"
+                               placeholder="Nhập tên người dùng" th:value="${username}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email:</label>
+                        <input name="email" type="email" class="form-control" id="registerEmail"
+                               placeholder="Nhập email" th:value="${email}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Mật khẩu:</label>
+                        <input name="password" type="password" class="form-control" id="registerPassword"
+                               placeholder="Tạo mật khẩu" th:value="${password}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword"
+                               placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
+                    </div>
+                    <div id="registerError" class="text-danger mt-2"></div>
+                    <div id="registerSuccess" class="text-success mt-2"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Model Register End-->
+
+<!-- Spinner Start -->
+<div id="spinner"
+     class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+
+
+
+<!-- Navbar & Hero Start -->
+<nav class="navbar navbar-expand-lg bg-white px-4 py-2 shadow-sm">
+    <div class="container-fluid">
+
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="img/logoFinal.png" alt="Logo"
+                 style="height:100px; width:auto;">
+        </a>
+
+        <!-- Toggle button mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Items -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center fw-semibold">
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/home">
+                        <i class="fa fa-th-large me-1"></i> Trang Chủ
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-th-large me-1"></i> Lịch Sử Mua Tài Khoản
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                        <li><a class="dropdown-item" href="#">AOV</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-truck me-1"></i> Dịch Vụ Khác
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Cày Thuê</a></li>
+                        <li><a class="dropdown-item" href="#">Cho Thuê Tài Khoản</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-user me-1"></i> Tài Khoản
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-credit-card me-1"></i> Nạp Tiền
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Thẻ Cào</a></li>
+                        <li><a class="dropdown-item" href="#">Ngân Hàng</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-coins me-1"></i> Dòng Tiền
+                    </a>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-newspaper me-1"></i> Tin Tức
+                    </a>
+                </li>
+            </ul>
+
+            <!-- User section -->
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+
+                <!-- Khi chưa đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Đăng nhập
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                Đăng ký
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Khi đã đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<!-- Navbar & Hero End -->
+
+    <!-- Our Products Start -->
+     <section class="py-5">
+         <div class="container px-4 px-lg-5 my-5">
+             <div class="row g-4">
+                 <!-- ======================= CỘT TRÁI: MAIN IMAGE ======================= -->
+                 <div class="col-md-5">
+                     <div class="main-img-wrapper mb-3">
+                         <img th:src="@{'/images/' + ${p.imageMain}}" class="img-fluid rounded shadow" />
+                     </div>
+                     <!-- Popup xem ảnh lớn -->
+                     <div id="imagePreview" class="img-popup" onclick="closePreview()">
+                         <img id="previewImg">
+                     </div>
+                 </div>
+                 <!-- ======================= CỘT PHẢI: THÔNG TIN ACCOUNT ======================= -->
+                 <div class="col-md-7">
+                     <!-- Tên game -->
+                     <h3 class="fw-bold mb-3" th:text="${p.game.gameName}"></h3>
+                     <!-- Giá -->
+                     <div class="fs-4 mb-4">
+                    <span class="text-danger fw-bold"
+                          th:text="'Giá: ' + ${#numbers.formatDecimal(p.price,0,'POINT',2,'COMMA')} + 'đ'"></span>
+                     </div>
+                     <!-- Rank -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Rank:</span>
+                         <span th:text="${p.rank}"></span>
+                     </div>
+                     <!-- Skins -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Số lượng Skin:</span>
+                         <span th:text="${p.skin}"></span>
+                     </div>
+                     <!-- Level -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Level:</span>
+                         <span th:text="${p.lovel}"></span>
+                     </div>
+                     <!-- Items -->
+                     <div class="mb-3">
+                         <span class="fw-bold">Cấp Vip:</span>
+                         <span th:text="${p.items}"></span>
+                     </div>
+                     <!-- Nút mua -->
+                     <div class="d-flex mt-4">
+                         <button class="btn btn-dark me-2" type="button">
+                             <i class="bi-cart-fill me-1"></i> Buy now
+                         </button>
+
+                         <button class="btn btn-outline-dark" type="button">
+                             <i class="bi-cart-fill me-1"></i> Add to cart
+                         </button>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </section>
+
+
+     <!-- Our Products End -->
+
+
+<!-- Footer Start -->
+<div class="container-fluid footer py-5" data-wow-delay="0.5s" style="background:#111;">
+    <div class="container py-4">
+
+        <!-- TOP SECTION -->
+        <div class="row g-4 text-center text-white align-items-center">
+
+            <!-- Logo + Text -->
+            <div class="col-lg-6 d-flex flex-column align-items-center">
+                <img src="img/logoFinal.png" class="footer-logo mb-3" style="width: 120px; height: auto;">
+                <h5 class="fw-bold">Shop Tài Khoản Game Giao Dịch Tự Động Uy Tín Số 1 Việt Nam.</h5>
+            </div>
+
+            <!-- Support -->
+            <div class="col-lg-6 text-white">
+                <h3 class="fw-bold">LIÊN HỆ HỖ TRỢ</h3>
+                <p class="mt-3 mb-4">
+                    Liên hệ ngay bộ phận CSKH để được tư vấn và giải đáp.
+                    Chúng tôi sẽ hỗ trợ và giải đáp yêu cầu của bạn sớm nhất có thể!
+                </p>
+
+                <div class="phone-btn">
+                    <i class="fa fa-phone"></i> 0923445566
+                </div>
+
+            </div>
+        </div>
+        <div class="footer-bottom mt-5 d-flex justify-content-between text-white">
+            <span>Phát triển bởi đội ngũ <strong>Urantune</strong></span>
+            <span>Phiên bản <strong>1.1</strong></span>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+
+<!-- JavaScript Libraries -->
+<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
+<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/lib/wow/wow.min.js}"></script>
+<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<!-- Template Javascript -->
+<script th:src="@{/js/main.js}"></script>
+
+<!--JS hiển thị lỗi Login-->
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+
+        fetch("/login", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+        })
+            .then(async res => {
+                if (!res.ok) {
+                    const err = await res.json();
+
+                    const errorBox = document.getElementById("loginError");
+                    errorBox.textContent = err.error;
+                    errorBox.classList.remove("d-none");
+
+                    // Ẩn lỗi sau 3 giây
+                    setTimeout(() => {
+                        errorBox.classList.add("d-none");
+                    }, 3000);
+
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data?.redirect) window.location.href = data.redirect;
+            })
+            .catch(err => console.error(err));
+    });
+</script>
+
+
+<!--JS chuyển đổi giữa các Model-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Khi bấm "Đăng ký ngay" trong Login → mở Register
+        document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const loginModalEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+
+                // Đợi login đóng xong mới mở register
+                loginModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                    registerModal.show();
+                });
+
+                loginModal.hide();
+            });
+        });
+
+        // Khi bấm "Đăng nhập ngay" trong Register → mở Login
+        document.querySelectorAll(".open-login").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const registerModalEl = document.getElementById("registerModal");
+                const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+
+                // Đợi register đóng xong mới mở login
+                registerModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    registerModalEl.removeEventListener('hidden.bs.modal', handler);
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    loginModal.show();
+                });
+
+                registerModal.hide();
+            });
+        });
+    });
+</script>
+<!--JS tắt Model Login mở Model Register-->
+<script>
+    document.querySelectorAll(".open-register").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const loginEl = document.getElementById("loginModal");
+            const loginModal = bootstrap.Modal.getInstance(loginEl);
+
+            loginEl.addEventListener("hidden.bs.modal", function handler() {
+                loginEl.removeEventListener("hidden.bs.modal", handler);
+
+                const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                registerModal.show();
+            });
+
+            loginModal.hide();
+        });
+    });
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.search.includes("error=true")) {
+            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+            loginModal.show();
+        }
+    });
+</script>
+
+<script th:if="${openRegister}">
+    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+    registerModal.show();
+</script>
+
+<!--JS k reload form Đăng ký-->
+<script>
+    document.getElementById("registerBtn").addEventListener("click", function () {
+        const formData = new FormData(document.getElementById("registerForm"));
+        fetch("/register", {
+            method: "POST",
+            body: new URLSearchParams(formData),
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const errorDiv = document.getElementById("registerError");
+                const successDiv = document.getElementById("registerSuccess");
+
+                if (data.error) {
+                    errorDiv.innerText = data.error;
+                    successDiv.innerText = "";
+                    // Reset password fields
+                    document.getElementById("registerPassword").value = "";
+                    document.getElementById("confirmPassword").value = "";
+
+                    // Ẩn lỗi sau 3 giây
+                    setTimeout(() => {
+                        errorDiv.innerText = "";
+                    }, 3000);
+                } else if (data.success) {
+                    successDiv.innerText = data.success;
+                    errorDiv.innerText = "";
+                    document.getElementById("registerForm").reset();
+
+                    // Ẩn thông báo thành công sau 3 giây
+                    setTimeout(() => {
+                        successDiv.innerText = "";
+                    }, 3000);
+                }
+            })
+            .catch(err => console.error(err));
+    });
+</script>
+
+<script>
+    setTimeout(() => {
+        const spinner = document.getElementById("spinner");
+        if (spinner) spinner.classList.remove("show");
+    }, 500);
+</script>
+
+<script>
+    document.addEventListener("click", function (event) {
+        const categoryBox = document.getElementById("allCat");        // menu category
+        const toggleBtn = document.querySelector("[data-bs-target='#allCat']"); // nút bấm All Categories
+
+        // Nếu click không nằm trong menu và không nằm trên nút mở menu → đóng
+        if (!categoryBox.contains(event.target) && !toggleBtn.contains(event.target)) {
+            let bsCollapse = bootstrap.Collapse.getInstance(categoryBox);
+            if (bsCollapse) {
+                bsCollapse.hide();
+            }
+        }
+    });
+</script>
+
+<script>
+    new Swiper(".mySwiper1", {
+        loop: true,
+        autoplay: {delay: 2000},
+        pagination: {
+            el: ".mySwiper1 .swiper-pagination",
+            clickable: true,
+        },
+    });
+
+    new Swiper(".mySwiper2", {
+        loop: true,
+        autoplay: {delay: 2000},
+        pagination: {
+            el: ".mySwiper2 .swiper-pagination",
+            clickable: true,
+        },
+    });
+</script>
+
+<script th:src="@{/js/product.js}"></script>
+</body>
+</html>

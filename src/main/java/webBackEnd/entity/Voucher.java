@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier")
+    @Column(name = "voucherId", columnDefinition = "uniqueidentifier")
     private UUID id;
     @Column(name = "voucherName",nullable = false)
     private String voucherName;
@@ -24,20 +24,20 @@ public class Voucher {
     @Column(name = "dateUpdate")
     private LocalDateTime updateDate;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "adminId", referencedColumnName = "id",nullable = false)
-    private Administrator administrator;
+    @JoinColumn(name = "staffId", referencedColumnName = "staffId",nullable = false)
+    private Staff staff;
 
     public Voucher() {
     }
 
-    public Voucher(UUID id, String voucherName, int value, Date startDate, Date endDate, LocalDateTime updateDate, Administrator administrator) {
+    public Voucher(UUID id, String voucherName, int value, Date startDate, Date endDate, LocalDateTime updateDate, Staff staff) {
         this.id = id;
         this.voucherName = voucherName;
         this.value = value;
         this.startDate = startDate;
         this.endDate = endDate;
         this.updateDate = updateDate;
-        this.administrator = administrator;
+        this.staff = staff;
     }
 
     public UUID getId() {
@@ -88,11 +88,11 @@ public class Voucher {
         this.updateDate = updateDate;
     }
 
-    public Administrator getAdministrator() {
-        return administrator;
+    public Staff getStaff() {
+        return staff;
     }
 
-    public void setAdministrator(Administrator administrator) {
-        this.administrator = administrator;
+    public void setStaff(Staff administrator) {
+        this.staff = administrator;
     }
 }

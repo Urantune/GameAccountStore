@@ -9,43 +9,31 @@ import java.util.UUID;
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", columnDefinition = "uniqueidentifier")
-    private UUID id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId", referencedColumnName = "id")
-    private GameAccount gameAccount;
-    @Column(name = "typeName", nullable = false)
-    private String typeName;
+    @Column(name = "typeId", columnDefinition = "uniqueidentifier")
+    private UUID typeId;
     @Column(name = "description")
     private String description;
     @Column(name = "status", nullable = false)
     private String status;
+    @Column(name = "typeName")
+    private String typeName;
 
     public Type() {
     }
 
-    public Type(UUID id, String status, String description, String categoryName, GameAccount gameAccount) {
-        this.id = id;
-        this.status = status;
+    public Type(UUID typeId, String description, String status, String typeName) {
+        this.typeId = typeId;
         this.description = description;
-        this.typeName = typeName;
-        this.gameAccount = gameAccount;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
         this.status = status;
+        this.typeName = typeName;
+    }
+
+    public UUID getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(UUID id) {
+        this.typeId = id;
     }
 
     public String getDescription() {
@@ -56,19 +44,19 @@ public class Type {
         this.description = description;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String categoryName) {
-        this.typeName = categoryName;
-    }
-
-    public GameAccount getGameAccount() {
-        return gameAccount;
-    }
-
-    public void setGameAccount(GameAccount gameAccount) {
-        this.gameAccount = gameAccount;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }
