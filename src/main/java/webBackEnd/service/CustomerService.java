@@ -10,6 +10,7 @@ import webBackEnd.entity.Customer;
 import webBackEnd.repository.CustomerRepositories;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service()
 public class CustomerService implements UserDetailsService {
@@ -30,5 +31,9 @@ public class CustomerService implements UserDetailsService {
 
     public List<Customer> findAllCustomers() {
         return customerRepositories.findAll();
+    }
+
+    public Customer findCustomerById(UUID customerId) {
+        return customerRepositories.findByCustomerId(customerId);
     }
 }

@@ -27,4 +27,8 @@ public class GameAccountService {
     public List<GameAccount> findAllByGameId(UUID gameId){
         return gameAccountRepositories.findAllByGame_GameId(gameId);
     }
+
+    public List<GameAccount> findGameAccountByGame(Game game){
+        return gameAccountRepositories.findAllByGame(game);
+    }
 }

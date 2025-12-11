@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Users</title>
+    <title>Manage Game Accounts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap -->
@@ -58,7 +58,7 @@
 <!-- TOP ORANGE BAR -->
 <div class="bar-top">
     <h4 class="text-white m-0">
-        <i class="bi bi-people-fill me-2"></i> Manage Users
+        <i class="bi bi-controller me-2"></i> Manage Game Accounts
     </h4>
 </div>
 
@@ -66,9 +66,13 @@
 <div class="content-wrapper container-fluid">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">User List</h5>
-        <a th:href="@{/adminHome}" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Back to Admin
+        <h5 class="mb-0">
+            Game Account List
+            <!-- nếu có truyền gameName thì hiện -->
+            <span th:if="${gameName != null}" th:text="' - ' + ${gameName}"></span>
+        </h5>
+        <a th:href="@{/admin/game-accounts}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Game Select
         </a>
     </div>
 
@@ -76,65 +80,80 @@
         <table class="table table-hover align-middle mb-0">
             <thead>
             <tr>
-                <th style="width: 60px;">#</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th style="width: 140px;">Status</th>
-                <th style="width: 160px;" class="text-center">Actions</th>
+                <th style="width: 50px;">#</th>
+                <th>Game Account</th>
+                <th>Game</th>
+                <th style="width: 100px;">Price</th>
+                <th style="width: 100px;">Rank</th>
+                <th style="width: 90px;">Skins</th>
+                <th style="width: 90px;">Level</th>
+                <th style="width: 120px;">Status</th>
+                <th style="width: 190px;" class="text-center">Actions</th>
             </tr>
             </thead>
+
             <tbody>
-            <tr th:each="u, index : ${listUser}">
+            <tr th:each="g, index : ${listGame}">
                 <td th:text="${index.index + 1}"></td>
 
-                <!-- username -->
-                <td th:text="${u.username}">username</td>
+                <!-- gameAccount (tên acc game) -->
+                <td th:text="${g.gameAccount}">GameAccount001</td>
 
-                <!-- email -->
-                <td th:text="${u.email}">email@example.com</td>
+                <!-- game name (nếu có quan hệ Game) -->
+                <td th:text="${g.game != null ? g.game.gameName : 'N/A'}">AOV</td>
+
+                <!-- price -->
+                <td th:text="${g.price}">100000</td>
+
+                <!-- rank -->
+                <td th:text="${g.rank}">Diamond</td>
+
+                <!-- skins -->
+                <td th:text="${g.skin}">50</td>
+
+                <!-- level -->
+                <td th:text="${g.lovel}">30</td>
 
                 <!-- status -->
                 <td>
-        <span class="badge badge-status"
-              th:classappend="${u.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
-              th:text="${u.status}">
-        </span>
+                    <span class="badge badge-status"
+                          th:classappend="${g.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
+                          th:text="${g.status}">
+                    </span>
                 </td>
 
                 <!-- Actions -->
                 <td class="text-center">
 
                     <!-- INFO button -->
-                    <a th:href="@{'/adminHome/users/' + ${u.customerId}}"
+                    <a th:href="@{'/adminHome/gameDetail/{id}'(id=${g.id})}"
                        class="btn btn-sm btn-outline-primary me-1"
                        title="View Info">
                         <i class="bi bi-info-circle"></i>
                     </a>
 
                     <!-- CLOCK button -->
-                    <a th:href="@{'/admin/users/history/' + ${u.customerId}}"
+                    <a th:href="@{'/admin/game-accounts/history/' + ${g.id}}"
                        class="btn btn-sm btn-outline-secondary me-1"
                        title="History / Activities">
                         <i class="bi bi-clock-history"></i>
                     </a>
 
                     <!-- EDIT button -->
-                    <a th:href="@{'/adminHome/editusers/' + ${u.customerId}}"
+                    <a th:href="@{'/admin/game-accounts/edit/' + ${g.id}}"
                        class="btn btn-sm btn-outline-warning"
-                       title="Edit User">
+                       title="Edit Game Account">
                         <i class="bi bi-pencil-square"></i>
                     </a>
 
                 </td>
-
             </tr>
 
             <!-- If list empty -->
-            <tr th:if="${#lists.isEmpty(listUser)}">
-                <td colspan="5" class="text-center text-muted py-4">No users found.</td>
+            <tr th:if="${#lists.isEmpty(listGameAccount)}">
+                <td colspan="9" class="text-center text-muted py-4">No game accounts found.</td>
             </tr>
             </tbody>
-
         </table>
     </div>
 </div>
