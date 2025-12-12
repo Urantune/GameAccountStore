@@ -6,12 +6,20 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import webBackEnd.entity.*;
 import webBackEnd.service.*;
+import webBackEnd.successfullyDat.PathCheck;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -37,6 +45,10 @@ public class HomeAdminController {
 
     @Autowired
     private AdministratorService administratorService;
+
+
+    @Autowired
+    private PathCheck pathCheck;
 
 
     @GetMapping("")
@@ -291,61 +303,113 @@ public class HomeAdminController {
 
 
 
+
+
+
+
     @GetMapping("/createGameAccount")
-    public String showCreateGameAccountForm(Model model) {
+    public String createGameAccountForm(Model model) {
 
-        GameAccount gameAccount = new GameAccount();
-        gameAccount.setStatus("ACTIVE");
-        gameAccount.setClassify("STUDENT");
-
-        model.addAttribute("gameAccount", gameAccount);
 
         model.addAttribute("games", gameService.findAllGame());
+
+
         model.addAttribute("types", typeService.getAllType());
 
-        model.addAttribute("ranks", java.util.List.of(
-                "UNRANKED",
-                "BRONZE III", "BRONZE II", "BRONZE I",
-                "SILVER III", "SILVER II", "SILVER I",
-                "GOLD III", "GOLD II", "GOLD I",
-                "PLATINUM III", "PLATINUM II", "PLATINUM I",
-                "DIAMOND III", "DIAMOND II", "DIAMOND I",
-                "MASTER", "CONQUEROR"
+
+        model.addAttribute("classifyList", List.of(
+                "STUDENT",
+                "BUDGET",
+                "PREMIUM",
+                "VIP"
         ));
 
-        model.addAttribute("classifies", java.util.List.of("STUDENT", "PREMIUM", "VIP", "BUDGET"));
 
-        return "admin/CreateGameAccount";
+        List<String> rankAOV = List.of(
+                "UNRANKED",
+                "BRONZE III","BRONZE II","BRONZE I",
+                "SILVER III","SILVER II","SILVER I",
+                "GOLD III","GOLD II","GOLD I",
+                "PLATINUM III","PLATINUM II","PLATINUM I",
+                "DIAMOND III","DIAMOND II","DIAMOND I",
+                "MASTER","CONQUEROR"
+        );
+
+
+        List<String> rankFF = List.of(
+                "BRONZE",
+                "SILVER",
+                "GOLD",
+                "PLATINUM",
+                "DIAMOND",
+                "HEROIC",
+                "GRANDMASTER"
+        );
+
+        model.addAttribute("rankAOV", rankAOV);
+        model.addAttribute("rankFF", rankFF);
+
+        model.addAttribute("gameAccount", new GameAccount());
+
+        return "admin/GameAccountCreate";
     }
+
 
     @PostMapping("/saveNewGameAccount")
     public String saveNewGameAccount(
-            @ModelAttribute("gameAccount") GameAccount form,
+            @RequestParam("gameAccount") String gameAccountName,
+            @RequestParam("gamePassword") String gamePassword,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("description") String description,
+            @RequestParam("classify") String classify,
+            @RequestParam("status") String status,
+            @RequestParam(value = "duration", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime duration,
+            @RequestParam("rank") String rank,
+            @RequestParam("skin") int skin,
+            @RequestParam("lovel") int lovel,
+            @RequestParam("vip") int vip,
             @RequestParam("gameId") UUID gameId,
-            @RequestParam("category") String category
-    ) {
+            @RequestParam("typeId") UUID typeId,
+            @RequestParam("imageFile") MultipartFile imageFile
+    ) throws IOException {
 
         Game game = gameService.findById(gameId);
-        if (game == null) {
-            throw new RuntimeException("Game not found with id: " + gameId);
-        }
+        Type type = typeService.findById(typeId);
 
-        Type type = typeService.findByTypeName(category);
-        if (type != null) {
-            game.setTypeId(type);
-        }
+        GameAccount ga = new GameAccount();
+        ga.setGameAccount(gameAccountName);
+        ga.setGamePassword(gamePassword);
+        ga.setPrice(price);
+        ga.setDescription(description);
+        ga.setClassify(classify);
+        ga.setStatus(status);
+        ga.setDuration(duration);
+        ga.setRank(rank);
+        ga.setSkin(skin);
+        ga.setLovel(lovel);
+        ga.setItems(vip);
+        ga.setCreatedDate(LocalDateTime.now());
+        ga.setGame(game);
 
-        form.setId(null);
-        form.setGame(game);
-        form.setCreatedDate(LocalDateTime.now());
-        form.setUpdatedDate(LocalDateTime.now());
+        String folder = game.getGameName().equalsIgnoreCase("AOV") ? "aov/" : "ff/";
 
-        gameAccountService.save(form);
+        UUID newId = UUID.randomUUID();
+        ga.setId(newId);
+
+        String fileName = newId + ".jpg";
+        String base = pathCheck.getBaseDir();
+        String savePath = base + folder;
+
+        Files.createDirectories(Paths.get(savePath));
+        Files.write(Paths.get(savePath + fileName), imageFile.getBytes());
+
+        ga.setImageMain(folder + fileName);
+
+        gameAccountService.save(ga);
 
         return "redirect:/adminHome/gameList?nameGame=" + game.getGameName();
     }
-
-
 
 
 
