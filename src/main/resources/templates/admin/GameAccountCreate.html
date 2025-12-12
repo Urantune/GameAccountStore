@@ -77,16 +77,18 @@
                     </select>
                 </div>
 
+
                 <!-- TYPE -->
                 <div class="col-md-6">
                     <label>Type</label>
                     <select name="typeId" class="form-select">
                         <option th:each="t : ${types}"
-                                th:value="${t.id}"
-                                th:text="${t.categoryName}">
+                                th:value="${t.typeId}"
+                                th:text="${t.getTypeName()}">
                         </option>
                     </select>
                 </div>
+
 
                 <!-- RANK -->
                 <div class="col-md-6">
@@ -140,29 +142,36 @@
 
 </div>
 
-<script>
+<script th:inline="javascript">
     const rankAOV = /*[[${rankAOV}]]*/ [];
     const rankFF  = /*[[${rankFF}]]*/ [];
 
     const gameSelect = document.getElementById("gameSelect");
     const rankSelect = document.getElementById("rankSelect");
 
+    function resetRank() {
+        rankSelect.innerHTML = '<option value="">-- Select Rank --</option>';
+    }
+
     gameSelect.addEventListener("change", function() {
-        const gameName = this.selectedOptions[0].text.trim().toUpperCase();
-        rankSelect.innerHTML = "";
+        const gameName = this.selectedOptions[0].textContent.trim().toUpperCase();
+        resetRank();
 
         let ranks = [];
-
         if (gameName === "AOV") ranks = rankAOV;
-        if (gameName === "FF" || gameName === "FREE FIRE") ranks = rankFF;
+        else if (gameName === "FF" || gameName === "FREE FIRE") ranks = rankFF;
 
         ranks.forEach(r => {
-            let op = document.createElement("option");
+            const op = document.createElement("option");
+            op.value = r;
             op.textContent = r;
             rankSelect.appendChild(op);
         });
     });
+
+    resetRank();
 </script>
+
 
 </body>
 </html>

@@ -363,53 +363,49 @@ public class HomeAdminController {
             @RequestParam("description") String description,
             @RequestParam("classify") String classify,
             @RequestParam("status") String status,
-            @RequestParam(value = "duration", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime duration,
             @RequestParam("rank") String rank,
             @RequestParam("skin") int skin,
             @RequestParam("lovel") int lovel,
             @RequestParam("vip") int vip,
             @RequestParam("gameId") UUID gameId,
-            @RequestParam("typeId") UUID typeId,
             @RequestParam("imageFile") MultipartFile imageFile
     ) throws IOException {
 
         Game game = gameService.findById(gameId);
-        Type type = typeService.findById(typeId);
 
         GameAccount ga = new GameAccount();
+        ga.setGame(game);
+
         ga.setGameAccount(gameAccountName);
         ga.setGamePassword(gamePassword);
         ga.setPrice(price);
         ga.setDescription(description);
         ga.setClassify(classify);
         ga.setStatus(status);
-        ga.setDuration(duration);
         ga.setRank(rank);
         ga.setSkin(skin);
         ga.setLovel(lovel);
         ga.setItems(vip);
         ga.setCreatedDate(LocalDateTime.now());
-        ga.setGame(game);
+
+
+        gameAccountService.save(ga);
+
 
         String folder = game.getGameName().equalsIgnoreCase("AOV") ? "aov/" : "ff/";
-
-        UUID newId = UUID.randomUUID();
-        ga.setId(newId);
-
-        String fileName = newId + ".jpg";
-        String base = pathCheck.getBaseDir();
-        String savePath = base + folder;
+        String fileName = ga.getId().toString().toUpperCase() + ".jpg";
+        String savePath = pathCheck.getBaseDir() + "img/" + folder;
 
         Files.createDirectories(Paths.get(savePath));
         Files.write(Paths.get(savePath + fileName), imageFile.getBytes());
 
-        ga.setImageMain(folder + fileName);
+        ga.setImageMain( folder + fileName);
 
-        gameAccountService.save(ga);
+
 
         return "redirect:/adminHome/gameList?nameGame=" + game.getGameName();
     }
+
 
 
 
