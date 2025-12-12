@@ -121,11 +121,12 @@
                 </td>
 
                 <td class="text-center">
-                    <a class="btn btn-sm btn-outline-dark"
-                       th:href="@{'/adminHome/orders/' + ${o.id}}"
-                       title="Settings">
+                    <a th:href="@{'/staffHome/approve/' + ${o.id}}"
+                       class="btn btn-sm btn-outline-dark"
+                       title="View Detail">
                         <i class="bi bi-gear"></i>
                     </a>
+
                 </td>
             </tr>
 

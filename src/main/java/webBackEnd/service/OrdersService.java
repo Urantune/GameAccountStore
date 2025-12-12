@@ -6,6 +6,7 @@ import webBackEnd.entity.Orders;
 import webBackEnd.repository.OrdersRepositories;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrdersService {
@@ -22,6 +23,15 @@ public class OrdersService {
 
     public List<Orders> findAllByStatus(String status){
         return ordersRepositories.findAllByStatus(status);
+    }
+
+
+    public Orders findById(UUID id) {
+        return ordersRepositories.findById(id).get();
+    }
+
+    public Orders save(Orders orders) {
+        return ordersRepositories.save(orders);
     }
 
 
