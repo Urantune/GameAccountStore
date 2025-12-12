@@ -337,10 +337,9 @@
                      </div>
                      <!-- Nút mua -->
                      <div class="d-flex mt-4">
-                         <button class="btn btn-dark me-2" type="button">
-                             <i class="bi-cart-fill me-1"></i> Buy now
-                         </button>
-
+                         <a th:href="@{/home/payment/{id}(id=${p.id})}" class="btn btn-dark">
+                             🛒 Buy Now
+                         </a>
                          <button class="btn btn-outline-dark" type="button">
                              <i class="bi-cart-fill me-1"></i> Add to cart
                          </button>
