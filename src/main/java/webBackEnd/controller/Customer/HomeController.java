@@ -2,6 +2,8 @@ package webBackEnd.controller.Customer;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -69,9 +71,32 @@ public class HomeController {
         return "customer/ProfileUser";
     }
 
-    @GetMapping("/news")
-    public String news(Model model) {
-        return "customer/news";
+
+    @GetMapping("/wallet")
+    public String wallet(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/home";
+        }
+
+        return "customer/wallet";
+    }
+
+    @GetMapping("/cart")
+    public String cart(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/home";
+        }
+
+        return "customer/cart";
+    }
+
+    @GetMapping("/depositMoney")
+    public String depositMoney(Model model) {
+        return "customer/depositMoney";
     }
 
 }
