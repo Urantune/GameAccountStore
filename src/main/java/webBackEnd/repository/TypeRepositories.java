@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface TypeRepositories extends JpaRepository<Type, UUID> {
 
     Type findByTypeId(UUID id);
+
+    Type findByTypeName(String name);
 }

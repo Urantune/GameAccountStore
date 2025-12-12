@@ -34,10 +34,13 @@ public class Customer {
     @Column(name = "role",nullable = false)
     private String role;
 
+    @Column(name = "balance")
+    private float balance;
+
     public Customer() {
     }
 
-    public Customer(UUID customerId, String username, String email, String password, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
+    public Customer(UUID customerId, String username, String email, String password,float balance, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
         this.customerId = customerId;
         this.username = username;
         this.email = email;
@@ -46,6 +49,7 @@ public class Customer {
         this.dateUpdated = dateUpdated;
         this.status = status;
         this.role = role;
+        this.balance = balance;
     }
 
     // Hàm tự set ngày khi tạo mới
@@ -124,5 +128,13 @@ public class Customer {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(float balance) {
+        this.balance = balance;
     }
 }

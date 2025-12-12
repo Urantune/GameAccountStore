@@ -76,6 +76,8 @@ public class RegisterController {
         user.setUsername(username);
         user.setEmail(email);
         user.setRole("Customer");
+        user.setStatus("ACTIVE");
+        user.setBalance(0);
         user.setPassword(hashPassword);
         customerRepositories.save(user);
         res.put("success", "Register successfully! Please login.");

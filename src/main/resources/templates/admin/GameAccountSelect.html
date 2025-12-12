@@ -108,9 +108,16 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0">Choose Game</h5>
-            <a th:href="@{/adminHome}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Back to Admin
-            </a>
+            <div class="d-flex gap-2">
+                <a th:href="@{/adminHome/createGameAccount}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-plus-circle me-1"></i>Create Game Account
+                </a>
+
+                <a th:href="@{/adminHome/gameSelect}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                </a>
+
+            </div>
         </div>
 
         <div class="row g-4 justify-content-center">
@@ -132,7 +139,7 @@
 
             <!-- FF -->
             <div class="col-md-6">
-                <a th:href="@{/adminHome/gameList(nameGame='FF')}">
+                <a th:href="@{/adminHome/gameList(nameGame='FREE FIRE')}">
 
                 <div class="game-card" style="background-image: url('/img/ff.jpg');">
 

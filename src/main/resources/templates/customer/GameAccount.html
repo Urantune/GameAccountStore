@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8">
-    <title>Cửa Hàng bán tài khoản Game</title>
+    <title>Cửa Hàng bán Tài Khoản Game</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -146,88 +146,119 @@
 </div>
 <!-- Spinner End -->
 
-<!-- Navbar & Hero Start -->
-<nav class="navbar navbar-expand-lg bg-white px-4 py-2 shadow-sm">
-    <div class="container-fluid">
 
+<!-- Navbar & Hero Start -->
+<nav class="navbar navbar-expand-lg  px-4 py-2 shadow-sm" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+    <div class="container-fluid">
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center" href="/home">
-            <img src="img/logoFinal.png" alt="Logo"
+            <img src="/img/logoFinal.png" alt="Logo"
                  style="height:100px; width:auto;">
         </a>
-
         <!-- Toggle button mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#mainNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <!-- Navbar Items -->
         <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav mx-auto align-items-center fw-semibold">
+            <ul class="navbar-nav mx-auto align-items-center fw-semibold" style="gap: 8px;">
 
-                <li class="nav-item mx-3">
-                    <a class="nav-link" href="/home">
-                        <i class="fa fa-th-large me-1"></i> Trang Chủ
+                <!-- Trang Chủ -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home">
+                        <i class="fa fa-home me-2"></i> Trang Chủ
                     </a>
                 </li>
 
-                <li class="nav-item dropdown mx-3">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-th-large me-1"></i> Lịch Sử Mua Tài Khoản
+                <!-- Lịch Sử Mua -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-shopping-cart me-2"></i> Lịch Sử Mua
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Free Fire</a></li>
-                        <li><a class="dropdown-item" href="#">AOV</a></li>
+                    <ul class="dropdown-menu shadow-sm rounded-3">
+                        <li><a class="dropdown-item py-2" href="#">Free Fire</a></li>
+                        <li><a class="dropdown-item py-2" href="#">AOV</a></li>
                     </ul>
                 </li>
 
-                <li class="nav-item dropdown mx-3">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-truck me-1"></i> Dịch Vụ Khác
+                <!-- Dịch Vụ Khác -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-tools me-2"></i> Dịch Vụ Khác
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Cày Thuê</a></li>
-                        <li><a class="dropdown-item" href="#">Cho Thuê Tài Khoản</a></li>
+                    <ul class="dropdown-menu shadow-sm rounded-3">
+                        <li><a class="dropdown-item py-2" href="#">Cày Thuê</a></li>
+                        <li><a class="dropdown-item py-2" href="#">Cho Thuê Tài Khoản</a></li>
                     </ul>
                 </li>
 
-                <li class="nav-item mx-3">
-                    <a class="nav-link" href="#">
-                        <i class="fa fa-user me-1"></i> Tài Khoản
+                <!-- Tài Khoản -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
+                        <i class="fa fa-user-circle me-2"></i> Tài Khoản
                     </a>
                 </li>
 
-                <li class="nav-item dropdown mx-3">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-credit-card me-1"></i> Nạp Tiền
+                <!-- Nạp Tiền -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-credit-card me-2"></i> Nạp Tiền
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Thẻ Cào</a></li>
-                        <li><a class="dropdown-item" href="#">Ngân Hàng</a></li>
+                    <ul class="dropdown-menu shadow-sm rounded-3">
+                        <li><a class="dropdown-item py-2" href="#">Thẻ Cào</a></li>
+                        <li><a class="dropdown-item py-2" href="#">Ngân Hàng</a></li>
                     </ul>
                 </li>
 
-                <li class="nav-item mx-3">
-                    <a class="nav-link" href="#">
-                        <i class="fa fa-coins me-1"></i> Dòng Tiền
+                <!-- Dòng Tiền -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
+                        <i class="fa fa-coins me-2"></i> Dòng Tiền
                     </a>
                 </li>
 
-                <li class="nav-item mx-3">
-                    <a class="nav-link" href="#">
-                        <i class="fa fa-newspaper me-1"></i> Tin Tức
+                <!-- Tin Tức -->
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
+                        <i class="fa fa-newspaper me-2"></i> Tin Tức
                     </a>
                 </li>
+
             </ul>
+            <style>
+                .hover-nav {
+                    transition: 0.2s ease-in-out;
+                }
 
+                .hover-nav:hover {
+                    background: #f5f5f5;
+                    color: #000 !important;
+                }
+
+                .nav-link {
+                    color: #222 !important;
+                    font-size: 15px;
+                }
+
+                .dropdown-menu {
+                    padding: 8px 0;
+                    border-radius: 12px !important;
+                }
+
+                .dropdown-item:hover {
+                    background-color: #f0f0f0;
+                    border-radius: 8px;
+                }
+
+            </style>
             <!-- User section -->
             <ul class="navbar-nav ms-auto d-flex align-items-center">
 
                 <!-- Khi chưa đăng nhập -->
                 <li class="nav-item dropdown" sec:authorize="isAnonymous()">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold">Khách</span>
                     </a>
                     <ul class="dropdown-menu dropdown-fix">
@@ -243,25 +274,149 @@
                         </li>
                     </ul>
                 </li>
-
-                <!-- Khi đã đăng nhập -->
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="img/customer.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
-                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
-                    </ul>
+<!--                &lt;!&ndash; Khi đã đăng nhập &ndash;&gt;-->
+<!--                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">-->
+<!--                    <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">-->
+<!--                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">-->
+<!--                        <span class="fw-semibold" th:text="${#authentication.name}"></span>-->
+<!--                    </a>-->
+<!--                    <ul class="dropdown-menu dropdown-fix">-->
+<!--                        <li><a class="dropdown-item" th:href="@{/home/profile/{id}(id=${currentUser.customerId})}">Thông tin tài khoản</a></li>-->
+<!--                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>-->
+<!--                    </ul>-->
                 </li>
-
             </ul>
-
         </div>
     </div>
 </nav>
 <!-- Navbar & Hero End -->
+
+<!-- Carousel Start -->
+<div class="container-fluid carousel bg-light px-0">
+    <div class="row g-0 justify-content-end">
+        <div class="col-12 col-lg-7 col-xl-9">
+            <div class="header-carousel owl-carousel bg-light py-5">
+                <div class="row g-0 header-carousel-item align-items-center">
+                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
+                        <img src="/img/lqdemo1.jpg" class="img-fluid w-100" alt="Image">
+                    </div>
+                    <div class="col-xl-6 carousel-content p-4">
+                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                            style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân </h4>
+                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
+                            giao dịch qua thẻ ngân hàng</h1>
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                           href="/home/game/e8301a2f-aeb4-42fb-9c3c-41b16d3dea8d">Mua ngay</a>
+                    </div>
+                </div>
+                <div class="row g-0 header-carousel-item align-items-center">
+                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
+                        <img src="/img/ffdemo1.jpg" class="img-fluid w-100" alt="Image">
+                    </div>
+                    <div class="col-xl-6 carousel-content p-4">
+                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                            style="letter-spacing: 3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
+                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
+                            giao dịch qua thẻ ngân hàng</h1>
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                           href="/home/game/b1cf2298-5c85-4fba-920b-63c028131163">Mua ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s">
+            <div class="carousel-header-banner h-100">
+                <img src="/img/lqdemo3.jpg" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Image">
+                <div class="carousel-banner-offer">
+                    <p class="text-primary fs-5 fw-bold mb-0">Ưu đãi đặc biệt</p>
+                </div>
+                <div class="carousel-banner">
+                    <div class="carousel-banner-content text-center p-4">
+                        <a href="#" class="d-block mb-2">Loại trang phục</a>
+                        <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
+                        <del class="me-2 text-white fs-5">2.500.000 VND</del>
+                        <span class="me-2 text-white fs-5">1.999.000 VND</span>
+                    </div>
+                    <a href="#" class="btn btn-primary rounded-pill py-2 px-4"><i
+                            class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ hàng</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Carousel End -->
+
+<!-- Services Start -->
+<div class="container-fluid px-0">
+    <div class="row g-0">
+        <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
+            <div class="p-4">
+                <div class="d-inline-flex align-items-center">
+                    <img src="/img/money.png" width="32" height="32" alt="money icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Miễn phí đổi trả</h6>
+                        <p class="mb-0">Chính sách hoàn tiền trong vòng 30 ngày!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/customer-service.png" width="32" height="32" alt="customer-service icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Hỗ trợ 24/7</h6>
+                        <p class="mb-0">Luôn sẵn sàng hỗ trợ bạn mọi lúc!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.4s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/atm-card.png" width="32" height="32" alt="atm-card icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Nhận mã giảm giá</h6>
+                        <p class="mb-0">Có thể nhận mã giảm giá khi mua hàng</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.5s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/padlock.png" width="32" height="32" alt="padlock icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Bảo mật thanh toán</h6>
+                        <p class="mb-0">Chúng tôi luôn đặt vấn đề này lên hàng đầu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.6s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/insurance.png" width="32" height="32" alt="insurance icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Dịch vụ online</h6>
+                        <p class="mb-0">Cho thuê tài khoản game theo sở thích!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
+            <div class="p-4">
+                <div class="d-flex align-items-center">
+                    <img src="/img/hot-sale.png" width="32" height="32" alt="hot-sale icon">
+                    <div class="ms-4">
+                        <h6 class="text-uppercase mb-2">Chiết khấu khi nạp tiền</h6>
+                        <p class="mb-0">Nhận được khuyến mãi khi nạp tiền vào shop qua ATM!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Searvices End -->
     <!-- Our Products Start -->
     <div class="container-fluid product py-5">
         <div class="container py-5">
@@ -314,38 +469,83 @@
 
 
 <!-- Footer Start -->
-<div class="container-fluid footer py-5" data-wow-delay="0.5s" style="background:#111;">
-    <div class="container py-4">
+<div class="container-fluid py-5" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+    <div class="container">
 
-        <!-- TOP SECTION -->
-        <div class="row g-4 text-center text-white align-items-center">
+        <div class="row g-4">
 
-            <!-- Logo + Text -->
-            <div class="col-lg-6 d-flex flex-column align-items-center">
-                <img src="img/logoFinal.png" class="footer-logo mb-3" style="width: 120px; height: auto;">
-                <h5 class="fw-bold">Shop Tài Khoản Game Giao Dịch Tự Động Uy Tín Số 1 Việt Nam.</h5>
-            </div>
-
-            <!-- Support -->
-            <div class="col-lg-6 text-white">
-                <h3 class="fw-bold">LIÊN HỆ HỖ TRỢ</h3>
-                <p class="mt-3 mb-4">
-                    Liên hệ ngay bộ phận CSKH để được tư vấn và giải đáp.
-                    Chúng tôi sẽ hỗ trợ và giải đáp yêu cầu của bạn sớm nhất có thể!
+            <!-- LOGO + INTRO -->
+            <div class="col-lg-4 col-md-6">
+                <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
+                <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
+                <p>
+                    Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>
+                    Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.
                 </p>
-
-                <div class="phone-btn">
-                    <i class="fa fa-phone"></i> 0923445566
+                <div class="d-flex mt-3 gap-3">
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
                 </div>
-
             </div>
+
+            <!-- SUPPORT -->
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
+
+                <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
+                <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>
+                <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
+
+                <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
+                    <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
+                </button>
+            </div>
+
+            <!-- QUICK LINKS -->
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
+                <ul class="footer-links">
+                    <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
+                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
+                </ul>
+            </div>
+
         </div>
-        <div class="footer-bottom mt-5 d-flex justify-content-between text-white">
-            <span>Phát triển bởi đội ngũ <strong>Urantune</strong></span>
-            <span>Phiên bản <strong>1.1</strong></span>
+
+        <!-- COPYRIGHT -->
+        <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
+            <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
+            <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
         </div>
+
     </div>
 </div>
+<style>
+    .footer-links {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+
+    .footer-links a {
+        color: #444;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .footer-links a:hover {
+        color: #ff8800;
+        padding-left: 4px;
+    }
+</style>
 <!-- Footer End -->
 
 

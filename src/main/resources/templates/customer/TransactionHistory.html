@@ -1,0 +1,270 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8"/>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
+<!--    <title>Lịch sử giao dịch | GameStore</title>-->
+
+<!--    &lt;!&ndash; Bootstrap &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>-->
+<!--    &lt;!&ndash; Bootstrap Icons + FontAwesome &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            background: #0a1525;-->
+<!--            color: #e2e8f0;-->
+<!--            font-family: "Segoe UI", sans-serif;-->
+<!--        }-->
+
+<!--        .card {-->
+<!--            background: #0f1c2e;-->
+<!--            border: 1px solid rgba(255, 255, 255, 0.08);-->
+<!--            border-radius: 16px;-->
+<!--        }-->
+
+<!--        h4 {-->
+<!--            color: #ffcc00;-->
+<!--            font-weight: 600;-->
+<!--        }-->
+
+<!--        .nav-pills .nav-link {-->
+<!--            color: #cbd5e1;-->
+<!--            background: rgba(255, 255, 255, 0.05);-->
+<!--            margin-right: 5px;-->
+<!--            border-radius: 10px;-->
+<!--            transition: all 0.2s ease;-->
+<!--        }-->
+
+<!--        .nav-pills .nav-link.active {-->
+<!--            background: linear-gradient(45deg, #ffcc00, #ffa600);-->
+<!--            color: #0f1c2e;-->
+<!--            font-weight: 600;-->
+<!--            box-shadow: 0 0 10px rgba(255, 204, 0, 0.6);-->
+<!--        }-->
+
+<!--        .table {-->
+<!--            border-radius: 12px;-->
+<!--            overflow: hidden;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
+
+<!--        .table thead {-->
+<!--            background: rgba(255, 255, 255, 0.08);-->
+<!--        }-->
+
+<!--        .table-hover tbody tr:hover {-->
+<!--            background: rgba(255, 255, 255, 0.05);-->
+<!--        }-->
+
+<!--        .fw-bold {-->
+<!--            font-weight: 600 !important;-->
+<!--        }-->
+
+<!--        .badge {-->
+<!--            padding: 6px 10px;-->
+<!--            font-size: 0.85rem;-->
+<!--            border-radius: 8px;-->
+<!--        }-->
+
+<!--        .tab-pane {-->
+<!--            animation: fadeIn .4s ease;-->
+<!--        }-->
+
+<!--        @keyframes fadeIn {-->
+<!--            from {-->
+<!--                opacity: 0;-->
+<!--                transform: translateY(5px);-->
+<!--            }-->
+<!--            to {-->
+<!--                opacity: 1;-->
+<!--                transform: translateY(0);-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container mt-5 mb-5">-->
+<!--    <div class="card p-4 shadow-sm">-->
+
+<!--        <div class="d-flex justify-content-between align-items-center mb-3">-->
+<!--            <h4 class="mb-0">-->
+<!--                <i class="bi bi-clock-history me-2"></i>Lịch sử giao dịch-->
+<!--            </h4>-->
+<!--            <div class="text-end small" th:if="${user != null}">-->
+<!--                <div>Tài khoản:</div>-->
+<!--                <div class="fw-bold" th:text="${user.username}">username</div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Tabs &ndash;&gt;-->
+<!--        <ul class="nav nav-pills mb-3" id="transactionTabs" role="tablist">-->
+<!--            <li class="nav-item">-->
+<!--                <button class="nav-link active" id="nap-tab" data-bs-toggle="pill" data-bs-target="#nap" type="button" role="tab">-->
+<!--                    <i class="bi bi-cash-stack me-1"></i> Nạp tiền-->
+<!--                </button>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <button class="nav-link" id="game-tab" data-bs-toggle="pill" data-bs-target="#game" type="button" role="tab">-->
+<!--                    <i class="bi bi-controller me-1"></i> Mua game-->
+<!--                </button>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <button class="nav-link" id="other-tab" data-bs-toggle="pill" data-bs-target="#other" type="button" role="tab">-->
+<!--                    <i class="bi bi-receipt-cutoff me-1"></i> Thanh toán khác-->
+<!--                </button>-->
+<!--            </li>-->
+<!--        </ul>-->
+
+<!--        &lt;!&ndash; Nội dung tab &ndash;&gt;-->
+<!--        <div class="tab-content">-->
+
+<!--            &lt;!&ndash; Lịch sử nạp &ndash;&gt;-->
+<!--            <div class="tab-pane fade show active" id="nap" role="tabpanel" aria-labelledby="nap-tab">-->
+<!--                <table class="table table-dark table-hover align-middle">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>#</th>-->
+<!--                        <th>Ngày</th>-->
+<!--                        <th>Số tiền</th>-->
+<!--                        <th>Hình thức</th>-->
+<!--                        <th>Trạng thái</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="item, iStat : ${topups}">-->
+<!--                        <td th:text="${iStat.index + 1}">1</td>-->
+
+<!--                        &lt;!&ndash; LocalDateTime -> #temporals &ndash;&gt;-->
+<!--                        <td th:text="${#temporals.format(item.transactionDate, 'dd/MM/yyyy HH:mm')}">20/11/2025 20:00</td>-->
+
+<!--                        <td th:text="${item.amount > 0-->
+<!--              ? '+' + #numbers.formatDecimal(item.amount, 0, 'POINT', 0, 'COMMA') + '₫'-->
+<!--              : #numbers.formatDecimal(item.amount, 0, 'POINT', 0, 'COMMA') + '₫'}"-->
+<!--                            th:classappend="${item.amount > 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}">-->
+<!--                        </td>-->
+
+
+<!--                        &lt;!&ndash; Loại giao dịch / phương thức &ndash;&gt;-->
+<!--                        <td th:text="${item.type}">VNPay</td>-->
+
+<!--                        &lt;!&ndash; Status: SUCCESS / PENDING / FAILED (ví dụ) &ndash;&gt;-->
+<!--                        <td>-->
+<!--                            <span th:classappend="${item.status == 'SUCCESS' ? 'badge bg-success' : (item.status == 'PENDING' ? 'badge bg-warning text-dark' : 'badge bg-secondary')}"-->
+<!--                                  th:text="${item.status}">-->
+<!--                                SUCCESS-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr th:if="${#lists.isEmpty(topups)}">-->
+<!--                        <td colspan="5" class="text-center text-light">Chưa có giao dịch nạp nào</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Lịch sử mua game &ndash;&gt;-->
+<!--            <div class="tab-pane fade" id="game" role="tabpanel" aria-labelledby="game-tab">-->
+<!--                <table class="table table-dark table-hover align-middle">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>#</th>-->
+<!--                        <th>Tên game</th>-->
+<!--                        <th>Ngày mua</th>-->
+<!--                        <th>Giá</th>-->
+<!--                        <th>Trạng thái</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="item, iStat : ${purchases}">-->
+<!--                        <td th:text="${iStat.index + 1}">1</td>-->
+
+<!--                        <td th:text="${item.game.gameName}">Game name</td>-->
+
+<!--                        &lt;!&ndash; UserGame.purchaseDate (LocalDateTime) &ndash;&gt;-->
+<!--                        <td th:text="${#temporals.format(item.purchaseDate, 'dd/MM/yyyy HH:mm')}">20/11/2025 21:00</td>-->
+
+<!--                        <td class="text-danger fw-bold"-->
+<!--                            th:text="${'-' + #numbers.formatDecimal(item.purchasePrice, 0, 'POINT', 0, 'COMMA') + '₫'}">-->
+<!--                            -150.000₫-->
+<!--                        </td>-->
+
+<!--                        <td>-->
+<!--    <span th:if="${item.status == 'owned'}"-->
+<!--          class="badge bg-success"-->
+<!--          th:text="'Hoàn tất'">-->
+<!--    </span>-->
+
+<!--                            <span th:if="${item.status == 'wait' or item.status == 'waitPay'}"-->
+<!--                                  class="badge bg-warning text-dark"-->
+<!--                                  th:text="'Đang xử lý'">-->
+<!--    </span>-->
+
+<!--                            <span th:if="${item.status != 'owned' and item.status != 'wait' and item.status != 'waitPay'}"-->
+<!--                                  class="badge bg-secondary"-->
+<!--                                  th:text="'Hủy'">-->
+<!--    </span>-->
+<!--                        </td>-->
+
+<!--                    </tr>-->
+<!--                    <tr th:if="${#lists.isEmpty(purchases)}">-->
+<!--                        <td colspan="5" class="text-center text-light">Chưa có giao dịch mua game nào</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Lịch sử thanh toán khác / hoàn tiền &ndash;&gt;-->
+<!--            <div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="other-tab">-->
+<!--                <table class="table table-dark table-hover align-middle">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>#</th>-->
+<!--                        <th>Ngày</th>-->
+<!--                        <th>Nội dung</th>-->
+<!--                        <th>Số tiền</th>-->
+<!--                        <th>Trạng thái</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr th:each="item, iStat : ${refunds}">-->
+<!--                        <td th:text="${iStat.index + 1}">1</td>-->
+
+<!--                        &lt;!&ndash; Ngày giao dịch &ndash;&gt;-->
+<!--                        <td th:text="${#temporals.format(item.transactionDate, 'dd/MM/yyyy HH:mm')}">21/11/2025 09:30</td>-->
+
+<!--                        &lt;!&ndash; Mô tả &ndash;&gt;-->
+<!--                        <td th:text="${item.description}">Hoàn tiền giao dịch #123</td>-->
+
+<!--                        &lt;!&ndash; Số tiền: >0 là + (xanh), <=0 là - (đỏ) &ndash;&gt;-->
+<!--                        <td th:text="${item.amount > 0 ? '+' + #numbers.formatDecimal(item.amount, 0, 'POINT', 0, 'COMMA') + '₫' : #numbers.formatDecimal(item.amount, 0, 'POINT', 0, 'COMMA') + '₫'}"-->
+<!--                            th:classappend="${item.amount > 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}">-->
+<!--                            +50.000₫-->
+<!--                        </td>-->
+
+<!--                        &lt;!&ndash; FIXED: dùng 'or' thay vì '||' &ndash;&gt;-->
+<!--                        <td>-->
+<!--                            <span th:classappend="${item.status == 'Đã hoàn' or item.status == 'SUCCESS' ? 'badge bg-info text-dark' : 'badge bg-secondary'}"-->
+<!--                                  th:text="${item.status}">-->
+<!--                                Đã hoàn-->
+<!--                            </span>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr th:if="${#lists.isEmpty(refunds)}">-->
+<!--                        <td colspan="5" class="text-center text-light">Không có thanh toán nào khác</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Bootstrap JS &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--<script th:src="@{/Accest/JS/code.js}"></script>-->
+<!--</body>-->
+<!--</html>-->

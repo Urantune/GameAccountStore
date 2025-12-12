@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/register", "/register/**").permitAll()
                 .requestMatchers("/home", "/home/**").permitAll()
 
-                // 👉 CHO PHÉP /adminHome KHÔNG CẦN LOGIN
+                // CHO PHÉP /adminHome KHÔNG CẦN LOGIN
                 .requestMatchers("/adminHome", "/adminHome/**").permitAll()
 
                 // bảo vệ các URL khác

@@ -36,4 +36,12 @@ public class CustomerService implements UserDetailsService {
     public Customer findCustomerById(UUID customerId) {
         return customerRepositories.findByCustomerId(customerId);
     }
+    public void save(Customer customer){
+        customerRepositories.save(customer);
+    }
+
+    public Customer findCustomerByUsername(String username) {
+        return customerRepositories.findByUsername(username);
+    }
+
 }
