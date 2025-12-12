@@ -50,6 +50,7 @@ public class SecurityConfig {
 
                 // CHO PHÉP /adminHome KHÔNG CẦN LOGIN
                 .requestMatchers("/adminHome", "/adminHome/**").permitAll()
+                .requestMatchers("/staffHome", "/staffHome/**").permitAll()
 
                 // bảo vệ các URL khác
                 .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
