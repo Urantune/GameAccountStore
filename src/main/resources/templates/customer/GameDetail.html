@@ -337,13 +337,38 @@
                      </div>
                      <!-- Nút mua -->
                      <div class="d-flex mt-4">
-                         <a th:href="@{/home/payment/{id}(id=${p.id})}" class="btn btn-dark">
-                             🛒 Buy Now
+
+                         <!-- Nếu đã đăng nhập thì cho phép mua -->
+                         <a th:if="${#authorization.expression('isAuthenticated()')}"
+                            th:href="@{/home/payment/{id}(id=${p.id})}"
+                            class="btn btn-dark">
+                             🛒 Mua
                          </a>
-                         <button class="btn btn-outline-dark" type="button">
-                             <i class="bi-cart-fill me-1"></i> Add to cart
+
+                         <!-- Nếu chưa login thì không cho chuyển trang, chỉ báo -->
+                         <button th:if="${#authorization.expression('!isAuthenticated()')}"
+                                 class="btn btn-dark"
+                                 type="button"
+                                 onclick="alert('Bạn cần đăng nhập trước khi mua hàng!')">
+                             🛒 Mua
+                         </button>
+                         <!-- Nút thêm giỏ hàng -->
+                         <button class="btn btn-outline-dark" type="button"
+                                 onclick="checkLoginAndAddToCart()">
+                             <i class="bi-cart-fill me-1"></i> Thêm giỏ hàng
                          </button>
                      </div>
+                     <script>
+                         function checkLoginAndAddToCart() {
+                             const isLogin = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
+                             if (!isLogin) {
+                                 alert("Bạn cần đăng nhập để thêm vào giỏ hàng!");
+                                 return;
+                             }
+                             // Nếu đã login thì gọi API thêm giỏ hàng tại đây
+                             alert("Đã thêm vào giỏ hàng!");
+                         }
+                     </script>
                  </div>
              </div>
          </div>
