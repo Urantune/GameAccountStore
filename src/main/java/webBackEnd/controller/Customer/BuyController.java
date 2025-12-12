@@ -1,17 +1,19 @@
 package webBackEnd.controller.Customer;
 
+import jakarta.servlet.http.HttpSession;
+import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.entity.Orders;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
+import webBackEnd.service.OrdersService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -19,6 +21,8 @@ import java.util.UUID;
 public class BuyController {
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private OrdersService ordersService;
 
     @Autowired
     private GameAccountService gameAccountService;
@@ -29,6 +33,12 @@ public class BuyController {
         model.addAttribute("games", game);
         return "customer/Payment";
     }
+
+//    @PostMapping("/order/confirm/{id}")
+//    public String requestOrders(@PathVariable("id") UUID id, @RequestParam("package") String packageName, HttpSession session, Model model){
+//
+//    }
+
 
 
 

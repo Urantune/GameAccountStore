@@ -54,7 +54,7 @@
                 </div>
             </div>
             <!-- Form -->
-            <form action="/order/confirm" method="post">
+            <form th:action="@{/home/order/confirm/{id}(id=${games.id})}" method="post">
                 <!-- Nút mở modal -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Gói thanh toán</label>
@@ -122,8 +122,6 @@
                 <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">
                     Xác Nhận Thanh Toán
                 </button>
-
-
             </form>
 
         </div>
