@@ -222,7 +222,9 @@
                 <div class="col-md-4">
                     <label class="form-label">Duration (expired at)</label>
                     <input type="datetime-local" class="form-control"
-                           th:field="*{duration}">
+                           name="duration"
+                           th:value="${gameAccount.duration}">
+
                 </div>
 
                 <!-- Created / Updated (readonly display) -->

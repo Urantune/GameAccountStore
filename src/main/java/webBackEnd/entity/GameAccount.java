@@ -26,7 +26,7 @@
         @Column(name = "updated")
         private LocalDateTime updatedDate;
         @Column(name = "durationAccount")
-        private LocalDateTime duration;
+        private String duration;
         @Column(name = "status")
         private String status;
         @Column(name = "classify")
@@ -53,7 +53,7 @@
         }
 
 
-        public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, LocalDateTime duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items) {
+        public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, String duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items) {
             this.gameAccountId = id;
             this.gameAccount = gameAccount;
             this.gamePassword = gamePassword;
@@ -128,11 +128,11 @@
             this.updatedDate = updatedDate;
         }
 
-        public LocalDateTime getDuration() {
+        public String getDuration() {
             return duration;
         }
 
-        public void setDuration(LocalDateTime duration) {
+        public void setDuration(String duration) {
             this.duration = duration;
         }
 
