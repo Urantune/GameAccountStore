@@ -148,30 +148,33 @@
 
 
 <!-- Navbar & Hero Start -->
-<nav class="navbar navbar-expand-lg  px-4 py-2 shadow-sm" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+<nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm"
+     style="background:#FFEED8; color:#222; border-top: 2px solid #e6d8c8;">
+
     <div class="container-fluid">
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center" href="/home">
             <img src="/img/logoFinal.png" alt="Logo"
                  style="height:100px; width:auto;">
         </a>
-        <!-- Toggle button mobile -->
+
+        <!-- Toggle -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#mainNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- Navbar Items -->
+
+        <!-- Items -->
         <div class="collapse navbar-collapse" id="mainNavbar">
+
             <ul class="navbar-nav mx-auto align-items-center fw-semibold" style="gap: 8px;">
 
-                <!-- Trang Chủ -->
                 <li class="nav-item">
                     <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home">
                         <i class="fa fa-home me-2"></i> Trang Chủ
                     </a>
                 </li>
 
-                <!-- Lịch Sử Mua -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
                         <i class="fa fa-shopping-cart me-2"></i> Lịch Sử Mua
@@ -182,7 +185,6 @@
                     </ul>
                 </li>
 
-                <!-- Dịch Vụ Khác -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
                         <i class="fa fa-tools me-2"></i> Dịch Vụ Khác
@@ -193,14 +195,12 @@
                     </ul>
                 </li>
 
-                <!-- Tài Khoản -->
                 <li class="nav-item">
                     <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
                         <i class="fa fa-user-circle me-2"></i> Tài Khoản
                     </a>
                 </li>
 
-                <!-- Nạp Tiền -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
                         <i class="fa fa-credit-card me-2"></i> Nạp Tiền
@@ -211,70 +211,61 @@
                     </ul>
                 </li>
 
-                <!-- Dòng Tiền -->
                 <li class="nav-item">
                     <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
                         <i class="fa fa-coins me-2"></i> Dòng Tiền
                     </a>
                 </li>
 
-                <!-- Tin Tức -->
                 <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
+                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home/news">
                         <i class="fa fa-newspaper me-2"></i> Tin Tức
                     </a>
                 </li>
 
             </ul>
+
+            <!-- Navbar styles -->
             <style>
+                .nav-link,
+                .dropdown-item,
+                .navbar-brand,
+                .navbar * {
+                    color: #000 !important;   /* toàn bộ text màu đen */
+                }
+
                 .hover-nav {
                     transition: 0.2s ease-in-out;
                 }
 
                 .hover-nav:hover {
-                    background: #f5f5f5;
-                    color: #000 !important;
-                }
-
-                .nav-link {
-                    color: #222 !important;
-                    font-size: 15px;
-                }
-
-                .dropdown-menu {
-                    padding: 8px 0;
-                    border-radius: 12px !important;
+                    background: #f5e6d7;
+                    color: #000 !important;   /* hover vẫn đen */
                 }
 
                 .dropdown-item:hover {
-                    background-color: #f0f0f0;
+                    background-color: #f5e6d7;
+                    color: #000 !important;   /* dropdown hover chữ đen */
                     border-radius: 8px;
                 }
-
             </style>
+
             <!-- User section -->
             <ul class="navbar-nav ms-auto d-flex align-items-center">
 
-                <!-- Khi chưa đăng nhập -->
+                <!-- Anonymous -->
                 <li class="nav-item dropdown" sec:authorize="isAnonymous()">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
                         <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold">Khách</span>
                     </a>
                     <ul class="dropdown-menu dropdown-fix">
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                Đăng nhập
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
-                                Đăng ký
-                            </a>
-                        </li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
                     </ul>
                 </li>
-                <!-- Khi đã đăng nhập -->
+
+                <!-- Authenticated -->
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
                         <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
@@ -285,10 +276,12 @@
                         <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
                     </ul>
                 </li>
+
             </ul>
         </div>
     </div>
 </nav>
+
 <!-- Navbar & Hero End -->
 
 <!-- Carousel Start -->

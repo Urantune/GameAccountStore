@@ -69,4 +69,9 @@ public class HomeController {
         return "customer/ProfileUser";
     }
 
+    @GetMapping("/news")
+    public String news(Model model) {
+        return "customer/news";
+    }
+
 }
