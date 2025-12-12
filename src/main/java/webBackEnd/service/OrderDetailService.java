@@ -22,5 +22,9 @@ public class OrderDetailService {
     public List<OrderDetail> findAllByOrderId(UUID orderId) {
         return orderDetailRepositories.findAllByOrderId(orderId);
     }
+
+    public OrderDetail findById(UUID id) {
+        return orderDetailRepositories.findById(id).get();
+    }
 }
 
