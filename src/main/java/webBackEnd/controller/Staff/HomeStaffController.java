@@ -13,4 +13,22 @@ public class HomeStaffController {
     public String homeStaff(Model model) {
         return "staff/StaffIndex";
     }
+
+    @GetMapping("/staffSelect")
+    public String selectStaff(Model model) {
+
+        model.addAttribute("AOV", "AOV");
+        model.addAttribute("FF", "FF");
+        return "staff/StaffSelect";
+    }
+
+    @GetMapping("/staffRentalSelect")
+    public String selectStaffRental(Model model) {
+
+        model.addAttribute("AOV", "AOV");
+        model.addAttribute("FF", "FF");
+        return "staff/StaffRentalSelect";
+    }
+
+
 }
