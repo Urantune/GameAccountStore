@@ -12,7 +12,7 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "walletId", columnDefinition = "uniqueidentifier")
-    private UUID id;
+    private UUID walletId;
     @OneToOne
     @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
     private Customer users;
@@ -22,55 +22,61 @@ public class Wallet {
     private LocalDateTime depositDate;
     @Column(name = "dateCreated",nullable = false)
     private LocalDateTime dateCreated;
+    @Column(name = "description",nullable = false)
+    private String description;
 
     public Wallet() {
     }
 
-    public Wallet(UUID id, Customer users, BigDecimal amount, LocalDateTime depositDate, LocalDateTime updatedAt) {
-        this.id = id;
+    public Wallet(UUID walletId, Customer users, BigDecimal amount, LocalDateTime depositDate, LocalDateTime dateCreated, String description) {
+        this.walletId = walletId;
         this.users = users;
         this.amount = amount;
         this.depositDate = depositDate;
-        this.dateCreated = updatedAt;
+        this.dateCreated = dateCreated;
+        this.description = description;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getWalletId() {
+        return walletId;
     }
-
-    public void setId(UUID id) {
-        this.id = id;
+    public void setWalletId(UUID walletId) {
+        this.walletId = walletId;
     }
-
     public Customer getUsers() {
         return users;
     }
-
     public void setUsers(Customer users) {
         this.users = users;
     }
-
     public BigDecimal getAmount() {
         return amount;
     }
-
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-
     public LocalDateTime getDepositDate() {
         return depositDate;
     }
-
     public void setDepositDate(LocalDateTime depositDate) {
         this.depositDate = depositDate;
     }
-
-    public LocalDateTime getUpdatedAt() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.dateCreated = updatedAt;
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
+
+
+
+
+
+
