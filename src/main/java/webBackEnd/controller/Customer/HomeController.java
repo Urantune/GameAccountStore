@@ -11,16 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.Game;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.service.CustomerService;
-import webBackEnd.service.GameAccountService;
+import webBackEnd.entity.*;
+import webBackEnd.service.*;
 
-import webBackEnd.service.GameService;
-import webBackEnd.service.OrderDetailService;
 import webBackEnd.successfullyDat.PathCheck;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +34,8 @@ public class HomeController {
     private GameService gameService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private OrdersService ordersService;
     @Autowired
     private OrderDetailService orderDetailService;
 
@@ -63,11 +61,17 @@ public class HomeController {
     @GetMapping("/profile/{id}")
     public String profile(Model model, @PathVariable("id") UUID id) {
         Customer customer = customerService.findCustomerById(id);
-        model.addAttribute("customer", customer);
+        List<Orders> order = ordersService.findAllByStatus("COMPLETED");
+        List<GameAccount> gameAccounts = new ArrayList<>();
+        for (Orders o : order) {
+            for (OrderDetail e : orderDetailService.findAllByOrderId(o.getId())) {
+                gameAccounts.add(e.getGameAccount());
+            }
+        }
         List<GameAccount> listGame =
                 orderDetailService.getAllBoughtAccounts(id);
-
-        model.addAttribute("listGame", listGame);
+        model.addAttribute("listGame", gameAccounts);
+        model.addAttribute("customer", customer);
         return "customer/ProfileUser";
     }
 
@@ -82,6 +86,7 @@ public class HomeController {
 
         return "customer/wallet";
     }
+
     @GetMapping("/depositMoney")
     public String depositMoney(Model model) {
         return "customer/depositMoney";

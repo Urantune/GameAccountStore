@@ -25,6 +25,10 @@ public class OrdersService {
         return ordersRepositories.findAllByStatus(status);
     }
 
+    public Orders findByStatus(String status){
+        return ordersRepositories.findByStatus(status);
+    }
+
 
     public Orders findById(UUID id) {
         return ordersRepositories.findById(id).get();

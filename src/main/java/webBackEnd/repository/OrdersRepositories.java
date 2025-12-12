@@ -13,6 +13,8 @@ public interface OrdersRepositories extends JpaRepository<Orders, UUID> {
 
     List<Orders> findAllByStatus(String status);
 
+    Orders findByStatus(String status);
+
 
 
 }
