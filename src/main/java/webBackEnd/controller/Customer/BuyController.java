@@ -26,19 +26,11 @@ public class BuyController {
     @GetMapping("/payment/{id}")
     public String checkout(@PathVariable("id") UUID id, Model model){
         GameAccount game = gameAccountService.findGameAccountById(id);
-        model.addAttribute("game", game);
+        model.addAttribute("games", game);
         return "customer/Payment";
     }
 
-//    @GetMapping("/buyGame/{id}")
-//    public String buyGame(Model model,@PathVariable UUID id) {
-//        GameAccount gameAccount = gameAccountService.findGameAccountById(id);
-//        Customer customer = customerService.findCustomerById(id);
-//        if(customer.getBalance()<){
-//
-//        }
-//
-//    }
+
 
 
 }
