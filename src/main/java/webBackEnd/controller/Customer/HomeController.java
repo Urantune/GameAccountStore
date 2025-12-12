@@ -82,18 +82,6 @@ public class HomeController {
 
         return "customer/wallet";
     }
-
-    @GetMapping("/cart")
-    public String cart(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            return "redirect:/home";
-        }
-
-        return "customer/cart";
-    }
-
     @GetMapping("/depositMoney")
     public String depositMoney(Model model) {
         return "customer/depositMoney";
