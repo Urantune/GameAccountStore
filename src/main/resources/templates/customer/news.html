@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game News</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f5f5;
+        }
+
+        /* NAVBAR - MÀU CAM */
+        .navbar-custom {
+            background: #ff6600 !important;
+            border-bottom: 1px solid #e05500;
+        }
+        .navbar-custom .nav-link {
+            color: white !important;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+        .navbar-custom .nav-link:hover {
+            color: #222 !important;
+        }
+        .navbar-custom img {
+            height: 80px;
+        }
+
+        /* NEWS CARD */
+        .news-card img {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .news-card {
+            transition: 0.3s;
+            border-radius: 12px;
+        }
+        .news-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .category-pill {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* FOOTER - MÀU XÁM */
+        .footer {
+            background: #dddddd !important;
+            color: #333 !important;
+        }
+        .footer-logo {
+            width: 130px;
+        }
+        .footer h3, .footer h5 {
+            color: #111 !important;
+        }
+        .footer .phone-btn {
+            background: #ff6600;
+            color: white;
+            padding: 10px 20px;
+            width: 200px;
+            margin: 0 auto;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+        .footer-bottom {
+            border-top: 1px solid #bbb;
+            padding-top: 15px;
+            color: #444 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<!--Model Login Start-->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Hiển thị lỗi -->
+                <div id="loginError" class="alert alert-danger d-none"></div>
+                <!--Khi submit form action gửi về SecurytiConfig kiểm tra-->
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="loginUsername" class="form-label">Username:</label>
+                        <input name="username" class="form-control" id="loginUsername"
+                               placeholder="Nhập username của bạn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Mật khẩu:</label>
+                        <input type="password" name="password" class="form-control" id="loginPassword"
+                               placeholder="Nhập mật khẩu" required>
+                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký
+                    ngay</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Model Login End-->
+
+
+<!--Model Register Start-->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div th:if="${error}" class="alert alert-danger">
+                    <span th:text="${error}"></span>
+                </div>
+                <div th:if="${success}" class="alert alert-success text-center">
+                    <p th:text="${success}"></p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Tên người dùng:</label>
+                        <input name="username" type="text" class="form-control" id="registerUsername"
+                               placeholder="Nhập tên người dùng" th:value="${username}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email:</label>
+                        <input name="email" type="email" class="form-control" id="registerEmail"
+                               placeholder="Nhập email" th:value="${email}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Mật khẩu:</label>
+                        <input name="password" type="password" class="form-control" id="registerPassword"
+                               placeholder="Tạo mật khẩu" th:value="${password}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword"
+                               placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
+                    </div>
+                    <div id="registerError" class="text-danger mt-2"></div>
+                    <div id="registerSuccess" class="text-success mt-2"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Model Register End-->
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm navbar-orange">
+    <div class="container-fluid">
+
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="img/logoFinal.png" alt="Logo"
+                 style="height:100px; width:auto;">
+        </a>
+
+        <!-- Toggle button mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Items -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center fw-semibold">
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/home">
+                        <i class="fa fa-th-large me-1"></i> Trang Chủ
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-th-large me-1"></i> Lịch Sử Mua Tài Khoản
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                        <li><a class="dropdown-item" href="#">AOV</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-truck me-1"></i> Dịch Vụ Khác
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Cày Thuê</a></li>
+                        <li><a class="dropdown-item" href="#">Cho Thuê Tài Khoản</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/home">
+                        <i class="fa fa-th-large me-1"></i> Tài Khoản
+                    </a>
+                </li>
+
+                <li class="nav-item dropdown mx-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fa fa-credit-card me-1"></i> Nạp Tiền
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Thẻ Cào</a></li>
+                        <li><a class="dropdown-item" href="#">Ngân Hàng</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-coins me-1"></i> Dòng Tiền
+                    </a>
+                </li>
+
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="/home/news">
+                        <i class="fa fa-newspaper me-1"></i> Tin Tức
+                    </a>
+                </li>
+            </ul>
+
+            <!-- User section -->
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+
+                <!-- Khi chưa đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Đăng nhập
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                Đăng ký
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Khi đã đăng nhập -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" th:href="@{/home/profile}">Thông tin tài khoản</a></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<!-- TITLE -->
+<div class="container mt-5 text-center">
+    <h1 class="fw-bold">NEWS 🔥</h1>
+    <p class="text-muted">Update breaking news everyday!</p>
+</div>
+
+
+<!-- NEWS LIST -->
+<div class="container mt-4 pb-5">
+    <div class="row g-4">
+
+        <!-- News Item 1 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card news-card shadow-sm p-2">
+                <img src="/img/nakquythuong.jpg" class="card-img-top">
+                <div class="card-body">
+                    <span class="category-pill bg-danger text-white">Hot News</span>
+                    <h5 class="fw-bold mt-2">Discount 30% in December!</h5>
+                    <p class="text-muted">Massive discounts on AOV accounts</p>
+                    <small class="text-secondary">🕒 10/12/2025</small>
+                    <a href="#" class="btn btn-primary w-100 mt-3">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- News Item 2 -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card news-card shadow-sm p-2">
+                <img src="/img/mp40.png" class="card-img-top">
+                <div class="card-body">
+                    <span class="category-pill bg-primary text-white">Bonus</span>
+                    <h5 class="fw-bold mt-2">Up to 11% via Banking Payment</h5>
+                    <p class="text-muted">From 10/12 to 28/12</p>
+                    <small class="text-secondary">🕒 09/12/2025</small>
+                    <a href="#" class="btn btn-primary w-100 mt-3">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- FOOTER -->
+<div class="container-fluid footer py-5" data-wow-delay="0.5s" style="background:#dddddd;">
+    <div class="container py-4">
+
+        <!-- TOP SECTION -->
+        <div class="row g-4 text-center text-white align-items-center">
+
+            <!-- Logo + Text -->
+            <div class="col-lg-6 d-flex flex-column align-items-center">
+                <img src="/img/logoFinal.png" class="footer-logo mb-3" style="width: 120px; height: auto;">
+                <h5 class="fw-bold">Shop Tài Khoản Game Giao Dịch Tự Động Uy Tín Số 1 Việt Nam.</h5>
+            </div>
+
+            <!-- Support -->
+            <div class="col-lg-6 text-black-50">
+                <h3 class="fw-bold">LIÊN HỆ HỖ TRỢ</h3>
+                <p class="mt-3 mb-4">
+                    Liên hệ ngay bộ phận CSKH để được tư vấn và giải đáp.
+                    Chúng tôi sẽ hỗ trợ và giải đáp yêu cầu của bạn sớm nhất có thể!
+                </p>
+
+                <div class="phone-btn">
+                    <i class="fa fa-phone"></i> 0923445566
+                </div>
+
+            </div>
+        </div>
+        <div class="footer-bottom mt-5 d-flex justify-content-between text-black-50">
+            <span>Phát triển bởi đội ngũ <strong>Urantune</strong></span>
+            <span>Phiên bản <strong>1.1</strong></span>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

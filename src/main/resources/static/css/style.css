@@ -1024,15 +1024,15 @@
 }
 
 .navbar .nav-link:hover {
-    color: #ff7f00 !important;  /* màu cam khi hover */
+    color: white !important;  /* màu cam khi hover */
 }
 
 .navbar .nav-link:focus {
-    color: #ff7f00 !important;  /* focus cũng màu cam */
+    color: white !important;  /* focus cũng màu cam */
 }
 
 .navbar .nav-link.active {
-    color: #ff7f00 !important;
+    color: white !important;
 }
 /*** navbar end ***/
 
@@ -1085,3 +1085,14 @@
     transform: translateY(-5px); /* hover nhẹ, tạo cảm giác sống động */
 }
 
+.navbar-orange {
+    background-color: #f28b30 ;
+}
+
+.navbar .nav-link {
+    color: white !important;
+}
+
+.navbar .dropdown-menu .dropdown-item {
+    color: black !important; /* dropdown stays readable */
+}

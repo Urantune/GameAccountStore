@@ -19,4 +19,5 @@ public interface CustomerRepositories extends JpaRepository<Customer, UUID> {
     Customer findByCustomerId(UUID customerId);
 
     Customer findByUsername(String username);
+
 }
