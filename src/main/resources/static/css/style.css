@@ -1,3 +1,24 @@
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    color: #444;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footer-links a:hover {
+    color: #ff8800;
+    padding-left: 4px;
+}
+
+
 
 /*** Spinner Start ***/
 /*** Spinner ***/

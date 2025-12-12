@@ -25,5 +25,14 @@ public class TypeService {
     }
 
 
+    public Type findByTypeName(String name) {
+        return  typeRepositories.findByTypeName(name);
+    }
+
+    public List<Type> getAllType(){
+        return typeRepositories.findAll();
+    }
+
+
 
 }

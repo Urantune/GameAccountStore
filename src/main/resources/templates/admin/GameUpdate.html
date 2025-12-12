@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Game Account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --orange: #ff7a2f;
+        }
+
+        body {
+            background: #f5f5f5;
+            font-family: "Roboto", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bar-top {
+            width: 100%;
+            height: 70px;
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            padding-left: 30px;
+        }
+
+        .bar-bottom {
+            width: 100%;
+            height: 70px;
+            background: var(--orange);
+            margin-top: auto;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            padding: 30px 40px 20px 40px;
+        }
+
+        .card-detail {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            padding: 25px 30px;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        .badge-status {
+            font-size: 0.85rem;
+        }
+
+        .value-readonly {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="bar-top">
+    <h4 class="text-white m-0">
+        <i class="bi bi-controller me-2"></i>Edit Game Account
+    </h4>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content-wrapper container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Game Account Information</h5>
+        <a th:href="@{/adminHome/gameAccountSelect}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to list
+        </a>
+    </div>
+
+    <form th:action="@{/adminHome/saveUpdate}"
+          th:object="${gameAccount}"
+          method="post">
+
+
+
+            <div class="row g-3">
+
+                <!-- ID (locked) -->
+                <div class="col-md-6">
+                    <label class="form-label">Game Account ID</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control value-readonly"
+                               th:value="*{id}" disabled>
+                        <span class="input-group-text bg-light">
+            <i class="bi bi-lock-fill"></i>
+        </span>
+                    </div>
+                    <!-- Hidden để vẫn gửi id lên server -->
+                    <input type="hidden" th:field="*{id}">
+                </div>
+
+
+                <!-- Game Username -->
+
+                <div class="col-md-6">
+                    <label class="form-label">Game Username</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control value-readonly"
+                               th:value="*{gameAccount}" disabled>
+                        <span class="input-group-text bg-light">
+            <i class="bi bi-lock-fill"></i>
+        </span>
+                    </div>
+                    <!-- Hidden để vẫn gửi username lên server nếu cần -->
+                    <input type="hidden" th:field="*{gameAccount}">
+                </div>
+
+
+                <!-- Game Password -->
+                <div class="col-md-6">
+                    <label class="form-label">Game Password</label>
+                    <input type="text" class="form-control"
+                           th:field="*{gamePassword}" placeholder="Game login password">
+                </div>
+
+                <!-- Price -->
+                <div class="col-md-6">
+                    <label class="form-label">Price</label>
+                    <input type="number" step="0.01" min="0"
+                           class="form-control"
+                           th:field="*{price}" placeholder="0.00">
+                </div>
+
+                <!-- Category (from Type) -->
+                <div class="col-md-6">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" name="category">
+                        <option th:value="'MOBA'"
+                                th:selected="${type.typeName == 'MOBA'}">
+                            MOBA
+                        </option>
+                        <option th:value="'BATTLE ROYALE'"
+                                th:selected="${type.typeName == 'BATTLE ROYALE'}">
+                            BATTLE ROYALE
+                        </option>
+                    </select>
+                </div>
+
+
+                <!-- Classify -->
+                <div class="col-md-6">
+                    <label class="form-label">Classify</label>
+                    <select class="form-select" th:field="*{classify}">
+                        <option value="STUDENT">STUDENT</option>
+                        <option value="PREMIUM">PREMIUM</option>
+                        <option value="VIP">VIP</option>
+                        <option value="BUDGET">BUDGET</option>
+                    </select>
+                </div>
+
+
+                <!-- Description -->
+                <div class="col-12">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" rows="3"
+                              th:field="*{description}"
+                              placeholder="Account details, champs, skins, notes..."></textarea>
+                </div>
+
+                <!-- Image main -->
+                <div class="col-md-6">
+                    <label class="form-label">Main Image Path</label>
+                    <input type="text" class="form-control"
+                           th:field="*{imageMain}" placeholder="e.g. img/aov/xxx.jpg">
+                </div>
+
+                <!-- Rank -->
+                <div class="col-md-6">
+                    <label class="form-label">Rank</label>
+                    <input type="text" class="form-control"
+                           th:field="*{rank}" placeholder="e.g. Diamond, Conqueror">
+                </div>
+
+                <!-- Skins -->
+                <div class="col-md-4">
+                    <label class="form-label">Skins</label>
+                    <input type="number" class="form-control"
+                           th:field="*{skin}" min="0">
+                </div>
+
+                <!-- Level -->
+                <div class="col-md-4">
+                    <label class="form-label">Level</label>
+                    <input type="number" class="form-control"
+                           th:field="*{lovel}" min="0">
+                </div>
+
+                <!-- VIP / Items -->
+                <div class="col-md-4">
+                    <label class="form-label">VIP / Items</label>
+                    <input type="number" class="form-control"
+                           th:field="*{items}" min="0">
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" th:field="*{status}">
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                        <option value="HIDDEN">HIDDEN</option>
+                    </select>
+                </div>
+
+                <!-- Duration -->
+                <div class="col-md-4">
+                    <label class="form-label">Duration (expired at)</label>
+                    <input type="datetime-local" class="form-control"
+                           th:field="*{duration}">
+                </div>
+
+                <!-- Created / Updated (readonly display) -->
+                <div class="col-md-4">
+                    <label class="form-label">Created Date</label>
+                    <input type="text" class="form-control value-readonly"
+                           th:value="${#temporals.format(gameAccount.createdDate, 'yyyy-MM-dd HH:mm:ss')}"
+                           readonly>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Last Updated</label>
+                    <input type="text" class="form-control value-readonly"
+                           th:value="${#temporals.format(gameAccount.updatedDate, 'yyyy-MM-dd HH:mm:ss')}"
+                           readonly>
+                </div>
+
+                <!-- Game name (from Game entity, readonly) -->
+                <div class="col-md-8">
+                    <label class="form-label">Game Name</label>
+                    <input type="text" class="form-control value-readonly"
+                           th:value="${game.gameName}" readonly>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i>Save
+                    </button>
+                    <a th:href="@{/adminHome/gameList(nameGame=${game.gameName})}"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bar-bottom"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -13,8 +13,8 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "orderId",columnDefinition = "uniqueidentifier",nullable = false)
     private UUID id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "userId", referencedColumnName = "customerId")
     private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voucherId", referencedColumnName = "voucherId")
