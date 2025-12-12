@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title>Staff Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap -->
@@ -22,7 +22,6 @@
             flex-direction: column;
         }
 
-        /* Top orange bar */
         .bar-top {
             width: 100%;
             height: 70px;
@@ -32,7 +31,6 @@
             padding-left: 30px;
         }
 
-        /* Bottom orange bar */
         .bar-bottom {
             width: 100%;
             height: 70px;
@@ -43,7 +41,6 @@
             z-index: 10;
         }
 
-        /* Center cards */
         .cards-wrapper {
             margin: auto;
             margin-top: 60px;
@@ -86,67 +83,52 @@
             background: var(--orange);
             color: white;
         }
-
     </style>
 </head>
 
 <body>
 
-<!-- TOP ORANGE BAR -->
 <div class="bar-top">
     <h4 class="text-white m-0">
-        <i class="bi bi-gear-fill me-2"></i>Admin Control Panel
+        <i class="bi bi-person-badge-fill me-2"></i>Staff
     </h4>
 </div>
 
-
-<!-- CARD SECTION CENTERED -->
 <div class="container cards-wrapper">
     <div class="row g-4 justify-content-center">
 
-        <!-- Users -->
         <div class="col-md-3">
             <div class="dash-card">
-                <i class="bi bi-people-fill icon-orange"></i>
-                <h5>Users</h5>
-                <a th:href="@{/adminHome/userList}" class="btn btn-orange mt-2">Access</a>
+                <i class="bi bi-bag-check-fill icon-orange"></i>
+                <h5>Manage Order</h5>
+                <a th:href="@{/staffHome/staffSelect}" class="btn btn-orange mt-2">Access</a>
             </div>
         </div>
 
-        <!-- Game Accounts -->
+        <!-- Manage Rental Orders -->
         <div class="col-md-3">
             <div class="dash-card">
-                <i class="bi bi-controller icon-orange"></i>
-                <h5>Game Accounts</h5>
-                <a th:href="@{/adminHome/gameSelect}" class="btn btn-orange mt-2">Access</a>
+                <i class="bi bi-clock-history icon-orange"></i>
+                <h5>Manage Rental Order</h5>
+                <a th:href="@{/staffHome/staffRentalSelect}" class="btn btn-orange mt-2">Access</a>
             </div>
         </div>
 
-        <!-- Vouchers -->
-        <div class="col-md-3">
-            <div class="dash-card">
-                <i class="bi bi-ticket-perforated icon-orange"></i>
-                <h5>Vouchers</h5>
-                <a th:href="@{/adminHome/listVoucher}" class="btn btn-orange mt-2">Access</a>
-            </div>
-        </div>
 
         <!-- Revenue -->
         <div class="col-md-3">
             <div class="dash-card">
                 <i class="bi bi-graph-up-arrow icon-orange"></i>
                 <h5>Revenue</h5>
-                <a href="#" class="btn btn-orange mt-2">Access</a>
+                <a th:href="@{/staff/revenue}" class="btn btn-orange mt-2">Access</a>
             </div>
         </div>
 
     </div>
 </div>
 
-<!-- BOTTOM ORANGE BAR -->
 <div class="bar-bottom"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
