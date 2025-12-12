@@ -66,6 +66,11 @@ public class ApproveController {
 
         Orders order = ordersService.findById(orderId);
 
+        List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
+        for(OrderDetail a:orderDetails){
+            a.getGameAccount().setStatus("IN USE");
+        }
+
         order.setStatus("COMPLETED");
         order.setStaff(
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
