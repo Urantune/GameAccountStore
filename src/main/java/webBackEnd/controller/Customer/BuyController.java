@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.entity.OrderDetail;
@@ -48,7 +49,7 @@ public class BuyController {
     }
 
     @PostMapping("/order/confirm/{gameId}")
-    public String confirmOrder(@PathVariable UUID gameId, @RequestParam("packageValues") String packageValues) {
+    public String confirmOrder(@PathVariable UUID gameId, @RequestParam("packageValues") String packageValues, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()
@@ -92,7 +93,10 @@ public class BuyController {
         detail.setOrder(savedOrder);
         detail.setGameAccount(game);
         orderDetailRepositories.save(detail);
-
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Thanh toán thành công! Vui lòng kiểm tra lịch sử giao dịch."
+        );
         return "redirect:/home";
     }
 
