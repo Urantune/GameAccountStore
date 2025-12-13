@@ -75,7 +75,6 @@
             <thead>
             <tr>
                 <th style="width: 60px;">#</th>
-
                 <th class="sortable" onclick="sortTable(1)">
                     Order ID <i class="bi bi-arrow-down-up"></i>
                 </th>
@@ -111,9 +110,7 @@
                 <td th:text="${#temporals.format(o.createdDate, 'dd/MM/yyyy HH:mm')}">12/12/2025 15:30</td>
 
                 <td class="text-end"
-                    th:text="${getQuantity.findAllByOrderId(o.id) != null ? getQuantity.findAllByOrderId(o.id) : getQuantity.findAllByOrderId(o.id)}">12/12/2025 15:30</td>)}">
-                    1
-                </td>
+                    th:text="${getQuantity.findAllByOrderId(o.id) != null ? getQuantity.findAllByOrderId(o.id) : getQuantity.findAllByOrderId(o.id)}">12/12/2025 15:30</td>
 
                 <td class="text-end"
                     th:text="${#numbers.formatDecimal(o.totalPrice, 1, 'COMMA', 0, 'POINT')}">
