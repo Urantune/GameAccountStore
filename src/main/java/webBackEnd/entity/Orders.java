@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "orderId",columnDefinition = "uniqueidentifier",nullable = false)
+    @Column(name = "orderId", columnDefinition = "uniqueidentifier", nullable = false)
     private UUID id;
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "customerId")
@@ -20,28 +20,26 @@ public class Orders {
     @JoinColumn(name = "voucherId", referencedColumnName = "voucherId")
     private Voucher voucher;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staffId",referencedColumnName = "staffId",nullable = false)
+    @JoinColumn(name = "staffId", referencedColumnName = "staffId", nullable = true)
     private Staff staff;
-    @Column(name = "totalPrice",nullable = false)
+    @Column(name = "totalPrice", nullable = false)
     private BigDecimal totalPrice;
-    @Column(name = "orderType",nullable = false)
-    private String type;
-    @Column(name = "createdDate",nullable = false)
+    @Column(name = "createdDate", nullable = false)
     private LocalDateTime createdDate;
     @Column(name = "status")
     private String status;
 
 
+
     public Orders() {
     }
 
-    public Orders(UUID id, Customer customer, Voucher voucher, Staff staff, BigDecimal totalPrice, String type, LocalDateTime createdDate, String status) {
+    public Orders(UUID id, Customer customer, Voucher voucher, Staff staff, BigDecimal totalPrice, LocalDateTime createdDate, String status) {
         this.id = id;
         this.customer = customer;
         this.voucher = voucher;
         this.staff = staff;
         this.totalPrice = totalPrice;
-        this.type = type;
         this.createdDate = createdDate;
         this.status = status;
     }
@@ -86,13 +84,6 @@ public class Orders {
         this.totalPrice = totalPrice;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;

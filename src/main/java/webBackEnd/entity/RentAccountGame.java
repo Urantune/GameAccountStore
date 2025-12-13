@@ -2,6 +2,7 @@ package webBackEnd.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import java.util.Date;
@@ -13,6 +14,8 @@ public class RentAccountGame {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "rentGameId")
     private UUID id;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId",nullable = false, referencedColumnName = "customerId")
     private Customer customer;
@@ -20,9 +23,9 @@ public class RentAccountGame {
     @JoinColumn(name = "gameAccountId",referencedColumnName = "gameAccountId",nullable = false)
     private GameAccount gameAccount;
     @Column(name = "dateStart")
-    private Date dateStart;
+    private LocalDateTime dateStart;
     @Column(name = "dateEnd")
-    private Date dateEnd;
+    private LocalDateTime dateEnd;
     @Column(name = "deception")
     private String deception;
     @Column(name = "status")
@@ -31,7 +34,7 @@ public class RentAccountGame {
     public RentAccountGame() {
     }
 
-    public RentAccountGame(UUID id, Customer customer, GameAccount gameAccount, Date dateStart, Date dateEnd, String deception, String status) {
+    public RentAccountGame(UUID id, Customer customer, GameAccount gameAccount, LocalDateTime LocalDateTimeStart, LocalDateTime dateEnd, String deception, String status) {
         this.id = id;
         this.customer = customer;
         this.gameAccount = gameAccount;
@@ -73,11 +76,11 @@ public class RentAccountGame {
         this.deception = deception;
     }
 
-    public Date getDateStart() {
+    public LocalDateTime getDateStart() {
         return dateStart;
     }
 
-    public void setDateStart(Date dateStart) {
+    public void setDateStart(LocalDateTime dateStart) {
         this.dateStart = dateStart;
     }
 
@@ -89,11 +92,11 @@ public class RentAccountGame {
         this.gameAccount = gameAccount;
     }
 
-    public Date getDateEnd() {
+    public LocalDateTime getDateEnd() {
         return dateEnd;
     }
 
-    public void setDateEnd(Date dateEnd) {
+    public void setDateEnd(LocalDateTime dateEnd) {
         this.dateEnd = dateEnd;
     }
 }

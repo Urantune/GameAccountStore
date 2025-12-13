@@ -1,5 +1,7 @@
 package webBackEnd.controller.Customer;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +25,7 @@ public class GameController {
     @Autowired
     private GameService gameService;
     @GetMapping("/game/{gameId}")
-    public String gameAOV(Model model, @PathVariable("gameId") UUID gameId){
+    public String gameAOV(Model model, @PathVariable("gameId") UUID gameId) {
         List<GameAccount> game = gameAccountService.findAllByGameId(gameId);
         model.addAttribute("gameId", game);
         return "customer/GameAccount";
