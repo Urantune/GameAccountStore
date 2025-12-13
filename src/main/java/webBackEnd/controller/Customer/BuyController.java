@@ -83,7 +83,7 @@ public class BuyController {
         order.setVoucher(null);
         order.setStaff(null);
         order.setTotalPrice(totalPrice);
-        order.setDuration(true);
+        order.setDuration(0);
         order.setCreatedDate(LocalDateTime.now());
         order.setStatus("WAIT");
 
