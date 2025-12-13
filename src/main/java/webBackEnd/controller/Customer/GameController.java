@@ -25,11 +25,24 @@ public class GameController {
     @Autowired
     private GameService gameService;
     @GetMapping("/game/{gameId}")
-    public String gameAOV(Model model, @PathVariable("gameId") UUID gameId) {
-        List<GameAccount> game = gameAccountService.findAllByGameId(gameId);
-        model.addAttribute("gameId", game);
+    public String gameAccount(Model model, @PathVariable UUID gameId) {
+
+        List<GameAccount> gameAccounts = gameAccountService.findAllByGameId(gameId);
+        Game game = gameService.findById(gameId);
+        UUID AOV_ID = UUID.fromString("E8301A2F-AEB4-42FB-9C3C-41B16D3DEA8D");
+        UUID FF_ID  = UUID.fromString("B1CF2298-5C85-4FBA-920B-63C028131163");
+        String title = "";
+        if (game.getGameId().equals(AOV_ID)) {
+            title = "Tài khoản Game AOV";
+        } else if (game.getGameId().equals(FF_ID)) {
+            title = "Tài khoản Game Free Fire";
+        }
+        model.addAttribute("pageTitle", title);
+        model.addAttribute("gameId", gameAccounts);
+
         return "customer/GameAccount";
     }
+
 
     @GetMapping("/gameDetail/{id}")
     public String gameDetail(@PathVariable UUID id, Model model) {
@@ -37,5 +50,6 @@ public class GameController {
         model.addAttribute("p", p);
         return "customer/GameDetail";
     }
+
 
 }

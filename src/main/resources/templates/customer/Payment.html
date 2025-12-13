@@ -148,133 +148,218 @@
 
 
 <!-- Navbar & Hero Start -->
-<nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm"
-     style="background:#FFEED8; color:#222; border-top: 2px solid #e6d8c8;">
-
+<nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="/home">
-            <img src="/img/logoFinal.png" alt="Logo"
-                 style="height:100px; width:auto;">
-        </a>
 
-        <!-- Toggle -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="/home">
+                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+            </a>
 
-        <!-- Items -->
-        <div class="collapse navbar-collapse" id="mainNavbar">
+            <!-- Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <ul class="navbar-nav mx-auto align-items-center fw-semibold" style="gap: 8px;">
+            <!-- MENU -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home">
-                        <i class="fa fa-home me-2"></i> Trang Chủ
-                    </a>
-                </li>
+                <!-- MENU GIỮA -->
+                <ul class="navbar-nav mx-auto align-items-center nav-center">
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#"
-                       data-bs-toggle="dropdown">
-                        <i class="fa fa-shopping-cart me-2"></i> Lịch Sử Mua
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-3">
-                        <li><a class="dropdown-item py-2" href="#">Free Fire</a></li>
-                        <li><a class="dropdown-item py-2" href="#">AOV</a></li>
-                    </ul>
-                </li>
+                    <!-- Trang chủ luôn cho phép -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill" href="/home">
+                            <i class="fa fa-home me-2"></i>Trang Chủ
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
-                        <i class="fa fa-user-circle me-2"></i> Tài Khoản
-                    </a>
-                </li>
+                    <!-- LỊCH SỬ MUA -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-pill dropdown-toggle require-login"
+                           href="#"
+                           data-bs-toggle="dropdown"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                        </a>
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home/wallet">
-                        <i class="fa fa-credit-card me-2"></i> Ví
-                    </a>
-                </li>
+                        <ul class="dropdown-menu dropdown-soft">
+                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                        </ul>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" th:href="@{/home/cart}">
-                        <i class="fa fa-coins me-2"></i> Giỏ Hàng
-                    </a>
-                </li>
+                    <!-- TÀI KHOẢN -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           href="/home/profile"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
+                        </a>
+                    </li>
 
+                    <!-- VÍ -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           href="/home/wallet"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-credit-card me-2"></i>Ví
+                        </a>
+                    </li>
 
-            </ul>
-
-            <!-- Navbar styles -->
-            <style>
-                .nav-link,
-                .dropdown-item,
-                .navbar-brand,
-                .navbar * {
-                    color: #000 !important; /* toàn bộ text màu đen */
-                }
-
-                .hover-nav {
-                    transition: 0.2s ease-in-out;
-                }
-
-                .hover-nav:hover {
-                    background: #f5e6d7;
-                    color: #000 !important; /* hover vẫn đen */
-                }
-
-                .dropdown-item:hover {
-                    background-color: #f5e6d7;
-                    color: #000 !important; /* dropdown hover chữ đen */
-                    border-radius: 8px;
-                }
-            </style>
-
-            <!-- User section -->
-            <ul class="navbar-nav ms-auto d-flex align-items-center">
-
-                <!-- Anonymous -->
-                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold">Khách</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng
-                            nhập</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng
-                            ký</a></li>
-                    </ul>
-                </li>
-
-                <!-- Authenticated -->
-
-                <li sec:authorize="isAuthenticated()">
-                    <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
-                    <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                    <a class="dropdown-item"
-                       th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
-                        Thông tin tài khoản
-                    </a>
-                </li>
+                    <!-- GIỎ HÀNG -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           th:href="@{/home/cart}"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                        </a>
+                    </li>
+                </ul>
 
 
+                <!-- Navbar styles -->
+                <style>
+                    .game-nav{
+                        background:pink;
+                        border-top:2px solid #e6d8c8;
+                        height:86px;
+                        display:flex;
+                        align-items:center;
+                    }
+
+                    .game-nav .container-fluid{
+                        display:flex;
+                        align-items:center;
+                    }
+
+                    .nav-logo{
+                        height:180px;
+                        width:auto;
+                    }
+
+                    .nav-center{
+                        gap:26px;
+                    }
+
+                    .game-nav .navbar-nav .nav-link{
+                        color: #111 !important;
+                        font-weight: 500;
+                    }
+
+                    .nav-pill{
+                        background: transparent;
+                        color: #000 !important;
+                        border: 1px solid transparent;
+                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+                    }
+
+                    .nav-pill:hover{
+                        color: #f7931e !important;
+                        background: #F8F8FF;
+                        box-shadow: none !important;
+                        transform: none !important;
+                    }
+
+                    .nav-pill{
+                        color: #111 !important;
+                        font-weight: 500;
+                        background: transparent;
+                    }
+
+                    .nav-pill:focus,
+                    .nav-pill:active{
+                        background: #f5e6d7 !important;
+                        color: #000 !important;
+                        box-shadow: none !important;
+                    }
+
+                    /* DROPDOWN */
+                    .dropdown-soft{
+                        border-radius:14px;
+                        padding:6px;
+                    }
+
+                    .nav-pill{
+                        border-radius: 18px !important;
+                        padding: 10px 18px !important;
+                    }
+
+                    .nav-pill:hover{
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+                    }
+
+                    .nav-pill:focus,
+                    .nav-pill:active{
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+                    }
+
+                </style>
+
+                <!-- Right: User -->
+                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+
+                    <!-- Anonymous -->
+                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                            <span class="fw-semibold">Khách</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-fix">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Authenticated -->
+
+                    <li sec:authorize="isAuthenticated()">
+                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                        <a class="dropdown-item"
+                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                            Thông tin tài khoản
+                        </a>
+                    </li>
+            </div>
             </ul>
         </div>
     </div>
 </nav>
-<!-- Navbar & Hero End -->
+<div id="loginAlert"
+     class="alert alert-warning text-center fw-semibold d-none"
+     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+</div>
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
 
-<style>
-    .auto-hide-alert {
-        max-width: 720px;
-        margin-left: auto;
-        margin-right: auto;
-        font-weight: 500;
+            if (!isLogged) {
+                e.preventDefault();
+                showLoginAlert();
+            }
+        });
+    });
+    function showLoginAlert() {
+        const alertBox = document.getElementById('loginAlert');
+
+        // hiện alert
+        alertBox.classList.remove('d-none');
+
+        // tự tắt sau 3 giây
+        setTimeout(() => {
+            alertBox.classList.add('d-none');
+        }, 3000);
     }
-</style>
+</script>
+
+<!-- Navbar & Hero End -->
 
 
 <!-- Single Page Header start -->
@@ -289,7 +374,7 @@
 <!-- Single Page Header End -->
 
 
-<div class="payment-box container my-5">
+ <div class="payment-box container my-5">
     <div class="mx-auto" style="max-width: 520px;">
         <div class="p-4 bg-white shadow-lg rounded-4">
 
@@ -311,7 +396,6 @@
 
                     <!-- INFO GRID -->
                     <div class="row g-2 mt-3">
-
                         <div class="col-6 col-md-4">
                             <div class="info-box">
                                 <span class="label">Price</span>
@@ -319,7 +403,6 @@
                                       th:text="${games.price}"></span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-4">
                             <div class="info-box">
                                 <span class="label">Rank</span>
@@ -327,7 +410,6 @@
                                       th:text="${games.rank}"></span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-4">
                             <div class="info-box">
                                 <span class="label">Skins</span>
@@ -335,7 +417,6 @@
                                       th:text="${games.skin}"></span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-4">
                             <div class="info-box">
                                 <span class="label">Level</span>
@@ -343,7 +424,6 @@
                                       th:text="${games.lovel}"></span>
                             </div>
                         </div>
-
                         <div class="col-6 col-md-4">
                             <div class="info-box">
                                 <span class="label">VIP</span>
@@ -351,14 +431,9 @@
                                       th:text="${games.items}"></span>
                             </div>
                         </div>
-
                     </div>
-
-
                 </div>
             </div>
-
-            <!-- ===== FORM ===== -->
             <form th:action="@{/home/order/confirm/{gameId}(gameId=${games.id})}"
                   method="post">
                 <!-- ===== MESSAGE ===== -->
@@ -366,23 +441,15 @@
                      class="alert alert-success text-center fw-semibold mb-3 auto-alert">
                     <span th:text="${successMessage}"></span>
                 </div>
-
                 <div th:if="${errorMessage}"
                      class="alert alert-danger text-center fw-semibold mb-3 auto-alert">
                     <span th:text="${errorMessage}"></span>
                 </div>
-
-
-
-
-                <!-- ===== RENT PACKAGE ===== -->
                 <div th:if="${games.duration == 'RENT'}"
                      class="border rounded-3 p-3 mb-3 bg-light">
-
                     <h6 class="fw-bold text-primary mb-2">
                         Chọn gói thuê
                     </h6>
-
                     <select id="new" class="form-select mb-2">
                         <option selected disabled>-- Chọn gói --</option>
                         <option>1 Tháng</option>
@@ -390,22 +457,17 @@
                         <option>3 Tháng (Giảm 15% theo giá gốc)</option>
                         <option>Vĩnh viễn</option>
                     </select>
-
                     <button type="button"
                             class="btn btn-primary w-100"
                             id="saveCountryBtn">
                         Xác nhận gói
                     </button>
                 </div>
-
-                <!-- ===== FIXED PRICE ===== -->
                 <div th:if="${games.duration != 'RENT'}"
                      class="alert alert-info text-center fw-semibold">
                     💰 Giá bán cố định:
                     <b th:text="${#numbers.formatDecimal(games.price,0,'COMMA',0,'POINT')} + ' đ'"></b>
                 </div>
-
-                <!-- ===== VOUCHER ===== -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Mã giảm giá
@@ -421,8 +483,6 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- ===== PAYMENT ===== -->
                 <div class="mb-3">
                     <label class="form-label fw-semibold">
                         Phương thức thanh toán
@@ -430,8 +490,6 @@
                     <input class="form-control" value="Ví GamePay" readonly>
                     <input type="hidden" name="paymentMethod" value="MOMO">
                 </div>
-
-                <!-- ===== TOTAL PRICE ===== -->
                 <div id="totalPriceBox"
                      class="mt-3 p-3 bg-light border rounded-3 d-none">
                     <h5 class="fw-bold text-center mb-0">
@@ -442,17 +500,13 @@
                               th:text="${#numbers.formatDecimal(games.price,0,'COMMA',0,'POINT')} + ' đ'">
                         </span>
                     </h5>
-
                     <input type="hidden" name="totalPrice" id="totalPriceInput">
                     <input type="hidden" name="packageValues" id="packageValues">
                 </div>
-
-                <!-- ===== SUBMIT ===== -->
                 <button type="submit"
                         class="btn btn-danger w-100 py-2 fw-bold mt-3">
                     Xác Nhận Thanh Toán
                 </button>
-
             </form>
         </div>
     </div>
@@ -489,7 +543,7 @@
 </style>
 
 <!-- Footer Start -->
-<div class="container-fluid py-5" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
     <div class="container">
 
         <div class="row g-4">

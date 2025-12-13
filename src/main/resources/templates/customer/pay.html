@@ -1,0 +1,873 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>Cửa Hàng bán Tài Khoản Game</title>-->
+<!--    <meta content="width=device-width, initial-scale=1.0" name="viewport">-->
+<!--    <meta content="" name="keywords">-->
+<!--    <meta content="" name="description">-->
+
+<!--    &lt;!&ndash; Google Web Fonts &ndash;&gt;-->
+<!--    <link rel="preconnect" th:href="@{https://fonts.googleapis.com}">-->
+<!--    <link rel="preconnect" th:href="@{https://fonts.gstatic.com}" crossorigin>-->
+<!--    <link-->
+<!--            th:href="@{https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap}"-->
+<!--            rel="stylesheet">-->
+
+<!--    &lt;!&ndash; Icon Font Stylesheet &ndash;&gt;-->
+<!--    <link rel="stylesheet" th:href="@{https://use.fontawesome.com/releases/v5.15.4/css/all.css}"/>-->
+<!--    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css}" rel="stylesheet">-->
+
+<!--    &lt;!&ndash; Libraries Stylesheet &ndash;&gt;-->
+<!--    <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">-->
+<!--    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">-->
+
+
+<!--    &lt;!&ndash; Customized Bootstrap Stylesheet &ndash;&gt;-->
+<!--    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">-->
+
+<!--    &lt;!&ndash; Template Stylesheet &ndash;&gt;-->
+<!--    <link th:href="@{/css/style.css}" rel="stylesheet">-->
+
+<!--    &lt;!&ndash; Template Swiper Img &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>-->
+
+<!--</head>-->
+
+<!--<body>-->
+<!--&lt;!&ndash;Model Login Start&ndash;&gt;-->
+<!--<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-dialog-centered">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header bg-primary text-white">-->
+<!--                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>-->
+<!--                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"-->
+<!--                        aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                &lt;!&ndash; Hiển thị lỗi &ndash;&gt;-->
+<!--                <div id="loginError" class="alert alert-danger d-none"></div>-->
+<!--                &lt;!&ndash;Khi submit form action gửi về SecurytiConfig kiểm tra&ndash;&gt;-->
+<!--                <form id="loginForm">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="loginUsername" class="form-label">Username:</label>-->
+<!--                        <input name="username" class="form-control" id="loginUsername"-->
+<!--                               placeholder="Nhập username của bạn" required>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="loginPassword" class="form-label">Mật khẩu:</label>-->
+<!--                        <input type="password" name="password" class="form-control" id="loginPassword"-->
+<!--                               placeholder="Nhập mật khẩu" required>-->
+<!--                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3 form-check">-->
+<!--                        <input type="checkbox" class="form-check-input" id="rememberMe">-->
+<!--                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>-->
+<!--                    </div>-->
+<!--                    <div class="d-grid gap-2">-->
+<!--                        <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--            <div class="modal-footer justify-content-center">-->
+<!--                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký-->
+<!--                    ngay</a>-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash;Model Login End&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;Model Register Start&ndash;&gt;-->
+<!--<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-dialog-centered">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header bg-primary text-white">-->
+<!--                <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>-->
+<!--                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"-->
+<!--                        aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <div th:if="${error}" class="alert alert-danger">-->
+<!--                    <span th:text="${error}"></span>-->
+<!--                </div>-->
+<!--                <div th:if="${success}" class="alert alert-success text-center">-->
+<!--                    <p th:text="${success}"></p>-->
+<!--                </div>-->
+
+<!--                <form id="registerForm">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="registerUsername" class="form-label">Tên người dùng:</label>-->
+<!--                        <input name="username" type="text" class="form-control" id="registerUsername"-->
+<!--                               placeholder="Nhập tên người dùng" th:value="${username}" required>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="registerEmail" class="form-label">Email:</label>-->
+<!--                        <input name="email" type="email" class="form-control" id="registerEmail"-->
+<!--                               placeholder="Nhập email" th:value="${email}" required>-->
+<!--                    </div>-->
+
+<!--                    <div class="mb-3">-->
+<!--                        <label for="registerPassword" class="form-label">Mật khẩu:</label>-->
+<!--                        <input name="password" type="password" class="form-control" id="registerPassword"-->
+<!--                               placeholder="Tạo mật khẩu" th:value="${password}" required>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>-->
+<!--                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword"-->
+<!--                               placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>-->
+<!--                    </div>-->
+<!--                    <div class="d-grid gap-2">-->
+<!--                        <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>-->
+<!--                    </div>-->
+<!--                    <div id="registerError" class="text-danger mt-2"></div>-->
+<!--                    <div id="registerSuccess" class="text-success mt-2"></div>-->
+<!--                </form>-->
+<!--            </div>-->
+
+<!--            <div class="modal-footer justify-content-center">-->
+<!--                <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash;Model Register End&ndash;&gt;-->
+
+<!--&lt;!&ndash; Spinner Start &ndash;&gt;-->
+<!--<div id="spinner"-->
+<!--     class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">-->
+<!--    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">-->
+<!--        <span class="sr-only">Loading...</span>-->
+<!--    </div>-->
+<!--</div>-->
+<!--&lt;!&ndash; Spinner End &ndash;&gt;-->
+
+
+<!--&lt;!&ndash; Navbar & Hero Start &ndash;&gt;-->
+<!--<nav class="navbar navbar-expand-lg game-nav shadow-sm">-->
+<!--    <div class="container-fluid">-->
+
+<!--        <div class="container-fluid">-->
+<!--            &lt;!&ndash; Logo &ndash;&gt;-->
+<!--            <a class="navbar-brand d-flex align-items-center" href="/home">-->
+<!--                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">-->
+<!--            </a>-->
+
+<!--            &lt;!&ndash; Toggle &ndash;&gt;-->
+<!--            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"-->
+<!--                    data-bs-target="#mainNavbar">-->
+<!--                <span class="navbar-toggler-icon"></span>-->
+<!--            </button>-->
+
+<!--            &lt;!&ndash; MENU &ndash;&gt;-->
+<!--            <div class="collapse navbar-collapse" id="mainNavbar">-->
+
+<!--                &lt;!&ndash; MENU GIỮA &ndash;&gt;-->
+<!--                <ul class="navbar-nav mx-auto align-items-center nav-center">-->
+
+<!--                    &lt;!&ndash; Trang chủ luôn cho phép &ndash;&gt;-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link nav-pill" href="/home">-->
+<!--                            <i class="fa fa-home me-2"></i>Trang Chủ-->
+<!--                        </a>-->
+<!--                    </li>-->
+
+<!--                    &lt;!&ndash; LỊCH SỬ MUA &ndash;&gt;-->
+<!--                    <li class="nav-item dropdown">-->
+<!--                        <a class="nav-link nav-pill dropdown-toggle require-login"-->
+<!--                           href="#"-->
+<!--                           data-bs-toggle="dropdown"-->
+<!--                           th:data-logged="${#authorization.expression('isAuthenticated()')}">-->
+<!--                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua-->
+<!--                        </a>-->
+
+<!--                        <ul class="dropdown-menu dropdown-soft">-->
+<!--                            <li><a class="dropdown-item" href="#">Free Fire</a></li>-->
+<!--                            <li><a class="dropdown-item" href="#">AOV</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+
+<!--                    &lt;!&ndash; TÀI KHOẢN &ndash;&gt;-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link nav-pill require-login"-->
+<!--                           href="/home/profile"-->
+<!--                           th:data-logged="${#authorization.expression('isAuthenticated()')}">-->
+<!--                            <i class="fa fa-user-circle me-2"></i>Tài Khoản-->
+<!--                        </a>-->
+<!--                    </li>-->
+
+<!--                    &lt;!&ndash; VÍ &ndash;&gt;-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link nav-pill require-login"-->
+<!--                           href="/home/wallet"-->
+<!--                           th:data-logged="${#authorization.expression('isAuthenticated()')}">-->
+<!--                            <i class="fa fa-credit-card me-2"></i>Ví-->
+<!--                        </a>-->
+<!--                    </li>-->
+
+<!--                    &lt;!&ndash; GIỎ HÀNG &ndash;&gt;-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link nav-pill require-login"-->
+<!--                           th:href="@{/home/cart}"-->
+<!--                           th:data-logged="${#authorization.expression('isAuthenticated()')}">-->
+<!--                            <i class="fa fa-coins me-2"></i>Giỏ Hàng-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+
+
+<!--                &lt;!&ndash; Navbar styles &ndash;&gt;-->
+<!--                <style>-->
+<!--                    .game-nav {-->
+<!--                        background: pink;-->
+<!--                        border-top: 2px solid #e6d8c8;-->
+<!--                        height: 86px;-->
+<!--                        display: flex;-->
+<!--                        align-items: center;-->
+<!--                    }-->
+
+<!--                    .game-nav .container-fluid {-->
+<!--                        display: flex;-->
+<!--                        align-items: center;-->
+<!--                    }-->
+
+<!--                    .nav-logo {-->
+<!--                        height: 180px;-->
+<!--                        width: auto;-->
+<!--                    }-->
+
+<!--                    .nav-center {-->
+<!--                        gap: 26px;-->
+<!--                    }-->
+
+<!--                    .game-nav .navbar-nav .nav-link {-->
+<!--                        color: #111 !important;-->
+<!--                        font-weight: 500;-->
+<!--                    }-->
+
+<!--                    .nav-pill {-->
+<!--                        background: transparent;-->
+<!--                        color: #000 !important;-->
+<!--                        border: 1px solid transparent;-->
+<!--                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;-->
+<!--                    }-->
+
+<!--                    .nav-pill:hover {-->
+<!--                        color: #f7931e !important;-->
+<!--                        background: #F8F8FF;-->
+<!--                        box-shadow: none !important;-->
+<!--                        transform: none !important;-->
+<!--                    }-->
+
+<!--                    .nav-pill {-->
+<!--                        color: #111 !important;-->
+<!--                        font-weight: 500;-->
+<!--                        background: transparent;-->
+<!--                    }-->
+
+<!--                    .nav-pill:focus,-->
+<!--                    .nav-pill:active {-->
+<!--                        background: #f5e6d7 !important;-->
+<!--                        color: #000 !important;-->
+<!--                        box-shadow: none !important;-->
+<!--                    }-->
+
+<!--                    /* DROPDOWN */-->
+<!--                    .dropdown-soft {-->
+<!--                        border-radius: 14px;-->
+<!--                        padding: 6px;-->
+<!--                    }-->
+
+<!--                    .nav-pill {-->
+<!--                        border-radius: 18px !important;-->
+<!--                        padding: 10px 18px !important;-->
+<!--                    }-->
+
+<!--                    .nav-pill:hover {-->
+<!--                        border-radius: 18px !important;-->
+<!--                        box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;-->
+<!--                    }-->
+
+<!--                    .nav-pill:focus,-->
+<!--                    .nav-pill:active {-->
+<!--                        border-radius: 18px !important;-->
+<!--                        box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;-->
+<!--                    }-->
+
+<!--                </style>-->
+
+<!--                &lt;!&ndash; Right: User &ndash;&gt;-->
+<!--                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">-->
+
+<!--                    &lt;!&ndash; Anonymous &ndash;&gt;-->
+<!--                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">-->
+<!--                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"-->
+<!--                           data-bs-toggle="dropdown">-->
+<!--                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">-->
+<!--                            <span class="fw-semibold">Khách</span>-->
+<!--                        </a>-->
+<!--                        <ul class="dropdown-menu dropdown-fix">-->
+<!--                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng-->
+<!--                                nhập</a></li>-->
+<!--                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"-->
+<!--                                   data-bs-target="#registerModal">Đăng ký</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+
+<!--                    &lt;!&ndash; Authenticated &ndash;&gt;-->
+
+<!--                    <li sec:authorize="isAuthenticated()">-->
+<!--                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">-->
+<!--                        <span class="fw-semibold" th:text="${#authentication.name}"></span>-->
+<!--                        <a class="dropdown-item"-->
+<!--                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">-->
+<!--                            Thông tin tài khoản-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--            </div>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+<!--<div id="loginAlert"-->
+<!--     class="alert alert-warning text-center fw-semibold d-none"-->
+<!--     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">-->
+<!--    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này-->
+<!--</div>-->
+<!--<script>-->
+<!--    document.querySelectorAll('.require-login').forEach(link => {-->
+<!--        link.addEventListener('click', function (e) {-->
+<!--            const isLogged = this.dataset.logged === 'true';-->
+
+<!--            if (!isLogged) {-->
+<!--                e.preventDefault();-->
+<!--                showLoginAlert();-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+
+<!--    function showLoginAlert() {-->
+<!--        const alertBox = document.getElementById('loginAlert');-->
+
+<!--        // hiện alert-->
+<!--        alertBox.classList.remove('d-none');-->
+
+<!--        // tự tắt sau 3 giây-->
+<!--        setTimeout(() => {-->
+<!--            alertBox.classList.add('d-none');-->
+<!--        }, 3000);-->
+<!--    }-->
+<!--</script>-->
+
+<!--&lt;!&ndash; Navbar & Hero End &ndash;&gt;-->
+
+
+<!--&lt;!&ndash; Single Page Header start &ndash;&gt;-->
+<!--<div class="container-fluid page-header py-5">-->
+<!--    <h1 class="text-center text-white display-6 wow fadeInUp" data-wow-delay="0.1s">Payment Page</h1>-->
+<!--    <ol class="breadcrumb justify-content-center mb-0 wow fadeInUp" data-wow-delay="0.3s">-->
+<!--        <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>-->
+<!--        <li class="breadcrumb-item"><a href="#">Pages</a></li>-->
+<!--        <li class="breadcrumb-item active text-white">Payment Page</li>-->
+<!--    </ol>-->
+<!--</div>-->
+<!--&lt;!&ndash; Single Page Header End &ndash;&gt;-->
+
+
+<!--<div class="container my-5">-->
+
+<!--    <h2 class="fw-bold mb-4 text-primary">-->
+<!--        Thanh toán đơn hàng-->
+<!--    </h2>-->
+
+<!--    &lt;!&ndash; ===== HEADER TABLE ===== &ndash;&gt;-->
+<!--    <div class="row fw-semibold text-muted border-bottom pb-2 mb-3">-->
+<!--        <div class="col-2">Name</div>-->
+<!--        <div class="col-2 text-center">Id Game</div>-->
+<!--        <div class="col-2 text-center">Rank</div>-->
+<!--        <div class="col-2 text-center">Skin</div>-->
+<!--        <div class="col-1 text-center">Level</div>-->
+<!--        <div class="col-1 text-center">Vip</div>-->
+<!--        <div class="col-1 text-center">Price</div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; ===== ITEM ROW ===== &ndash;&gt;-->
+<!--    <div class="row align-items-center py-3 border-bottom">-->
+
+<!--        &lt;!&ndash; NAME &ndash;&gt;-->
+<!--        <div class="col-2 d-flex align-items-center gap-3">-->
+<!--            <img th:src="@{'/images/' + ${games.imageMain}}"-->
+<!--                 class="rounded-3"-->
+<!--                 style="width:80px;height:auto;">-->
+<!--            <div>-->
+<!--                <div class="fw-bold" th:text="${games.game.gameName}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; id &ndash;&gt;-->
+<!--        <div class="col-2 text-center text-muted">-->
+<!--            <span th:text="${games.id}"></span>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; rank &ndash;&gt;-->
+<!--        <div class="col-2 text-center text-muted">-->
+<!--            <span th:text="${games.rank}"></span>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; skin &ndash;&gt;-->
+<!--        <div class="col-2 text-center text-muted">-->
+<!--            <span th:text="${games.skin}"></span>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; skin &ndash;&gt;-->
+<!--        <div class="col-1 text-center text-muted">-->
+<!--            <span th:text="${games.lovel}"></span>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; skin &ndash;&gt;-->
+<!--        <div class="col-1 text-center text-muted">-->
+<!--            <span th:text="${games.items}"></span>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; PRICE &ndash;&gt;-->
+<!--        <div class="col-1 text-center fw-semibold">-->
+<!--            <span th:text="${#numbers.formatDecimal(games.price,0,'COMMA',0,'POINT')} + ' đ'"></span>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; ===== PAYMENT BOX ===== &ndash;&gt;-->
+<!--    <form th:action="@{/home/order/confirm/{gameId}(gameId=${games.id})}"-->
+<!--          method="post"-->
+<!--          class="mt-4">-->
+
+<!--        &lt;!&ndash; MESSAGE &ndash;&gt;-->
+<!--        <div th:if="${successMessage}"-->
+<!--             class="alert alert-success text-center auto-alert">-->
+<!--            <span th:text="${successMessage}"></span>-->
+<!--        </div>-->
+
+<!--        <div th:if="${errorMessage}"-->
+<!--             class="alert alert-danger text-center auto-alert">-->
+<!--            <span th:text="${errorMessage}"></span>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; RENT OPTION &ndash;&gt;-->
+<!--        <div th:if="${games.duration == 'RENT'}"-->
+<!--             class="row align-items-center mb-3">-->
+<!--            <div class="col-4 fw-semibold">-->
+<!--                Gói thuê-->
+<!--            </div>-->
+<!--            <div class="col-8">-->
+<!--                <select id="packageSelect"-->
+<!--                        class="form-select mb-2"-->
+<!--                        name="packageValues">-->
+<!--                    <option selected disabled>&#45;&#45; Chọn gói &#45;&#45;</option>-->
+<!--                    <option value="1 Tháng">1 Tháng</option>-->
+<!--                    <option value="2 Tháng">2 Tháng (Giảm 10%)</option>-->
+<!--                    <option value="3 Tháng">3 Tháng (Giảm 15%)</option>-->
+<!--                    <option value="Vĩnh viễn">Vĩnh viễn</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; VOUCHER &ndash;&gt;-->
+<!--        <div class="row align-items-center mb-3">-->
+<!--            <div class="col-4 fw-semibold">-->
+<!--                Mã giảm giá-->
+<!--            </div>-->
+<!--            <div class="col-8 input-group">-->
+<!--                <input class="form-control" name="voucherCode"-->
+<!--                       placeholder="Nhập mã giảm giá">-->
+<!--                <button class="btn btn-outline-primary">Áp dụng</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; PAYMENT METHOD &ndash;&gt;-->
+<!--        <div class="row align-items-center mb-3">-->
+<!--            <div class="col-4 fw-semibold">-->
+<!--                Phương thức-->
+<!--            </div>-->
+<!--            <div class="col-8">-->
+<!--                <input class="form-control" value="Ví GamePay" readonly>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; TOTAL PRICE &ndash;&gt;-->
+<!--        <div class="d-flex justify-content-end mt-4">-->
+<!--            <div class="bg-light p-4 rounded-4 shadow-sm" style="min-width:300px;">-->
+<!--                <h5 class="fw-bold mb-3">-->
+<!--                    Tổng thanh toán-->
+<!--                </h5>-->
+<!--                <h4 class="text-danger fw-bold">-->
+<!--    <span id="totalPrice"-->
+<!--          th:data-base-price="${games.price}">-->
+<!--        <span th:text="${#numbers.formatDecimal(games.price,0,'COMMA',0,'POINT')}"></span> đ-->
+<!--    </span>-->
+<!--                </h4>-->
+
+<!--                <input type="hidden" name="totalPrice" id="totalPriceInput">-->
+
+<!--                <button type="submit"-->
+<!--                        class="btn btn-danger w-100 fw-bold mt-3">-->
+<!--                    Xác nhận thanh toán-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </form>-->
+<!--</div>-->
+
+
+<!--<style>-->
+<!--    .auto-alert {-->
+<!--        animation: fadeOut 3s forwards;-->
+<!--    }-->
+
+<!--    @keyframes fadeOut {-->
+<!--        0% {-->
+<!--            opacity: 1-->
+<!--        }-->
+<!--        80% {-->
+<!--            opacity: 1-->
+<!--        }-->
+<!--        100% {-->
+<!--            opacity: 0;-->
+<!--            display: none-->
+<!--        }-->
+<!--    }-->
+
+<!--</style>-->
+
+<!--&lt;!&ndash; Footer Start &ndash;&gt;-->
+<!--<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">-->
+<!--    <div class="container">-->
+
+<!--        <div class="row g-4">-->
+
+<!--            &lt;!&ndash; LOGO + INTRO &ndash;&gt;-->
+<!--            <div class="col-lg-4 col-md-6">-->
+<!--                <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">-->
+<!--                <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>-->
+<!--                <p>-->
+<!--                    Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>-->
+<!--                    Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.-->
+<!--                </p>-->
+<!--                <div class="d-flex mt-3 gap-3">-->
+<!--                    <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>-->
+<!--                    <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>-->
+<!--                    <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; SUPPORT &ndash;&gt;-->
+<!--            <div class="col-lg-4 col-md-6">-->
+<!--                <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>-->
+
+<!--                <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>-->
+<!--                <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>-->
+<!--                <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>-->
+
+<!--                <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">-->
+<!--                    <i class="fa fa-headset me-2"></i>Liên Hệ Ngay-->
+<!--                </button>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; QUICK LINKS &ndash;&gt;-->
+<!--            <div class="col-lg-4 col-md-6">-->
+<!--                <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>-->
+<!--                <ul class="footer-links">-->
+<!--                    <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>-->
+<!--                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>-->
+<!--                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>-->
+<!--                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>-->
+<!--                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>-->
+<!--                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>-->
+<!--                </ul>-->
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--        &lt;!&ndash; COPYRIGHT &ndash;&gt;-->
+<!--        <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">-->
+<!--            <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>-->
+<!--            <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Footer End &ndash;&gt;-->
+
+
+<!--&lt;!&ndash; JavaScript Libraries &ndash;&gt;-->
+<!--<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>-->
+<!--<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js}"></script>-->
+<!--<script th:src="@{/lib/wow/wow.min.js}"></script>-->
+<!--<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>-->
+<!--&lt;!&ndash; Template Javascript &ndash;&gt;-->
+<!--<script th:src="@{/js/main.js}"></script>-->
+
+<!--<script>-->
+<!--    const select = document.getElementById("packageSelect");-->
+<!--    const totalPriceEl = document.getElementById("totalPrice");-->
+<!--    const totalPriceInput = document.getElementById("totalPriceInput");-->
+
+<!--    const basePrice = parseFloat(totalPriceEl.dataset.basePrice);-->
+
+<!--    select?.addEventListener("change", function () {-->
+<!--        let total = basePrice;-->
+
+<!--        if (this.value.includes("2 Tháng")) {-->
+<!--            total = basePrice * 0.9;-->
+<!--        } else if (this.value.includes("3 Tháng")) {-->
+<!--            total = basePrice * 0.85;-->
+<!--        }-->
+
+<!--        // format VND-->
+<!--        totalPriceEl.innerText = total.toLocaleString("vi-VN") + " đ";-->
+<!--        totalPriceInput.value = total;-->
+<!--    });-->
+<!--</script>-->
+
+
+
+<!--<script>-->
+<!--    document.getElementById("saveCountryBtn").addEventListener("click", function () {-->
+<!--        const value = document.getElementById("new").value;-->
+
+<!--        // Hiển thị gói đã chọn lên form-->
+<!--        document.getElementById("selectedPackage").value = value;-->
+
+<!--        // Gửi vào hidden input để server nhận được-->
+<!--        document.getElementById("packageValue").value = value;-->
+<!--    });-->
+<!--</script>-->
+<!--<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js}"></script>-->
+
+<!--&lt;!&ndash;JS hiển thị lỗi Login&ndash;&gt;-->
+<!--<script>-->
+<!--    document.getElementById("loginForm").addEventListener("submit", function (e) {-->
+<!--        e.preventDefault();-->
+
+<!--        const username = document.getElementById("loginUsername").value;-->
+<!--        const password = document.getElementById("loginPassword").value;-->
+
+<!--        fetch("/login", {-->
+<!--            method: "POST",-->
+<!--            credentials: "include",-->
+<!--            headers: {-->
+<!--                "Content-Type": "application/x-www-form-urlencoded",-->
+<!--                "X-Requested-With": "XMLHttpRequest"-->
+<!--            },-->
+<!--            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`-->
+<!--        })-->
+<!--            .then(async res => {-->
+<!--                if (!res.ok) {-->
+<!--                    const err = await res.json();-->
+
+<!--                    const errorBox = document.getElementById("loginError");-->
+<!--                    errorBox.textContent = err.error;-->
+<!--                    errorBox.classList.remove("d-none");-->
+
+<!--                    // Ẩn lỗi sau 3 giây-->
+<!--                    setTimeout(() => {-->
+<!--                        errorBox.classList.add("d-none");-->
+<!--                    }, 3000);-->
+
+<!--                    return;-->
+<!--                }-->
+<!--                return res.json();-->
+<!--            })-->
+<!--            .then(data => {-->
+<!--                if (data?.redirect) window.location.href = data.redirect;-->
+<!--            })-->
+<!--            .catch(err => console.error(err));-->
+<!--    });-->
+<!--</script>-->
+
+
+<!--&lt;!&ndash;JS chuyển đổi giữa các Model&ndash;&gt;-->
+<!--<script>-->
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+
+<!--        // Khi bấm "Đăng ký ngay" trong Login → mở Register-->
+<!--        document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {-->
+<!--            btn.addEventListener("click", function (e) {-->
+<!--                e.preventDefault();-->
+
+<!--                const loginModalEl = document.getElementById("loginModal");-->
+<!--                const loginModal = bootstrap.Modal.getInstance(loginModalEl);-->
+
+<!--                // Đợi login đóng xong mới mở register-->
+<!--                loginModalEl.addEventListener('hidden.bs.modal', function handler() {-->
+<!--                    loginModalEl.removeEventListener('hidden.bs.modal', handler);-->
+<!--                    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));-->
+<!--                    registerModal.show();-->
+<!--                });-->
+
+<!--                loginModal.hide();-->
+<!--            });-->
+<!--        });-->
+
+<!--        // Khi bấm "Đăng nhập ngay" trong Register → mở Login-->
+<!--        document.querySelectorAll(".open-login").forEach(btn => {-->
+<!--            btn.addEventListener("click", function (e) {-->
+<!--                e.preventDefault();-->
+
+<!--                const registerModalEl = document.getElementById("registerModal");-->
+<!--                const registerModal = bootstrap.Modal.getInstance(registerModalEl);-->
+
+<!--                // Đợi register đóng xong mới mở login-->
+<!--                registerModalEl.addEventListener('hidden.bs.modal', function handler() {-->
+<!--                    registerModalEl.removeEventListener('hidden.bs.modal', handler);-->
+<!--                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));-->
+<!--                    loginModal.show();-->
+<!--                });-->
+
+<!--                registerModal.hide();-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--&lt;!&ndash;JS tắt Model Login mở Model Register&ndash;&gt;-->
+<!--<script>-->
+<!--    document.querySelectorAll(".open-register").forEach(btn => {-->
+<!--        btn.addEventListener("click", function (e) {-->
+<!--            e.preventDefault();-->
+
+<!--            const loginEl = document.getElementById("loginModal");-->
+<!--            const loginModal = bootstrap.Modal.getInstance(loginEl);-->
+
+<!--            loginEl.addEventListener("hidden.bs.modal", function handler() {-->
+<!--                loginEl.removeEventListener("hidden.bs.modal", handler);-->
+
+<!--                const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));-->
+<!--                registerModal.show();-->
+<!--            });-->
+
+<!--            loginModal.hide();-->
+<!--        });-->
+<!--    });-->
+
+<!--</script>-->
+<!--<script>-->
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        if (window.location.search.includes("error=true")) {-->
+<!--            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));-->
+<!--            loginModal.show();-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+
+<!--<script th:if="${openRegister}">-->
+<!--    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));-->
+<!--    registerModal.show();-->
+<!--</script>-->
+
+<!--&lt;!&ndash;JS k reload form Đăng ký&ndash;&gt;-->
+<!--<script>-->
+<!--    document.getElementById("registerBtn").addEventListener("click", function () {-->
+<!--        const formData = new FormData(document.getElementById("registerForm"));-->
+<!--        fetch("/register", {-->
+<!--            method: "POST",-->
+<!--            body: new URLSearchParams(formData),-->
+<!--            headers: {-->
+<!--                "X-Requested-With": "XMLHttpRequest"-->
+<!--            }-->
+<!--        })-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                const errorDiv = document.getElementById("registerError");-->
+<!--                const successDiv = document.getElementById("registerSuccess");-->
+
+<!--                if (data.error) {-->
+<!--                    errorDiv.innerText = data.error;-->
+<!--                    successDiv.innerText = "";-->
+<!--                    // Reset password fields-->
+<!--                    document.getElementById("registerPassword").value = "";-->
+<!--                    document.getElementById("confirmPassword").value = "";-->
+
+<!--                    // Ẩn lỗi sau 3 giây-->
+<!--                    setTimeout(() => {-->
+<!--                        errorDiv.innerText = "";-->
+<!--                    }, 3000);-->
+<!--                } else if (data.success) {-->
+<!--                    successDiv.innerText = data.success;-->
+<!--                    errorDiv.innerText = "";-->
+<!--                    document.getElementById("registerForm").reset();-->
+
+<!--                    // Ẩn thông báo thành công sau 3 giây-->
+<!--                    setTimeout(() => {-->
+<!--                        successDiv.innerText = "";-->
+<!--                    }, 3000);-->
+<!--                }-->
+<!--            })-->
+<!--            .catch(err => console.error(err));-->
+<!--    });-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    setTimeout(() => {-->
+<!--        const spinner = document.getElementById("spinner");-->
+<!--        if (spinner) spinner.classList.remove("show");-->
+<!--    }, 500);-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    document.addEventListener("click", function (event) {-->
+<!--        const categoryBox = document.getElementById("allCat");        // menu category-->
+<!--        const toggleBtn = document.querySelector("[data-bs-target='#allCat']"); // nút bấm All Categories-->
+
+<!--        // Nếu click không nằm trong menu và không nằm trên nút mở menu → đóng-->
+<!--        if (!categoryBox.contains(event.target) && !toggleBtn.contains(event.target)) {-->
+<!--            let bsCollapse = bootstrap.Collapse.getInstance(categoryBox);-->
+<!--            if (bsCollapse) {-->
+<!--                bsCollapse.hide();-->
+<!--            }-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    new Swiper(".mySwiper1", {-->
+<!--        loop: true,-->
+<!--        autoplay: {delay: 2000},-->
+<!--        pagination: {-->
+<!--            el: ".mySwiper1 .swiper-pagination",-->
+<!--            clickable: true,-->
+<!--        },-->
+<!--    });-->
+
+<!--    new Swiper(".mySwiper2", {-->
+<!--        loop: true,-->
+<!--        autoplay: {delay: 2000},-->
+<!--        pagination: {-->
+<!--            el: ".mySwiper2 .swiper-pagination",-->
+<!--            clickable: true,-->
+<!--        },-->
+<!--    });-->
+<!--</script>-->
+<!--&lt;!&ndash;    Thông báo mua thành công&ndash;&gt;-->
+<!--<script>-->
+<!--    setTimeout(() => {-->
+<!--        document.querySelectorAll(".auto-hide-alert").forEach(alert => {-->
+<!--            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);-->
+<!--            bsAlert.close();-->
+<!--        });-->
+<!--    }, 5000); // 5 giây-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    setTimeout(() => {-->
+<!--        document.querySelectorAll(".auto-alert").forEach(alert => {-->
+<!--            alert.style.transition = "opacity 0.5s";-->
+<!--            alert.style.opacity = "0";-->
+<!--            setTimeout(() => alert.remove(), 500);-->
+<!--        });-->
+<!--    }, 5000);-->
+<!--</script>-->
+
+
+<!--<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">-->
+
+<!--<script th:src="@{/js/product.js}"></script>-->
+<!--</body>-->
+<!--</html>-->

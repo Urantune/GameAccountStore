@@ -168,45 +168,62 @@
 
             <!-- MENU GIỮA -->
             <ul class="navbar-nav mx-auto align-items-center nav-center">
+
+                <!-- Trang chủ luôn cho phép -->
                 <li class="nav-item">
                     <a class="nav-link nav-pill" href="/home">
                         <i class="fa fa-home me-2"></i>Trang Chủ
                     </a>
                 </li>
 
+                <!-- LỊCH SỬ MUA -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link nav-pill dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                    <a class="nav-link nav-pill dropdown-toggle require-login"
+                       href="#"
+                       data-bs-toggle="dropdown"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
                         <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
                     </a>
+
                     <ul class="dropdown-menu dropdown-soft">
                         <li><a class="dropdown-item" href="#">Free Fire</a></li>
                         <li><a class="dropdown-item" href="#">AOV</a></li>
                     </ul>
                 </li>
 
+                <!-- TÀI KHOẢN -->
                 <li class="nav-item">
-                    <a class="nav-link nav-pill" href="#">
+                    <a class="nav-link nav-pill require-login"
+                       href="/home/profile"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
                         <i class="fa fa-user-circle me-2"></i>Tài Khoản
                     </a>
                 </li>
 
+                <!-- VÍ -->
                 <li class="nav-item">
-                    <a class="nav-link nav-pill" href="/home/wallet">
+                    <a class="nav-link nav-pill require-login"
+                       href="/home/wallet"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
                         <i class="fa fa-credit-card me-2"></i>Ví
                     </a>
                 </li>
 
+                <!-- GIỎ HÀNG -->
                 <li class="nav-item">
-                    <a class="nav-link nav-pill" th:href="@{/home/cart}">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/cart}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
                         <i class="fa fa-coins me-2"></i>Giỏ Hàng
                     </a>
                 </li>
             </ul>
 
+
             <!-- Navbar styles -->
             <style>
                 .game-nav{
-                    background:#FFEED8;
+                    background:pink;
                     border-top:2px solid #e6d8c8;
                     height:86px;
                     display:flex;
@@ -219,7 +236,7 @@
                 }
 
                 .nav-logo{
-                    height:52px;
+                    height:180px;
                     width:auto;
                 }
 
@@ -308,26 +325,44 @@
                         Thông tin tài khoản
                     </a>
                 </li>
-
-
+            </div>
             </ul>
         </div>
     </div>
 </nav>
+<div id="loginAlert"
+     class="alert alert-warning text-center fw-semibold d-none"
+     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+</div>
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+
+            if (!isLogged) {
+                e.preventDefault();
+                showLoginAlert();
+            }
+        });
+    });
+    function showLoginAlert() {
+        const alertBox = document.getElementById('loginAlert');
+
+        // hiện alert
+        alertBox.classList.remove('d-none');
+
+        // tự tắt sau 3 giây
+        setTimeout(() => {
+            alertBox.classList.add('d-none');
+        }, 3000);
+    }
+</script>
+
 <!-- Navbar & Hero End -->
 
 
 <!-- SUCCESS -->
-
-<style>
-    .auto-hide-alert {
-        max-width: 720px;
-        margin-left: auto;
-        margin-right: auto;
-        font-weight: 500;
-    }
-</style>
-
 
 <!-- Carousel Start -->
 <div class="container-fluid carousel bg-light px-0">
@@ -344,7 +379,7 @@
                         <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
                             giao dịch qua thẻ ngân hàng</h1>
                         <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
-                           href="/home/game/e8301a2f-aeb4-42fb-9c3c-41b16d3dea8d">Mua ngay</a>
+                           th:href="@{/home/gameDetail/{id}(id=C3A8F98B-15F9-4F03-A2CE-2B30945682D8)}">Mua ngay</a>
                     </div>
                 </div>
                 <div class="row g-0 header-carousel-item align-items-center">
@@ -357,7 +392,7 @@
                         <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
                             giao dịch qua thẻ ngân hàng</h1>
                         <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
-                           href="/home/game/b1cf2298-5c85-4fba-920b-63c028131163">Mua ngay</a>
+                           th:href="@{/home/gameDetail/{id}(id=A0731F64-961E-42F8-A3E0-129721B7BF3C)}">Mua ngay</a>
                     </div>
                 </div>
             </div>
@@ -372,11 +407,9 @@
                     <div class="carousel-banner-content text-center p-4">
                         <a href="#" class="d-block mb-2">Loại trang phục</a>
                         <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
-                        <del class="me-2 text-white fs-5">2.500.000 VND</del>
-                        <span class="me-2 text-white fs-5">1.999.000 VND</span>
                     </div>
-                    <a href="#" class="btn btn-primary rounded-pill py-2 px-4"><i
-                            class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ hàng</a>
+                    <a th:href="@{/home/gameDetail/{id}(id=E3FBB1AF-8AE9-48E2-9DE1-061219893D01)}" class="btn btn-primary rounded-pill py-2 px-4"><i
+                            class="fas fa-shopping-cart me-2"></i> Mua ngay</a>
                 </div>
             </div>
         </div>
@@ -462,7 +495,7 @@
                 <!-- Căn giữa tiêu đề -->
                 <div class="row g-4">
                     <div class="col-12 text-center">
-                        <h1>Our Game</h1>
+                        <h1>Tài Khoản Game</h1>
                     </div>
                 </div>
                 <div class="tab-content">
@@ -520,7 +553,7 @@
 
 
     <!-- Footer Start -->
-    <div class="container-fluid py-5" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+    <div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
         <div class="container">
 
             <div class="row g-4">
