@@ -247,16 +247,16 @@
                 </li>
 
                 <!-- Authenticated -->
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+
+                <li sec:authorize="isAuthenticated()">
+                    <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                    <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    <a class="dropdown-item"
+                       th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                        Thông tin tài khoản
                     </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" th:href="@{/home/profile/{id}(id=${currentUser.customerId})}">Thông tin tài khoản</a></li>
-                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
-                    </ul>
                 </li>
+
 
             </ul>
         </div>
@@ -394,14 +394,12 @@
     <div class="container-fluid product py-5">
         <div class="container py-5">
             <div class="tab-class">
-
                 <!-- Căn giữa tiêu đề -->
                 <div class="row g-4">
                     <div class="col-12 text-center">
                         <h1>Our Game</h1>
                     </div>
                 </div>
-
                 <div class="tab-content">
                     <!-- TẤT CẢ SẢN PHẨM -->
                     <div id="tab-all" class="tab-pane fade show active p-0">
@@ -446,11 +444,9 @@
                                 </div>
                             </div>
                             <!-- end each -->
-
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

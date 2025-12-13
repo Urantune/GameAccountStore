@@ -44,4 +44,8 @@ public class CustomerService implements UserDetailsService {
         return customerRepositories.findByUsername(username);
     }
 
+    public Customer findByCustomerUsername(String username) {
+        return customerRepositories.findByUsername(username);
+    }
+
 }
