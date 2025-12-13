@@ -56,14 +56,12 @@ public class BuyController {
                 || authentication.getPrincipal().equals("anonymousUser")) {
             throw new RuntimeException("Bạn chưa đăng nhập!");
         }
-
         String username = authentication.getName();
         Customer customer = customerService.findByCustomerUsername(username);
 
         if (customer == null) {
             throw new RuntimeException("Không tìm thấy customer!");
         }
-
         GameAccount game = gameAccountRepositories.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
