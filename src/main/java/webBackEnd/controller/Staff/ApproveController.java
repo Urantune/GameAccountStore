@@ -6,12 +6,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
+import webBackEnd.entity.RentAccountGame;
 import webBackEnd.entity.Staff;
 import webBackEnd.service.AdministratorService;
 import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
 import webBackEnd.successfullyDat.GetQuantity;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -69,12 +71,27 @@ public class ApproveController {
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
         for(OrderDetail a:orderDetails){
             a.getGameAccount().setStatus("IN USE");
+            RentAccountGame rentAccountGame = new RentAccountGame();
+
+            rentAccountGame.setCustomer(order.getCustomer());
+            rentAccountGame.setGameAccount(a.getGameAccount());
+            rentAccountGame.setDateStart(order.getCreatedDate());
+            rentAccountGame.setDateEnd(order.getCreatedDate().plusMonths(1));
+
+
+
+
+
         }
+
 
         order.setStatus("COMPLETED");
         order.setStaff(
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
         ordersService.save(order);
+
+
+
 
         return "redirect:/staffHome/approveList";
     }
