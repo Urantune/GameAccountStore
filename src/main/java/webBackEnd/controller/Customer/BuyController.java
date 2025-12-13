@@ -67,7 +67,7 @@ public class BuyController {
         GameAccount game = gameAccountRepositories.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        // ===== TÍNH GIÁ Ở BACKEND (NGUỒN SỰ THẬT) =====
+
         BigDecimal basePrice = game.getPrice();
         BigDecimal totalPrice = basePrice;
 
@@ -78,7 +78,7 @@ public class BuyController {
         }
 
 
-        // ===== TẠO ORDER =====
+
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setVoucher(null);
@@ -88,7 +88,7 @@ public class BuyController {
         order.setStatus("WAIT");
 
         Orders savedOrder = ordersRepositories.save(order);
-        // ===== ORDER DETAIL =====
+
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGameAccount(game);

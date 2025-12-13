@@ -19,12 +19,12 @@ public class OrderDetail {
     @JoinColumn(name = "gameId", referencedColumnName = "gameAccountId")
     private GameAccount gameAccount;
     @Column(name = "duration", nullable = false)
-    private int duration;
+    private Integer duration;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(UUID id, Orders order, GameAccount gameAccount, int duration) {
+    public OrderDetail(UUID id, Orders order, GameAccount gameAccount, Integer duration) {
         this.id = id;
         this.order = order;
         this.gameAccount = gameAccount;
@@ -58,11 +58,11 @@ public class OrderDetail {
     }
 
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 }
