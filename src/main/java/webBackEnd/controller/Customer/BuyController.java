@@ -101,7 +101,7 @@ public class BuyController {
         orderDetailRepositories.save(detail);
         redirectAttributes.addFlashAttribute(
                 "successMessage",
-                "✅ Thanh toán thành công! Vui lòng kiểm tra trong lịch sử giao dịch."
+                "Thanh toán thành công! Vui lòng kiểm tra lịch sử giao dịch."
         );
         return "redirect:/home";
     }
