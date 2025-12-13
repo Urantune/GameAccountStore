@@ -143,6 +143,10 @@
     function sortTable(columnIndex) {
         const table = document.getElementById("orderTable");
         const tbody = table.querySelector("tbody");
+
+        const noDataRow = tbody.querySelector("tr.no-data");
+        if (noDataRow) noDataRow.style.display = "none";
+
         const rows = Array.from(tbody.querySelectorAll("tr"))
             .filter(r => !r.classList.contains("no-data"));
 
