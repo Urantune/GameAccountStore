@@ -1,7 +1,5 @@
 package webBackEnd.controller.Customer;
 
-import jakarta.servlet.http.HttpSession;
-import org.hibernate.query.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,13 +16,10 @@ import webBackEnd.repository.OrderDetailRepositories;
 import webBackEnd.repository.OrdersRepositories;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
-import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -88,7 +83,7 @@ public class BuyController {
         order.setVoucher(null);
         order.setStaff(null);
         order.setTotalPrice(totalPrice);
-        order.setType(true);
+        order.setDuration(true);
         order.setCreatedDate(LocalDateTime.now());
         order.setStatus("WAIT");
 
