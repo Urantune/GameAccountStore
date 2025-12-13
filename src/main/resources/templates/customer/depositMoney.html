@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nạp Tiền Vào Ví</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background: #f5f8fc;
+            font-family: Arial, sans-serif;
+        }
+
+        .topup-card {
+            background: white;
+            width: 95%;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .method-box {
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .method-box:hover {
+            border-color: #ffa500;
+            box-shadow: 0 3px 12px rgba(255,165,0,0.25);
+        }
+
+        .method-box.active {
+            border-color: #ffa500;
+            background: #fff5e6;
+        }
+
+        .result-box {
+            background: #fff8ec;
+            border-left: 4px solid #ffa726;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .btn-submit {
+            background: #ffa500;
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .btn-submit:hover {
+            background: #e69400;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<!-- (Bạn chèn navbar của bạn vào đây nếu muốn) -->
+
+<!-- CONTENT -->
+<div class="topup-card">
+    <h3 class="fw-bold mb-4"><i class="fa fa-wallet me-2"></i> Nạp Tiền Vào Ví</h3>
+
+    <!-- Phương thức -->
+    <h5 class="mb-2">Chọn Phương Thức Nạp</h5>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="method-box text-center active" onclick="selectMethod(this)">
+                <i class="fa fa-credit-card fa-2x mb-2 text-warning"></i>
+                <h6 class="fw-bold">Ngân Hàng</h6>
+                <small>Chuyển khoản tự động</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="method-box text-center" onclick="selectMethod(this)">
+                <i class="fa fa-mobile-screen fa-2x mb-2 text-warning"></i>
+                <h6 class="fw-bold">Ví MOMO</h6>
+                <small>Nạp MOMO tự động</small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="method-box text-center" onclick="selectMethod(this)">
+                <i class="fa fa-ticket fa-2x mb-2 text-warning"></i>
+                <h6 class="fw-bold">Thẻ Cào</h6>
+                <small>Nạp thẻ tự động</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Số tiền -->
+    <h5 class="mb-2">Nhập Số Tiền Muốn Nạp</h5>
+    <input type="number" id="amount" class="form-control form-control-lg"
+           placeholder="Nhập số tiền (VNĐ)" oninput="updateFee()">
+
+    <div class="result-box mt-3">
+        <p class="mb-1"><strong>Phí giao dịch:</strong> <span id="fee">0</span> đ</p>
+        <p class="mb-0"><strong>Số tiền nhận được:</strong> <span id="receive">0</span> đ</p>
+    </div>
+
+    <!-- Button -->
+    <button class="btn-submit mt-4">
+        <i class="fa fa-check-circle me-2"></i> Xác Nhận Nạp
+    </button>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<!-- (Bạn chèn footer của bạn vào đây nếu muốn) -->
+
+<script>
+    function selectMethod(el) {
+        document.querySelectorAll('.method-box').forEach(box => box.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function updateFee() {
+        let amount = Number(document.getElementById("amount").value);
+        let fee = Math.round(amount * 0.02); // phí 2%
+        let receive = amount - fee;
+
+        document.getElementById("fee").innerText = fee.toLocaleString();
+        document.getElementById("receive").innerText = receive.toLocaleString();
+    }
+</script>
+
+</body>
+</html>

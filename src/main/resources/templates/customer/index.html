@@ -185,43 +185,24 @@
                     </ul>
                 </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-tools me-2"></i> Dịch Vụ Khác
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-3">
-                        <li><a class="dropdown-item py-2" href="#">Cày Thuê</a></li>
-                        <li><a class="dropdown-item py-2" href="#">Cho Thuê Tài Khoản</a></li>
-                    </ul>
-                </li>
-
                 <li class="nav-item">
                     <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
                         <i class="fa fa-user-circle me-2"></i> Tài Khoản
                     </a>
                 </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-credit-card me-2"></i> Nạp Tiền
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-3">
-                        <li><a class="dropdown-item py-2" href="#">Thẻ Cào</a></li>
-                        <li><a class="dropdown-item py-2" href="#">Ngân Hàng</a></li>
-                    </ul>
-                </li>
-
                 <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
-                        <i class="fa fa-coins me-2"></i> Dòng Tiền
+                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home/wallet">
+                        <i class="fa fa-credit-card me-2"></i> Ví
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home/news">
-                        <i class="fa fa-newspaper me-2"></i> Tin Tức
+                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" th:href="@{/home/cart}">
+                        <i class="fa fa-coins me-2"></i> Giỏ Hàng
                     </a>
                 </li>
+
 
             </ul>
 
@@ -266,23 +247,49 @@
                 </li>
 
                 <!-- Authenticated -->
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+
+                <li sec:authorize="isAuthenticated()">
+                    <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                    <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                    <a class="dropdown-item"
+                       th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                        Thông tin tài khoản
                     </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" th:href="@{/home/profile/{id}(id=${currentUser.customerId})}">Thông tin tài khoản</a></li>
-                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
-                    </ul>
                 </li>
+
 
             </ul>
         </div>
     </div>
 </nav>
-
 <!-- Navbar & Hero End -->
+<!-- SUCCESS -->
+<div th:if="${successMessage}"
+     class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert"
+     role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span th:text="${successMessage}"></span>
+    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
+</div>
+
+<!-- ERROR -->
+<div th:if="${errorMessage}"
+     class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert"
+     role="alert">
+    <i class="bi bi-x-circle-fill me-2"></i>
+    <span th:text="${errorMessage}"></span>
+    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
+</div>
+
+<style>
+    .auto-hide-alert {
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+    }
+</style>
+
 
 <!-- Carousel Start -->
 <div class="container-fluid carousel bg-light px-0">
@@ -414,14 +421,12 @@
     <div class="container-fluid product py-5">
         <div class="container py-5">
             <div class="tab-class">
-
                 <!-- Căn giữa tiêu đề -->
                 <div class="row g-4">
                     <div class="col-12 text-center">
                         <h1>Our Game</h1>
                     </div>
                 </div>
-
                 <div class="tab-content">
                     <!-- TẤT CẢ SẢN PHẨM -->
                     <div id="tab-all" class="tab-pane fade show active p-0">
@@ -466,11 +471,9 @@
                                 </div>
                             </div>
                             <!-- end each -->
-
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -751,6 +754,17 @@
         },
     });
    </script>
+<!--    Thông báo mua thành công-->
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll(".auto-hide-alert").forEach(alert => {
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                bsAlert.close();
+            });
+        }, 5000); // 5 giây
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <script th:src="@{/js/product.js}"></script>
 </body>

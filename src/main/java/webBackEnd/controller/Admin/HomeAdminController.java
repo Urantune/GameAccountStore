@@ -162,8 +162,7 @@ public class HomeAdminController {
             @RequestParam("description") String description,
             @RequestParam("classify") String classify,
             @RequestParam("status") String status,
-            @RequestParam(value = "duration", required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime duration,
+            @RequestParam(value = "duration", required = false) String duration,
             @RequestParam("imageMain") String imageMain,
             @RequestParam("rank") String rank,
             @RequestParam("skin") int skin,
@@ -172,14 +171,10 @@ public class HomeAdminController {
             @RequestParam("category") String category
     ) {
 
-
-
-
         GameAccount existing = gameAccountService.findGameAccountById(id);
         if (existing == null) {
             throw new RuntimeException("GameAccount not found with id: " + id);
         }
-
 
         existing.setGameAccount(gameAccountName);
         existing.setGamePassword(gamePassword);
@@ -187,7 +182,9 @@ public class HomeAdminController {
         existing.setDescription(description);
         existing.setClassify(classify);
         existing.setStatus(status);
-        existing.setDuration(duration);
+
+        existing.setDuration((duration == null || duration.isBlank()) ? null : duration);
+
         existing.setImageMain(imageMain);
         existing.setRank(rank);
         existing.setSkin(skin);
@@ -195,22 +192,18 @@ public class HomeAdminController {
         existing.setItems(items);
         existing.setUpdatedDate(LocalDateTime.now());
 
-
         Type type = typeService.findByTypeName(category);
-        if (type == null) {
-            type = existing.getGame().getTypeId();
-        }
+        if (type == null) type = existing.getGame().getTypeId();
 
         Game game = existing.getGame();
         game.setTypeId(type);
 
-
         gameAccountService.save(existing);
-
 
         String gameName = existing.getGame().getGameName();
         return "redirect:/adminHome/gameList?nameGame=" + gameName;
     }
+
 
 
     @GetMapping("/listVoucher")

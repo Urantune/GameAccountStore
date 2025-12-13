@@ -18,15 +18,20 @@ public class OrderDetail {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "gameId", referencedColumnName = "gameAccountId")
     private GameAccount gameAccount;
+    @Column(name = "duration", nullable = false)
+    private Integer duration;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(UUID id, Orders order, GameAccount gameAccount) {
+    public OrderDetail(UUID id, Orders order, GameAccount gameAccount, Integer duration) {
         this.id = id;
         this.order = order;
         this.gameAccount = gameAccount;
+        this.duration = duration;
     }
+
+
 
     public UUID getId() {
         return id;
@@ -52,5 +57,13 @@ public class OrderDetail {
         this.gameAccount = gameAccount;
     }
 
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
 }
 
