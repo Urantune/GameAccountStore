@@ -24,8 +24,6 @@ public class Orders {
     private Staff staff;
     @Column(name = "totalPrice", nullable = false)
     private BigDecimal totalPrice;
-    @Column(name = "orderType", nullable = false)
-    private boolean type;
     @Column(name = "createdDate", nullable = false)
     private LocalDateTime createdDate;
     @Column(name = "status")
@@ -36,13 +34,12 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(UUID id, Customer customer, Voucher voucher, Staff staff, BigDecimal totalPrice, boolean type, LocalDateTime createdDate, String status) {
+    public Orders(UUID id, Customer customer, Voucher voucher, Staff staff, BigDecimal totalPrice, LocalDateTime createdDate, String status) {
         this.id = id;
         this.customer = customer;
         this.voucher = voucher;
         this.staff = staff;
         this.totalPrice = totalPrice;
-        this.type = type;
         this.createdDate = createdDate;
         this.status = status;
     }
@@ -87,13 +84,6 @@ public class Orders {
         this.totalPrice = totalPrice;
     }
 
-    public boolean isType() {
-        return type;
-    }
-
-    public void setType(boolean type) {
-        this.type = type;
-    }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
