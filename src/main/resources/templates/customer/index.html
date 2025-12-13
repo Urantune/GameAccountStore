@@ -263,6 +263,21 @@
     </div>
 </nav>
 <!-- Navbar & Hero End -->
+<!-- 🔔 THÔNG BÁO -->
+<div th:if="${successMessage}"
+     class="alert alert-success alert-dismissible fade show text-center mx-3 mt-3"
+     role="alert">
+    <span th:text="${successMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+
+<div th:if="${errorMessage}"
+     class="alert alert-danger alert-dismissible fade show text-center mx-3 mt-3"
+     role="alert">
+    <span th:text="${errorMessage}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+
 
 <!-- Carousel Start -->
 <div class="container-fluid carousel bg-light px-0">
