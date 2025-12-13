@@ -115,15 +115,24 @@
                 </div>
                 <!-- Hiển thị Total Price -->
                 <div id="totalPriceBox" class="mt-3 p-3 bg-light border rounded d-none">
-                    <h5 class="fw-bold">Total Price:
-                        <span id="totalPrice" class="text-danger"></span>
+                    <h5 class="fw-bold">
+                        Total Price:
+                        <span id="totalPrice"
+                              class="text-danger"
+                              th:data-base-price="${games.price}"
+                              th:text="${#numbers.formatDecimal(games.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+        </span>
                     </h5>
+                    <!-- gửi backend -->
+                    <input type="hidden" name="totalPrice" id="totalPriceInput">
+                    <input type="hidden" name="packageValues" id="packageValues">
+
                 </div>
+
                 <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">
                     Xác Nhận Thanh Toán
                 </button>
             </form>
-
         </div>
     </div>
 </div>
@@ -141,30 +150,37 @@
 
 <script>
     document.getElementById("saveCountryBtn").addEventListener("click", function () {
-        let selected = document.getElementById("new").value;
 
-        document.getElementById("selectedPackage").value = selected;
-        document.getElementById("packageValue").value = selected;
+        const selected = document.getElementById("new").value;
+        document.getElementById("packageValues").value = selected;
 
-        let basePriceText = document.getElementById("price").innerText.trim();
-        let basePrice = parseFloat(basePriceText);
+        // 🔥 lấy giá gốc chuẩn
+        const basePrice = Number(
+            document.getElementById("totalPrice").dataset.basePrice
+        );
+
         let finalPrice = basePrice;
 
-        if (selected.includes("1 Tháng")) {
-            finalPrice = basePrice;
-        } else if (selected.includes("2 Tháng")) {
-            finalPrice = basePrice * 0.90;
+        if (selected.includes("2 Tháng")) {
+            finalPrice = basePrice * 0.9;
         } else if (selected.includes("3 Tháng")) {
             finalPrice = basePrice * 0.85;
-        } else if (selected.includes("Vĩnh Viễn")) {
-            finalPrice = basePrice;
         }
 
-        document.getElementById("totalPrice").innerText = finalPrice.toLocaleString() + " đ";
+        // làm tròn VNĐ
+        finalPrice = Math.round(finalPrice);
+
+        // hiển thị
+        document.getElementById("totalPrice").innerText =
+            finalPrice.toLocaleString("vi-VN") + " đ";
+
+        // gửi backend
+        document.getElementById("totalPriceInput").value = finalPrice;
 
         document.getElementById("totalPriceBox").classList.remove("d-none");
     });
 </script>
+
 
 
 

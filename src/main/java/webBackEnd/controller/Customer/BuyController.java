@@ -21,6 +21,8 @@ import webBackEnd.service.GameAccountService;
 import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -51,16 +53,14 @@ public class BuyController {
     }
 
     @PostMapping("/order/confirm/{gameId}")
-    public String confirmOrder(
-            @PathVariable("gameId") UUID gameId,
-            Model model
-    ) {
+    public String confirmOrder(@PathVariable UUID gameId, @RequestParam("packageValues") String packageValues) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated() ||
-                authentication.getPrincipal().equals("anonymousUser")) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication.getPrincipal().equals("anonymousUser")) {
             throw new RuntimeException("Bạn chưa đăng nhập!");
         }
+
         String username = authentication.getName();
         Customer customer = customerService.findByCustomerUsername(username);
 
@@ -71,26 +71,36 @@ public class BuyController {
         GameAccount game = gameAccountRepositories.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        // Tạo Order
+        // ===== TÍNH GIÁ Ở BACKEND (NGUỒN SỰ THẬT) =====
+        BigDecimal basePrice = game.getPrice();
+        BigDecimal totalPrice = basePrice;
+
+        if (packageValues.contains("2 Tháng")) {
+            totalPrice = basePrice.multiply(new BigDecimal("0.9"));
+        } else if (packageValues.contains("3 Tháng")) {
+            totalPrice = basePrice.multiply(new BigDecimal("0.85"));
+        }
+
+
+        // ===== TẠO ORDER =====
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setVoucher(null);
         order.setStaff(null);
-        order.setTotalPrice(game.getPrice());
+        order.setTotalPrice(totalPrice);
         order.setType(true);
         order.setCreatedDate(LocalDateTime.now());
         order.setStatus("WAIT");
 
         Orders savedOrder = ordersRepositories.save(order);
-
-        // Lưu OrderDetail
+        // ===== ORDER DETAIL =====
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGameAccount(game);
         orderDetailRepositories.save(detail);
-        model.addAttribute("order", savedOrder);
-        model.addAttribute("games", game);
-        return "redirect:/home";
 
+        return "redirect:/home";
     }
+
+
 }
