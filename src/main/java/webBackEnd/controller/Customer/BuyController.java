@@ -39,10 +39,10 @@ public class BuyController {
     @Autowired
     private GameAccountService gameAccountService;
     @Autowired
-    private GameAccountRepositories  gameAccountRepositories;
+    private GameAccountRepositories gameAccountRepositories;
 
     @GetMapping("/payment/{id}")
-    public String checkout(@PathVariable("id") UUID id, Model model){
+    public String checkout(@PathVariable("id") UUID id, Model model) {
         GameAccount game = gameAccountService.findGameAccountById(id);
         model.addAttribute("games", game);
         return "customer/Payment";
@@ -67,7 +67,7 @@ public class BuyController {
         GameAccount game = gameAccountRepositories.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        // ===== TÍNH GIÁ Ở BACKEND (NGUỒN SỰ THẬT) =====
+        // ===== TÍNH GIÁ Ở BACKEND =====
         BigDecimal basePrice = game.getPrice();
         BigDecimal totalPrice = basePrice;
 
@@ -92,6 +92,15 @@ public class BuyController {
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGameAccount(game);
+        if (packageValues.contains("1 Tháng")) {
+            detail.setDuration(1);
+        } else if (packageValues.contains("2 Tháng")) {
+            detail.setDuration(2);
+        } else if (packageValues.contains("3 Tháng")) {
+            detail.setDuration(3);
+        } else {
+            detail.setDuration(0);
+        }
         orderDetailRepositories.save(detail);
         redirectAttributes.addFlashAttribute(
                 "successMessage",
