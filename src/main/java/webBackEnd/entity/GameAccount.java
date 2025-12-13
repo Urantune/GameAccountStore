@@ -45,6 +45,8 @@
         @Column(name = "vip")
         private int vip;
 
+        private String email;
+
 
 
 
@@ -53,7 +55,7 @@
         }
 
 
-        public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, String duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items) {
+        public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, String duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items, String email) {
             this.gameAccountId = id;
             this.gameAccount = gameAccount;
             this.gamePassword = gamePassword;
@@ -70,6 +72,7 @@
             this.skin = skin;
             this.lovel = lovel;
             this.vip = items;
+            this.email = email;
         }
 
         public UUID getId() {
@@ -198,5 +201,13 @@
 
         public void setItems(int items) {
             this.vip = items;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+
         }
     }

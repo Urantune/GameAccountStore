@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shift Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root { --orange: #ff7a2f; }
+
+        body{
+            background:#f5f5f5;
+            font-family:"Roboto",sans-serif;
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+        }
+
+        .bar-top{
+            width:100%;
+            height:70px;
+            background:var(--orange);
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 24px;
+        }
+
+        .bar-bottom{
+            width:100%;
+            height:70px;
+            background:var(--orange);
+            position:fixed;
+            bottom:0; left:0;
+            z-index:10;
+        }
+
+        .page-wrap{
+            width:100%;
+            max-width:1200px;
+            margin:30px auto 120px;
+            padding:0 12px;
+        }
+
+        .card-soft{
+            background:#fff;
+            border:2px solid rgba(255,122,47,0.35);
+            border-radius:16px;
+            box-shadow:0 6px 16px rgba(0,0,0,0.08);
+        }
+
+        .section-title{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin:0;
+            font-weight:700;
+            color:#222;
+        }
+
+        .icon-orange{ color:var(--orange); }
+
+        .btn-orange{
+            border:2px solid var(--orange);
+            color:var(--orange);
+            font-weight:600;
+            padding:8px 18px;
+            border-radius:30px;
+            transition:.2s;
+            background:#fff;
+        }
+        .btn-orange:hover{ background:var(--orange); color:#fff; }
+
+        .btn-orange-solid{
+            background:var(--orange);
+            color:#fff;
+            border:2px solid var(--orange);
+            font-weight:700;
+            border-radius:30px;
+            padding:8px 18px;
+        }
+        .btn-orange-solid:hover{ filter:brightness(0.95); }
+
+        .badge-soft{
+            background:rgba(255,122,47,0.14);
+            color:#b84b10;
+            border:1px solid rgba(255,122,47,0.35);
+        }
+
+        .table thead th{
+            background:#fff3ec;
+            color:#7a2c00;
+            border-bottom:1px solid rgba(0,0,0,0.06);
+        }
+
+        .form-control:focus, .form-select:focus{
+            border-color:rgba(255,122,47,0.7);
+            box-shadow:0 0 0 .2rem rgba(255,122,47,0.15);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="bar-top">
+    <h4 class="text-white m-0">
+        <i class="bi bi-calendar2-week-fill me-2"></i>Shift Management
+    </h4>
+
+    <div class="d-flex gap-2">
+        <a th:href="@{/adminHome}" class="btn btn-light btn-sm rounded-pill px-3">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <a th:href="@{/logout}" class="btn btn-outline-light btn-sm rounded-pill px-3">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+</div>
+
+<div class="page-wrap">
+
+    <!-- TOP ROW: Create shift + Quick stats -->
+    <div class="row g-3">
+
+        <!-- Create shift -->
+        <div class="col-lg-7">
+            <div class="card-soft p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="section-title">
+                        <i class="bi bi-plus-circle-fill icon-orange"></i>
+                        Create / Assign Shift
+                    </h5>
+                    <span class="badge badge-soft rounded-pill px-3 py-2">
+                        <i class="bi bi-lightning-charge-fill me-1"></i>Quick assign
+                    </span>
+                </div>
+
+                <!-- POST create shift -->
+                <form th:action="@{/adminHome/shift/create}" method="post" class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Staff</label>
+                        <select class="form-select" name="staffId" required>
+                            <option value="" selected disabled>Choose staff...</option>
+                            <!-- Example: staffList -->
+                            <option th:each="s : ${staffList}"
+                                    th:value="${s.id}"
+                                    th:text="${s.fullName} + ' - ' + ${s.username}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Date</label>
+                        <input type="date" class="form-control" name="shiftDate" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Shift</label>
+                        <select class="form-select" name="shiftCode" required>
+                            <option value="MORNING">Morning</option>
+                            <option value="AFTERNOON">Afternoon</option>
+                            <option value="NIGHT">Night</option>
+                            <option value="CUSTOM">Custom</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Start</label>
+                        <input type="time" class="form-control" name="startTime" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">End</label>
+                        <input type="time" class="form-control" name="endTime" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Note (optional)</label>
+                        <input type="text" class="form-control" name="note" placeholder="E.g., cover shift, training...">
+                    </div>
+
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="btn btn-orange-solid">
+                            <i class="bi bi-check2-circle me-1"></i> Assign Shift
+                        </button>
+                        <a th:href="@{/adminHome/shift}" class="btn btn-orange">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick stats -->
+        <div class="col-lg-5">
+            <div class="card-soft p-4 h-100">
+                <h5 class="section-title mb-3">
+                    <i class="bi bi-bar-chart-fill icon-orange"></i>
+                    Overview
+                </h5>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="p-3 border rounded-4">
+                            <div class="text-muted small">Today shifts</div>
+                            <div class="fs-4 fw-bold" th:text="${todayCount}">0</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 border rounded-4">
+                            <div class="text-muted small">This week</div>
+                            <div class="fs-4 fw-bold" th:text="${weekCount}">0</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 border rounded-4">
+                            <div class="text-muted small">Pending</div>
+                            <div class="fs-4 fw-bold text-warning" th:text="${pendingCount}">0</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 border rounded-4">
+                            <div class="text-muted small">Completed</div>
+                            <div class="fs-4 fw-bold text-success" th:text="${doneCount}">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Filter -->
+                <form th:action="@{/adminHome/shift}" method="get" class="row g-2">
+                    <div class="col-7">
+                        <input type="date" class="form-control" name="date" th:value="${filterDate}">
+                    </div>
+                    <div class="col-5 d-grid">
+                        <button class="btn btn-orange-solid" type="submit">
+                            <i class="bi bi-funnel-fill me-1"></i> Filter
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-muted small mt-2">
+                    Tip: filter by date to view schedule quickly.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LIST TABLE -->
+    <div class="card-soft p-4 mt-3">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <h5 class="section-title">
+                <i class="bi bi-list-check icon-orange"></i>
+                Shift Schedule
+            </h5>
+
+            <form th:action="@{/adminHome/shift/search}" method="get" class="d-flex gap-2">
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" name="q" placeholder="Search staff name / username..."
+                           th:value="${q}">
+                </div>
+                <button class="btn btn-orange" type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle table-hover mb-0">
+                <thead>
+                <tr>
+                    <th style="width:60px;">#</th>
+                    <th>Staff</th>
+                    <th>Date</th>
+                    <th>Shift</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th class="text-end" style="width:160px;">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <!-- Example list: shifts -->
+                <tr th:each="sh,st : ${shifts}">
+                    <td th:text="${st.count}">1</td>
+
+                    <td>
+                        <div class="fw-semibold" th:text="${sh.staffName}">Nguyen Van A</div>
+                        <div class="text-muted small" th:text="${sh.staffUsername}">@username</div>
+                    </td>
+
+                    <td th:text="${sh.shiftDate}">2025-12-13</td>
+
+                    <td>
+                        <span class="badge badge-soft rounded-pill px-3 py-2"
+                              th:text="${sh.shiftCode}">MORNING</span>
+                    </td>
+
+                    <td>
+                        <span th:text="${sh.startTime}">08:00</span>
+                        <span class="text-muted">-</span>
+                        <span th:text="${sh.endTime}">12:00</span>
+                    </td>
+
+                    <td>
+                        <span class="badge rounded-pill px-3 py-2"
+                              th:classappend="${sh.status}=='PENDING' ? ' text-bg-warning' :
+                                              (${sh.status}=='DONE' ? ' text-bg-success' : ' text-bg-secondary')"
+                              th:text="${sh.status}">PENDING</span>
+                    </td>
+
+                    <td class="text-end">
+                        <!-- Edit opens modal; you can wire data via JS later -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill"
+                                data-bs-toggle="modal" data-bs-target="#editShiftModal">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+
+                        <a th:href="@{/adminHome/shift/delete(id=${sh.id})}"
+                           class="btn btn-sm btn-outline-danger rounded-pill ms-1"
+                           onclick="return confirm('Delete this shift?');">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+
+                <tr th:if="${shifts == null || #lists.isEmpty(shifts)}">
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No shifts found.
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editShiftModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-soft" style="border:0;">
+            <div class="modal-header" style="border-bottom:1px solid rgba(0,0,0,0.06);">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square icon-orange me-2"></i>Edit Shift
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- You can bind selected shift by JS later; this is UI template -->
+                <form th:action="@{/adminHome/shift/update}" method="post" class="row g-3">
+                    <input type="hidden" name="id" value="">
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Status</label>
+                        <select class="form-select" name="status">
+                            <option value="PENDING">PENDING</option>
+                            <option value="DONE">DONE</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Start</label>
+                        <input type="time" class="form-control" name="startTime">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">End</label>
+                        <input type="time" class="form-control" name="endTime">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Note</label>
+                        <input type="text" class="form-control" name="note" placeholder="Update note...">
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-orange" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-orange-solid">
+                            <i class="bi bi-save2 me-1"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bar-bottom"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
