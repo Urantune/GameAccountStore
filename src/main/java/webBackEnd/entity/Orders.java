@@ -24,7 +24,7 @@ public class Orders {
     private Staff staff;
     @Column(name = "totalPrice", nullable = false)
     private BigDecimal totalPrice;
-    @Column(name = "orderType", nullable = false)
+    @Column(name = "duration", nullable = false)
     private int duration;
     @Column(name = "createdDate", nullable = false)
     private LocalDateTime createdDate;
