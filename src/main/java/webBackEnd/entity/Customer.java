@@ -1,6 +1,8 @@
 package webBackEnd.entity;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -35,12 +37,12 @@ public class Customer {
     private String role;
 
     @Column(name = "balance")
-    private float balance;
+    private BigDecimal balance;
 
     public Customer() {
     }
 
-    public Customer(UUID customerId, String username, String email, String password,float balance, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
+    public Customer(UUID customerId, String username, String email, String password,BigDecimal balance, LocalDateTime dateCreated, LocalDateTime dateUpdated, String status, String role) {
         this.customerId = customerId;
         this.username = username;
         this.email = email;
@@ -130,11 +132,11 @@ public class Customer {
         this.role = role;
     }
 
-    public float getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(float balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 }

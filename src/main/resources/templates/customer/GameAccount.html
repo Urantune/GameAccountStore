@@ -436,7 +436,8 @@
                                             <div class="product-item-inner-item">
                                                 <!-- Ảnh -->
                                                 <img th:src="@{'/images/' + ${p.imageMain}}"
-                                                     class="img-fluid w-100 rounded-top product-img"/>
+                                                     class="img-fluid w-100 product-img"/>
+
                                                 <div class="product-details">
                                                     <a th:href="@{/home/gameDetail/{id}(id=${p.id})}">
                                                         <i class="fa fa-eye fa-1x"></i>
@@ -450,7 +451,27 @@
 
                                                 <span class="text-primary fs-5"
                                                       th:text="${#numbers.formatDecimal(p.price,0,'COMMA',0,'POINT')}">
-                                        </span>
+                                               </span>
+                                                <!-- Rank -->
+                                                <div class="mb-3">
+                                                    <span class="fw-bold">Rank:</span>
+                                                    <span th:text="${p.rank}"></span>
+                                                </div>
+                                                <!-- Skins -->
+                                                <div class="mb-3">
+                                                    <span class="fw-bold">Số lượng Skin:</span>
+                                                    <span th:text="${p.skin}"></span>
+                                                </div>
+                                                <!-- Level -->
+                                                <div class="mb-3">
+                                                    <span class="fw-bold">Level:</span>
+                                                    <span th:text="${p.lovel}"></span>
+                                                </div>
+                                                <!-- Items -->
+                                                <div class="mb-3">
+                                                    <span class="fw-bold">Cấp Vip:</span>
+                                                    <span th:text="${p.items}"></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -465,6 +486,15 @@
     </div>
 </div>
 </div>
+<style>
+    .product-img {
+        width: 100%;
+        height: 220px;          /* bạn có thể chỉnh 200 / 250 tùy layout */
+        object-fit: cover;      /* cắt ảnh cho vừa khung, không méo */
+        object-position: center;
+    }
+
+</style>
 <!-- Our Products End -->
 
 

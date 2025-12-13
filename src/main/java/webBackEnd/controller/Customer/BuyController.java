@@ -1,5 +1,6 @@
 package webBackEnd.controller.Customer;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,64 +49,89 @@ public class BuyController {
         return "customer/Payment";
     }
 
+    @Transactional
     @PostMapping("/order/confirm/{gameId}")
-    public String confirmOrder(@PathVariable UUID gameId, @RequestParam("packageValues") String packageValues, RedirectAttributes redirectAttributes) {
+    public String confirmOrder(
+            @PathVariable UUID gameId,
+            @RequestParam("packageValues") String packageValues,
+            Model model
+    ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // ===== CHƯA LOGIN =====
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication.getPrincipal().equals("anonymousUser")) {
-            throw new RuntimeException("Bạn chưa đăng nhập!");
+
+            model.addAttribute("errorMessage", "Bạn chưa đăng nhập!");
+            model.addAttribute("games", getGame(gameId));
+            return "customer/Payment";
         }
-        String username = authentication.getName();
-        Customer customer = customerService.findByCustomerUsername(username);
+
+        Customer customer = customerService.findByCustomerUsername(authentication.getName());
 
         if (customer == null) {
-            throw new RuntimeException("Không tìm thấy customer!");
+            model.addAttribute("errorMessage", "Không tìm thấy customer!");
+            model.addAttribute("games", getGame(gameId));
+            return "customer/Payment";
         }
-        GameAccount game = gameAccountRepositories.findById(gameId)
-                .orElseThrow(() -> new RuntimeException("Game not found"));
 
-        // ===== TÍNH GIÁ Ở BACKEND =====
+        GameAccount game = getGame(gameId);
+
+        // ===== TÍNH GIÁ =====
         BigDecimal basePrice = game.getPrice();
         BigDecimal totalPrice = basePrice;
 
         if (packageValues.contains("2 Tháng")) {
-            totalPrice = basePrice.multiply(new BigDecimal("0.9"));
+            totalPrice = basePrice.multiply(BigDecimal.valueOf(0.9));
         } else if (packageValues.contains("3 Tháng")) {
-            totalPrice = basePrice.multiply(new BigDecimal("0.85"));
+            totalPrice = basePrice.multiply(BigDecimal.valueOf(0.85));
         }
 
+        BigDecimal balance = customer.getBalance();
 
-        // ===== TẠO ORDER =====
+        // KHÔNG ĐỦ TIỀN
+        if (balance.compareTo(totalPrice) < 0) {
+            model.addAttribute("errorMessage", "Số dư không đủ để thực hiện giao dịch");
+            model.addAttribute("games", game);
+            return "customer/Payment";
+        }
+
+        // ✅ TRỪ TIỀN
+        customer.setBalance(balance.subtract(totalPrice));
+        customerRepositories.save(customer);
+
+        // ===== ORDER =====
         Orders order = new Orders();
         order.setCustomer(customer);
-        order.setVoucher(null);
-        order.setStaff(null);
         order.setTotalPrice(totalPrice);
         order.setCreatedDate(LocalDateTime.now());
         order.setStatus("WAIT");
-
         Orders savedOrder = ordersRepositories.save(order);
+
         // ===== ORDER DETAIL =====
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGameAccount(game);
-        if (packageValues.contains("1 Tháng")) {
-            detail.setDuration(1);
-        } else if (packageValues.contains("2 Tháng")) {
-            detail.setDuration(2);
-        } else if (packageValues.contains("3 Tháng")) {
-            detail.setDuration(3);
-        } else {
-            detail.setDuration(0);
-        }
-        orderDetailRepositories.save(detail);
-        redirectAttributes.addFlashAttribute(
-                "successMessage",
-                "Thanh toán thành công! Vui lòng kiểm tra lịch sử giao dịch."
+        detail.setDuration(
+                packageValues.contains("1 Tháng") ? 1 :
+                        packageValues.contains("2 Tháng") ? 2 :
+                                packageValues.contains("3 Tháng") ? 3 : 0
         );
-        return "redirect:/home";
+        orderDetailRepositories.save(detail);
+
+        // ✅ THÀNH CÔNG
+        model.addAttribute("successMessage", "Thanh toán thành công!");
+        model.addAttribute("games", game);
+
+        return "customer/Payment";
     }
+
+    private GameAccount getGame(UUID gameId) {
+        return gameAccountRepositories.findById(gameId)
+                .orElseThrow(() -> new RuntimeException("Game not found"));
+    }
+
+
 
 
 }
