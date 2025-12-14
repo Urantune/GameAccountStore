@@ -1,31 +1,16 @@
 package webBackEnd.controller.Admin;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import webBackEnd.entity.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import webBackEnd.service.*;
 import webBackEnd.successfullyDat.PathCheck;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
 @Controller
 @RequestMapping("/adminHome")
-public class HomeAdminController {
-
+public class ShiftController {
 
     @Autowired
     private CustomerService customerService;
@@ -51,12 +36,14 @@ public class HomeAdminController {
     private PathCheck pathCheck;
 
 
-    @GetMapping("")
-    public String homeAdmin(Model model) {
-        return "admin/AdminIndex";
+
+    @GetMapping("/shift")
+    public String shift(Model model) {
+
+
+
+        return "admin/Shift";
     }
-
-
 
 
 

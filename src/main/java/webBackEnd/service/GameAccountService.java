@@ -35,5 +35,9 @@ public class GameAccountService {
     public void save(GameAccount gameAccount){
         gameAccountRepositories.save(gameAccount);
     }
-
+    public GameAccount getGameById(UUID gameId) {
+        return gameAccountRepositories.findById(gameId)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy game"));
+    }
 }

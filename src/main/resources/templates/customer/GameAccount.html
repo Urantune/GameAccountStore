@@ -147,148 +147,221 @@
 <!-- Spinner End -->
 
 
+
 <!-- Navbar & Hero Start -->
-<nav class="navbar navbar-expand-lg  px-4 py-2 shadow-sm" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+<nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="/home">
-            <img src="/img/logoFinal.png" alt="Logo"
-                 style="height:100px; width:auto;">
-        </a>
-        <!-- Toggle button mobile -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- Navbar Items -->
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav mx-auto align-items-center fw-semibold" style="gap: 8px;">
 
-                <!-- Trang Chủ -->
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home">
-                        <i class="fa fa-home me-2"></i> Trang Chủ
-                    </a>
-                </li>
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="/home">
+                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+            </a>
 
-                <!-- Lịch Sử Mua -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-shopping-cart me-2"></i> Lịch Sử Mua
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-3">
-                        <li><a class="dropdown-item py-2" href="#">Free Fire</a></li>
-                        <li><a class="dropdown-item py-2" href="#">AOV</a></li>
-                    </ul>
-                </li>
+            <!-- Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <!-- Dịch Vụ Khác -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-tools me-2"></i> Dịch Vụ Khác
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-3">
-                        <li><a class="dropdown-item py-2" href="#">Cày Thuê</a></li>
-                        <li><a class="dropdown-item py-2" href="#">Cho Thuê Tài Khoản</a></li>
-                    </ul>
-                </li>
+            <!-- MENU -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <!-- Tài Khoản -->
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
-                        <i class="fa fa-user-circle me-2"></i> Tài Khoản
-                    </a>
-                </li>
+                <!-- MENU GIỮA -->
+                <ul class="navbar-nav mx-auto align-items-center nav-center">
 
-                <!-- Nạp Tiền -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-credit-card me-2"></i> Nạp Tiền
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-3">
-                        <li><a class="dropdown-item py-2" href="#">Thẻ Cào</a></li>
-                        <li><a class="dropdown-item py-2" href="#">Ngân Hàng</a></li>
-                    </ul>
-                </li>
+                    <!-- Trang chủ luôn cho phép -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill" href="/home">
+                            <i class="fa fa-home me-2"></i>Trang Chủ
+                        </a>
+                    </li>
 
-                <!-- Dòng Tiền -->
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
-                        <i class="fa fa-coins me-2"></i> Dòng Tiền
-                    </a>
-                </li>
+                    <!-- LỊCH SỬ MUA -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-pill dropdown-toggle require-login"
+                           href="#"
+                           data-bs-toggle="dropdown"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                        </a>
 
-                <!-- Tin Tức -->
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
-                        <i class="fa fa-newspaper me-2"></i> Tin Tức
-                    </a>
-                </li>
+                        <ul class="dropdown-menu dropdown-soft">
+                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                        </ul>
+                    </li>
 
-            </ul>
-            <style>
-                .hover-nav {
-                    transition: 0.2s ease-in-out;
-                }
+                    <!-- TÀI KHOẢN -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           href="/home/profile"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
+                        </a>
+                    </li>
 
-                .hover-nav:hover {
-                    background: #f5f5f5;
-                    color: #000 !important;
-                }
+                    <!-- VÍ -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           href="/home/wallet"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-credit-card me-2"></i>Ví
+                        </a>
+                    </li>
 
-                .nav-link {
-                    color: #222 !important;
-                    font-size: 15px;
-                }
+                    <!-- GIỎ HÀNG -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           th:href="@{/home/cart}"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                        </a>
+                    </li>
+                </ul>
 
-                .dropdown-menu {
-                    padding: 8px 0;
-                    border-radius: 12px !important;
-                }
 
-                .dropdown-item:hover {
-                    background-color: #f0f0f0;
-                    border-radius: 8px;
-                }
+                <!-- Navbar styles -->
+                <style>
+                    .game-nav{
+                        background:pink;
+                        border-top:2px solid #e6d8c8;
+                        height:86px;
+                        display:flex;
+                        align-items:center;
+                    }
 
-            </style>
-            <!-- User section -->
-            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                    .game-nav .container-fluid{
+                        display:flex;
+                        align-items:center;
+                    }
 
-                <!-- Khi chưa đăng nhập -->
-                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold">Khách</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                Đăng nhập
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
-                                Đăng ký
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-<!--                &lt;!&ndash; Khi đã đăng nhập &ndash;&gt;-->
-<!--                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">-->
-<!--                    <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">-->
-<!--                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">-->
-<!--                        <span class="fw-semibold" th:text="${#authentication.name}"></span>-->
-<!--                    </a>-->
-<!--                    <ul class="dropdown-menu dropdown-fix">-->
-<!--                        <li><a class="dropdown-item" th:href="@{/home/profile/{id}(id=${currentUser.customerId})}">Thông tin tài khoản</a></li>-->
-<!--                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>-->
-<!--                    </ul>-->
-                </li>
-            </ul>
+                    .nav-logo{
+                        height:180px;
+                        width:auto;
+                    }
+
+                    .nav-center{
+                        gap:26px;
+                    }
+
+                    .game-nav .navbar-nav .nav-link{
+                        color: #111 !important;
+                        font-weight: 500;
+                    }
+
+                    .nav-pill{
+                        background: transparent;
+                        color: #000 !important;
+                        border: 1px solid transparent;
+                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+                    }
+
+                    .nav-pill:hover{
+                        color: #f7931e !important;
+                        background: #F8F8FF;
+                        box-shadow: none !important;
+                        transform: none !important;
+                    }
+
+                    .nav-pill{
+                        color: #111 !important;
+                        font-weight: 500;
+                        background: transparent;
+                    }
+
+                    .nav-pill:focus,
+                    .nav-pill:active{
+                        background: #f5e6d7 !important;
+                        color: #000 !important;
+                        box-shadow: none !important;
+                    }
+
+                    /* DROPDOWN */
+                    .dropdown-soft{
+                        border-radius:14px;
+                        padding:6px;
+                    }
+
+                    .nav-pill{
+                        border-radius: 18px !important;
+                        padding: 10px 18px !important;
+                    }
+
+                    .nav-pill:hover{
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+                    }
+
+                    .nav-pill:focus,
+                    .nav-pill:active{
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+                    }
+
+                </style>
+
+                <!-- Right: User -->
+                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+
+                    <!-- Anonymous -->
+                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                            <span class="fw-semibold">Khách</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-fix">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Authenticated -->
+
+                    <li sec:authorize="isAuthenticated()">
+                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                        <a class="dropdown-item"
+                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                            Thông tin tài khoản
+                        </a>
+                    </li>
+                </ul>
+             </div>
+
         </div>
     </div>
 </nav>
+<div id="loginAlert"
+     class="alert alert-warning text-center fw-semibold d-none"
+     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+</div>
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+
+            if (!isLogged) {
+                e.preventDefault();
+                showLoginAlert();
+            }
+        });
+    });
+
+    function showLoginAlert() {
+        const alertBox = document.getElementById('loginAlert');
+
+        // hiện alert
+        alertBox.classList.remove('d-none');
+
+        // tự tắt sau 3 giây
+        setTimeout(() => {
+            alertBox.classList.add('d-none');
+        }, 3000);
+    }
+</script>
+
 <!-- Navbar & Hero End -->
 
 <!-- Carousel Start -->
@@ -423,53 +496,266 @@
             <div class="tab-class">
                 <div class="row g-4">
                     <div class="col-lg-4 text-start">
-                        <h1>Our Game</h1>
+                        <h1 th:text="${pageTitle}"></h1>
                     </div>
                     <div class="tab-content">
                         <!-- TẤT CẢ SẢN PHẨM -->
                         <div id="tab-all" class="tab-pane fade show active p-0">
                             <div class="row g-4">
-                                <!-- Vòng lặp sản phẩm -->
-                                <div class="col-md-6 col-lg-4 col-xl-3" th:each="p : ${gameId}">
-                                    <div class="product-item rounded">
-                                        <div class="product-item-inner border rounded">
-                                            <div class="product-item-inner-item">
-                                                <!-- Ảnh -->
-                                                <img th:src="@{'/images/' + ${p.imageMain}}"
-                                                     class="img-fluid w-100 rounded-top product-img"/>
-                                                <div class="product-details">
-                                                    <a th:href="@{/home/gameDetail/{id}(id=${p.id})}">
-                                                        <i class="fa fa-eye fa-1x"></i>
-                                                    </a>
+                                <div class="col-md-6 col-lg-4 col-xl-3"
+                                     th:each="p : ${gameId}">
+                                    <div class="card game-card h-100 border-0 shadow-sm rounded-4">
+                                        <!-- IMAGE -->
+                                        <div class="position-relative overflow-hidden rounded-top-4">
+                                            <img th:src="@{'/images/' + ${p.imageMain}}"
+                                                 class="card-img-top game-img">
+                                            <span th:if="${p.duration == null}"
+                                                  class="badge badge-permanent position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
+    <i class="fa fa-infinity me-1"></i> Vĩnh viễn
+</span>
+
+                                            <span th:if="${p.duration == 'RENT'}"
+                                                  class="badge badge-rent position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
+    <i class="fa fa-clock me-1"></i> Thuê
+</span>
+
+                                            <a th:href="@{/home/gameDetail/{id}(id=${p.id})}"
+                                               class="view-btn">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        </div>
+
+                                        <!-- BODY -->
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title fw-bold mb-2"
+                                                th:text="${p.game.gameName}"></h5>
+
+                                            <div class="text-danger fw-bold fs-5 mb-3"
+                                                 th:text="${#numbers.formatDecimal(p.price,0,'COMMA',0,'POINT')} + ' đ'">
+                                            </div>
+
+                                            <div class="row text-dark small">
+                                                <div class="col-6 mb-2">
+                                                    <span class="fw-semibold">Rank:</span>
+                                                    <span th:text="${p.rank}"></span>
+                                                </div>
+
+                                                <div class="col-6 mb-2">
+                                                    <span class="fw-semibold">Skins:</span>
+                                                    <span th:text="${p.skin}"></span>
+                                                </div>
+
+                                                <div class="col-6 mb-2">
+                                                    <span class="fw-semibold">Level:</span>
+                                                    <span th:text="${p.lovel}"></span>
+                                                </div>
+
+                                                <div class="col-6 mb-2">
+                                                    <span class="fw-semibold">VIP:</span>
+                                                    <span th:text="${p.items}"></span>
                                                 </div>
                                             </div>
-                                            <!-- Tên + giá -->
-                                            <div class="text-center rounded-bottom p-4">
-                                                <a class="d-block h4"
-                                                   th:text="${p.game.gameName}"></a>
-
-                                                <span class="text-primary fs-5"
-                                                      th:text="${#numbers.formatDecimal(p.price,0,'COMMA',0,'POINT')}">
-                                        </span>
-                                            </div>
                                         </div>
+
+                                        <!-- FOOTER -->
+                                        <div class="card-footer border-0 pb-4 text-center">
+                                            <a th:href="@{/home/gameDetail/{id}(id=${p.id})}"
+                                               class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                                                Xem chi tiết
+                                            </a>
+                                        </div>
+
                                     </div>
                                 </div>
-                                <!-- END vòng lặp -->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+         </div>
     </div>
-</div>
-</div>
+<style>
+    /* ===== BASE BADGE ===== */
+    /* ================= BASE ================= */
+    .badge-permanent,
+    .badge-rent {
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: .5px;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all .3s ease;
+    }
+
+    /* ================= VĨNH VIỄN ================= */
+    .badge-permanent {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        color: #fff;
+        box-shadow:
+                0 0 8px rgba(34,197,94,.8),
+                0 0 20px rgba(34,197,94,.6);
+        animation: neonPulse 1.6s infinite alternate;
+    }
+
+    /* Vòng sáng xoay */
+    .badge-permanent::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+        animation: rotateLight 2.5s linear infinite;
+    }
+
+    /* ================= THUÊ ================= */
+    .badge-rent {
+        background: linear-gradient(135deg, #facc15, #f59e0b);
+        color: #111;
+        box-shadow:
+                0 0 8px rgba(250,204,21,.8),
+                0 0 18px rgba(250,204,21,.6);
+    }
+
+    /* Shine quét */
+    .badge-rent::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 60%;
+        height: 100%;
+        background: rgba(255,255,255,.6);
+        transform: skewX(-25deg);
+        animation: shineMove 2.2s infinite;
+    }
+
+    /* ================= HOVER ================= */
+    .badge-permanent:hover,
+    .badge-rent:hover {
+        transform: scale(1.15);
+        box-shadow:
+                0 0 20px rgba(255,255,255,.9),
+                0 0 40px rgba(255,255,255,.7);
+    }
+
+    /* ================= ANIMATION ================= */
+    @keyframes neonPulse {
+        from {
+            box-shadow:
+                    0 0 6px rgba(34,197,94,.6),
+                    0 0 15px rgba(34,197,94,.4);
+        }
+        to {
+            box-shadow:
+                    0 0 15px rgba(34,197,94,1),
+                    0 0 35px rgba(34,197,94,.9);
+        }
+    }
+
+    @keyframes rotateLight {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+    }
+
+    @keyframes shineMove {
+        0% { left: -120%; }
+        60% { left: 120%; }
+        100% { left: 120%; }
+    }
+
+
+    /* Ảnh game */
+    .game-img {
+        height: 220px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    /* Overlay tối */
+    .game-thumb::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.35);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    /* Hover effect */
+    .game-card:hover .game-img {
+        transform: scale(1.08);
+    }
+
+    .game-card:hover .game-thumb::after {
+        opacity: 1;
+    }
+
+
+    .view-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card-body{
+        background-color:#FFEED8;
+    }
+    .card-footer{
+        background-color: #FFEED8;
+    }
+    .view-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        width: 42px;
+        height: 42px;
+        background: rgba(0,0,0,0.65);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+    }
+
+    .game-card:hover .view-btn {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .view-btn:hover {
+        background: pink;
+        transform: scale(1.1);
+    }
+
+    .badge-anim {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+
+</style>
 <!-- Our Products End -->
 
 
 <!-- Footer Start -->
-<div class="container-fluid py-5" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
     <div class="container">
 
         <div class="row g-4">

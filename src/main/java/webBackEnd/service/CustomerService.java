@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import webBackEnd.entity.Customer;
 import webBackEnd.repository.CustomerRepositories;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,5 +48,12 @@ public class CustomerService implements UserDetailsService {
     public Customer findByCustomerUsername(String username) {
         return customerRepositories.findByUsername(username);
     }
+
+    public BigDecimal getCustomerBalance(UUID customerId) {
+        return customerRepositories.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"))
+                .getBalance();
+    }
+
 
 }
