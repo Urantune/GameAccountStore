@@ -55,6 +55,7 @@ public class SecurityConfig {
                 // bảo vệ các URL khác
                 .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
                 .requestMatchers("/Staff/**").hasRole("STAFF")
+                .requestMatchers("/cart/add/**").authenticated()
                 .anyRequest().authenticated()
         );
 
