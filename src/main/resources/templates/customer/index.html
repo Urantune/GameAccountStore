@@ -151,181 +151,185 @@
 <nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
 
-    <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="/home">
-            <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
-        </a>
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="/home">
+                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+            </a>
 
-        <!-- Toggle -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <!-- Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <!-- MENU -->
-        <div class="collapse navbar-collapse" id="mainNavbar">
+            <!-- MENU -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
 
-            <!-- MENU GIỮA -->
-            <ul class="navbar-nav mx-auto align-items-center nav-center">
+                <!-- MENU GIỮA -->
+                <ul class="navbar-nav mx-auto align-items-center nav-center">
 
-                <!-- Trang chủ luôn cho phép -->
-                <li class="nav-item">
-                    <a class="nav-link nav-pill" href="/home">
-                        <i class="fa fa-home me-2"></i>Trang Chủ
-                    </a>
-                </li>
+                    <!-- Trang chủ luôn cho phép -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill" href="/home">
+                            <i class="fa fa-home me-2"></i>Trang Chủ
+                        </a>
+                    </li>
 
-                <!-- LỊCH SỬ MUA -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-pill dropdown-toggle require-login"
-                       href="#"
-                       data-bs-toggle="dropdown"
-                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
-                    </a>
+                    <!-- LỊCH SỬ MUA -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-pill dropdown-toggle require-login"
+                           href="#"
+                           data-bs-toggle="dropdown"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                        </a>
 
-                    <ul class="dropdown-menu dropdown-soft">
-                        <li><a class="dropdown-item" href="#">Free Fire</a></li>
-                        <li><a class="dropdown-item" href="#">AOV</a></li>
-                    </ul>
-                </li>
+                        <ul class="dropdown-menu dropdown-soft">
+                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                        </ul>
+                    </li>
 
-                <!-- TÀI KHOẢN -->
-                <li class="nav-item">
-                    <a class="nav-link nav-pill require-login"
-                       href="/home/profile"
-                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-user-circle me-2"></i>Tài Khoản
-                    </a>
-                </li>
+                    <!-- TÀI KHOẢN -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           href="/home/profile"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
+                        </a>
+                    </li>
 
-                <!-- VÍ -->
-                <li class="nav-item">
-                    <a class="nav-link nav-pill require-login"
-                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-credit-card me-2"></i>Ví
-                    </a>
-                </li>
+                    <!-- VÍ -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-credit-card me-2"></i>Ví
+                        </a>
+                    </li>
 
-                <!-- GIỎ HÀNG -->
-                <li class="nav-item">
-                    <a class="nav-link nav-pill require-login"
-                       th:href="@{/home/cart}"
-                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-coins me-2"></i>Giỏ Hàng
-                    </a>
-                </li>
-            </ul>
+                    <!-- GIỎ HÀNG -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           th:href="@{/home/cart}"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                        </a>
+                    </li>
+                </ul>
 
 
-            <!-- Navbar styles -->
-            <style>
-                .game-nav{
-                    background:pink;
-                    border-top:2px solid #e6d8c8;
-                    height:86px;
-                    display:flex;
-                    align-items:center;
-                }
+                <!-- Navbar styles -->
+                <style>
+                    .game-nav {
+                        background: pink;
+                        border-top: 2px solid #e6d8c8;
+                        height: 86px;
+                        display: flex;
+                        align-items: center;
+                    }
 
-                .game-nav .container-fluid{
-                    display:flex;
-                    align-items:center;
-                }
+                    .game-nav .container-fluid {
+                        display: flex;
+                        align-items: center;
+                    }
 
-                .nav-logo{
-                    height:180px;
-                    width:auto;
-                }
+                    .nav-logo {
+                        height: 180px;
+                        width: auto;
+                    }
 
-                .nav-center{
-                    gap:26px;
-                }
+                    .nav-center {
+                        gap: 26px;
+                    }
 
-                .game-nav .navbar-nav .nav-link{
-                    color: #111 !important;
-                    font-weight: 500;
-                }
+                    .game-nav .navbar-nav .nav-link {
+                        color: #111 !important;
+                        font-weight: 500;
+                    }
 
-                .nav-pill{
-                    background: transparent;
-                    color: #000 !important;
-                    border: 1px solid transparent;
-                    transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
-                }
+                    .nav-pill {
+                        background: transparent;
+                        color: #000 !important;
+                        border: 1px solid transparent;
+                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+                    }
 
-                .nav-pill:hover{
-                    color: #f7931e !important;
-                    background: #F8F8FF;
-                    box-shadow: none !important;
-                    transform: none !important;
-                }
+                    .nav-pill:hover {
+                        color: #f7931e !important;
+                        background: #F8F8FF;
+                        box-shadow: none !important;
+                        transform: none !important;
+                    }
 
-                    .nav-pill{
-                    color: #111 !important;
-                    font-weight: 500;
-                    background: transparent;
-                }
+                    .nav-pill {
+                        color: #111 !important;
+                        font-weight: 500;
+                        background: transparent;
+                    }
 
-                .nav-pill:focus,
-                .nav-pill:active{
-                    background: #f5e6d7 !important;
-                    color: #000 !important;
-                    box-shadow: none !important;
-                }
+                    .nav-pill:focus,
+                    .nav-pill:active {
+                        background: #f5e6d7 !important;
+                        color: #000 !important;
+                        box-shadow: none !important;
+                    }
 
-                /* DROPDOWN */
-                .dropdown-soft{
-                    border-radius:14px;
-                    padding:6px;
-                }
+                    /* DROPDOWN */
+                    .dropdown-soft {
+                        border-radius: 14px;
+                        padding: 6px;
+                    }
 
-                .nav-pill{
-                    border-radius: 18px !important;
-                    padding: 10px 18px !important;
-                }
+                    .nav-pill {
+                        border-radius: 18px !important;
+                        padding: 10px 18px !important;
+                    }
 
-                .nav-pill:hover{
-                    border-radius: 18px !important;
-                    box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                }
+                    .nav-pill:hover {
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+                    }
 
-                .nav-pill:focus,
-                .nav-pill:active{
-                    border-radius: 18px !important;
-                    box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                }
+                    .nav-pill:focus,
+                    .nav-pill:active {
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+                    }
 
-            </style>
+                </style>
 
-            <!-- Right: User -->
-            <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+                <!-- Right: User -->
+                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
 
-            <!-- Anonymous -->
-                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold">Khách</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
-                    </ul>
-                </li>
+                    <!-- Anonymous -->
+                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
+                           data-bs-toggle="dropdown">
+                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                            <span class="fw-semibold">Khách</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-fix">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng
+                                nhập</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                   data-bs-target="#registerModal">Đăng ký</a></li>
+                        </ul>
+                    </li>
 
-                <!-- Authenticated -->
+                    <!-- Authenticated -->
 
-                <li sec:authorize="isAuthenticated()">
-                    <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
-                    <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                    <a class="dropdown-item"
-                       th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
-                        Thông tin tài khoản
-                    </a>
-                </li>
+                    <li sec:authorize="isAuthenticated()">
+                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                        <a class="dropdown-item"
+                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                            Thông tin tài khoản
+                        </a>
+                    </li>
+                </ul>
             </div>
-            </ul>
+
         </div>
     </div>
 </nav>
@@ -345,6 +349,7 @@
             }
         });
     });
+
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
 
@@ -407,7 +412,8 @@
                         <a href="#" class="d-block mb-2">Loại trang phục</a>
                         <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
                     </div>
-                    <a th:href="@{/home/gameDetail/{id}(id=E3FBB1AF-8AE9-48E2-9DE1-061219893D01)}" class="btn btn-primary rounded-pill py-2 px-4"><i
+                    <a th:href="@{/home/gameDetail/{id}(id=E3FBB1AF-8AE9-48E2-9DE1-061219893D01)}"
+                       class="btn btn-primary rounded-pill py-2 px-4"><i
                             class="fas fa-shopping-cart me-2"></i> Mua ngay</a>
                 </div>
             </div>
@@ -490,7 +496,7 @@
     <!-- Our Products Start -->
     <div class="container-fluid product py-5">
         <div class="container py-5">
-            <div class="tab-class">
+            <div class="tab-class ">
                 <!-- Căn giữa tiêu đề -->
                 <div class="row g-4">
                     <div class="col-12 text-center">
@@ -499,7 +505,7 @@
                 </div>
                 <div class="tab-content">
                     <!-- TẤT CẢ SẢN PHẨM -->
-                    <div id="tab-all" class="tab-pane fade show active p-0">
+                    <div id="tab-all" class="tab-pane fade show active p-0 ">
 
                         <!-- Căn giữa các card game -->
                         <div class="row g-4 justify-content-center">
@@ -508,7 +514,7 @@
                             <div class="col-md-6 col-lg-4 col-xl-3"
                                  th:each="p, i : ${game}">
 
-                                <div class="product-item rounded">
+                                <div class="product-item rounded bg-pink">
                                     <div class="product-item-inner border rounded">
                                         <div class="product-item-inner-item">
 
@@ -529,15 +535,6 @@
 
                                         </div>
                                     </div>
-
-                                    <!-- Bottom -->
-                                    <div class="product-item-add border border-top-0 rounded-bottom text-center p-4 pt-0">
-                                        <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}"
-                                           class="btn btn-primary border-secondary rounded-pill py-2 px-4 mb-4">
-                                            <i class="fas fa-shopping-cart me-2"></i>
-                                            View All Game Accounts
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                             <!-- end each -->
@@ -547,7 +544,12 @@
             </div>
         </div>
     </div>
+<style>
+    .bg-pink {
+        background: #FFEED8;
+    }
 
+</style>
     <!-- Our Products End -->
 
 
@@ -612,72 +614,111 @@
     <!-- Footer End -->
 
 
-
     <!-- JavaScript Libraries -->
-<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
-<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/lib/wow/wow.min.js}"></script>
-<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
-<!-- Template Javascript -->
-<script th:src="@{/js/main.js}"></script>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/lib/wow/wow.min.js}"></script>
+    <script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+    <!-- Template Javascript -->
+    <script th:src="@{/js/main.js}"></script>
 
-<!--JS hiển thị lỗi Login-->
-<script>
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+    <!--JS hiển thị lỗi Login-->
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+            e.preventDefault();
 
-        const username = document.getElementById("loginUsername").value;
-        const password = document.getElementById("loginPassword").value;
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
 
-        fetch("/login", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-Requested-With": "XMLHttpRequest"
-            },
-            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-        })
-            .then(async res => {
-                if (!res.ok) {
-                    const err = await res.json();
-
-                    const errorBox = document.getElementById("loginError");
-                    errorBox.textContent = err.error;
-                    errorBox.classList.remove("d-none");
-
-                    // Ẩn lỗi sau 3 giây
-                    setTimeout(() => {
-                        errorBox.classList.add("d-none");
-                    }, 3000);
-
-                    return;
-                }
-                return res.json();
+            fetch("/login", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
             })
-            .then(data => {
-                if (data?.redirect) window.location.href = data.redirect;
-            })
-            .catch(err => console.error(err));
-    });
-</script>
+                .then(async res => {
+                    if (!res.ok) {
+                        const err = await res.json();
+
+                        const errorBox = document.getElementById("loginError");
+                        errorBox.textContent = err.error;
+                        errorBox.classList.remove("d-none");
+
+                        // Ẩn lỗi sau 3 giây
+                        setTimeout(() => {
+                            errorBox.classList.add("d-none");
+                        }, 3000);
+
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data?.redirect) window.location.href = data.redirect;
+                })
+                .catch(err => console.error(err));
+        });
+    </script>
 
 
-<!--JS chuyển đổi giữa các Model-->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    <!--JS chuyển đổi giữa các Model-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-        // Khi bấm "Đăng ký ngay" trong Login → mở Register
-        document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+            // Khi bấm "Đăng ký ngay" trong Login → mở Register
+            document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    const loginModalEl = document.getElementById("loginModal");
+                    const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+
+                    // Đợi login đóng xong mới mở register
+                    loginModalEl.addEventListener('hidden.bs.modal', function handler() {
+                        loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                        const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                        registerModal.show();
+                    });
+
+                    loginModal.hide();
+                });
+            });
+
+            // Khi bấm "Đăng nhập ngay" trong Register → mở Login
+            document.querySelectorAll(".open-login").forEach(btn => {
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    const registerModalEl = document.getElementById("registerModal");
+                    const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+
+                    // Đợi register đóng xong mới mở login
+                    registerModalEl.addEventListener('hidden.bs.modal', function handler() {
+                        registerModalEl.removeEventListener('hidden.bs.modal', handler);
+                        const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                        loginModal.show();
+                    });
+
+                    registerModal.hide();
+                });
+            });
+        });
+    </script>
+    <!--JS tắt Model Login mở Model Register-->
+    <script>
+        document.querySelectorAll(".open-register").forEach(btn => {
             btn.addEventListener("click", function (e) {
                 e.preventDefault();
 
-                const loginModalEl = document.getElementById("loginModal");
-                const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+                const loginEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginEl);
 
-                // Đợi login đóng xong mới mở register
-                loginModalEl.addEventListener('hidden.bs.modal', function handler() {
-                    loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                loginEl.addEventListener("hidden.bs.modal", function handler() {
+                    loginEl.removeEventListener("hidden.bs.modal", handler);
+
                     const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
                     registerModal.show();
                 });
@@ -686,144 +727,104 @@
             });
         });
 
-        // Khi bấm "Đăng nhập ngay" trong Register → mở Login
-        document.querySelectorAll(".open-login").forEach(btn => {
-            btn.addEventListener("click", function (e) {
-                e.preventDefault();
-
-                const registerModalEl = document.getElementById("registerModal");
-                const registerModal = bootstrap.Modal.getInstance(registerModalEl);
-
-                // Đợi register đóng xong mới mở login
-                registerModalEl.addEventListener('hidden.bs.modal', function handler() {
-                    registerModalEl.removeEventListener('hidden.bs.modal', handler);
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-                    loginModal.show();
-                });
-
-                registerModal.hide();
-            });
-        });
-    });
-</script>
-<!--JS tắt Model Login mở Model Register-->
-<script>
-    document.querySelectorAll(".open-register").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            const loginEl = document.getElementById("loginModal");
-            const loginModal = bootstrap.Modal.getInstance(loginEl);
-
-            loginEl.addEventListener("hidden.bs.modal", function handler() {
-                loginEl.removeEventListener("hidden.bs.modal", handler);
-
-                const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
-                registerModal.show();
-            });
-
-            loginModal.hide();
-        });
-    });
-
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        if (window.location.search.includes("error=true")) {
-            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-        }
-    });
-</script>
-
-<script th:if="${openRegister}">
-    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
-    registerModal.show();
-</script>
-
-<!--JS k reload form Đăng ký-->
-<script>
-    document.getElementById("registerBtn").addEventListener("click", function () {
-        const formData = new FormData(document.getElementById("registerForm"));
-        fetch("/register", {
-            method: "POST",
-            body: new URLSearchParams(formData),
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.location.search.includes("error=true")) {
+                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
             }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const errorDiv = document.getElementById("registerError");
-                const successDiv = document.getElementById("registerSuccess");
+        });
+    </script>
 
-                if (data.error) {
-                    errorDiv.innerText = data.error;
-                    successDiv.innerText = "";
-                    // Reset password fields
-                    document.getElementById("registerPassword").value = "";
-                    document.getElementById("confirmPassword").value = "";
+    <script th:if="${openRegister}">
+        const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+        registerModal.show();
+    </script>
 
-                    // Ẩn lỗi sau 3 giây
-                    setTimeout(() => {
-                        errorDiv.innerText = "";
-                    }, 3000);
-                } else if (data.success) {
-                    successDiv.innerText = data.success;
-                    errorDiv.innerText = "";
-                    document.getElementById("registerForm").reset();
-
-                    // Ẩn thông báo thành công sau 3 giây
-                    setTimeout(() => {
-                        successDiv.innerText = "";
-                    }, 3000);
+    <!--JS k reload form Đăng ký-->
+    <script>
+        document.getElementById("registerBtn").addEventListener("click", function () {
+            const formData = new FormData(document.getElementById("registerForm"));
+            fetch("/register", {
+                method: "POST",
+                body: new URLSearchParams(formData),
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
                 }
             })
-            .catch(err => console.error(err));
-    });
-</script>
+                .then(response => response.json())
+                .then(data => {
+                    const errorDiv = document.getElementById("registerError");
+                    const successDiv = document.getElementById("registerSuccess");
 
-<script>
-    setTimeout(() => {
-        const spinner = document.getElementById("spinner");
-        if (spinner) spinner.classList.remove("show");
-    }, 500);
-</script>
+                    if (data.error) {
+                        errorDiv.innerText = data.error;
+                        successDiv.innerText = "";
+                        // Reset password fields
+                        document.getElementById("registerPassword").value = "";
+                        document.getElementById("confirmPassword").value = "";
 
-<script>
-    document.addEventListener("click", function (event) {
-        const categoryBox = document.getElementById("allCat");        // menu category
-        const toggleBtn = document.querySelector("[data-bs-target='#allCat']"); // nút bấm All Categories
+                        // Ẩn lỗi sau 3 giây
+                        setTimeout(() => {
+                            errorDiv.innerText = "";
+                        }, 3000);
+                    } else if (data.success) {
+                        successDiv.innerText = data.success;
+                        errorDiv.innerText = "";
+                        document.getElementById("registerForm").reset();
 
-        // Nếu click không nằm trong menu và không nằm trên nút mở menu → đóng
-        if (!categoryBox.contains(event.target) && !toggleBtn.contains(event.target)) {
-            let bsCollapse = bootstrap.Collapse.getInstance(categoryBox);
-            if (bsCollapse) {
-                bsCollapse.hide();
+                        // Ẩn thông báo thành công sau 3 giây
+                        setTimeout(() => {
+                            successDiv.innerText = "";
+                        }, 3000);
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    </script>
+
+    <script>
+        setTimeout(() => {
+            const spinner = document.getElementById("spinner");
+            if (spinner) spinner.classList.remove("show");
+        }, 500);
+    </script>
+
+    <script>
+        document.addEventListener("click", function (event) {
+            const categoryBox = document.getElementById("allCat");        // menu category
+            const toggleBtn = document.querySelector("[data-bs-target='#allCat']"); // nút bấm All Categories
+
+            // Nếu click không nằm trong menu và không nằm trên nút mở menu → đóng
+            if (!categoryBox.contains(event.target) && !toggleBtn.contains(event.target)) {
+                let bsCollapse = bootstrap.Collapse.getInstance(categoryBox);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
 
-<script>
-    new Swiper(".mySwiper1", {
-        loop: true,
-        autoplay: {delay: 2000},
-        pagination: {
-            el: ".mySwiper1 .swiper-pagination",
-            clickable: true,
-        },
-    });
+    <script>
+        new Swiper(".mySwiper1", {
+            loop: true,
+            autoplay: {delay: 2000},
+            pagination: {
+                el: ".mySwiper1 .swiper-pagination",
+                clickable: true,
+            },
+        });
 
-    new Swiper(".mySwiper2", {
-        loop: true,
-        autoplay: {delay: 2000},
-        pagination: {
-            el: ".mySwiper2 .swiper-pagination",
-            clickable: true,
-        },
-    });
-   </script>
+        new Swiper(".mySwiper2", {
+            loop: true,
+            autoplay: {delay: 2000},
+            pagination: {
+                el: ".mySwiper2 .swiper-pagination",
+                clickable: true,
+            },
+        });
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <script th:src="@{/js/product.js}"></script>

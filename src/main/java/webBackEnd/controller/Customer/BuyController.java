@@ -143,4 +143,10 @@ public class BuyController {
                 .orElseThrow(() -> new RuntimeException("Game not found"));
     }
 
+    @ModelAttribute("currentUser")
+    public Customer currentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerService.findCustomerByUsername(username);
+    }
+
 }
