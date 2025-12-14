@@ -1,37 +1,49 @@
-package webBackEnd.controller.Customer;
+package webBackEnd.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Customer;
+import webBackEnd.entity.GameAccount;
+import webBackEnd.service.CartService;
 import webBackEnd.service.CustomerService;
+import webBackEnd.service.GameAccountService;
 
-@Controller
-@RequestMapping(value = "/home")
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/cart")
 public class CartController {
-    @Autowired
-private CustomerService customerService;
 
+    private final CartService cartService;
+    private final CustomerService customerService;
+    private final GameAccountService gameAccountService;
 
-    @GetMapping("/cart")
-    public String cart(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public CartController(CartService cartService,
+                          CustomerService customerService,
+                          GameAccountService gameAccountService) {
+        this.cartService = cartService;
+        this.customerService = customerService;
+        this.gameAccountService = gameAccountService;
+    }
 
-        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            return "redirect:/home";
+    @PostMapping("/add/{gameAccountId}")
+    public ResponseEntity<?> addToCart(@PathVariable UUID gameAccountId,
+                                       @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body("Chưa đăng nhập");
         }
 
-        return "customer/cart";
-    }
-    @ModelAttribute("currentUser")
-    public Customer currentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerService.findCustomerByUsername(username);
+        Customer customer =
+                customerService.findByCustomerUsername(userDetails.getUsername());
+
+        GameAccount gameAccount =
+                gameAccountService.findGameAccountById(gameAccountId);
+
+        cartService.addToCart(customer, gameAccount);
+
+        return ResponseEntity.ok("Đã thêm vào giỏ hàng");
     }
 }

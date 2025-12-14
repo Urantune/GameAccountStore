@@ -424,21 +424,32 @@
                          </button>
                          <!-- Nút thêm giỏ hàng -->
                          <button class="btn btn-outline-dark" type="button"
-                                 onclick="checkLoginAndAddToCart()">
+                                 th:onclick="|addToCart('${p.id}')|">
                              <i class="bi-cart-fill me-1"></i> Thêm giỏ hàng
                          </button>
                      </div>
                      <script>
-                         function checkLoginAndAddToCart() {
-                             const isLogin = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
-                             if (!isLogin) {
-                                 alert("Bạn cần đăng nhập để thêm vào giỏ hàng!");
-                                 return;
-                             }
-                             // Nếu đã login thì gọi API thêm giỏ hàng tại đây
-                             alert("Đã thêm vào giỏ hàng!");
+                         function addToCart(gameAccountId) {
+                             fetch(`/cart/add/${gameAccountId}`, {
+                                 method: "POST",
+                                 headers: {
+                                     "X-Requested-With": "XMLHttpRequest"
+                                 }
+                             })
+                             .then(res => {
+                                 if (res.status === 401 || res.status === 403) {
+                                     alert("Bạn cần đăng nhập để thêm vào giỏ hàng!");
+                                     return;
+                                 }
+                                 if (!res.ok) {
+                                     return res.text().then(t => { throw new Error(t); });
+                                 }
+                                 alert("Đã thêm vào giỏ hàng");
+                             })
+                             .catch(err => alert(err.message));
                          }
                      </script>
+
                  </div>
              </div>
          </div>
