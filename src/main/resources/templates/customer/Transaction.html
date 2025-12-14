@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Ví của bạn</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+
+    <style>
+        body { background:#f5f9ff; font-family:'Segoe UI',sans-serif; }
+        .card { border-radius:12px; color:#fff; padding:25px; height:160px;
+            display:flex; flex-direction:column; justify-content:space-between; }
+        .c1 { background:linear-gradient(135deg,#00e0b3,#a8ff3e); }
+        .c2 { background:linear-gradient(135deg,#0054ff,#0bb2ff); }
+        .c3 { background:linear-gradient(135deg,#ff4d4d,#ff9999); }
+        .label { font-size:18px; opacity:.9; }
+        .money { font-size:36px; font-weight:bold; }
+        .wallet-table th, .wallet-table td { text-align:center; }
+        .wallet-table tbody tr:nth-child(even) { background:#f4f7fb; }
+        .wallet-table tbody tr:hover { background:#dbe9ff; }
+        .balance-container { display:flex; align-items:center; font-size:1.3em; margin-top:20px; }
+        .balance-container i { color:#28a745; margin-right:10px; font-size:1.5em; }
+        .balance-container span { font-weight:bold; color:#007bff; font-size:1.5em; }
+        .navbar { background:#FFEED8; }
+        .hover-nav:hover { background:#f5e6d7 !important; }
+        .footer { background:#fff4e6; padding:40px 0; border-top:2px solid #f1f1f1; }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/home">
+            <img src="/img/logoFinal.png" style="height:90px">
+        </a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mx-auto fw-semibold">
+                <li class="nav-item">
+                    <a class="nav-link hover-nav rounded-3 px-3" href="/home">
+                        <i class="fa fa-home me-1"></i> Trang Chủ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link hover-nav rounded-3 px-3" href="/home/wallet">
+                        <i class="fa fa-credit-card me-1"></i> Ví
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <li sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+                    <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px">
+                    <span th:text="${#authentication.name}"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="container py-4">
+
+    <!-- TOP CARDS -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card c1">
+                <p class="label">Số Tiền Hiện Có</p>
+                <p class="money"
+                   th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
+                    0 đ
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card c2">
+                <p class="label">Số Tiền Đã Nạp</p>
+                <p class="money"
+                   th:text="${#numbers.formatDecimal(totalDeposit,0,'COMMA',0,'POINT')} + ' đ'">
+                    0 đ
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card c3">
+                <p class="label">Số Tiền Đã Tiêu</p>
+                <p class="money"
+                   th:text="${#numbers.formatDecimal(totalSpent,0,'COMMA',0,'POINT')} + ' đ'">
+                    0 đ
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <form th:action="@{/home}" method="get" class="d-flex gap-2 mb-3 justify-content-end">
+        <input type="text" name="search" th:value="${search}" class="form-control w-25"
+               placeholder="Tìm nội dung...">
+        <button class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- TABLE -->
+    <table class="wallet-table table table-bordered">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>ID</th>
+            <th>Số Tiền</th>
+            <th>Nội Dung</th>
+            <th>Thời Gian</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="w, i : ${walletHistory}">
+            <td th:text="${i.index + 1}">1</td>
+            <td th:text="${w.transactionId}">UUID</td>
+            <td th:text="${#numbers.formatDecimal(w.amount,0,'COMMA',0,'POINT')} + ' đ'">0 đ</td>
+            <td th:text="${w.description}">Nạp tiền</td>
+            <td th:text="${#temporals.format(w.depositDate,'dd/MM/yyyy HH:mm')}">
+                12/12/2025 10:00
+            </td>
+        </tr>
+
+        <tr th:if="${walletHistory == null || walletHistory.isEmpty()}">
+            <td colspan="5" class="text-center">Không có dữ liệu</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <!-- CURRENT BALANCE -->
+    <div class="balance-container">
+        <i class="fa-solid fa-wallet"></i>
+        Số dư hiện tại:
+        <span th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
+            0 đ
+        </span>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer mt-5">
+    <div class="container text-center">
+        <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
+        <small>Developed by <strong>Urantune</strong></small>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

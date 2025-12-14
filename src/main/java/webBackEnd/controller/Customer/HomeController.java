@@ -1,21 +1,16 @@
 package webBackEnd.controller.Customer;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.*;
 import webBackEnd.service.*;
-
 import webBackEnd.successfullyDat.PathCheck;
 
+import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +19,9 @@ import java.util.UUID;
 @RequestMapping(value = "/home")
 public class HomeController {
 
+
+    @Autowired
+    private TransactionService transactionService;
 
     @Autowired
     private GameAccountService gameAccountService;
@@ -76,21 +74,61 @@ public class HomeController {
         return "customer/ProfileUser";
     }
 
+    @GetMapping("/transaction")
+    public String transaction(
+            Model model,
+            Principal principal,
+            @RequestParam(required = false) String search) {
 
-    @GetMapping("/wallet")
-    public String wallet(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
-            return "redirect:/home";
+        if (principal == null) {
+            return "redirect:/login";
         }
 
-        return "customer/wallet";
+        Customer customer =
+                customerService.findCustomerByUsername(principal.getName());
+
+        // 1️⃣ Lấy toàn bộ transaction (đảm bảo không null)
+        List<Transaction> allWallets = transactionService.getAll();
+        if (allWallets == null) {
+            allWallets = List.of();
+        }
+
+        // 2️⃣ Lọc theo customer + search + sort
+        List<Transaction> walletHistory = allWallets.stream()
+                .filter(w -> w.getCustomer() != null)
+                .filter(w -> w.getCustomer().getCustomerId()
+                        .equals(customer.getCustomerId()))
+                .filter(w -> search == null
+                        || search.isBlank()
+                        || (w.getDescription() != null
+                        && w.getDescription().toLowerCase()
+                        .contains(search.toLowerCase())))
+                .sorted((a, b) -> b.getDepositDate()
+                        .compareTo(a.getDepositDate()))
+                .toList();
+
+        // 3️⃣ Tính toán tiền (BigDecimal cho CHUẨN)
+        BigDecimal totalDeposit = BigDecimal.ZERO;
+        BigDecimal totalSpent = BigDecimal.ZERO;
+
+        for (Transaction w : walletHistory) {
+            if (w.getAmount() == null) continue;
+
+            if (w.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                totalDeposit = totalDeposit.add(w.getAmount());
+            } else {
+                totalSpent = totalSpent.add(w.getAmount().abs());
+            }
+        }
+
+        model.addAttribute("balance", customer.getBalance());
+        model.addAttribute("totalDeposit", totalDeposit);
+        model.addAttribute("totalSpent", totalSpent);
+        model.addAttribute("walletHistory", walletHistory);
+        model.addAttribute("search", search);
+
+        return "customer/Transaction";
     }
 
-    @GetMapping("/depositMoney")
-    public String depositMoney(Model model) {
-        return "customer/depositMoney";
-    }
 
 }
