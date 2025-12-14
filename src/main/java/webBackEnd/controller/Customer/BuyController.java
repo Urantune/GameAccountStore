@@ -8,10 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.GameAccount;
-import webBackEnd.entity.OrderDetail;
-import webBackEnd.entity.Orders;
+import webBackEnd.entity.*;
 import webBackEnd.repository.CustomerRepositories;
 import webBackEnd.repository.GameAccountRepositories;
 import webBackEnd.repository.OrderDetailRepositories;
@@ -19,8 +16,10 @@ import webBackEnd.repository.OrdersRepositories;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
 import webBackEnd.service.OrdersService;
+import webBackEnd.service.VoucherService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -41,6 +40,8 @@ public class BuyController {
     private GameAccountService gameAccountService;
     @Autowired
     private GameAccountRepositories gameAccountRepositories;
+    @Autowired
+    private VoucherService voucherService;
 
     @GetMapping("/payment/{id}")
     public String checkout(@PathVariable("id") UUID id, Model model) {
@@ -54,61 +55,74 @@ public class BuyController {
     public String confirmOrder(
             @PathVariable UUID gameId,
             @RequestParam("packageValues") String packageValues,
+            @RequestParam(value = "voucherCode", required = false) String voucherCode,
             Model model
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // ===== CHƯA LOGIN =====
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication.getPrincipal().equals("anonymousUser")) {
-
             model.addAttribute("errorMessage", "Bạn chưa đăng nhập!");
             model.addAttribute("games", getGame(gameId));
             return "customer/Payment";
         }
 
         Customer customer = customerService.findByCustomerUsername(authentication.getName());
-
-        if (customer == null) {
-            model.addAttribute("errorMessage", "Không tìm thấy customer!");
-            model.addAttribute("games", getGame(gameId));
-            return "customer/Payment";
-        }
-
         GameAccount game = getGame(gameId);
 
-        // ===== TÍNH GIÁ =====
-        BigDecimal basePrice = game.getPrice();
-        BigDecimal totalPrice = basePrice;
+        if (packageValues == null || packageValues.isBlank()) {
+            model.addAttribute("errorMessage", "Vui lòng chọn gói thuê");
+            model.addAttribute("games", game);
+            return "customer/Payment";
+        }
+        // Tính giá gốc
+        BigDecimal totalPrice = game.getPrice();
 
         if (packageValues.contains("2 Tháng")) {
-            totalPrice = basePrice.multiply(BigDecimal.valueOf(0.9));
+            totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.9));
         } else if (packageValues.contains("3 Tháng")) {
-            totalPrice = basePrice.multiply(BigDecimal.valueOf(0.85));
+            totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.85));
         }
 
-        BigDecimal balance = customer.getBalance();
+        //voucher
+        Voucher voucher = null;
+        if (voucherCode != null && !voucherCode.isBlank()) {
+             voucher = voucherService.getValidVoucher(voucherCode);
+            if (voucher == null) {
+                model.addAttribute("errorMessage", "Voucher không hợp lệ hoặc đã hết hạn");
+                model.addAttribute("games", game);
+                return "customer/Payment";
+            }
 
-        // KHÔNG ĐỦ TIỀN
-        if (balance.compareTo(totalPrice) < 0) {
-            model.addAttribute("errorMessage", "Số dư không đủ để thực hiện giao dịch");
+            BigDecimal discountPercent =
+                    BigDecimal.valueOf(voucher.getValue()).divide(BigDecimal.valueOf(100));
+            totalPrice = totalPrice.subtract(totalPrice.multiply(discountPercent));
+        }
+
+        totalPrice = totalPrice.setScale(0, RoundingMode.HALF_UP);
+
+        //Check tiền
+        if (customer.getBalance().compareTo(totalPrice) < 0) {
+            model.addAttribute("errorMessage", "Số dư không đủ");
             model.addAttribute("games", game);
             return "customer/Payment";
         }
 
-        // ✅ TRỪ TIỀN
-        customer.setBalance(balance.subtract(totalPrice));
+        //Trừ
+        customer.setBalance(customer.getBalance().subtract(totalPrice));
         customerRepositories.save(customer);
 
-        // ===== ORDER =====
+        //Orders
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(totalPrice);
         order.setCreatedDate(LocalDateTime.now());
         order.setStatus("WAIT");
+        if (voucher != null) {
+            order.setVoucher(voucher);
+        }
         Orders savedOrder = ordersRepositories.save(order);
 
-        // ===== ORDER DETAIL =====
+        //OrdersDetail
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGameAccount(game);
@@ -118,8 +132,6 @@ public class BuyController {
                                 packageValues.contains("3 Tháng") ? 3 : 0
         );
         orderDetailRepositories.save(detail);
-
-        // ✅ THÀNH CÔNG
         model.addAttribute("successMessage", "Thanh toán thành công!");
         model.addAttribute("games", game);
 
@@ -130,8 +142,5 @@ public class BuyController {
         return gameAccountRepositories.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
     }
-
-
-
 
 }

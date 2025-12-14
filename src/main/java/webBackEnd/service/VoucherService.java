@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import webBackEnd.entity.Voucher;
 import webBackEnd.repository.VoucherRepositories;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 @Service
 public class VoucherService {
 
@@ -26,4 +26,11 @@ public class VoucherService {
         return  voucherRepositories.save(voucher);
     }
 
+
+    public Voucher getValidVoucher(String code) {
+        if (code == null || code.isBlank()) {
+            return null;
+        }
+        return voucherRepositories.findValidVoucher(code.trim(), new Date());
+    }
 }
