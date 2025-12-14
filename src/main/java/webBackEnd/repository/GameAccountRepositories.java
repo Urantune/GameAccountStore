@@ -26,5 +26,4 @@ public interface GameAccountRepositories extends JpaRepository<GameAccount, UUID
 
 
 
-
 }

@@ -12,121 +12,213 @@
     <style>
         :root {
             --orange: #ff7a2f;
+            --bg-main: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-muted: #6b7280;
         }
 
+        /* ===== BODY: KHÔNG SCROLL ===== */
         body {
-            background: #f5f5f5;
-            font-family: "Roboto", sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: var(--bg-main);
+            font-family: "Inter", "Roboto", sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ===== TOP & BOTTOM BAR ===== */
+        .bar-top,
+        .bar-bottom {
+            height: 70px;
+            background: var(--orange);
         }
 
         .bar-top {
-            width: 100%;
-            height: 70px;
-            background: var(--orange);
             display: flex;
             align-items: center;
             padding-left: 30px;
         }
 
         .bar-bottom {
-            width: 100%;
-            height: 70px;
-            background: var(--orange);
             position: fixed;
             bottom: 0;
             left: 0;
-            z-index: 10;
+            width: 100%;
         }
 
+        /* ===== MAIN CONTENT (GIỮA 2 BAR) ===== */
+        .main-content {
+            height: calc(100vh - 140px); /* 70 top + 70 bottom */
+            display: flex;
+            align-items: center;
+        }
+
+        /* ===== WRAPPER FULL WIDTH ===== */
         .cards-wrapper {
-            margin: auto;
-            margin-top: 60px;
-            margin-bottom: 120px;
-            max-width: 1100px;
+            width: 100%;
+            padding: 0 40px;
         }
 
+        /* ===== DASHBOARD CARD ===== */
         .dash-card {
-            background: white;
-            border: 3px solid var(--orange);
-            border-radius: 15px;
-            height: 230px;
-            text-align: center;
-            padding: 25px;
-            transition: 0.25s;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 22px;
+            min-height: 220px;
+
+            box-shadow:
+                    0 8px 20px rgba(0, 0, 0, 0.06),
+                    0 2px 6px rgba(0, 0, 0, 0.04);
+
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .dash-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.18);
+            transform: translateY(-6px);
+            box-shadow:
+                    0 18px 35px rgba(0, 0, 0, 0.12),
+                    0 6px 12px rgba(0, 0, 0, 0.08);
         }
 
-        .icon-orange {
-            font-size: 50px;
+        /* ===== ICON ===== */
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(
+                    135deg,
+                    rgba(255,122,47,0.25),
+                    rgba(255,122,47,0.1)
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .icon-box i {
+            font-size: 28px;
             color: var(--orange);
-            margin-bottom: 10px;
         }
 
+        /* ===== TEXT ===== */
+        .dash-card h5 {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* ===== BUTTON ===== */
         .btn-orange {
             border: 2px solid var(--orange);
             color: var(--orange);
             font-weight: 600;
-            padding: 6px 22px;
-            border-radius: 30px;
+            border-radius: 999px;
+            padding: 8px 28px;
             transition: 0.2s;
+            width: fit-content;
         }
 
         .btn-orange:hover {
             background: var(--orange);
             color: white;
         }
+
+        .card-img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
 <body>
 
+<!-- ===== TOP BAR ===== -->
 <div class="bar-top">
     <h4 class="text-white m-0">
-        <i class="bi bi-person-badge-fill me-2"></i>Staff
+        <i class="bi bi-person-badge-fill me-2"></i>Staff Dashboard
     </h4>
 </div>
 
-<div class="container cards-wrapper">
-    <div class="row g-4 justify-content-center">
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+    <div class="container-fluid cards-wrapper">
+        <div class="row g-4">
 
-        <div class="col-md-3">
-            <div class="dash-card">
-                <i class="bi bi-bag-check-fill icon-orange"></i>
-                <h5>Manage Order</h5>
-                <a th:href="@{/staffHome/approveList}" class="btn btn-orange mt-2">Access</a>
+            <!-- Manage Orders -->
+            <div class="col-12 col-md-6">
+                <div class="dash-card">
+                    <div>
+                        <div class="icon-box">
+                            <i class="bi bi-bag-check-fill"></i>
+                        </div>
+                        <h5>Manage Orders</h5>
+                    </div>
+                    <a th:href="@{/staffHome/approveList}" class="btn btn-orange">
+                        Access
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <!-- Manage Rental Orders -->
-        <div class="col-md-3">
-            <div class="dash-card">
-                <i class="bi bi-clock-history icon-orange"></i>
-                <h5>Manage Rental Order</h5>
-                <a th:href="@{/staffHome/staffRentalSelect}" class="btn btn-orange mt-2">Access</a>
+            <!-- Rental Orders -->
+            <div class="col-12 col-md-6">
+                <div class="dash-card">
+                    <div>
+                        <div class="icon-box">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <h5>Rental Orders</h5>
+                    </div>
+                    <a th:href="@{/staffHome/staffRentalSelect}" class="btn btn-orange">
+                        Access
+                    </a>
+                </div>
             </div>
-        </div>
 
-
-        <!-- Revenue -->
-        <div class="col-md-3">
-            <div class="dash-card">
-                <i class="bi bi-graph-up-arrow icon-orange"></i>
-                <h5>Revenue</h5>
-                <a th:href="@{/staff/revenue}" class="btn btn-orange mt-2">Access</a>
+            <!-- Revenue (FULL WIDTH) -->
+            <div class="col-12 col-md-6">
+                <div class="dash-card">
+                    <div>
+                        <div class="icon-box">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <h5>Revenue</h5>
+                    </div>
+                    <a th:href="@{/staff/revenue}" class="btn btn-orange">
+                        Access
+                    </a>
+                </div>
             </div>
-        </div>
 
+            <div class="col-12 col-md-6">
+                <div class="dash-card">
+                    <div>
+                        <div class="icon-box">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <h5>Manage Expired</h5>
+                    </div>
+                    <a th:href="@{/staff/revenue}" class="btn btn-orange">
+                        Access
+                    </a>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
+<!-- ===== BOTTOM BAR ===== -->
 <div class="bar-bottom"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

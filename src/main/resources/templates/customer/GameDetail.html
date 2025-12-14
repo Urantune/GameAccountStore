@@ -148,120 +148,216 @@
 
 
 <!-- Navbar & Hero Start -->
-<nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm"
-     style="background:#FFEED8; color:#222; border-top: 2px solid #e6d8c8;">
-
+<nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="/home">
-            <img src="/img/logoFinal.png" alt="Logo"
-                 style="height:100px; width:auto;">
-        </a>
 
-        <!-- Toggle -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="/home">
+                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+            </a>
 
-        <!-- Items -->
-        <div class="collapse navbar-collapse" id="mainNavbar">
+            <!-- Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <ul class="navbar-nav mx-auto align-items-center fw-semibold" style="gap: 8px;">
+            <!-- MENU -->
+            <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home">
-                        <i class="fa fa-home me-2"></i> Trang Chủ
-                    </a>
-                </li>
+                <!-- MENU GIỮA -->
+                <ul class="navbar-nav mx-auto align-items-center nav-center">
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3 hover-nav" href="#" data-bs-toggle="dropdown">
-                        <i class="fa fa-shopping-cart me-2"></i> Lịch Sử Mua
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-3">
-                        <li><a class="dropdown-item py-2" href="#">Free Fire</a></li>
-                        <li><a class="dropdown-item py-2" href="#">AOV</a></li>
-                    </ul>
-                </li>
+                    <!-- Trang chủ luôn cho phép -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill" href="/home">
+                            <i class="fa fa-home me-2"></i>Trang Chủ
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="#">
-                        <i class="fa fa-user-circle me-2"></i> Tài Khoản
-                    </a>
-                </li>
+                    <!-- LỊCH SỬ MUA -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-pill dropdown-toggle require-login"
+                           href="#"
+                           data-bs-toggle="dropdown"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                        </a>
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home/wallet">
-                        <i class="fa fa-credit-card me-2"></i> Ví
-                    </a>
-                </li>
+                        <ul class="dropdown-menu dropdown-soft">
+                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                        </ul>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3 hover-nav" href="/home/cart">
-                        <i class="fa fa-coins me-2"></i> Giỏ Hàng
-                    </a>
-                </li>
+                    <!-- TÀI KHOẢN -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           href="/home/profile"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
+                        </a>
+                    </li>
+
+                    <!-- VÍ -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           href="/home/wallet"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-credit-card me-2"></i>Ví
+                        </a>
+                    </li>
+
+                    <!-- GIỎ HÀNG -->
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           th:href="@{/home/cart}"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                        </a>
+                    </li>
+                </ul>
 
 
-            </ul>
+                <!-- Navbar styles -->
+                <style>
+                    .game-nav{
+                        background:pink;
+                        border-top:2px solid #e6d8c8;
+                        height:86px;
+                        display:flex;
+                        align-items:center;
+                    }
 
-            <!-- Navbar styles -->
-            <style>
-                .nav-link,
-                .dropdown-item,
-                .navbar-brand,
-                .navbar * {
-                    color: #000 !important;   /* toàn bộ text màu đen */
-                }
+                    .game-nav .container-fluid{
+                        display:flex;
+                        align-items:center;
+                    }
 
-                .hover-nav {
-                    transition: 0.2s ease-in-out;
-                }
+                    .nav-logo{
+                        height:180px;
+                        width:auto;
+                    }
 
-                .hover-nav:hover {
-                    background: #f5e6d7;
-                    color: #000 !important;   /* hover vẫn đen */
-                }
+                    .nav-center{
+                        gap:26px;
+                    }
 
-                .dropdown-item:hover {
-                    background-color: #f5e6d7;
-                    color: #000 !important;   /* dropdown hover chữ đen */
-                    border-radius: 8px;
-                }
-            </style>
+                    .game-nav .navbar-nav .nav-link{
+                        color: #111 !important;
+                        font-weight: 500;
+                    }
 
-            <!-- User section -->
-            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                    .nav-pill{
+                        background: transparent;
+                        color: #000 !important;
+                        border: 1px solid transparent;
+                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+                    }
 
-                <!-- Anonymous -->
-                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold">Khách</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
-                    </ul>
-                </li>
+                    .nav-pill:hover{
+                        color: #f7931e !important;
+                        background: #F8F8FF;
+                        box-shadow: none !important;
+                        transform: none !important;
+                    }
 
-                <!-- Authenticated -->
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                    .nav-pill{
+                        color: #111 !important;
+                        font-weight: 500;
+                        background: transparent;
+                    }
+
+                    .nav-pill:focus,
+                    .nav-pill:active{
+                        background: #f5e6d7 !important;
+                        color: #000 !important;
+                        box-shadow: none !important;
+                    }
+
+                    /* DROPDOWN */
+                    .dropdown-soft{
+                        border-radius:14px;
+                        padding:6px;
+                    }
+
+                    .nav-pill{
+                        border-radius: 18px !important;
+                        padding: 10px 18px !important;
+                    }
+
+                    .nav-pill:hover{
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+                    }
+
+                    .nav-pill:focus,
+                    .nav-pill:active{
+                        border-radius: 18px !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+                    }
+
+                </style>
+
+                <!-- Right: User -->
+                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+
+                    <!-- Anonymous -->
+                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                            <span class="fw-semibold">Khách</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-fix">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Authenticated -->
+
+                    <li sec:authorize="isAuthenticated()">
                         <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" th:href="@{/home/profile/{id}(id=${currentUser.customerId})}">Thông tin tài khoản</a></li>
-                        <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
-                    </ul>
-                </li>
-
+                        <a class="dropdown-item"
+                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                            Thông tin tài khoản
+                        </a>
+                    </li>
+               </div>
             </ul>
         </div>
     </div>
 </nav>
+<div id="loginAlert"
+     class="alert alert-warning text-center fw-semibold d-none"
+     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+</div>
+<script>
+    document.querySelectorAll('.require-login').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const isLogged = this.dataset.logged === 'true';
+
+            if (!isLogged) {
+                e.preventDefault();
+                showLoginAlert();
+            }
+        });
+    });
+    function showLoginAlert() {
+        const alertBox = document.getElementById('loginAlert');
+
+        // hiện alert
+        alertBox.classList.remove('d-none');
+
+        // tự tắt sau 3 giây
+        setTimeout(() => {
+            alertBox.classList.add('d-none');
+        }, 3000);
+    }
+</script>
 
 <!-- Navbar & Hero End -->
 
@@ -353,7 +449,7 @@
 
 
 <!-- Footer Start -->
-<div class="container-fluid py-5" style="background:#fff4e6; color:#444; border-top: 2px solid #f1f1f1;">
+<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
     <div class="container">
 
         <div class="row g-4">
