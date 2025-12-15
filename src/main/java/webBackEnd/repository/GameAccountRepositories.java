@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.entity.Orders;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,7 @@ public interface GameAccountRepositories extends JpaRepository<GameAccount, UUID
     List<GameAccount> findAllByGame_GameId(UUID gameId);
 
     List<GameAccount> findAllByGame(Game game);
+
 
 
 
