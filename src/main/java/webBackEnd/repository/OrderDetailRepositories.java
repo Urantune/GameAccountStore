@@ -15,7 +15,4 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
     List<GameAccount> findAllGameAccountBoughtByCustomer(UUID customerId);
 
     List<OrderDetail> findAllByOrderId(UUID orderId);
-
-    List<OrderDetail> findByduration(String Duration);
-
 }
