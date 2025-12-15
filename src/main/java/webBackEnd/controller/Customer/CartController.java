@@ -48,23 +48,20 @@ public class CartController {
     }
 
 
-
     @PostMapping("/add/{gameAccountId}")
-    public ResponseEntity<?> addToCart(@PathVariable UUID gameAccountId,
-                                       @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<String> addToCart(@PathVariable UUID gameAccountId,
+                                            @AuthenticationPrincipal UserDetails userDetails) {
 
-        if (userDetails == null) {
-            return ResponseEntity.status(401).body("Chưa đăng nhập");
-        }
+        if (userDetails == null) return ResponseEntity.status(401).body("Chưa đăng nhập");
 
-        Customer customer =
-                customerService.findCustomerByUsername(userDetails.getUsername());
-
-        GameAccount gameAccount =
-                gameAccountService.findGameAccountById(gameAccountId);
+        Customer customer = customerService.findCustomerByUsername(userDetails.getUsername());
+        GameAccount gameAccount = gameAccountService.findGameAccountById(gameAccountId);
+        if (gameAccount == null) return ResponseEntity.status(404).body("Không tìm thấy");
 
         cartService.addToCart(customer, gameAccount);
-
-        return ResponseEntity.ok("Đã thêm vào giỏ hàng");
+        return ResponseEntity.ok("OK");
     }
+
+
+
 }
