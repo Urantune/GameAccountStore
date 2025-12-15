@@ -204,7 +204,7 @@
                     <!-- VÍ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           href="/home/wallet"
+                           th:href="@{/home/transaction}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
                             <i class="fa fa-credit-card me-2"></i>Ví
                         </a>
