@@ -13,6 +13,7 @@ import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
 import webBackEnd.successfullyDat.GetQuantity;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class RentApproveController {
 
     @GetMapping("/rentApproveList")
     public String rentApproveList(Model model){
-        List<OrderDetail> list = orderDetailService.f;
+        List<OrderDetail> list = new ArrayList<>();
 
         model.addAttribute("rentOrderList",list);
         model.addAttribute("getQuantity",getQuantity);
