@@ -15,4 +15,6 @@ public class RentAccountGameService {
     public RentAccountGame save(RentAccountGame rentAccountGame){
         return rentAccountGameRepositories.save(rentAccountGame);
     }
+
+
 }
