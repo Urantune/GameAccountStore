@@ -71,13 +71,12 @@ public class CartController {
         if (gameAccount == null)
             return ResponseEntity.status(404).body("Không tìm thấy tài khoản");
 
-        // 🔴 ĐÃ BÁN / ĐANG ĐẶT
+
         if (orderDetailRepositories.existsActiveOrderByGameAccount(gameAccountId)) {
             return ResponseEntity.badRequest()
                     .body("Tài khoản đã được đặt hoặc đã bán");
         }
 
-        // 🔴 ĐÃ CÓ TRONG CART
         if (cartRepositories.existsByCustomerAndGameAccount(customer, gameAccount)) {
             return ResponseEntity.badRequest()
                     .body("Tài khoản đã có trong giỏ hàng");
