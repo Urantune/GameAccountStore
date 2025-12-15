@@ -25,7 +25,16 @@ public class RentAccountGameService {
     }
 
 
+
     public List<RentAccountGame> findAll(){
         return rentAccountGameRepositories.findAll();
     }
+
+
+    public void delete(RentAccountGame rentAccountGame){
+        rentAccountGameRepositories.delete(rentAccountGame);
+    }
+
+
+
 }

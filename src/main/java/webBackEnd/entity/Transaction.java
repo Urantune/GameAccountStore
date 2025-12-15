@@ -5,79 +5,31 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 @Entity
-@Table( name = "Transaction")
+@Table(name = "Transaction")
 public class Transaction {
 
-    /* ================== PRIMARY KEY ================== */
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "transactionId", columnDefinition = "uniqueidentifier")
+    @Column(name = "transactionId")
+    @GeneratedValue
     private UUID transactionId;
 
-    /* ================== RELATION ================== */
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerId", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "customerId")
     private Customer customer;
 
-    /* ================== FIELDS ================== */
-
-    @Column(name = "amount", precision = 18, scale = 2, nullable = false)
+    @Column(name = "amount")
     private BigDecimal amount;
 
-    @Column(name = "depositDate", nullable = false)
-    private LocalDateTime depositDate;
-
-    @Column(name = "dateCreated", nullable = false)
-    private LocalDateTime dateCreated;
-
-    @Column(name = "description", length = 100, nullable = false)
+    @Column(name = "description")
     private String description;
 
-    /* ================== LIFECYCLE ================== */
-
-    @PrePersist
-    protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
-        this.dateCreated = now;
-        this.depositDate = now;
-        buildDescription();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        buildDescription();
-    }
-
-    /* ================== PRIVATE METHODS ================== */
-
-    private void buildDescription() {
-        if (this.amount == null) return;
-
-        if (this.amount.compareTo(BigDecimal.ZERO) > 0) {
-            this.description = "Nạp " + formatMoney(this.amount) + " vào ví";
-        } else {
-            this.description = "Trừ " + formatMoney(this.amount.abs()) + " từ ví";
-        }
-    }
-
-    private String formatMoney(BigDecimal amount) {
-        return String.format("%,.0fđ", amount);
-    }
-
-    /* ================== CONSTRUCTORS ================== */
+    @Column(name = "dateCreated")
+    private LocalDateTime dateCreated;
 
     public Transaction() {
     }
-
-        public Transaction(Customer customer, BigDecimal amount) {
-        this.customer = customer;
-        this.amount = amount;
-    }
-
-    /* ================== GETTERS & SETTERS ================== */
 
     public UUID getTransactionId() {
         return transactionId;
@@ -103,12 +55,12 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public LocalDateTime getDepositDate() {
-        return depositDate;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDepositDate(LocalDateTime depositDate) {
-        this.depositDate = depositDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getDateCreated() {
@@ -119,7 +71,11 @@ public class Transaction {
         this.dateCreated = dateCreated;
     }
 
-    public String getDescription() {
-        return description;
+    public Transaction(UUID transactionId, Customer customer, BigDecimal amount, String description, LocalDateTime dateCreated) {
+        this.transactionId = transactionId;
+        this.customer = customer;
+        this.amount = amount;
+        this.description = description;
+        this.dateCreated = dateCreated;
     }
 }

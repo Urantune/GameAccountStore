@@ -4,7 +4,7 @@
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Ví của bạn</title>
+    <title>Lịch sử giao dịch</title>
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
@@ -13,65 +13,172 @@
 
     <style>
         body { background:#f5f9ff; font-family:'Segoe UI',sans-serif; }
-        .card { border-radius:12px; color:#fff; padding:25px; height:160px;
-            display:flex; flex-direction:column; justify-content:space-between; }
-        .c1 { background:linear-gradient(135deg,#00e0b3,#a8ff3e); }
-        .c2 { background:linear-gradient(135deg,#0054ff,#0bb2ff); }
-        .c3 { background:linear-gradient(135deg,#ff4d4d,#ff9999); }
-        .label { font-size:18px; opacity:.9; }
-        .money {
-            font-weight: bold;
-            white-space: nowrap;      /* không xuống dòng */
-            display: inline-block;    /* để scale */
-            transform-origin: left center;
-            font-size: 36px;          /* font gốc */
-            line-height: 1.2;
+
+        .card {
+            border-radius:12px;
+            color:#fff;
+            padding:25px;
+            height:160px;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
         }
 
-        .wallet-table th, .wallet-table td { text-align:center; }
+        .c1 { background:linear-gradient(135deg,#00e0b3,#a8ff3e); } /* Màu cho Số dư hiện tại */
+        .c2 { background:linear-gradient(135deg,#0054ff,#0bb2ff); } /* Màu cho Tổng tiền đã nạp */
+        .c3 { background:linear-gradient(135deg,#ff4d4d,#ff9999); } /* Màu cho Tổng tiền đã chi */
+
+        .label { font-size:18px; opacity:.9; }
+        .money { font-size:36px; font-weight:bold; }
+
+        .wallet-table th,
+        .wallet-table td {
+            text-align:center;
+            vertical-align:middle;
+        }
+
         .wallet-table tbody tr:nth-child(even) { background:#f4f7fb; }
         .wallet-table tbody tr:hover { background:#dbe9ff; }
-        .balance-container { display:flex; align-items:center; font-size:1.3em; margin-top:20px; }
-        .balance-container i { color:#28a745; margin-right:10px; font-size:1.5em; }
-        .balance-container span { font-weight:bold; color:#007bff; font-size:1.5em; }
+
+        .balance-container {
+            display:flex;
+            align-items:center;
+            font-size:1.3em;
+            margin-top:20px;
+        }
+
+        .balance-container i {
+            color:#28a745;
+            margin-right:10px;
+            font-size:1.5em;
+        }
+
+        .balance-container span {
+            font-weight:bold;
+            color:#007bff;
+            font-size:1.5em;
+        }
+
         .navbar { background:#FFEED8; }
-        .hover-nav:hover { background:#f5e6d7 !important; }
-        .footer { background:#fff4e6; padding:40px 0; border-top:2px solid #f1f1f1; }
     </style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="loginError" class="alert alert-danger d-none"></div>
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="loginUsername" class="form-label">Username:</label>
+                        <input name="username" class="form-control" id="loginUsername"
+                               placeholder="Nhập username của bạn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label">Mật khẩu:</label>
+                        <input type="password" name="password" class="form-control" id="loginPassword"
+                               placeholder="Nhập mật khẩu" required>
+                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký
+                    ngay</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div th:if="${error}" class="alert alert-danger">
+                    <span th:text="${error}"></span>
+                </div>
+                <div th:if="${success}" class="alert alert-success text-center">
+                    <p th:text="${success}"></p>
+                </div>
+
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label for="registerUsername" class="form-label">Tên người dùng:</label>
+                        <input name="username" type="text" class="form-control" id="registerUsername"
+                               placeholder="Nhập tên người dùng" th:value="${username}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerEmail" class="form-label">Email:</label>
+                        <input name="email" type="email" class="form-control" id="registerEmail"
+                               placeholder="Nhập email" th:value="${email}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="registerPassword" class="form-label">Mật khẩu:</label>
+                        <input name="password" type="password" class="form-control" id="registerPassword"
+                               placeholder="Tạo mật khẩu" th:value="${password}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword"
+                               placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
+                    </div>
+                    <div id="registerError" class="text-danger mt-2"></div>
+                    <div id="registerSuccess" class="text-success mt-2"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+</div>
 <nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
 
         <div class="container-fluid">
-            <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center" href="/home">
                 <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
             </a>
 
-            <!-- Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#mainNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- MENU -->
             <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <!-- MENU GIỮA -->
                 <ul class="navbar-nav mx-auto align-items-center nav-center">
 
-                    <!-- Trang chủ luôn cho phép -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill" href="/home">
                             <i class="fa fa-home me-2"></i>Trang Chủ
                         </a>
                     </li>
 
-                    <!-- LỊCH SỬ MUA -->
                     <li class="nav-item dropdown">
                         <a class="nav-link nav-pill dropdown-toggle require-login"
                            href="#"
@@ -86,7 +193,6 @@
                         </ul>
                     </li>
 
-                    <!-- TÀI KHOẢN -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
                            th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
@@ -95,7 +201,6 @@
                         </a>
                     </li>
 
-                    <!-- VÍ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
                            th:href="@{/home/transaction}"
@@ -104,7 +209,6 @@
                         </a>
                     </li>
 
-                    <!-- GIỎ HÀNG -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
                            th:href="@{/home/cart}"
@@ -115,7 +219,6 @@
                 </ul>
 
 
-                <!-- Navbar styles -->
                 <style>
                     .game-nav{
                         background:pink;
@@ -195,10 +298,8 @@
 
                 </style>
 
-                <!-- Right: User -->
                 <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
 
-                    <!-- Anonymous -->
                     <li class="nav-item dropdown" sec:authorize="isAnonymous()">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
                             <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
@@ -210,8 +311,6 @@
                         </ul>
                     </li>
 
-                    <!-- Authenticated -->
-
                     <li sec:authorize="isAuthenticated()">
                         <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold" th:text="${#authentication.name}"></span>
@@ -222,15 +321,16 @@
                     </li>
                 </ul>
             </div>
-
         </div>
     </div>
 </nav>
+
 <div id="loginAlert"
      class="alert alert-warning text-center fw-semibold d-none"
      style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
     ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
 </div>
+
 <script>
     document.querySelectorAll('.require-login').forEach(link => {
         link.addEventListener('click', function (e) {
@@ -242,7 +342,6 @@
             }
         });
     });
-
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
 
@@ -255,38 +354,12 @@
         }, 3000);
     }
 </script>
-
-<script>
-    function fitMoneyText() {
-        document.querySelectorAll('.money').forEach(el => {
-            el.style.transform = 'scale(1)';
-
-            const parent = el.parentElement;
-            const parentWidth = parent.clientWidth - 20; // trừ padding
-            const textWidth = el.scrollWidth;
-
-            if (textWidth > parentWidth) {
-                const scale = parentWidth / textWidth;
-                el.style.transform = `scale(${scale})`;
-            }
-        });
-    }
-
-    // chạy khi load trang
-    window.addEventListener('load', fitMoneyText);
-
-    // chạy khi resize màn hình
-    window.addEventListener('resize', fitMoneyText);
-</script>
-
-<!-- CONTENT -->
 <div class="container py-4">
 
-    <!-- TOP CARDS -->
     <div class="row mb-4">
         <div class="col-md-4 mb-3">
             <div class="card c1">
-                <p class="label">Số Tiền Hiện Có</p>
+                <p class="label">Số dư hiện tại</p>
                 <p class="money"
                    th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
                     0 đ
@@ -296,7 +369,7 @@
 
         <div class="col-md-4 mb-3">
             <div class="card c2">
-                <p class="label">Số Tiền Đã Nạp</p>
+                <p class="label">Tổng tiền đã nạp</p>
                 <p class="money"
                    th:text="${#numbers.formatDecimal(totalDeposit,0,'COMMA',0,'POINT')} + ' đ'">
                     0 đ
@@ -306,7 +379,7 @@
 
         <div class="col-md-4 mb-3">
             <div class="card c3">
-                <p class="label">Số Tiền Đã Tiêu</p>
+                <p class="label">Tổng tiền đã chi</p>
                 <p class="money"
                    th:text="${#numbers.formatDecimal(totalSpent,0,'COMMA',0,'POINT')} + ' đ'">
                     0 đ
@@ -315,44 +388,52 @@
         </div>
     </div>
 
-    <!-- SEARCH -->
-    <form th:action="@{/home}" method="get" class="d-flex gap-2 mb-3 justify-content-end">
-        <input type="text" name="search" th:value="${search}" class="form-control w-25"
-               placeholder="Tìm nội dung...">
+    <form th:action="@{/home/transaction}"
+          method="get"
+          class="d-flex justify-content-end gap-2 mb-3">
+        <input type="text"
+               name="search"
+               class="form-control w-25"
+               th:value="${search}"
+               placeholder="Tìm nội dung giao dịch">
         <button class="btn btn-primary">Search</button>
     </form>
 
-    <!-- TABLE -->
     <table class="wallet-table table table-bordered">
         <thead>
         <tr>
             <th>STT</th>
             <th>ID</th>
-            <th>Số Tiền</th>
-            <th>Nội Dung</th>
-            <th>Thời Gian</th>
+            <th>Số tiền</th>
+            <th>Nội dung</th>
+            <th>Thời gian</th>
         </tr>
         </thead>
-        <tbody>
 
-        <tr th:each="w, i : ${walletHistory}">
+        <tbody>
+        <tr th:each="t, i : ${walletHistory}">
             <td th:text="${i.index + 1}">1</td>
-            <td th:text="${w.transactionId}">UUID</td>
-            <td th:text="${#numbers.formatDecimal(w.amount,0,'COMMA',0,'POINT')} + ' đ'">0 đ</td>
-            <td th:text="${w.description}">Nạp tiền</td>
-            <td th:text="${#temporals.format(w.depositDate,'dd/MM/yyyy HH:mm')}">
-                12/12/2025 10:00
+            <td th:text="${t.transactionId}">UUID</td>
+
+            <td th:text="${#numbers.formatDecimal(t.amount,0,'COMMA',0,'POINT')} + ' đ'">
+                0 đ
+            </td>
+
+            <td th:text="${t.description}">Thanh toán</td>
+
+            <td th:text="${#temporals.format(t.dateCreated,'dd/MM/yyyy HH:mm')}">
+                01/01/2025 10:00
             </td>
         </tr>
 
-        <tr th:if="${walletHistory == null || walletHistory.isEmpty()}">
-            <td colspan="5" class="text-center">Không có dữ liệu</td>
+        <tr th:if="${walletHistory == null or walletHistory.isEmpty()}">
+            <td colspan="5" class="text-center">
+                Không có dữ liệu giao dịch
+            </td>
         </tr>
-
         </tbody>
     </table>
 
-    <!-- CURRENT BALANCE -->
     <div class="balance-container">
         <i class="fa-solid fa-wallet"></i>
         Số dư hiện tại:
@@ -360,16 +441,13 @@
             0 đ
         </span>
     </div>
-
 </div>
 
-<!-- FOOTER -->
 <div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
     <div class="container">
 
         <div class="row g-4">
 
-            <!-- LOGO + INTRO -->
             <div class="col-lg-4 col-md-6">
                 <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
                 <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
@@ -384,7 +462,6 @@
                 </div>
             </div>
 
-            <!-- SUPPORT -->
             <div class="col-lg-4 col-md-6">
                 <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
 
@@ -397,22 +474,19 @@
                 </button>
             </div>
 
-            <!-- QUICK LINKS -->
             <div class="col-lg-4 col-md-6">
                 <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
-                <ul class="footer-links">
-                    <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
+                <ul class="footer-links" style="list-style:none; padding:0;">
+                    <li><a href="/home" class="text-decoration-none text-dark"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
+                    <li><a href="#" class="text-decoration-none text-dark"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
+                    <li><a href="#" class="text-decoration-none text-dark"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
+                    <li><a href="#" class="text-decoration-none text-dark"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
+                    <li><a href="#" class="text-decoration-none text-dark"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
+                    <li><a href="#" class="text-decoration-none text-dark"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
                 </ul>
             </div>
-
         </div>
 
-        <!-- COPYRIGHT -->
         <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
             <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
             <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
@@ -420,27 +494,6 @@
 
     </div>
 </div>
-<style>
-    .footer-links {
-        list-style: none;
-        padding: 0;
-    }
-
-    .footer-links li {
-        margin-bottom: 8px;
-    }
-
-    .footer-links a {
-        color: #444;
-        text-decoration: none;
-        transition: 0.2s;
-    }
-
-    .footer-links a:hover {
-        color: #ff8800;
-        padding-left: 4px;
-    }
-</style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

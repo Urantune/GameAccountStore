@@ -9,11 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.*;
-import webBackEnd.repository.*;
-import webBackEnd.service.CustomerService;
-import webBackEnd.service.GameAccountService;
-import webBackEnd.service.OrdersService;
-import webBackEnd.service.VoucherService;
+import webBackEnd.repository.CustomerRepositories;
+import webBackEnd.repository.GameAccountRepositories;
+import webBackEnd.repository.OrderDetailRepositories;
+import webBackEnd.repository.OrdersRepositories;
+import webBackEnd.service.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -40,7 +40,7 @@ public class BuyController {
     @Autowired
     private VoucherService voucherService;
     @Autowired
-    private VoucherCustomerRepository  voucherCustomerRepository;
+    private TransactionService transactionService;
 
     @GetMapping("/payment/{id}")
     public String checkout(@PathVariable("id") UUID id, Model model) {
@@ -82,38 +82,22 @@ public class BuyController {
             totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.85));
         }
 
+        //voucher
         Voucher voucher = null;
-
         if (voucherCode != null && !voucherCode.isBlank()) {
-
-            voucher = voucherService.getValidVoucher(voucherCode);
+             voucher = voucherService.getValidVoucher(voucherCode);
             if (voucher == null) {
                 model.addAttribute("errorMessage", "Voucher không hợp lệ hoặc đã hết hạn");
                 model.addAttribute("games", game);
                 return "customer/Payment";
             }
 
-            //voucher đã sd
-            boolean used = voucherCustomerRepository
-                    .existsByCustomerAndVoucher(customer, voucher);
-
-            if (used) {
-                model.addAttribute("errorMessage", "Voucher này bạn đã sử dụng");
-                model.addAttribute("games", game);
-                return "customer/Payment";
-            }
-
             BigDecimal discountPercent =
-                    BigDecimal.valueOf(voucher.getValue())
-                            .divide(BigDecimal.valueOf(100));
-
-            totalPrice = totalPrice.subtract(
-                    totalPrice.multiply(discountPercent)
-            );
+                    BigDecimal.valueOf(voucher.getValue()).divide(BigDecimal.valueOf(100));
+            totalPrice = totalPrice.subtract(totalPrice.multiply(discountPercent));
         }
 
-
-
+        totalPrice = totalPrice.setScale(0, RoundingMode.HALF_UP);
 
         //Check tiền
         if (customer.getBalance().compareTo(totalPrice) < 0) {
@@ -126,6 +110,16 @@ public class BuyController {
         customer.setBalance(customer.getBalance().subtract(totalPrice));
         customerRepositories.save(customer);
 
+        //Lưu
+        // LƯU TRANSACTION (LỊCH SỬ GIAO DỊCH)
+        Transaction transaction = new Transaction();
+        transaction.setCustomer(customer);
+        transaction.setAmount(totalPrice.negate()); // tiền chi
+        transaction.setDescription("Thanh toán game ID: " + gameId);
+        transaction.setDateCreated(LocalDateTime.now());
+
+        transactionService.save(transaction);
+
         //Orders
         Orders order = new Orders();
         order.setCustomer(customer);
@@ -134,9 +128,6 @@ public class BuyController {
         order.setStatus("WAIT");
         if (voucher != null) {
             order.setVoucher(voucher);
-            VoucherCustomer voucherCustomer =
-                    new VoucherCustomer(customer, voucher);
-            voucherCustomerRepository.save(voucherCustomer);
         }
         Orders savedOrder = ordersRepositories.save(order);
 
