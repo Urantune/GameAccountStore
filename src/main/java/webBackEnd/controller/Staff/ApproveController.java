@@ -11,6 +11,7 @@ import webBackEnd.entity.Staff;
 import webBackEnd.service.AdministratorService;
 import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
+import webBackEnd.service.RentAccountGameService;
 import webBackEnd.successfullyDat.GetQuantity;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,9 @@ public class ApproveController {
 
     @Autowired
     private AdministratorService  administratorService;
+
+    @Autowired
+    private RentAccountGameService rentAccountGameService;
 
 
     @GetMapping("/approveList")
@@ -112,6 +116,23 @@ public class ApproveController {
 
         return "redirect:/staffHome/approveList";
     }
+
+
+
+    @GetMapping("/rentalList")
+    public String rentalList(Model model){
+
+
+    model.addAttribute("list",rentAccountGameService.findAll());
+    for(RentAccountGame r : rentAccountGameService.findAll()){
+        System.out.println(r.getGameAccount().getGame());
+    }
+
+    return "staff/RentalList";
+    }
+
+
+
 
 
 

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Renting Accounts Timeline</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root { --orange: #ff7a2f; }
+        body {
+            background: #f5f5f5;
+            font-family: "Roboto", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .bar-top {
+            width: 100%;
+            height: 70px;
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            padding-left: 30px;
+        }
+        .bar-bottom {
+            width: 100%;
+            height: 70px;
+            background: var(--orange);
+            margin-top: auto;
+        }
+        .content-wrapper {
+            padding: 30px 40px 20px 40px;
+            flex: 1;
+        }
+
+        .rent-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.06);
+            border: 1px solid rgba(0,0,0,.06);
+        }
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        /* Timeline bar: green -> red */
+        .timebar-wrap {
+            position: relative;
+            width: 100%;
+            height: 14px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: linear-gradient(90deg, #22c55e 0%, #84cc16 30%, #facc15 60%, #f97316 80%, #ef4444 100%);
+            border: 1px solid rgba(0,0,0,.08);
+        }
+        .timebar-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,.12);
+        }
+
+        /* Clock icon */
+        .clock {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,.12);
+            box-shadow: 0 6px 14px rgba(0,0,0,.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: left .35s linear;
+        }
+        .clock i {
+            font-size: 16px;
+        }
+
+        /* A small "progress glow" (optional) */
+        .elapsed-glow {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0%;
+            background: rgba(255,255,255,.20);
+            transition: width .35s linear;
+        }
+
+        .meta-line {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .meta-strong {
+            font-weight: 600;
+            color: #111827;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(0,0,0,.10);
+            background: #fff7f0;
+            color: #8a3b13;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #22c55e;
+        }
+        .status-dot.expired { background: #ef4444; }
+        .status-dot.soon { background: #f59e0b; }
+
+        .no-data {
+            background: #fff;
+            border-radius: 16px;
+            padding: 26px;
+            text-align: center;
+            color: #6b7280;
+            border: 1px dashed rgba(0,0,0,.15);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="bar-top">
+    <h4 class="text-white m-0">
+        <i class="bi bi-hourglass-split me-2"></i> Renting Accounts Timeline
+    </h4>
+</div>
+
+<div class="content-wrapper container-fluid">
+
+    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+        <div>
+            <h5 class="mb-0">Accounts đang thuê</h5>
+            <div class="meta-line">Thanh thời gian: trái xanh (mới bắt đầu) → phải đỏ (sắp hết hạn)</div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <input id="searchInput" type="text" class="form-control form-control-sm"
+                   placeholder="Search username / rentId..." style="width: 260px;">
+            <select id="filterStatus" class="form-select form-select-sm" style="width: 170px;">
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="soon">Soon Expire</option>
+                <option value="expired">Expired</option>
+            </select>
+            <a th:href="@{/adminHome}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to Admin
+            </a>
+        </div>
+    </div>
+
+    <div class="d-grid gap-3">
+
+        <!-- ITEM -->
+        <div class="rent-card rent-item"
+             th:each="r, idx : ${rentList}"
+             th:attr="
+                data-rentid=${r.id},
+                data-username=${r.customer != null ? r.customer.username : ''},
+                data-status=${r.status != null ? r.status : ''},
+                data-start=${r.dateStart != null ? #temporals.format(r.dateStart, 'yyyy-MM-dd''T''HH:mm:ss') : ''},
+                data-end=${r.dateEnd != null ? #temporals.format(r.dateEnd, 'yyyy-MM-dd''T''HH:mm:ss') : ''}">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                <div>
+                    <div class="meta-line">Rent ID</div>
+                    <div class="mono meta-strong" th:text="${r.id}">rent-id</div>
+                </div>
+
+                <div>
+                    <div class="meta-line">Username</div>
+                    <div class="meta-strong" th:text="${r.customer.username}">username</div>
+                </div>
+
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="pill">
+                        <span class="status-dot"></span>
+                        <span class="status-text" th:text="${r.status != null ? r.status : 'N/A'}">ACTIVE</span>
+                    </span>
+
+                    <!-- đổi link theo route bạn -->
+                    <a th:href="@{'/staffHome/rent-detail/' + ${r.id}}"
+                       class="btn btn-sm btn-outline-dark" title="View Detail">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-2 align-items-center">
+                <div class="col-12 col-lg-3">
+                    <div class="meta-line">Start</div>
+                    <div class="meta-strong" th:text="${r.dateStart != null ? #temporals.format(r.dateStart, 'dd/MM/yyyy HH:mm') : ''}">
+                        12/12/2025 15:30
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <!-- Timeline -->
+                    <div class="timebar-wrap">
+                        <div class="elapsed-glow"></div>
+                        <div class="timebar-overlay"></div>
+                        <div class="clock">
+                            <i class="bi bi-clock-fill"></i>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap justify-content-between mt-2">
+                        <div class="meta-line">
+                            Đã dùng: <span class="meta-strong used-text">--</span>
+                        </div>
+                        <div class="meta-line">
+                            Còn lại: <span class="meta-strong left-text">--</span>
+                        </div>
+                        <div class="meta-line">
+                            Tổng: <span class="meta-strong total-text">--</span>
+                        </div>
+                        <div class="meta-line">
+                            <span class="meta-strong percent-text">--%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-3">
+                    <div class="meta-line">End</div>
+                    <div class="meta-strong" th:text="${r.dateEnd != null ? #temporals.format(r.dateEnd, 'dd/MM/yyyy HH:mm') : ''}">
+                        13/12/2025 15:30
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-2 meta-line">
+                Note: <span class="meta-strong" th:text="${r.deception != null ? r.deception : ''}"></span>
+            </div>
+        </div>
+
+        <div class="no-data" th:if="${#lists.isEmpty(rentList)}">
+            No rent accounts found.
+        </div>
+
+    </div>
+</div>
+
+<div class="bar-bottom"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function parseIsoLocal(s) {
+        if (!s) return null;
+        // "yyyy-MM-ddTHH:mm:ss"
+        const d = new Date(s);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+    }
+
+    function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+    function formatDuration(ms) {
+        if (ms < 0) ms = 0;
+        const sec = Math.floor(ms / 1000);
+        const days = Math.floor(sec / 86400);
+        const hours = Math.floor((sec % 86400) / 3600);
+        const mins = Math.floor((sec % 3600) / 60);
+
+        if (days > 0) return `${days}d ${pad2(hours)}h ${pad2(mins)}m`;
+        if (hours > 0) return `${hours}h ${pad2(mins)}m`;
+        return `${mins}m`;
+    }
+
+    function classifyStatus(now, start, end) {
+        if (!start || !end) return "active";
+        if (now >= end) return "expired";
+
+        const total = end - start;
+        const left = end - now;
+
+        // "Soon" nếu còn <= 20% hoặc <= 2 giờ (tùy bạn chỉnh)
+        const leftRatio = total > 0 ? left / total : 0;
+        if (leftRatio <= 0.2 || left <= 2 * 3600 * 1000) return "soon";
+        return "active";
+    }
+
+    function updateOne(item) {
+        const start = parseIsoLocal(item.getAttribute("data-start"));
+        const end = parseIsoLocal(item.getAttribute("data-end"));
+        const now = new Date();
+
+        const clock = item.querySelector(".clock");
+        const glow = item.querySelector(".elapsed-glow");
+        const usedText = item.querySelector(".used-text");
+        const leftText = item.querySelector(".left-text");
+        const totalText = item.querySelector(".total-text");
+        const percentText = item.querySelector(".percent-text");
+        const dot = item.querySelector(".status-dot");
+
+        if (!start || !end || end <= start) {
+            // fallback
+            clock.style.left = "0%";
+            glow.style.width = "0%";
+            usedText.textContent = "--";
+            leftText.textContent = "--";
+            totalText.textContent = "--";
+            percentText.textContent = "--%";
+            dot.classList.remove("expired", "soon");
+            return;
+        }
+
+        const total = end - start;
+        const used = now - start;
+        const left = end - now;
+
+        const ratio = clamp(used / total, 0, 1);
+        const percent = Math.round(ratio * 100);
+
+        clock.style.left = percent + "%";
+        glow.style.width = percent + "%";
+
+        usedText.textContent = formatDuration(used);
+        leftText.textContent = (now >= end) ? "0m" : formatDuration(left);
+        totalText.textContent = formatDuration(total);
+        percentText.textContent = percent + "%";
+
+        // status color dot
+        dot.classList.remove("expired", "soon");
+        const cls = classifyStatus(now, start, end);
+        if (cls === "expired") dot.classList.add("expired");
+        if (cls === "soon") dot.classList.add("soon");
+
+        // gán data-auto-status để filter chạy đúng theo thời gian
+        item.setAttribute("data-auto-status", cls);
+    }
+
+    function updateAll() {
+        document.querySelectorAll(".rent-item").forEach(updateOne);
+        applyFilter(); // để khi hết hạn/sắp hết hạn thì filter đổi theo realtime
+    }
+
+    // Search + Filter
+    const searchInput = document.getElementById("searchInput");
+    const filterStatus = document.getElementById("filterStatus");
+
+    function applyFilter() {
+        const q = (searchInput.value || "").trim().toLowerCase();
+        const f = filterStatus.value;
+
+        document.querySelectorAll(".rent-item").forEach(item => {
+            const rentId = (item.getAttribute("data-rentid") || "").toLowerCase();
+            const username = (item.getAttribute("data-username") || "").toLowerCase();
+
+            const matchText = (rentId.includes(q) || username.includes(q));
+            let matchStatus = true;
+
+            if (f !== "all") {
+                const auto = item.getAttribute("data-auto-status") || "active";
+                matchStatus = (auto === f);
+            }
+
+            item.style.display = (matchText && matchStatus) ? "" : "none";
+        });
+    }
+
+    searchInput.addEventListener("keyup", applyFilter);
+    filterStatus.addEventListener("change", applyFilter);
+
+    // init
+    updateAll();
+    setInterval(updateAll, 1000);
+</script>
+
+</body>
+</html>
