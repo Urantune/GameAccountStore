@@ -18,11 +18,9 @@ import java.util.UUID;
 @Service()
 public class CustomerService implements UserDetailsService {
 
-    private final CustomerRepositories customerRepositories;
 
-    public CustomerService(CustomerRepositories customerRepository) {
-        this.customerRepositories = customerRepository;
-    }
+    @Autowired
+    private CustomerRepositories customerRepositories;
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
@@ -50,10 +48,7 @@ public class CustomerService implements UserDetailsService {
         return customerRepositories.findByUsername(username);
     }
 
-    public Customer findByCustomerUsername(String username) {
-        return customerRepositories.findByUsername(username);
-    }
-    public Customer getCurrentCustomer(String username) {
+   public Customer getCurrentCustomer(String username) {
         return customerRepositories.findByUsername(username);
     }
 
