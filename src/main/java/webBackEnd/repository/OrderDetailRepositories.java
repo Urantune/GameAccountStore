@@ -16,6 +16,6 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
 
     List<OrderDetail> findAllByOrderId(UUID orderId);
 
-    List<OrderDetail> findByduration(String Duration);
+
 
 }

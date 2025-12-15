@@ -34,29 +34,27 @@ public class RentApproveController {
     @Autowired
     private AdministratorService administratorService;
 
-    @Autowired
-    private RentApproveController rentApproveController;
 
-    @GetMapping("/rentApproveList")
-    public String rentApproveList(Model model){
-        List<OrderDetail> list = new ArrayList<>();
-
-        model.addAttribute("rentOrderList",list);
-        model.addAttribute("getQuantity",getQuantity);
-        return "staff/RentApproveList";
-    }
-
-    @GetMapping("/rentApprove/{orderId}")
-    public String viewOrderDetail(@PathVariable UUID orderId, Model model) {
-        List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
-
-        model.addAttribute("orderId", orderId);
-        model.addAttribute("orderDetails", orderDetails);
-
-        Orders order = ordersService.findById(orderId);
-        model.addAttribute("order", order);
-        return "staff/RentOrderDetail";
-    }
+//    @GetMapping("/rentApproveList")
+//    public String rentApproveList(Model model){
+//        List<OrderDetail> list = new ArrayList<>();
+//
+//        model.addAttribute("rentOrderList",list);
+//        model.addAttribute("getQuantity",getQuantity);
+//        return "staff/RentApproveList";
+//    }
+//
+//    @GetMapping("/rentApprove/{orderId}")
+//    public String viewOrderDetail(@PathVariable UUID orderId, Model model) {
+//        List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
+//
+//        model.addAttribute("orderId", orderId);
+//        model.addAttribute("orderDetails", orderDetails);
+//
+//        Orders order = ordersService.findById(orderId);
+//        model.addAttribute("order", order);
+//        return "staff/RentOrderDetail";
+//    }
 
 
 }
