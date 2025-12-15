@@ -1,6 +1,8 @@
 package webBackEnd.entity;
 
 import jakarta.persistence.*;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -55,6 +57,8 @@ public class VoucherCustomer {
     public void setVoucher(Voucher voucher) {
         this.voucher = voucher;
     }
+
+
 
     public LocalDateTime getDateUsed() {
         return dateUsed;

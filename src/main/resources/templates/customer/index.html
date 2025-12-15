@@ -339,7 +339,7 @@
                     <!-- TÀI KHOẢN -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           href="/home/profile"
+                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
                             <i class="fa fa-user-circle me-2"></i>Tài Khoản
                         </a>
