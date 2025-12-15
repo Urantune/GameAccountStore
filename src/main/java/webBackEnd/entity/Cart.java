@@ -16,7 +16,7 @@ public class Cart {
     @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
     private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameId", referencedColumnName = "gameId",nullable = false)
+    @JoinColumn(name = "gameAccountId", referencedColumnName = "gameAccountId", nullable = false)
     private GameAccount gameAccount;
     @Column(name = "Datecreate",nullable = false)
     private LocalDateTime createdAt;

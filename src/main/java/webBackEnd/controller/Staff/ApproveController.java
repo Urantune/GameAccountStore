@@ -75,6 +75,7 @@ public class ApproveController {
                 rentAccountGame.setGameAccount(a.getGameAccount());
                 rentAccountGame.setDateStart(order.getCreatedDate());
                 rentAccountGame.setDateEnd(order.getCreatedDate().plusMonths(a.getDuration()));
+                rentAccountGame.setStatus("Still valid");
                 rentAccountGameService.save(rentAccountGame);
             }
             a.getGameAccount().setStatus("IN USE");
