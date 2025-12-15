@@ -35,9 +35,9 @@ public class RentApproveController {
 
     @GetMapping("/rentApproveList")
     public String rentApproveList(Model model){
-        List<OrderDetail> list = orderDetailService;
+//        List<OrderDetail> list = orderDetailService;
 
-        model.addAttribute("rentOrderList",list);
+//        model.addAttribute("rentOrderList",list);
         model.addAttribute("getQuantity",getQuantity);
         return "staff/RentApproveList";
     }
