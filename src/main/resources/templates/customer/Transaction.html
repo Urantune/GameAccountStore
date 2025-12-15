@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="vi"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Ví của bạn</title>
+    <title>Lịch sử giao dịch</title>
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
@@ -13,271 +13,88 @@
 
     <style>
         body { background:#f5f9ff; font-family:'Segoe UI',sans-serif; }
-        .card { border-radius:12px; color:#fff; padding:25px; height:160px;
-            display:flex; flex-direction:column; justify-content:space-between; }
+
+        .card {
+            border-radius:12px;
+            color:#fff;
+            padding:25px;
+            height:160px;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+        }
+
         .c1 { background:linear-gradient(135deg,#00e0b3,#a8ff3e); }
         .c2 { background:linear-gradient(135deg,#0054ff,#0bb2ff); }
         .c3 { background:linear-gradient(135deg,#ff4d4d,#ff9999); }
+
         .label { font-size:18px; opacity:.9; }
-        .money {
-            font-weight: bold;
-            white-space: nowrap;      /* không xuống dòng */
-            display: inline-block;    /* để scale */
-            transform-origin: left center;
-            font-size: 36px;          /* font gốc */
-            line-height: 1.2;
+        .money { font-size:36px; font-weight:bold; }
+
+        .wallet-table th,
+        .wallet-table td {
+            text-align:center;
+            vertical-align:middle;
         }
 
-        .wallet-table th, .wallet-table td { text-align:center; }
         .wallet-table tbody tr:nth-child(even) { background:#f4f7fb; }
         .wallet-table tbody tr:hover { background:#dbe9ff; }
-        .balance-container { display:flex; align-items:center; font-size:1.3em; margin-top:20px; }
-        .balance-container i { color:#28a745; margin-right:10px; font-size:1.5em; }
-        .balance-container span { font-weight:bold; color:#007bff; font-size:1.5em; }
+
+        .balance-container {
+            display:flex;
+            align-items:center;
+            font-size:1.3em;
+            margin-top:20px;
+        }
+
+        .balance-container i {
+            color:#28a745;
+            margin-right:10px;
+            font-size:1.5em;
+        }
+
+        .balance-container span {
+            font-weight:bold;
+            color:#007bff;
+            font-size:1.5em;
+        }
+
         .navbar { background:#FFEED8; }
-        .hover-nav:hover { background:#f5e6d7 !important; }
-        .footer { background:#fff4e6; padding:40px 0; border-top:2px solid #f1f1f1; }
     </style>
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg game-nav shadow-sm">
+<nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container-fluid">
+        <a class="navbar-brand" href="/home">
+            <img src="/img/logoFinal.png" style="height:60px">
+        </a>
 
-        <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center" href="/home">
-                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
-            </a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mx-auto gap-4">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">
+                        <i class="fa fa-home me-1"></i>Trang chủ
+                    </a>
+                </li>
 
-            <!-- Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <li class="nav-item">
+                    <a class="nav-link" href="/home/transaction">
+                        <i class="fa fa-credit-card me-1"></i>Ví
+                    </a>
+                </li>
+            </ul>
 
-            <!-- MENU -->
-            <div class="collapse navbar-collapse" id="mainNavbar">
-
-                <!-- MENU GIỮA -->
-                <ul class="navbar-nav mx-auto align-items-center nav-center">
-
-                    <!-- Trang chủ luôn cho phép -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill" href="/home">
-                            <i class="fa fa-home me-2"></i>Trang Chủ
-                        </a>
-                    </li>
-
-                    <!-- LỊCH SỬ MUA -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-pill dropdown-toggle require-login"
-                           href="#"
-                           data-bs-toggle="dropdown"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
-                        </a>
-
-                        <ul class="dropdown-menu dropdown-soft">
-                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
-                            <li><a class="dropdown-item" href="#">AOV</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- TÀI KHOẢN -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
-                        </a>
-                    </li>
-
-                    <!-- VÍ -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/transaction}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-credit-card me-2"></i>Ví
-                        </a>
-                    </li>
-
-                    <!-- GIỎ HÀNG -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/cart}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
-                        </a>
-                    </li>
-                </ul>
-
-
-                <!-- Navbar styles -->
-                <style>
-                    .game-nav{
-                        background:pink;
-                        border-top:2px solid #e6d8c8;
-                        height:86px;
-                        display:flex;
-                        align-items:center;
-                    }
-
-                    .game-nav .container-fluid{
-                        display:flex;
-                        align-items:center;
-                    }
-
-                    .nav-logo{
-                        height:180px;
-                        width:auto;
-                    }
-
-                    .nav-center{
-                        gap:26px;
-                    }
-
-                    .game-nav .navbar-nav .nav-link{
-                        color: #111 !important;
-                        font-weight: 500;
-                    }
-
-                    .nav-pill{
-                        background: transparent;
-                        color: #000 !important;
-                        border: 1px solid transparent;
-                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
-                    }
-
-                    .nav-pill:hover{
-                        color: #f7931e !important;
-                        background: #F8F8FF;
-                        box-shadow: none !important;
-                        transform: none !important;
-                    }
-
-                    .nav-pill{
-                        color: #111 !important;
-                        font-weight: 500;
-                        background: transparent;
-                    }
-
-                    .nav-pill:focus,
-                    .nav-pill:active{
-                        background: #f5e6d7 !important;
-                        color: #000 !important;
-                        box-shadow: none !important;
-                    }
-
-                    /* DROPDOWN */
-                    .dropdown-soft{
-                        border-radius:14px;
-                        padding:6px;
-                    }
-
-                    .nav-pill{
-                        border-radius: 18px !important;
-                        padding: 10px 18px !important;
-                    }
-
-                    .nav-pill:hover{
-                        border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                    }
-
-                    .nav-pill:focus,
-                    .nav-pill:active{
-                        border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                    }
-
-                </style>
-
-                <!-- Right: User -->
-                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
-
-                    <!-- Anonymous -->
-                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                            <span class="fw-semibold">Khách</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-fix">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Authenticated -->
-
-                    <li sec:authorize="isAuthenticated()">
-                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                        <a class="dropdown-item"
-                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
-                            Thông tin tài khoản
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
+            <ul class="navbar-nav">
+                <li sec:authorize="isAuthenticated()">
+                    <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
-<div id="loginAlert"
-     class="alert alert-warning text-center fw-semibold d-none"
-     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
-    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
-</div>
-<script>
-    document.querySelectorAll('.require-login').forEach(link => {
-        link.addEventListener('click', function (e) {
-            const isLogged = this.dataset.logged === 'true';
-
-            if (!isLogged) {
-                e.preventDefault();
-                showLoginAlert();
-            }
-        });
-    });
-
-    function showLoginAlert() {
-        const alertBox = document.getElementById('loginAlert');
-
-        // hiện alert
-        alertBox.classList.remove('d-none');
-
-        // tự tắt sau 3 giây
-        setTimeout(() => {
-            alertBox.classList.add('d-none');
-        }, 3000);
-    }
-</script>
-
-<script>
-    function fitMoneyText() {
-        document.querySelectorAll('.money').forEach(el => {
-            el.style.transform = 'scale(1)';
-
-            const parent = el.parentElement;
-            const parentWidth = parent.clientWidth - 20; // trừ padding
-            const textWidth = el.scrollWidth;
-
-            if (textWidth > parentWidth) {
-                const scale = parentWidth / textWidth;
-                el.style.transform = `scale(${scale})`;
-            }
-        });
-    }
-
-    // chạy khi load trang
-    window.addEventListener('load', fitMoneyText);
-
-    // chạy khi resize màn hình
-    window.addEventListener('resize', fitMoneyText);
-</script>
 
 <!-- CONTENT -->
 <div class="container py-4">
@@ -286,7 +103,7 @@
     <div class="row mb-4">
         <div class="col-md-4 mb-3">
             <div class="card c1">
-                <p class="label">Số Tiền Hiện Có</p>
+                <p class="label">Số dư hiện tại</p>
                 <p class="money"
                    th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
                     0 đ
@@ -296,7 +113,7 @@
 
         <div class="col-md-4 mb-3">
             <div class="card c2">
-                <p class="label">Số Tiền Đã Nạp</p>
+                <p class="label">Tổng tiền đã nạp</p>
                 <p class="money"
                    th:text="${#numbers.formatDecimal(totalDeposit,0,'COMMA',0,'POINT')} + ' đ'">
                     0 đ
@@ -306,7 +123,7 @@
 
         <div class="col-md-4 mb-3">
             <div class="card c3">
-                <p class="label">Số Tiền Đã Tiêu</p>
+                <p class="label">Tổng tiền đã chi</p>
                 <p class="money"
                    th:text="${#numbers.formatDecimal(totalSpent,0,'COMMA',0,'POINT')} + ' đ'">
                     0 đ
@@ -316,9 +133,14 @@
     </div>
 
     <!-- SEARCH -->
-    <form th:action="@{/home}" method="get" class="d-flex gap-2 mb-3 justify-content-end">
-        <input type="text" name="search" th:value="${search}" class="form-control w-25"
-               placeholder="Tìm nội dung...">
+    <form th:action="@{/home/transaction}"
+          method="get"
+          class="d-flex justify-content-end gap-2 mb-3">
+        <input type="text"
+               name="search"
+               class="form-control w-25"
+               th:value="${search}"
+               placeholder="Tìm nội dung giao dịch">
         <button class="btn btn-primary">Search</button>
     </form>
 
@@ -328,27 +150,33 @@
         <tr>
             <th>STT</th>
             <th>ID</th>
-            <th>Số Tiền</th>
-            <th>Nội Dung</th>
-            <th>Thời Gian</th>
+            <th>Số tiền</th>
+            <th>Nội dung</th>
+            <th>Thời gian</th>
         </tr>
         </thead>
-        <tbody>
 
-        <tr th:each="w, i : ${walletHistory}">
+        <tbody>
+        <tr th:each="t, i : ${walletHistory}">
             <td th:text="${i.index + 1}">1</td>
-            <td th:text="${w.transactionId}">UUID</td>
-            <td th:text="${#numbers.formatDecimal(w.amount,0,'COMMA',0,'POINT')} + ' đ'">0 đ</td>
-            <td th:text="${w.description}">Nạp tiền</td>
-            <td th:text="${#temporals.format(w.depositDate,'dd/MM/yyyy HH:mm')}">
-                12/12/2025 10:00
+            <td th:text="${t.transactionId}">UUID</td>
+
+            <td th:text="${#numbers.formatDecimal(t.amount,0,'COMMA',0,'POINT')} + ' đ'">
+                0 đ
+            </td>
+
+            <td th:text="${t.description}">Thanh toán</td>
+
+            <td th:text="${#temporals.format(t.dateCreated,'dd/MM/yyyy HH:mm')}">
+                01/01/2025 10:00
             </td>
         </tr>
 
-        <tr th:if="${walletHistory == null || walletHistory.isEmpty()}">
-            <td colspan="5" class="text-center">Không có dữ liệu</td>
+        <tr th:if="${walletHistory == null or walletHistory.isEmpty()}">
+            <td colspan="5" class="text-center">
+                Không có dữ liệu giao dịch
+            </td>
         </tr>
-
         </tbody>
     </table>
 
@@ -362,85 +190,6 @@
     </div>
 
 </div>
-
-<!-- FOOTER -->
-<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
-    <div class="container">
-
-        <div class="row g-4">
-
-            <!-- LOGO + INTRO -->
-            <div class="col-lg-4 col-md-6">
-                <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
-                <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
-                <p>
-                    Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>
-                    Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.
-                </p>
-                <div class="d-flex mt-3 gap-3">
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-
-            <!-- SUPPORT -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
-
-                <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
-                <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>
-                <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
-
-                <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
-                    <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
-                </button>
-            </div>
-
-            <!-- QUICK LINKS -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
-                <ul class="footer-links">
-                    <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- COPYRIGHT -->
-        <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
-            <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
-            <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
-        </div>
-
-    </div>
-</div>
-<style>
-    .footer-links {
-        list-style: none;
-        padding: 0;
-    }
-
-    .footer-links li {
-        margin-bottom: 8px;
-    }
-
-    .footer-links a {
-        color: #444;
-        text-decoration: none;
-        transition: 0.2s;
-    }
-
-    .footer-links a:hover {
-        color: #ff8800;
-        padding-left: 4px;
-    }
-</style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

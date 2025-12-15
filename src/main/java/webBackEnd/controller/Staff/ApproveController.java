@@ -11,6 +11,7 @@ import webBackEnd.entity.Staff;
 import webBackEnd.service.AdministratorService;
 import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
+import webBackEnd.service.RentAccountGameService;
 import webBackEnd.successfullyDat.GetQuantity;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,8 @@ public class ApproveController {
 
     @Autowired
     private AdministratorService  administratorService;
+    @Autowired
+    private RentAccountGameService rentAccountGameService;
 
 
     @GetMapping("/approveList")
@@ -65,13 +68,17 @@ public class ApproveController {
 
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
         for(OrderDetail a:orderDetails){
-            a.getGameAccount().setStatus("IN USE");
-            RentAccountGame rentAccountGame = new RentAccountGame();
+            if(a.getDuration()!=0){
+                RentAccountGame rentAccountGame = new RentAccountGame();
 
-            rentAccountGame.setCustomer(order.getCustomer());
-            rentAccountGame.setGameAccount(a.getGameAccount());
-            rentAccountGame.setDateStart(order.getCreatedDate());
-            rentAccountGame.setDateEnd(order.getCreatedDate().plusMonths(1));
+                rentAccountGame.setCustomer(order.getCustomer());
+                rentAccountGame.setGameAccount(a.getGameAccount());
+                rentAccountGame.setDateStart(order.getCreatedDate());
+                rentAccountGame.setDateEnd(order.getCreatedDate().plusMonths(a.getDuration()));
+                rentAccountGameService.save(rentAccountGame);
+            }
+            a.getGameAccount().setStatus("IN USE");
+
         }
 
 
