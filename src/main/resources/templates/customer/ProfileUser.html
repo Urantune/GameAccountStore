@@ -87,12 +87,13 @@
     </div>
 
     <div style="flex:1;">
-        <div id="walletCard" class="card wallet text-center p-4 shadow-lg"
-             style="cursor:pointer;transition:transform .3s;">
-            <h2 class="mb-2" style="color:#222;">💰 Ví GamePay</h2>
-            <p class="text-muted mb-0" id="walletStatus">Chưa kích hoạt</p>
-        </div>
-
+        <a th:href="@{/home/transaction}" class="text-decoration-none">
+            <div id="walletCard" class="card wallet text-center p-4 shadow-lg"
+                 style="cursor:pointer;transition:transform .3s;">
+                <h2 class="mb-2" style="color:#222;">💰 Ví GamePay</h2>
+                <p class="text-muted mb-0" id="walletStatus">Chưa kích hoạt</p>
+            </div>
+        </a>
         <div class="card transactions mt-3">
             <h2>🧾 Thông tin</h2>
             <a th:href="@{/welcome/transactions}"><h5 class="mt-2 text-white">1. Lịch sử giao dịch</h5></a>

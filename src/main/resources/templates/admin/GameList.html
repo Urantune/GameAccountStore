@@ -10,202 +10,162 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        :root { --orange: #ff7a2f; }
         body {
-            background: #f5f5f5;
+            background: #f5f7fa;
             font-family: "Roboto", sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-        .bar-top { width: 100%; height: 70px; background: var(--orange); display: flex; align-items: center; padding-left: 30px; }
-        .bar-bottom { width: 100%; height: 70px; background: var(--orange); margin-top: auto; }
-        .content-wrapper { padding: 30px 40px 20px 40px; flex: 1; }
-        .table thead { background-color: #ffe0cc; }
-        .badge-status { font-size: 0.8rem; }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background: #2a3f54;
+            position: fixed;
+            left: 0;
+            top: 0;
+            color: #ecf0f1;
+        }
+        .sidebar h5 {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar a {
+            display: block;
+            padding: 14px 24px;
+            color: #ecf0f1;
+            text-decoration: none;
+        }
+        .sidebar a i { width: 22px; }
+        .sidebar a:hover, .sidebar a.active { background: #1abb9c; }
+
+        /* TOPBAR */
+        .topbar {
+            margin-left: 260px;
+            height: 60px;
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+        /* CONTENT */
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .table thead { background-color: #eef3f7; }
         th.sortable { cursor: pointer; user-select: none; }
+        .badge-status { font-size: 0.8rem; }
     </style>
 </head>
-
 <body>
 
-<div class="bar-top">
-    <h4 class="text-white m-0">
-        <i class="bi bi-controller me-2"></i> Manage Game Accounts
-    </h4>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h5><i class="bi bi-gear-fill me-2"></i> Admin Panel</h5>
+    <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a th:href="@{/adminHome/userList}"><i class="bi bi-people-fill"></i> Users</a>
+    <a th:href="@{/adminHome/gameSelect}" class="active"><i class="bi bi-controller"></i> Game Accounts</a>
+    <a th:href="@{/adminHome/listVoucher}"><i class="bi bi-ticket-perforated"></i> Vouchers</a>
+    <a href="#"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
+    <a th:href="@{/adminHome/shift}"><i class="bi bi-calendar2-week-fill"></i> Shift Management</a>
 </div>
 
-<div class="content-wrapper container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">
-            Game Account List
-            <span th:if="${gameName != null}" th:text="' - ' + ${gameName}"></span>
-        </h5>
-        <a th:href="@{/adminHome/gameSelect}"
-           class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Back to Game Select
-        </a>
+<!-- TOPBAR -->
+<div class="topbar">
+    <h6 class="mb-0">
+        Game Account List
+        <span th:if="${gameName != null}" th:text="' - ' + ${gameName}"></span>
+    </h6>
+    <a th:href="@{/adminHome/gameSelect}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
 
-    </div>
-
+<!-- CONTENT -->
+<div class="content">
     <div class="table-responsive bg-white rounded-3 shadow-sm p-3">
         <table class="table table-hover align-middle mb-0" id="gameTable">
             <thead>
             <tr>
-                <th style="width: 50px;">#</th>
-
+                <th>#</th>
                 <th class="sortable">Game Account</th>
                 <th class="sortable">Game</th>
-                <th class="sortable" style="width: 100px;">Price</th>
-                <th class="sortable" style="width: 100px;">Rank</th>
-                <th class="sortable" style="width: 90px;">Skins</th>
-                <th class="sortable" style="width: 90px;">Level</th>
-                <th class="sortable" style="width: 120px;">Status</th>
-
-                <th style="width: 190px;" class="text-center">Actions</th>
+                <th class="sortable">Price</th>
+                <th class="sortable">Rank</th>
+                <th class="sortable">Skins</th>
+                <th class="sortable">Level</th>
+                <th class="sortable">Status</th>
+                <th class="text-center">Actions</th>
             </tr>
             </thead>
-
             <tbody>
             <tr th:each="g, index : ${listGame}">
                 <td th:text="${index.index + 1}"></td>
-
                 <td th:text="${g.gameAccount}"></td>
                 <td th:text="${g.game != null ? g.game.gameName : 'N/A'}"></td>
-                <td th:text="${#numbers.formatDecimal(g.price, 0, 'POINT', 0, 'POINT')}"></td>
+                <td th:text="${#numbers.formatDecimal(g.price,0,'POINT',0,'POINT')}"></td>
                 <td th:text="${g.rank}"></td>
                 <td th:text="${g.skin}"></td>
                 <td th:text="${g.lovel}"></td>
-
                 <td>
-                    <span class="badge badge-status"
+                    <span class="badge"
                           th:classappend="${g.status} == 'ACTIVE' ? ' bg-success' : ' bg-secondary'"
-                          th:text="${g.status}">
-                    </span>
+                          th:text="${g.status}"></span>
                 </td>
-
                 <td class="text-center">
                     <a th:href="@{/adminHome/gameDetail/{id}(id=${g.id})}" class="btn btn-sm btn-outline-primary me-1">
                         <i class="bi bi-info-circle"></i>
                     </a>
-
-                    <a th:href="@{'/admin/game-accounts/history/' + ${g.id}}" class="btn btn-sm btn-outline-secondary me-1">
-                        <i class="bi bi-clock-history"></i>
-                    </a>
-
-                    <a th:href="@{/adminHome/gameUpdate/{id}(id = ${g.getId()})}" class="btn btn-sm btn-outline-warning">
+                    <a th:href="@{/adminHome/gameUpdate/{id}(id=${g.id})}" class="btn btn-sm btn-outline-warning">
                         <i class="bi bi-pencil-square"></i>
                     </a>
                 </td>
             </tr>
-
             <tr th:if="${#lists.isEmpty(listGame)}">
-                <td colspan="9" class="text-center text-muted py-4">No game accounts found.</td>
+                <td colspan="9" class="text-center text-muted py-4">No game accounts found</td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
 
-<div class="bar-bottom"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
+    // SORTABLE TABLE (rank custom order)
     const table = document.getElementById("gameTable");
     const sortableHeaders = table.querySelectorAll("th.sortable");
-    const allHeaders = Array.from(table.querySelectorAll("thead th.sortable"));
+    const allHeaders = Array.from(sortableHeaders);
 
-    // thứ tự rank fix cứng
-    const rankOrder = [
-        "UNRANKED",
-        "BRONZE III",
-        "BRONZE II",
-        "BRONZE I",
-        "SILVER III",
-        "SILVER II",
-        "SILVER I",
-        "GOLD III",
-        "GOLD II",
-        "GOLD I",
-        "PLATINUM III",
-        "PLATINUM II",
-        "PLATINUM I",
-        "DIAMOND III",
-        "DIAMOND II",
-        "DIAMOND I",
-        "MASTER",
-        "CONQUEROR"
-    ];
+    const rankOrder = ["UNRANKED","BRONZE III","BRONZE II","BRONZE I","SILVER III","SILVER II","SILVER I","GOLD III","GOLD II","GOLD I","PLATINUM III","PLATINUM II","PLATINUM I","DIAMOND III","DIAMOND II","DIAMOND I","MASTER","CONQUEROR"];
 
-    function getCellText(td) {
-        if (!td) return "";
-        const ds = td.querySelector('[data-sort]');
-        if (ds) return (ds.dataset.sort || ds.textContent || "").trim();
+    function getCellText(td){return td? (td.dataset.sort || td.textContent || "").trim() : "";}
+    function parseNumberForSort(s){ if(!s) return NaN; const c=(""+s).replace(/[^\d\.,\-]/g,''); return c.includes('.')&&c.includes(',')?Number(c.replace(/\./g,'').replace(',','.')):c.includes(',')?Number(c.replace(',','.')):Number(c.replace(/,/g,''));}
 
-        let txt = td.textContent || "";
-        return txt.replace(/\s+/g, " ").trim();
-    }
-
-    function parseNumberForSort(s) {
-        if (s == null) return NaN;
-        const cleaned = ("" + s).replace(/[^\d\.,\-]/g, "");
-        if (cleaned === "") return NaN;
-
-        if (cleaned.includes('.') && cleaned.includes(',')) {
-            return Number(cleaned.replace(/\./g, '').replace(',', '.'));
-        }
-        if (cleaned.includes(',') && !cleaned.includes('.')) {
-            return Number(cleaned.replace(',', '.'));
-        }
-        return Number(cleaned.replace(/,/g, ''));
-    }
-
-    sortableHeaders.forEach(header => {
-        if (!header.dataset.original) header.dataset.original = header.textContent.trim();
-
-        header.addEventListener("click", () => {
-            const colIndex = allHeaders.indexOf(header) + 1;
-            if (colIndex === -1) return;
-
-            const rows = [...table.querySelectorAll("tbody tr")].filter(r => r.children.length > 1);
-
-            const isAsc = header.classList.contains("asc");
-            const direction = isAsc ? -1 : 1;
-
-            sortableHeaders.forEach(h => {
-                h.classList.remove("asc", "desc");
-                h.textContent = h.dataset.original;
+    sortableHeaders.forEach(header=>{
+        if(!header.dataset.original) header.dataset.original = header.textContent.trim();
+        header.addEventListener("click",()=>{
+            const colIndex=Array.from(header.parentNode.children).indexOf(header);
+            const rows=[...table.querySelectorAll("tbody tr")].filter(r=>r.children.length>1);
+            const isAsc=header.classList.contains("asc");
+            const direction=isAsc?-1:1;
+            sortableHeaders.forEach(h=>{h.classList.remove("asc","desc");h.textContent=h.dataset.original;});
+            header.classList.toggle("asc",direction===1);
+            header.classList.toggle("desc",direction===-1);
+            header.textContent=header.dataset.original+(direction===1?" ▲":" ▼");
+            rows.sort((a,b)=>{
+                const cellA=getCellText(a.children[colIndex]).toUpperCase();
+                const cellB=getCellText(b.children[colIndex]).toUpperCase();
+                if(header.dataset.original.toLowerCase()==="rank"){return (rankOrder.indexOf(cellA)-rankOrder.indexOf(cellB))*direction;}
+                const nA=parseNumberForSort(cellA), nB=parseNumberForSort(cellB);
+                if(!isNaN(nA)&&!isNaN(nB)) return (nA-nB)*direction;
+                return cellA.localeCompare(cellB,undefined,{sensitivity:"base"})*direction;
             });
-
-            header.classList.toggle("asc", direction === 1);
-            header.classList.toggle("desc", direction === -1);
-            header.textContent = header.dataset.original + (direction === 1 ? " ▲" : " ▼");
-
-            rows.sort((a, b) => {
-                const cellA = getCellText(a.children[colIndex]).toUpperCase();
-                const cellB = getCellText(b.children[colIndex]).toUpperCase();
-
-                // ⭐ SORT RANK THEO THỨ TỰ CUSTOM
-                if (header.dataset.original.toLowerCase() === "rank") {
-                    const indexA = rankOrder.indexOf(cellA);
-                    const indexB = rankOrder.indexOf(cellB);
-                    return (indexA - indexB) * direction;
-                }
-
-                // số
-                const nA = parseNumberForSort(cellA);
-                const nB = parseNumberForSort(cellB);
-                if (!isNaN(nA) && !isNaN(nB)) {
-                    return (nA - nB) * direction;
-                }
-
-                // text
-                return cellA.localeCompare(cellB, undefined, { sensitivity: "base" }) * direction;
-            });
-
-            const tbody = table.querySelector("tbody");
-            rows.forEach(r => tbody.appendChild(r));
+            rows.forEach(r=>table.querySelector("tbody").appendChild(r));
         });
     });
 </script>
