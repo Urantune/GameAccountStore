@@ -33,9 +33,12 @@ public class RentApproveController {
     @Autowired
     private AdministratorService administratorService;
 
+    @Autowired
+    private RentApproveController rentApproveController;
+
     @GetMapping("/rentApproveList")
     public String rentApproveList(Model model){
-        List<OrderDetail> list = orderDetailService;
+        List<OrderDetail> list = orderDetailService.f;
 
         model.addAttribute("rentOrderList",list);
         model.addAttribute("getQuantity",getQuantity);
