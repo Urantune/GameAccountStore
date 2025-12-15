@@ -414,7 +414,6 @@
                             class="btn btn-dark">
                              🛒 Mua
                          </a>
-
                          <!-- Nếu chưa login thì không cho chuyển trang, chỉ báo -->
                          <button th:if="${#authorization.expression('!isAuthenticated()')}"
                                  class="btn btn-dark"
@@ -422,34 +421,38 @@
                                  onclick="alert('Bạn cần đăng nhập trước khi mua hàng!')">
                              🛒 Mua
                          </button>
-                         <!-- Nút thêm giỏ hàng -->
-                         <button class="btn btn-outline-dark" type="button"
-                                 th:onclick="|addToCart('${p.id}')|">
+
+                         <button class="btn btn-outline-dark"
+                                 type="button"
+                                 th:attr="data-id=${p.id}"
+                                 onclick="addToCart(this)">
                              <i class="bi-cart-fill me-1"></i> Thêm giỏ hàng
                          </button>
+
                      </div>
                      <script>
-                         function addToCart(gameAccountId) {
+                         function addToCart(btn) {
+                             const gameAccountId = btn.dataset.id;
+
                              fetch(`/cart/add/${gameAccountId}`, {
                                  method: "POST",
                                  headers: {
                                      "X-Requested-With": "XMLHttpRequest"
                                  }
                              })
-                             .then(res => {
-                                 if (res.status === 401 || res.status === 403) {
-                                     alert("Bạn cần đăng nhập để thêm vào giỏ hàng!");
-                                     return;
-                                 }
-                                 if (!res.ok) {
-                                     return res.text().then(t => { throw new Error(t); });
-                                 }
-                                 alert("Đã thêm vào giỏ hàng");
-                             })
-                             .catch(err => alert(err.message));
+                                 .then(res => {
+                                     if (res.status === 401 || res.status === 403) {
+                                         alert("Bạn cần đăng nhập để thêm vào giỏ hàng!");
+                                         return;
+                                     }
+                                     if (!res.ok) {
+                                         return res.text().then(t => { throw new Error(t); });
+                                     }
+                                     alert("Đã thêm vào giỏ hàng");
+                                 })
+                                 .catch(err => alert(err.message));
                          }
                      </script>
-
                  </div>
              </div>
          </div>

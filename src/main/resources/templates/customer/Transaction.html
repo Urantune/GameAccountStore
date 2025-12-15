@@ -1,112 +1,40 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Nạp Thẻ</title>
+    <title>Ví của bạn</title>
 
-    <!-- Bootstrap & Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
 
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f8fc;
-        }
-
-        /* NAVBAR TEXT FIX */
-        .nav-link,
-        .dropdown-item,
-        .navbar-brand,
-        .navbar * {
-            color: #000 !important;
-        }
-
-        .hover-nav { transition: 0.2s ease-in-out; }
-        .hover-nav:hover {
-            background: pink;
-            color: #000 !important;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f5e6d7;
-            color: #000 !important;
-            border-radius: 8px;
-        }
-
-        /* TOP CARDS */
-        .stats {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .cardx {
-            flex: 1;
-            padding: 25px;
-            border-radius: 14px;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 140px;
-        }
-
-        .cardx h3 { font-size: 18px; margin: 0; font-weight: 700; }
-        .cardx .value { font-size: 32px; font-weight: bold; margin-top: 10px; }
-
-        .c1 { background: linear-gradient(45deg, #30d7b7, #87e46b); }
-        .c2 { background: linear-gradient(45deg, #1463ff, #033ea8); }
-        .c3 { background: linear-gradient(45deg, #333333, #000000); }
-
-        .btn-topup {
-            padding: 10px 18px;
-            border-radius: 8px;
-            background: white;
-            color: black;
-            text-align: center;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-        /* TABLE BOX */
-        .table-box {
-            background: white;
-            margin: 30px auto;
-            padding: 25px;
-            width: 95%;
-            border-radius: 14px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            font-weight: normal !important;
-        }
-
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 12px; }
-        th { background: #f0f2f7; font-weight: bold; }
-        tr:nth-child(even) { background: #fafafa; }
-
-        .search-box { float: right; margin-bottom: 10px; }
-        .search-box input {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #aaa;
-        }
-
-        .empty { text-align: center; padding: 40px; color: #777; }
-        .empty img { width: 70px; opacity: 0.4; }
+        body { background:#f5f9ff; font-family:'Segoe UI',sans-serif; }
+        .card { border-radius:12px; color:#fff; padding:25px; height:160px;
+            display:flex; flex-direction:column; justify-content:space-between; }
+        .c1 { background:linear-gradient(135deg,#00e0b3,#a8ff3e); }
+        .c2 { background:linear-gradient(135deg,#0054ff,#0bb2ff); }
+        .c3 { background:linear-gradient(135deg,#ff4d4d,#ff9999); }
+        .label { font-size:18px; opacity:.9; }
+        .money { font-size:36px; font-weight:bold; }
+        .wallet-table th, .wallet-table td { text-align:center; }
+        .wallet-table tbody tr:nth-child(even) { background:#f4f7fb; }
+        .wallet-table tbody tr:hover { background:#dbe9ff; }
+        .balance-container { display:flex; align-items:center; font-size:1.3em; margin-top:20px; }
+        .balance-container i { color:#28a745; margin-right:10px; font-size:1.5em; }
+        .balance-container span { font-weight:bold; color:#007bff; font-size:1.5em; }
+        .navbar { background:#FFEED8; }
+        .hover-nav:hover { background:#f5e6d7 !important; }
+        .footer { background:#fff4e6; padding:40px 0; border-top:2px solid #f1f1f1; }
     </style>
 </head>
+
 <body>
 
-<!-- Navbar & Hero Start -->
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
 
@@ -306,6 +234,7 @@
             }
         });
     });
+
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
 
@@ -318,62 +247,91 @@
         }, 3000);
     }
 </script>
+<!-- CONTENT -->
+<div class="container py-4">
 
-<!-- Navbar & Hero End -->
+    <!-- TOP CARDS -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card c1">
+                <p class="label">Số Tiền Hiện Có</p>
+                <p class="money"
+                   th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
+                    0 đ
+                </p>
+            </div>
+        </div>
 
-<!-- TOP STATISTICS -->
-<div class="stats">
+        <div class="col-md-4 mb-3">
+            <div class="card c2">
+                <p class="label">Số Tiền Đã Nạp</p>
+                <p class="money"
+                   th:text="${#numbers.formatDecimal(totalDeposit,0,'COMMA',0,'POINT')} + ' đ'">
+                    0 đ
+                </p>
+            </div>
+        </div>
 
-    <div class="cardx c1">
-        <h3>Số Tiền Hiện Có:</h3>
-        <div class="value">0 đ</div>
-        <a class="btn-topup" href="/home/depositMoney">Nạp Thêm</a>
+        <div class="col-md-4 mb-3">
+            <div class="card c3">
+                <p class="label">Số Tiền Đã Tiêu</p>
+                <p class="money"
+                   th:text="${#numbers.formatDecimal(totalSpent,0,'COMMA',0,'POINT')} + ' đ'">
+                    0 đ
+                </p>
+            </div>
+        </div>
     </div>
 
-    <div class="cardx c2">
-        <h3>Số Tiền Đã Nạp:</h3>
-        <div class="value">0 đ</div>
-        <a class="btn-topup" href="/home/depositMoney">Nạp Thêm</a>
-    </div>
+    <!-- SEARCH -->
+    <form th:action="@{/home}" method="get" class="d-flex gap-2 mb-3 justify-content-end">
+        <input type="text" name="search" th:value="${search}" class="form-control w-25"
+               placeholder="Tìm nội dung...">
+        <button class="btn btn-primary">Search</button>
+    </form>
 
-    <div class="cardx c3">
-        <h3>Số Tiền Đã Tiêu:</h3>
-        <div class="value">0 đ</div>
-        <a class="btn-topup" href="/home/depositMoney">Nạp Thêm</a>
-    </div>
-
-</div>
-
-<!-- TABLE -->
-<div class="table-box">
-    <h2>Lịch Sử Giao Dịch</h2>
-    <div class="search-box">
-        <input type="text" placeholder="Search...">
-    </div>
-
-    <table>
+    <!-- TABLE -->
+    <table class="wallet-table table table-bordered">
         <thead>
         <tr>
+            <th>STT</th>
             <th>ID</th>
-            <th>Mã Giao Dịch</th>
-            <th>Số Dư Trước</th>
             <th>Số Tiền</th>
-            <th>Số Dư Sau</th>
             <th>Nội Dung</th>
-            <th>Tài Khoản</th>
             <th>Thời Gian</th>
-            <th>Cập Nhật</th>
         </tr>
         </thead>
+        <tbody>
+
+        <tr th:each="w, i : ${walletHistory}">
+            <td th:text="${i.index + 1}">1</td>
+            <td th:text="${w.transactionId}">UUID</td>
+            <td th:text="${#numbers.formatDecimal(w.amount,0,'COMMA',0,'POINT')} + ' đ'">0 đ</td>
+            <td th:text="${w.description}">Nạp tiền</td>
+            <td th:text="${#temporals.format(w.depositDate,'dd/MM/yyyy HH:mm')}">
+                12/12/2025 10:00
+            </td>
+        </tr>
+
+        <tr th:if="${walletHistory == null || walletHistory.isEmpty()}">
+            <td colspan="5" class="text-center">Không có dữ liệu</td>
+        </tr>
+
+        </tbody>
     </table>
 
-    <div class="empty">
-        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076505.png">
-        <p>No data</p>
+    <!-- CURRENT BALANCE -->
+    <div class="balance-container">
+        <i class="fa-solid fa-wallet"></i>
+        Số dư hiện tại:
+        <span th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
+            0 đ
+        </span>
     </div>
+
 </div>
 
-<!-- Footer Start -->
+<!-- FOOTER -->
 <div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
     <div class="container">
 
@@ -430,11 +388,28 @@
 
     </div>
 </div>
+<style>
+    .footer-links {
+        list-style: none;
+        padding: 0;
+    }
 
-<!-- Footer End -->
+    .footer-links li {
+        margin-bottom: 8px;
+    }
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    .footer-links a {
+        color: #444;
+        text-decoration: none;
+        transition: 0.2s;
+    }
 
+    .footer-links a:hover {
+        color: #ff8800;
+        padding-left: 4px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
