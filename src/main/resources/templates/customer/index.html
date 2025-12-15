@@ -34,9 +34,154 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+    <style>
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Popup box */
+        .popup {
+            background: linear-gradient(135deg, #ffffff, #f8f9ff);
+            width: 420px;
+            max-width: 90%;
+            padding: 30px 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            position: relative;
+            animation: scaleIn 0.4s ease;
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background: #ff4d4f;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #d9363e;
+            transform: rotate(90deg);
+        }
+
+        /* Title */
+        .popup-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2f54eb;
+            margin-bottom: 12px;
+        }
+
+        /* Text styles */
+        .announcement-text {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .highlighted-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fa541c;
+            margin: 12px 0;
+        }
+
+        .promo-text {
+            font-size: 15px;
+            color: #222;
+            margin-bottom: 6px;
+        }
+
+        .note-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 18px;
+        }
+
+        /* CTA button */
+        .cta-link {
+            display: inline-block;
+            padding: 12px 26px;
+            background: linear-gradient(135deg, #ff7a18, #ffb347);
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 30px;
+            transition: 0.3s;
+            box-shadow: 0 6px 18px rgba(255, 122, 24, 0.45);
+        }
+
+        .cta-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(255, 122, 24, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+    </style>
 </head>
 
 <body>
+<div class="overlay" id="popupOverlay">
+    <div class="popup">
+        <button class="close-btn" id="closePopup">&times;</button>
+
+        <h2 class="popup-title">🎉 THÔNG BÁO 🎉</h2>
+
+        <p class="announcement-text">
+            ACCOUNTSTORE.COM tưng bừng khai trương năm mới ❤️
+        </p>
+
+        <p class="highlighted-text">
+            🔥 SIÊU SALE NGẬP TRÀN ƯU ĐÃI 🔥
+        </p>
+
+        <p class="promo-text">
+            Mua <b>2 ACC GAME</b> được tặng ngay <b>1 ACC tự chọn</b>
+        </p>
+
+        <p class="note-text">
+            Tính tiền theo giá <b>3 ACC</b>
+        </p>
+
+        <a href="javascript:void(0)" class="cta-link" id="ctaLink">
+            🚀 MUA NGAY
+        </a>
+    </div>
+</div>
+
 <!--Model Login Start-->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -853,6 +998,23 @@
             });
         }, 5000); // 5 giây
     </script>
+
+    <script>
+        const overlay = document.getElementById("popupOverlay");
+        const closeBtn = document.getElementById("closePopup");
+        const ctaLink = document.getElementById("ctaLink");
+
+        function closePopup() {
+            overlay.style.display = "none";
+        }
+
+        // Bấm dấu X
+        closeBtn.addEventListener("click", closePopup);
+
+        // Bấm MUA NGAY
+        ctaLink.addEventListener("click", closePopup);
+    </script>
+
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 

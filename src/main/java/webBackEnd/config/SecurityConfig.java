@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -60,25 +61,40 @@ public class SecurityConfig {
         );
 
         http.formLogin(form -> form
-                .loginPage("/home")              // trang login
+                .loginPage("/home")
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
+
                 .successHandler((req, res, auth) -> {
                     res.setContentType("application/json");
                     res.getWriter().write(
-                            auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
+                            auth.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
                                     ? "{\"redirect\":\"/Admin\"}"
                                     : "{\"redirect\":\"/home\"}"
                     );
                 })
+
                 .failureHandler((req, res, ex) -> {
-                    res.setContentType("application/json");
                     res.setStatus(401);
-                    res.getWriter().write("{\"error\":\"Error username or password\"}");
+                    res.setContentType("application/json; charset=UTF-8");
+                    res.setCharacterEncoding("UTF-8");
+
+                    Throwable cause = ex;
+                    while (cause.getCause() != null) {
+                        cause = cause.getCause();
+                    }
+
+                    if (cause instanceof DisabledException) {
+                        res.getWriter().write("{\"error\":\"Tài khoản đã bị khóa\"}");
+                    } else {
+                        res.getWriter().write("{\"error\":\"Sai username hoặc password\"}");
+                    }
                 })
-                .permitAll() // 🟢 rất quan trọng – cho phép ai cũng gọi /home, /login
+                .permitAll()
         );
+
 
         http.logout(logout -> logout
                 .logoutUrl("/logout")
