@@ -484,28 +484,37 @@
                         <div id="tab-all" class="tab-pane fade show active p-0">
                             <div class="row g-4">
                                 <div class="col-md-6 col-lg-4 col-xl-3"
-                                     th:each="p : ${gameId}">
+                                     th:each="p : ${accounts}">
                                     <div class="card game-card h-100 border-0 shadow-sm rounded-4">
                                         <!-- IMAGE -->
                                         <div class="position-relative overflow-hidden rounded-top-4">
+                                            <!-- IMAGE -->
                                             <img th:src="@{'/images/' + ${p.imageMain}}"
-                                                 class="card-img-top game-img">
-                                            <span th:if="${p.duration == null}"
+                                                 class="card-img-top game-img"
+                                                 th:classappend="${soldOrRentedIds.contains(p.id)} ? 'opacity-50' : ''">
+                                            <!-- ĐÃ BÁN / ĐÃ THUÊ -->
+                                            <span th:if="${soldOrRentedIds.contains(p.id)}"
+                                                  class="badge bg-danger position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
+    <i class="fa fa-ban me-1"></i>
+</span>
+                                            <!-- VĨNH VIỄN -->
+                                            <span th:if="${!soldOrRentedIds.contains(p.id) and p.duration == null}"
                                                   class="badge badge-permanent position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
-    <i class="fa fa-infinity me-1"></i> Vĩnh viễn
-</span>
-
-                                            <span th:if="${p.duration == 'RENT'}"
+                <i class="fa fa-infinity me-1"></i> Vĩnh viễn
+            </span>
+                                            <!-- THUÊ -->
+                                            <span th:if="${!soldOrRentedIds.contains(p.id) and p.duration == 'RENT'}"
                                                   class="badge badge-rent position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
-    <i class="fa fa-clock me-1"></i> Thuê
-</span>
-
-                                            <a th:href="@{/home/gameDetail/{id}(id=${p.id})}"
+                <i class="fa fa-clock me-1"></i> Thuê
+            </span>
+                                            <!-- VIEW -->
+                                            <a th:if="${!soldOrRentedIds.contains(p.id)}"
+                                               th:href="@{/home/gameDetail/{id}(id=${p.id})}"
                                                class="view-btn">
                                                 <i class="fa fa-eye"></i>
                                             </a>
-                                        </div>
 
+                                        </div>
                                         <!-- BODY -->
                                         <div class="card-body text-center">
                                             <h5 class="card-title fw-bold mb-2"
@@ -540,16 +549,22 @@
 
                                         <!-- FOOTER -->
                                         <div class="card-footer border-0 pb-4 text-center">
-                                            <a th:href="@{/home/gameDetail/{id}(id=${p.id})}"
+                                            <a th:if="${!soldOrRentedIds.contains(p.id)}"
+                                               th:href="@{/home/gameDetail/{id}(id=${p.id})}"
                                                class="btn btn-outline-primary btn-sm rounded-pill px-4">
                                                 Xem chi tiết
                                             </a>
-                                        </div>
 
+                                            <button th:if="${soldOrRentedIds.contains(p.id)}"
+                                                    class="btn btn-secondary btn-sm rounded-pill px-4"
+                                                    disabled>
+                                                Hết hàng
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                         </div>
                     </div>
                 </div>
             </div>

@@ -49,14 +49,15 @@ public class SecurityConfig {
                 .requestMatchers("/register", "/register/**").permitAll()
                 .requestMatchers("/home", "/home/**").permitAll()
 
-                // CHO PHÉP /adminHome KHÔNG CẦN LOGIN
+
                 .requestMatchers("/adminHome", "/adminHome/**").permitAll()
                 .requestMatchers("/staffHome", "/staffHome/**").permitAll()
 
-                // bảo vệ các URL khác
+
                 .requestMatchers("/Admin/edit/**").hasRole("ADMIN")
                 .requestMatchers("/Staff/**").hasRole("STAFF")
-                .requestMatchers("/cart/add/**").authenticated()
+                .requestMatchers("/home/add/**").authenticated()
+                .requestMatchers("/home/cart").authenticated()
                 .anyRequest().authenticated()
         );
 

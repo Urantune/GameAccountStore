@@ -111,7 +111,9 @@
 
                 <td th:text="${o.customer.username}">username</td>
 
-                <td th:text="${o.voucher.getVoucherName()}">voucher</td>
+                <td th:if="${o.voucher != null}"
+                      th:text="${o.voucher.voucherName}">
+                </td>
 
                 <td th:text="${#temporals.format(o.createdDate, 'HH:mm dd/MM/yyyy')}">15:30 12/12/2025</td>
 

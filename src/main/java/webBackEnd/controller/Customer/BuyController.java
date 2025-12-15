@@ -65,7 +65,7 @@ public class BuyController {
             return "customer/Payment";
         }
 
-        Customer customer = customerService.findByCustomerUsername(authentication.getName());
+        Customer customer = customerService.findCustomerByUsername(authentication.getName());
         GameAccount game = getGame(gameId);
 
         if (packageValues == null || packageValues.isBlank()) {
