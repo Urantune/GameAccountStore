@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Customer;
@@ -17,7 +18,7 @@ import webBackEnd.service.GameAccountService;
 
 import java.util.UUID;
 
-@RestController
+@Controller
 @RequestMapping("/home")
 public class CartController {
 
