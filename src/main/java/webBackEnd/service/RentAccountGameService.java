@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import webBackEnd.entity.RentAccountGame;
 import webBackEnd.repository.RentAccountGameRepositories;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class RentAccountGameService {
 
@@ -14,5 +17,15 @@ public class RentAccountGameService {
 
     public RentAccountGame save(RentAccountGame rentAccountGame){
         return rentAccountGameRepositories.save(rentAccountGame);
+    }
+
+
+    public RentAccountGame findById(UUID id){
+        return rentAccountGameRepositories.findById(id).orElse(null);
+    }
+
+
+    public List<RentAccountGame> findAll(){
+        return rentAccountGameRepositories.findAll();
     }
 }

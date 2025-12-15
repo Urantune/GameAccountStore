@@ -4,6 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import webBackEnd.entity.RentAccountGame;
 
+import java.util.UUID;
+
 @Repository
-public interface RentAccountGameRepositories extends JpaRepository<RentAccountGame,Long> {
+public interface RentAccountGameRepositories extends JpaRepository<RentAccountGame, UUID> {
+
+
+
 }
