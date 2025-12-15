@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.repository.GameAccountRepositories;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
 import webBackEnd.service.GameService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +28,8 @@ public class GameController {
     private GameService gameService;
     @Autowired
     private CustomerService  customerService;
+    @Autowired
+    private GameAccountRepositories gameAccountRepositories;
     @GetMapping("/game/{gameId}")
     public String gameAccount(Model model, @PathVariable UUID gameId) {
 
@@ -57,5 +61,60 @@ public class GameController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return customerService.findCustomerByUsername(username);
     }
+
+    @GetMapping("/game")
+    public String filterGameAccount(
+            @RequestParam(required = false) String duration,
+            @RequestParam(required = false) String price,
+            @RequestParam(required = false) Integer vip,
+            @RequestParam(required = false) String rank,
+            @RequestParam(required = false) String skins,
+            @RequestParam(required = false) String level,
+            Model model
+    ) {
+
+        BigDecimal minPrice = null;
+        BigDecimal maxPrice = null;
+
+        if (price != null && !price.isBlank()) {
+            if (price.endsWith("+")) {
+                minPrice = new BigDecimal(price.replace("+", ""));
+            } else {
+                String[] p = price.split("-");
+                minPrice = new BigDecimal(p[0]);
+                maxPrice = new BigDecimal(p[1]);
+            }
+        }
+
+        Integer minSkin = null, maxSkin = null;
+        if (skins != null && !skins.isBlank()) {
+            if (skins.endsWith("+")) {
+                minSkin = Integer.parseInt(skins.replace("+", ""));
+            } else {
+                String[] s = skins.split("-");
+                minSkin = Integer.parseInt(s[0]);
+                maxSkin = Integer.parseInt(s[1]);
+            }
+        }
+
+        Integer minLevel = null, maxLevel = null;
+        if (level != null && !level.isBlank()) {
+            if (level.endsWith("+")) {
+                minLevel = Integer.parseInt(level.replace("+", ""));
+            } else {
+                String[] l = level.split("-");
+                minLevel = Integer.parseInt(l[0]);
+                maxLevel = Integer.parseInt(l[1]);
+            }
+        }
+
+        List<GameAccount> list = gameAccountRepositories.filterGameAccount(
+                duration, minPrice, maxPrice, vip, rank, minSkin, maxSkin, minLevel, maxLevel
+        );
+
+        model.addAttribute("game", list);
+        return "customer/GameAccount";
+    }
+
 
 }
