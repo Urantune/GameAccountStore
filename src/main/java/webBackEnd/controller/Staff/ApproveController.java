@@ -41,8 +41,6 @@ public class ApproveController {
         List<Orders> list = ordersService.findAllByStatus("WAIT");
         list.sort(Comparator.comparing(Orders::getCreatedDate));
 
-
-
         model.addAttribute("orderList",list);
         model.addAttribute("getQuantity",getQuantity);
         return "staff/ApproveList";
@@ -50,16 +48,13 @@ public class ApproveController {
 
     @GetMapping("/approve/{orderId}")
     public String viewOrderDetail(@PathVariable UUID orderId, Model model) {
-
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
 
         model.addAttribute("orderId", orderId);
         model.addAttribute("orderDetails", orderDetails);
 
-
         Orders order = ordersService.findById(orderId);
         model.addAttribute("order", order);
-
         return "staff/OrderDetail";
     }
 
@@ -77,11 +72,6 @@ public class ApproveController {
             rentAccountGame.setGameAccount(a.getGameAccount());
             rentAccountGame.setDateStart(order.getCreatedDate());
             rentAccountGame.setDateEnd(order.getCreatedDate().plusMonths(1));
-
-
-
-
-
         }
 
 
@@ -89,10 +79,6 @@ public class ApproveController {
         order.setStaff(
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
         ordersService.save(order);
-
-
-
-
         return "redirect:/staffHome/approveList";
     }
 
@@ -112,10 +98,4 @@ public class ApproveController {
 
         return "redirect:/staffHome/approveList";
     }
-
-
-
-
-
-
 }
