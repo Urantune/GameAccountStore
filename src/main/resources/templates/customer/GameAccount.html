@@ -195,7 +195,7 @@
                     <!-- TÀI KHOẢN -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           href="/home/profile"
+                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
                             <i class="fa fa-user-circle me-2"></i>Tài Khoản
                         </a>
@@ -204,7 +204,7 @@
                     <!-- VÍ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           href="/home/wallet"
+                           th:href="@{/home/transaction}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
                             <i class="fa fa-credit-card me-2"></i>Ví
                         </a>
@@ -418,74 +418,7 @@
     </div>
 </div>
 <!-- Carousel End -->
-<div class="row g-0">
-    <div class="col-6 col-md-4 col-lg-2 border-start border-end wow fadeInUp" data-wow-delay="0.1s">
-        <div class="p-4">
-            <div class="d-inline-flex align-items-center">
-                <img src="/img/money.png" width="32" height="32" alt="money icon">
-                <div class="ms-4">
-                    <h6 class="text-uppercase mb-2">Miễn phí đổi trả</h6>
-                    <p class="mb-0">Chính sách hoàn tiền trong vòng 30 ngày!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
-        <div class="p-4">
-            <div class="d-flex align-items-center">
-                <img src="/img/customer-service.png" width="32" height="32" alt="customer-service icon">
-                <div class="ms-4">
-                    <h6 class="text-uppercase mb-2">Hỗ trợ 24/7</h6>
-                    <p class="mb-0">Luôn sẵn sàng hỗ trợ bạn mọi lúc!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.4s">
-        <div class="p-4">
-            <div class="d-flex align-items-center">
-                <img src="/img/atm-card.png" width="32" height="32" alt="atm-card icon">
-                <div class="ms-4">
-                    <h6 class="text-uppercase mb-2">Nhận mã giảm giá</h6>
-                    <p class="mb-0">Có thể nhận mã giảm giá khi mua hàng</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.5s">
-        <div class="p-4">
-            <div class="d-flex align-items-center">
-                <img src="/img/padlock.png" width="32" height="32" alt="padlock icon">
-                <div class="ms-4">
-                    <h6 class="text-uppercase mb-2">Bảo mật thanh toán</h6>
-                    <p class="mb-0">Chúng tôi luôn đặt vấn đề này lên hàng đầu</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.6s">
-        <div class="p-4">
-            <div class="d-flex align-items-center">
-                <img src="/img/insurance.png" width="32" height="32" alt="insurance icon">
-                <div class="ms-4">
-                    <h6 class="text-uppercase mb-2">Dịch vụ online</h6>
-                    <p class="mb-0">Cho thuê tài khoản game theo sở thích!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-md-4 col-lg-2 border-end wow fadeInUp" data-wow-delay="0.3s">
-        <div class="p-4">
-            <div class="d-flex align-items-center">
-                <img src="/img/hot-sale.png" width="32" height="32" alt="hot-sale icon">
-                <div class="ms-4">
-                    <h6 class="text-uppercase mb-2">khi nạp tiền</h6>
-                    <p class="mb-0">Nhận được khuyến mãi khi nạp tiền vào shop qua ATM!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <!-- Services Start -->
 <div class="container-fluid px-0">
 
@@ -493,7 +426,7 @@
         <div class="row g-0 bg-white shadow-sm rounded-3 overflow-hidden mb-4">
 
             <!-- 1. Loại tài khoản -->
-            <div class="col-lg-2 p-3 border-end">
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">Tài khoản</label>
                 <select class="form-select" name="duration">
                     <option value="">Tất cả</option>
@@ -501,9 +434,8 @@
                     <option value="PERMANENT">Vĩnh viễn</option>
                 </select>
             </div>
-
             <!-- 2. Giá -->
-            <div class="col-lg-2 p-3 border-end">
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">Giá</label>
                 <select class="form-select" name="price">
                     <option value="">Tất cả</option>
@@ -515,7 +447,7 @@
             </div>
 
             <!-- 3. VIP -->
-            <div class="col-lg-2 p-3 border-end">
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">VIP</label>
                 <select class="form-select" name="vip">
                     <option value="">Tất cả</option>
@@ -523,22 +455,8 @@
                     <option value="0">Không VIP</option>
                 </select>
             </div>
-
-            <!-- 4. Rank -->
-            <div class="col-lg-2 p-3 border-end">
-                <label class="fw-bold mb-2">Rank</label>
-                <select class="form-select" name="rank">
-                    <option value="">Tất cả</option>
-                    <option value="Bronze">Bronze</option>
-                    <option value="Silver">Silver</option>
-                    <option value="Gold">Gold</option>
-                    <option value="Platinum">Platinum</option>
-                    <option value="Diamond">Diamond</option>
-                </select>
-            </div>
-
-            <!-- 5. Skins -->
-            <div class="col-lg-2 p-3 border-end">
+            <!-- 4. Skins -->
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">Skins</label>
                 <select class="form-select" name="skins">
                     <option value="">Tất cả</option>
@@ -547,24 +465,11 @@
                     <option value="100+">Trên 100</option>
                 </select>
             </div>
-
-            <!-- 6. Level -->
-            <div class="col-lg-2 p-3">
-                <label class="fw-bold mb-2">Level</label>
-                <select class="form-select" name="level">
-                    <option value="">Tất cả</option>
-                    <option value="1-30">Thấp</option>
-                    <option value="30-60">Trung</option>
-                    <option value="60+">Cao</option>
-                </select>
-            </div>
         </div>
         <button class="btn btn-danger w-20 fw-bold mt-2">
             Tìm kiếm
         </button>
     </form>
-
-
     <!-- Searvices End -->
     <!-- Our Products Start -->
     <div class="container-fluid product py-5">
@@ -579,7 +484,7 @@
                         <div id="tab-all" class="tab-pane fade show active p-0">
                             <div class="row g-4">
                                 <div class="col-md-6 col-lg-4 col-xl-3"
-                                     th:each="p : ${gameId}">
+                                     th:each="p : ${gameList}">
                                     <div class="card game-card h-100 border-0 shadow-sm rounded-4">
                                         <!-- IMAGE -->
                                         <div class="position-relative overflow-hidden rounded-top-4">

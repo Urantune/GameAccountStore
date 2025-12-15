@@ -19,7 +19,15 @@
         .c2 { background:linear-gradient(135deg,#0054ff,#0bb2ff); }
         .c3 { background:linear-gradient(135deg,#ff4d4d,#ff9999); }
         .label { font-size:18px; opacity:.9; }
-        .money { font-size:36px; font-weight:bold; }
+        .money {
+            font-weight: bold;
+            white-space: nowrap;      /* không xuống dòng */
+            display: inline-block;    /* để scale */
+            transform-origin: left center;
+            font-size: 36px;          /* font gốc */
+            line-height: 1.2;
+        }
+
         .wallet-table th, .wallet-table td { text-align:center; }
         .wallet-table tbody tr:nth-child(even) { background:#f4f7fb; }
         .wallet-table tbody tr:hover { background:#dbe9ff; }
@@ -81,7 +89,7 @@
                     <!-- TÀI KHOẢN -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           href="/home/profile"
+                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
                             <i class="fa fa-user-circle me-2"></i>Tài Khoản
                         </a>
@@ -90,7 +98,7 @@
                     <!-- VÍ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           href="/home/wallet"
+                           th:href="@{/home/transaction}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
                             <i class="fa fa-credit-card me-2"></i>Ví
                         </a>
@@ -247,6 +255,30 @@
         }, 3000);
     }
 </script>
+
+<script>
+    function fitMoneyText() {
+        document.querySelectorAll('.money').forEach(el => {
+            el.style.transform = 'scale(1)';
+
+            const parent = el.parentElement;
+            const parentWidth = parent.clientWidth - 20; // trừ padding
+            const textWidth = el.scrollWidth;
+
+            if (textWidth > parentWidth) {
+                const scale = parentWidth / textWidth;
+                el.style.transform = `scale(${scale})`;
+            }
+        });
+    }
+
+    // chạy khi load trang
+    window.addEventListener('load', fitMoneyText);
+
+    // chạy khi resize màn hình
+    window.addEventListener('resize', fitMoneyText);
+</script>
+
 <!-- CONTENT -->
 <div class="container py-4">
 

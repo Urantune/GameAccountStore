@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.repository.GameAccountRepositories;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
 import webBackEnd.service.GameService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +28,8 @@ public class GameController {
     private GameService gameService;
     @Autowired
     private CustomerService  customerService;
+    @Autowired
+    private GameAccountRepositories gameAccountRepositories;
     @GetMapping("/game/{gameId}")
     public String gameAccount(Model model, @PathVariable UUID gameId) {
 
