@@ -2,10 +2,12 @@ package webBackEnd.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import webBackEnd.controller.Customer.CustomUserDetails;
 import webBackEnd.entity.Customer;
 import webBackEnd.repository.CustomerRepositories;
 
@@ -15,18 +17,21 @@ import java.util.UUID;
 
 @Service()
 public class CustomerService implements UserDetailsService {
-    @Autowired
-    private CustomerRepositories customerRepositories;
+
+    private final CustomerRepositories customerRepositories;
+
+    public CustomerService(CustomerRepositories customerRepository) {
+        this.customerRepositories = customerRepository;
+    }
     @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer user = customerRepositories.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole())
-                .build();
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+
+        Customer customer = customerRepositories.findByUsernameIgnoreCase(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found"));
+
+        return new CustomUserDetails(customer);
     }
 
 

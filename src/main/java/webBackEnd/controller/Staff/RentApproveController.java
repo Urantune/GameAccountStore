@@ -8,17 +8,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
+import webBackEnd.entity.RentAccountGame;
 import webBackEnd.service.AdministratorService;
 import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
+import webBackEnd.service.RentAccountGameService;
 import webBackEnd.successfullyDat.GetQuantity;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("staffHome")
+@RequestMapping("/staffHome")
 public class RentApproveController {
 
     @Autowired
@@ -31,13 +32,17 @@ public class RentApproveController {
     private OrderDetailService orderDetailService;
 
     @Autowired
+    private RentAccountGameService rentAccountGameService;
+
+    @Autowired
     private AdministratorService administratorService;
+
 
     @GetMapping("/rentApproveList")
     public String rentApproveList(Model model){
-//        List<OrderDetail> list = orderDetailService;
+        List<RentAccountGame> list = rentAccountGameService.findAll();
 
-//        model.addAttribute("rentOrderList",list);
+        model.addAttribute("rentOrderList",list);
         model.addAttribute("getQuantity",getQuantity);
         return "staff/RentApproveList";
     }
