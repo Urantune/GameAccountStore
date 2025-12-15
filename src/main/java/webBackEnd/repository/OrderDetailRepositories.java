@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.entity.OrderDetail;
+import webBackEnd.entity.Orders;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,4 +16,8 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
     List<GameAccount> findAllGameAccountBoughtByCustomer(UUID customerId);
 
     List<OrderDetail> findAllByOrderId(UUID orderId);
+
+    OrderDetail findByOrder(Orders order);
+
+
 }

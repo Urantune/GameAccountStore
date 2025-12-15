@@ -41,6 +41,7 @@ public class ApproveController {
         List<Orders> list = ordersService.findAllByStatus("WAIT");
         list.sort(Comparator.comparing(Orders::getCreatedDate));
 
+        model.addAttribute("orderDetail", orderDetailService);
         model.addAttribute("orderList",list);
         model.addAttribute("getQuantity",getQuantity);
         return "staff/ApproveList";

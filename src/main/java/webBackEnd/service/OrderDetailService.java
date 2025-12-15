@@ -1,9 +1,11 @@
 package webBackEnd.service;
 
+import jakarta.persistence.criteria.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.entity.OrderDetail;
+import webBackEnd.entity.Orders;
 import webBackEnd.repository.OrderDetailRepositories;
 
 import java.util.List;
@@ -25,6 +27,10 @@ public class OrderDetailService {
 
     public OrderDetail findById(UUID id) {
         return orderDetailRepositories.findById(id).get();
+    }
+
+    public OrderDetail getOrderdetailByOrder(Orders order){
+        return orderDetailRepositories.findByOrder(order);
     }
 
 

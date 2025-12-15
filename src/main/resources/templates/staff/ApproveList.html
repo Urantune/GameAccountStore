@@ -64,8 +64,8 @@
             <input type="text" id="searchInput" class="form-control form-control-sm"
                    placeholder="Search..." style="width: 260px;">
 
-            <a th:href="@{/adminHome}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>Back to Admin
+            <a th:href="@{/staffHome}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to Staff
             </a>
         </div>
     </div>
@@ -99,6 +99,10 @@
                     Price <i class="bi bi-arrow-down-up"></i>
                 </th>
 
+                <th class="sortable text-end" onclick="sortTable(6)" style="width: 160px;">
+                    Total Price <i class="bi bi-arrow-down-up"></i>
+                </th>
+
                 <th style="width: 90px;" class="text-center">Action</th>
             </tr>
             </thead>
@@ -112,13 +116,22 @@
                 <td th:text="${o.customer.username}">username</td>
 
                 <td th:if="${o.voucher != null}"
-                      th:text="${o.voucher.voucherName}">
+                    th:text="${o.voucher.voucherName}">
                 </td>
+                <td th:unless="${o.voucher != null}">
+
+                </td>
+
 
                 <td th:text="${#temporals.format(o.createdDate, 'HH:mm dd/MM/yyyy')}">15:30 12/12/2025</td>
 
                 <td class="text-end"
                     th:text="${getQuantity.findAllByOrderId(o.id) != null ? getQuantity.findAllByOrderId(o.id) : getQuantity.findAllByOrderId(o.id)}">12/12/2025 15:30</td>
+
+                <td class="text-end"
+                th:text="${#numbers.formatDecimal(@orderDetailService.getOrderdetailByOrder(o).gameAccount.price, 1, 'COMMA', 0, 'POINT')}"></td>
+                0
+                </td>
 
                 <td class="text-end"
                     th:text="${#numbers.formatDecimal(o.totalPrice, 1, 'COMMA', 0, 'POINT')}">
