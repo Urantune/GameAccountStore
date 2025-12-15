@@ -13,10 +13,7 @@ import webBackEnd.repository.CustomerRepositories;
 import webBackEnd.repository.GameAccountRepositories;
 import webBackEnd.repository.OrderDetailRepositories;
 import webBackEnd.repository.OrdersRepositories;
-import webBackEnd.service.CustomerService;
-import webBackEnd.service.GameAccountService;
-import webBackEnd.service.OrdersService;
-import webBackEnd.service.VoucherService;
+import webBackEnd.service.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -42,6 +39,8 @@ public class BuyController {
     private GameAccountRepositories gameAccountRepositories;
     @Autowired
     private VoucherService voucherService;
+    @Autowired
+    private TransactionService transactionService;
 
     @GetMapping("/payment/{id}")
     public String checkout(@PathVariable("id") UUID id, Model model) {
@@ -110,6 +109,16 @@ public class BuyController {
         //Trừ
         customer.setBalance(customer.getBalance().subtract(totalPrice));
         customerRepositories.save(customer);
+
+        //Lưu
+        // LƯU TRANSACTION (LỊCH SỬ GIAO DỊCH)
+        Transaction transaction = new Transaction();
+        transaction.setCustomer(customer);
+        transaction.setAmount(totalPrice.negate()); // tiền chi
+        transaction.setDescription("Thanh toán game ID: " + gameId);
+        transaction.setDateCreated(LocalDateTime.now());
+
+        transactionService.save(transaction);
 
         //Orders
         Orders order = new Orders();
