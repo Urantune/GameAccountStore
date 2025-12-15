@@ -11,7 +11,6 @@ import webBackEnd.entity.Staff;
 import webBackEnd.service.AdministratorService;
 import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
-import webBackEnd.service.RentAccountGameService;
 import webBackEnd.successfullyDat.GetQuantity;
 
 import java.time.LocalDateTime;
@@ -35,17 +34,12 @@ public class ApproveController {
     @Autowired
     private AdministratorService  administratorService;
 
-    @Autowired
-    private RentAccountGameService rentAccountGameService;
-
 
     @GetMapping("/approveList")
     public String approveList(Model model){
 
         List<Orders> list = ordersService.findAllByStatus("WAIT");
         list.sort(Comparator.comparing(Orders::getCreatedDate));
-
-
 
         model.addAttribute("orderList",list);
         model.addAttribute("getQuantity",getQuantity);
@@ -54,16 +48,13 @@ public class ApproveController {
 
     @GetMapping("/approve/{orderId}")
     public String viewOrderDetail(@PathVariable UUID orderId, Model model) {
-
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
 
         model.addAttribute("orderId", orderId);
         model.addAttribute("orderDetails", orderDetails);
 
-
         Orders order = ordersService.findById(orderId);
         model.addAttribute("order", order);
-
         return "staff/OrderDetail";
     }
 
@@ -81,11 +72,6 @@ public class ApproveController {
             rentAccountGame.setGameAccount(a.getGameAccount());
             rentAccountGame.setDateStart(order.getCreatedDate());
             rentAccountGame.setDateEnd(order.getCreatedDate().plusMonths(1));
-
-
-
-
-
         }
 
 
@@ -93,10 +79,6 @@ public class ApproveController {
         order.setStaff(
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
         ordersService.save(order);
-
-
-
-
         return "redirect:/staffHome/approveList";
     }
 
@@ -116,27 +98,4 @@ public class ApproveController {
 
         return "redirect:/staffHome/approveList";
     }
-
-
-
-    @GetMapping("/rentalList")
-    public String rentalList(Model model){
-
-
-    model.addAttribute("list",rentAccountGameService.findAll());
-    for(RentAccountGame r : rentAccountGameService.findAll()){
-        System.out.println(r.getGameAccount().getGame());
-    }
-
-    return "staff/RentalList";
-    }
-
-
-
-
-
-
-
-
-
 }

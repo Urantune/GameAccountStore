@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.entity.Orders;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -50,5 +51,6 @@ AND (:maxLevel IS NULL OR g.lovel <= :maxLevel)
             @Param("minLevel") Integer minLevel,
             @Param("maxLevel") Integer maxLevel
     );
+
 
 }
