@@ -27,10 +27,13 @@ public class Voucher {
     @JoinColumn(name = "staffId", referencedColumnName = "staffId",nullable = false)
     private Staff staff;
 
+    private Integer quantity;
+
+
     public Voucher() {
     }
 
-    public Voucher(UUID id, String voucherName, int value, Date startDate, Date endDate, LocalDateTime updateDate, Staff staff) {
+    public Voucher(UUID id, String voucherName, int value, Date startDate, Date endDate, LocalDateTime updateDate, Staff staff, Integer quantity) {
         this.id = id;
         this.voucherName = voucherName;
         this.value = value;
@@ -94,5 +97,13 @@ public class Voucher {
 
     public void setStaff(Staff administrator) {
         this.staff = administrator;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }
