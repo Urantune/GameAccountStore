@@ -25,7 +25,12 @@ public class RentAccountGameService {
     }
 
 
+
     public List<RentAccountGame> findAll(){
         return rentAccountGameRepositories.findAll();
     }
+
+
+
+
 }
