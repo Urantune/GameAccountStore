@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.entity.RentAccountGame;
 import webBackEnd.repository.GameAccountRepositories;
+import webBackEnd.repository.RentAccountGameRepositories;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
 import webBackEnd.service.GameService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/home")
@@ -30,24 +34,51 @@ public class GameController {
     private CustomerService  customerService;
     @Autowired
     private GameAccountRepositories gameAccountRepositories;
+    @Autowired
+    private RentAccountGameRepositories  rentAccountGameRepositories;
     @GetMapping("/game/{gameId}")
     public String gameAccount(Model model, @PathVariable UUID gameId) {
 
         List<GameAccount> gameAccounts = gameAccountService.findAllByGameId(gameId);
         Game game = gameService.findById(gameId);
+
+        // ===== TITLE =====
         UUID AOV_ID = UUID.fromString("E8301A2F-AEB4-42FB-9C3C-41B16D3DEA8D");
         UUID FF_ID  = UUID.fromString("B1CF2298-5C85-4FBA-920B-63C028131163");
-        String title = "";
+
+        String title = "Danh sách tài khoản";
         if (game.getGameId().equals(AOV_ID)) {
             title = "Tài khoản Game AOV";
         } else if (game.getGameId().equals(FF_ID)) {
             title = "Tài khoản Game Free Fire";
         }
+
+        // ===== ACC ĐÃ BÁN / ĐÃ THUÊ =====
+        List<GameAccount> soldOrRentedAccounts =
+                rentAccountGameRepositories.findAllRentedOrSoldAccounts();
+
+        Set<UUID> soldOrRentedIds = soldOrRentedAccounts.stream()
+                .map(GameAccount::getId)
+                .collect(Collectors.toSet());
+
+        // ===== SORT: CÒN BÁN LÊN TRÊN – HẾT HÀNG XUỐNG DƯỚI =====
+        gameAccounts.sort((a, b) -> {
+            boolean aSold = soldOrRentedIds.contains(a.getId());
+            boolean bSold = soldOrRentedIds.contains(b.getId());
+            return Boolean.compare(aSold, bSold);
+            // false (chưa bán) sẽ đứng trước true (đã bán)
+        });
+
+        // ===== TRUYỀN SANG VIEW =====
+        model.addAttribute("accounts", gameAccounts);
+        model.addAttribute("soldOrRentedIds", soldOrRentedIds);
         model.addAttribute("pageTitle", title);
-        model.addAttribute("gameId", gameAccounts);
 
         return "customer/GameAccount";
     }
+
+
+
 
 
     @GetMapping("/gameDetail/{id}")
