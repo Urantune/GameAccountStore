@@ -426,7 +426,7 @@
         <div class="row g-0 bg-white shadow-sm rounded-3 overflow-hidden mb-4">
 
             <!-- 1. Loại tài khoản -->
-            <div class="col-lg-2 p-3 border-end">
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">Tài khoản</label>
                 <select class="form-select" name="duration">
                     <option value="">Tất cả</option>
@@ -434,9 +434,8 @@
                     <option value="PERMANENT">Vĩnh viễn</option>
                 </select>
             </div>
-
             <!-- 2. Giá -->
-            <div class="col-lg-2 p-3 border-end">
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">Giá</label>
                 <select class="form-select" name="price">
                     <option value="">Tất cả</option>
@@ -448,7 +447,7 @@
             </div>
 
             <!-- 3. VIP -->
-            <div class="col-lg-2 p-3 border-end">
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">VIP</label>
                 <select class="form-select" name="vip">
                     <option value="">Tất cả</option>
@@ -456,39 +455,14 @@
                     <option value="0">Không VIP</option>
                 </select>
             </div>
-
-            <!-- 4. Rank -->
-            <div class="col-lg-2 p-3 border-end">
-                <label class="fw-bold mb-2">Rank</label>
-                <select class="form-select" name="rank">
-                    <option value="">Tất cả</option>
-                    <option value="Bronze">Bronze</option>
-                    <option value="Silver">Silver</option>
-                    <option value="Gold">Gold</option>
-                    <option value="Platinum">Platinum</option>
-                    <option value="Diamond">Diamond</option>
-                </select>
-            </div>
-
-            <!-- 5. Skins -->
-            <div class="col-lg-2 p-3 border-end">
+            <!-- 4. Skins -->
+            <div class="col-lg-3 p-3 border-end">
                 <label class="fw-bold mb-2">Skins</label>
                 <select class="form-select" name="skins">
                     <option value="">Tất cả</option>
                     <option value="0-50">Dưới 50</option>
                     <option value="50-100">50 - 100</option>
                     <option value="100+">Trên 100</option>
-                </select>
-            </div>
-
-            <!-- 6. Level -->
-            <div class="col-lg-2 p-3">
-                <label class="fw-bold mb-2">Level</label>
-                <select class="form-select" name="level">
-                    <option value="">Tất cả</option>
-                    <option value="1-30">Thấp</option>
-                    <option value="30-60">Trung</option>
-                    <option value="60+">Cao</option>
                 </select>
             </div>
         </div>
@@ -510,7 +484,7 @@
                         <div id="tab-all" class="tab-pane fade show active p-0">
                             <div class="row g-4">
                                 <div class="col-md-6 col-lg-4 col-xl-3"
-                                     th:each="p : ${gameId}">
+                                     th:each="p : ${gameList}">
                                     <div class="card game-card h-100 border-0 shadow-sm rounded-4">
                                         <!-- IMAGE -->
                                         <div class="position-relative overflow-hidden rounded-top-4">
