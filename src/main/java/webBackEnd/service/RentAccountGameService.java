@@ -31,6 +31,10 @@ public class RentAccountGameService {
     }
 
 
+    public void delete(RentAccountGame rentAccountGame){
+        rentAccountGameRepositories.delete(rentAccountGame);
+    }
+
 
 
 }
