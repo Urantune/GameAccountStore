@@ -68,23 +68,11 @@ public class BuyController {
         Customer customer = customerService.findCustomerByUsername(authentication.getName());
         GameAccount game = getGame(gameId);
 
-        boolean isOrdered =
-                orderDetailRepositories.existsActiveOrderByGameAccount(game.getId());
-
-        if (isOrdered) {
-            model.addAttribute("errorMessage",
-                    "Tài khoản này đã được đặt hoặc đã bán, Vui lòng chọn tài khoản khác!");
-            model.addAttribute("games", game);
-            return "customer/Payment";
-        }
-        /* ================================================================ */
-
         if (packageValues == null || packageValues.isBlank()) {
             model.addAttribute("errorMessage", "Vui lòng chọn gói thuê");
             model.addAttribute("games", game);
             return "customer/Payment";
         }
-
         // Tính giá gốc
         BigDecimal totalPrice = game.getPrice();
 
@@ -94,10 +82,10 @@ public class BuyController {
             totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.85));
         }
 
-        // Voucher
+        //voucher
         Voucher voucher = null;
         if (voucherCode != null && !voucherCode.isBlank()) {
-            voucher = voucherService.getValidVoucher(voucherCode);
+             voucher = voucherService.getValidVoucher(voucherCode);
             if (voucher == null) {
                 model.addAttribute("errorMessage", "Voucher không hợp lệ hoặc đã hết hạn");
                 model.addAttribute("games", game);
@@ -111,26 +99,28 @@ public class BuyController {
 
         totalPrice = totalPrice.setScale(0, RoundingMode.HALF_UP);
 
-        // Check tiền
+        //Check tiền
         if (customer.getBalance().compareTo(totalPrice) < 0) {
             model.addAttribute("errorMessage", "Số dư không đủ");
             model.addAttribute("games", game);
             return "customer/Payment";
         }
 
-        // Trừ tiền
+        //Trừ
         customer.setBalance(customer.getBalance().subtract(totalPrice));
         customerRepositories.save(customer);
 
-        // Transaction
+        //Lưu
+        // LƯU TRANSACTION (LỊCH SỬ GIAO DỊCH)
         Transaction transaction = new Transaction();
         transaction.setCustomer(customer);
-        transaction.setAmount(totalPrice.negate());
+        transaction.setAmount(totalPrice.negate()); // tiền chi
         transaction.setDescription("Thanh toán game ID: " + gameId);
         transaction.setDateCreated(LocalDateTime.now());
+
         transactionService.save(transaction);
 
-        // Orders
+        //Orders
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(totalPrice);
@@ -141,7 +131,7 @@ public class BuyController {
         }
         Orders savedOrder = ordersRepositories.save(order);
 
-        // OrderDetail
+        //OrdersDetail
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGameAccount(game);
@@ -151,13 +141,11 @@ public class BuyController {
                                 packageValues.contains("3 Tháng") ? 3 : 0
         );
         orderDetailRepositories.save(detail);
-
         model.addAttribute("successMessage", "Thanh toán thành công!");
         model.addAttribute("games", game);
 
         return "customer/Payment";
     }
-
 
     private GameAccount getGame(UUID gameId) {
         return gameAccountRepositories.findById(gameId)
