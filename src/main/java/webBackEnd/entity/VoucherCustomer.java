@@ -1,34 +1,36 @@
 package webBackEnd.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name= "VoucherCustomer")
+@Table(name = "VoucherCustomer")
 public class VoucherCustomer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "voucherUserID")
     private UUID voucherUserID;
-    @OneToOne
-    @JoinColumn(name = "customerId",nullable = false, referencedColumnName = "customerId")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customerId", nullable = false, referencedColumnName = "customerId")
     private Customer customer;
-    @OneToOne
-    @JoinColumn(name = "voucherId",nullable = false, referencedColumnName = "customerId")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voucherId", nullable = false, referencedColumnName = "voucherId")
     private Voucher voucher;
+
+    @Column(name = "dateUsed")
     private LocalDateTime dateUsed;
 
-    public VoucherCustomer() {
+    public VoucherCustomer() {}
 
-    }
-    public VoucherCustomer(UUID voucherUserID, Customer customer, Voucher voucher) {
-        this.voucherUserID = voucherUserID;
+    public VoucherCustomer(Customer customer, Voucher voucher) {
         this.customer = customer;
         this.voucher = voucher;
         this.dateUsed = LocalDateTime.now();
     }
-
 
     public UUID getVoucherUserID() {
         return voucherUserID;
