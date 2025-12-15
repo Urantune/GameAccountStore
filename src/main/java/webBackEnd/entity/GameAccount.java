@@ -44,13 +44,7 @@
         private int lovel;
         @Column(name = "vip")
         private int vip;
-
         private String email;
-
-
-
-
-
         public GameAccount() {
         }
 
