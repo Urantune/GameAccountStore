@@ -388,6 +388,22 @@
         </div>
     </div>
 
+    <form th:action="@{/home/wallet/topup}" method="post">
+
+        <input type="number"
+               name="amount"
+               min="1000"
+               step="1000"
+               class="form-control"
+               placeholder="Nhập số tiền (vd: 100000)"
+               required>
+
+        <button type="submit" class="btn btn-success">
+            <i class="fa fa-plus-circle me-1"></i>Nạp tiền
+        </button>
+    </form>
+
+
     <form th:action="@{/home/transaction}"
           method="get"
           class="d-flex justify-content-end gap-2 mb-3">

@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.entity.OrderDetail;
+import webBackEnd.entity.Orders;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,5 +26,7 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
                   and o.status in ('WAIT', 'COMPLETED')
             """)
     boolean existsActiveOrderByGameAccount(@Param("gameAccountId") UUID gameAccountId);
+
+    OrderDetail findByOrder(Orders order);
 
 }

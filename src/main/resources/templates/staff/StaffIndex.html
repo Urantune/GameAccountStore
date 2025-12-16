@@ -10,216 +10,132 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        :root {
-            --orange: #ff7a2f;
-            --bg-main: #f4f6f8;
-            --card-bg: #ffffff;
-            --text-muted: #6b7280;
-        }
-
-        /* ===== BODY: KHÔNG SCROLL ===== */
         body {
-            background: var(--bg-main);
-            font-family: "Inter", "Roboto", sans-serif;
-            height: 100vh;
-            overflow: hidden;
+            background: #f5f7fa;
+            font-family: "Roboto", sans-serif;
         }
 
-        /* ===== TOP & BOTTOM BAR ===== */
-        .bar-top,
-        .bar-bottom {
-            height: 70px;
-            background: var(--orange);
-        }
-
-        .bar-top {
-            display: flex;
-            align-items: center;
-            padding-left: 30px;
-        }
-
-        .bar-bottom {
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background: #2a3f54;
             position: fixed;
-            bottom: 0;
             left: 0;
-            width: 100%;
+            top: 0;
+            color: #ecf0f1;
         }
 
-        /* ===== MAIN CONTENT (GIỮA 2 BAR) ===== */
-        .main-content {
-            height: calc(100vh - 140px); /* 70 top + 70 bottom */
-            display: flex;
-            align-items: center;
+        .sidebar h5 {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* ===== WRAPPER FULL WIDTH ===== */
-        .cards-wrapper {
-            width: 100%;
-            padding: 0 40px;
-        }
-
-        /* ===== DASHBOARD CARD ===== */
-        .dash-card {
-            background: var(--card-bg);
-            border-radius: 22px;
-            padding: 22px;
-            min-height: 220px;
-
-            box-shadow:
-                    0 8px 20px rgba(0, 0, 0, 0.06),
-                    0 2px 6px rgba(0, 0, 0, 0.04);
-
-            transition: all 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .dash-card:hover {
-            transform: translateY(-6px);
-            box-shadow:
-                    0 18px 35px rgba(0, 0, 0, 0.12),
-                    0 6px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        /* ===== ICON ===== */
-        .icon-box {
-            width: 60px;
-            height: 60px;
-            border-radius: 18px;
-            background: linear-gradient(
-                    135deg,
-                    rgba(255,122,47,0.25),
-                    rgba(255,122,47,0.1)
-            );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-        }
-
-        .icon-box i {
-            font-size: 28px;
-            color: var(--orange);
-        }
-
-        /* ===== TEXT ===== */
-        .dash-card h5 {
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .card-desc {
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        /* ===== BUTTON ===== */
-        .btn-orange {
-            border: 2px solid var(--orange);
-            color: var(--orange);
-            font-weight: 600;
-            border-radius: 999px;
-            padding: 8px 28px;
+        .sidebar a {
+            display: block;
+            padding: 14px 24px;
+            color: #ecf0f1;
+            text-decoration: none;
             transition: 0.2s;
-            width: fit-content;
         }
 
-        .btn-orange:hover {
-            background: var(--orange);
-            color: white;
+        .sidebar a i { width: 22px; }
+
+        .sidebar a:hover {
+            background: #1abb9c;
         }
 
-        .card-img {
-            width: 100%;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 14px;
+        /* CONTENT */
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: 0.25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-card i {
+            font-size: 46px;
+            color: #1abb9c;
             margin-bottom: 10px;
+        }
+
+        .btn-access {
+            border-radius: 30px;
+            padding: 6px 22px;
+            font-weight: 600;
         }
     </style>
 </head>
 
 <body>
 
-<!-- ===== TOP BAR ===== -->
-<div class="bar-top">
-    <h4 class="text-white m-0">
-        <i class="bi bi-person-badge-fill me-2"></i>Staff Dashboard
-    </h4>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
+    <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a th:href="@{/staffHome/approveList}"><i class="bi bi-bag-check-fill"></i> Manage Orders</a>
+    <a th:href="@{/staffHome/rentApproveList}"><i class="bi bi-clock-history"></i> Rental Orders</a>
+    <a th:href="@{/staffHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
+    <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
 </div>
 
-<!-- ===== MAIN CONTENT ===== -->
-<div class="main-content">
-    <div class="container-fluid cards-wrapper">
+<!-- MAIN CONTENT -->
+<div class="content">
+    <div class="container-fluid">
         <div class="row g-4">
 
             <!-- Manage Orders -->
-            <div class="col-12 col-md-6">
-                <div class="dash-card">
-                    <div>
-                        <div class="icon-box">
-                            <i class="bi bi-bag-check-fill"></i>
-                        </div>
-                        <h5>Manage Orders</h5>
-                    </div>
-                    <a th:href="@{/staffHome/approveList}" class="btn btn-orange">
-                        Access
-                    </a>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <i class="bi bi-bag-check-fill"></i>
+                    <h5>Manage Orders</h5>
+                    <a th:href="@{/staffHome/approveList}" class="btn btn-access mt-2">Access</a>
                 </div>
             </div>
 
             <!-- Rental Orders -->
-            <div class="col-12 col-md-6">
-                <div class="dash-card">
-                    <div>
-                        <div class="icon-box">
-                            <i class="bi bi-clock-history"></i>
-                        </div>
-                        <h5>Rental Orders</h5>
-                    </div>
-                    <a th:href="@{/staffHome/rentApproveList}" class="btn btn-orange">
-                        Access
-                    </a>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <i class="bi bi-clock-history"></i>
+                    <h5>Rental Orders</h5>
+                    <a th:href="@{/staffHome/rentApproveList}" class="btn btn-access mt-2">Access</a>
                 </div>
             </div>
 
-            <!-- Revenue (FULL WIDTH) -->
-            <div class="col-12 col-md-6">
-                <div class="dash-card">
-                    <div>
-                        <div class="icon-box">
-                            <i class="bi bi-graph-up-arrow"></i>
-                        </div>
-                        <h5>Revenue</h5>
-                    </div>
-                    <a th:href="@{/staff/revenue}" class="btn btn-orange">
-                        Access
-                    </a>
+            <!-- Revenue -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <h5>Revenue</h5>
+                    <a th:href="@{/staffHome/revenue}" class="btn btn-access mt-2">Access</a>
                 </div>
             </div>
 
-            <div class="col-12 col-md-6">
-                <div class="dash-card">
-                    <div>
-                        <div class="icon-box">
-                            <i class="bi bi-graph-up-arrow"></i>
-                        </div>
-                        <h5>Manage Expired</h5>
-                    </div>
-                    <a th:href="@{/staff/revenue}" class="btn btn-orange">
-                        Access
-                    </a>
+            <!-- Manage Expired -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <h5>Manage Expired</h5>
+                    <a th:href="@{/staffHome/manageExpired}" class="btn btn-access mt-2">Access</a>
                 </div>
             </div>
 
         </div>
     </div>
 </div>
-
-<!-- ===== BOTTOM BAR ===== -->
-<div class="bar-bottom"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
