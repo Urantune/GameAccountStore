@@ -87,32 +87,57 @@ public class HomeController {
         Customer customer =
                 customerService.findCustomerByUsername(principal.getName());
 
-        List<Transaction> transactionHistory;
+        // 🔹 luôn lấy full list để xử lý STT
+        List<Transaction> fullHistory =
+                transactionService.getTransactionHistory(customer);
 
-//        if (search != null && !search.isBlank()) {
-//            transactionHistory =
-//                    transactionService.search(customer, search);
-//        } else {
-//            transactionHistory =
-//                    transactionService.getTransactionHistory(customer);
-//        }
+        List<Transaction> transactionHistory = fullHistory;
+
+        if (search != null && !search.isBlank()) {
+
+            // 1️⃣ Search theo STT (chỉ chứa số)
+            if (search.matches("\\d+")) {
+                int stt = Integer.parseInt(search) - 1;
+
+                if (stt >= 0 && stt < fullHistory.size()) {
+                    transactionHistory = List.of(fullHistory.get(stt));
+                } else {
+                    transactionHistory = List.of(); // không có kết quả
+                }
+
+            }
+            // 2️⃣ Search theo UUID
+            else if (search.matches(
+                    "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
+
+                transactionHistory =
+                        transactionService.searchByTransactionId(
+                                customer, UUID.fromString(search));
+
+            }
+            // 3️⃣ Search theo nội dung
+            else {
+                transactionHistory =
+                        transactionService.search(customer, search);
+            }
+        }
 
         // TÍNH TIỀN
         BigDecimal totalDeposit = BigDecimal.ZERO;
         BigDecimal totalSpent = BigDecimal.ZERO;
 
-//        for (Transaction t : transactionHistory) {
-//            if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-//                totalDeposit = totalDeposit.add(t.getAmount());
-//            } else {
-//                totalSpent = totalSpent.add(t.getAmount().abs());
-//            }
-//        }
+        for (Transaction t : transactionHistory) {
+            if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                totalDeposit = totalDeposit.add(t.getAmount());
+            } else {
+                totalSpent = totalSpent.add(t.getAmount().abs());
+            }
+        }
 
         model.addAttribute("balance", customer.getBalance());
         model.addAttribute("totalDeposit", totalDeposit);
         model.addAttribute("totalSpent", totalSpent);
-//        model.addAttribute("walletHistory", transactionHistory);
+        model.addAttribute("walletHistory", transactionHistory);
         model.addAttribute("search", search);
 
         return "customer/Transaction";
