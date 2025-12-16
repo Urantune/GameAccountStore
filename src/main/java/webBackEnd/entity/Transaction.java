@@ -84,11 +84,4 @@ public class Transaction {
         this.dateCreated = dateCreated;
     }
 
-    public Transaction(UUID transactionId, Customer customer, BigDecimal amount, String description, LocalDateTime dateCreated) {
-        this.transactionId = transactionId;
-        this.customer = customer;
-        this.amount = amount;
-        this.description = description;
-        this.dateCreated = dateCreated;
-    }
 }
