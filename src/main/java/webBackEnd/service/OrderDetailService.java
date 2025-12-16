@@ -28,5 +28,9 @@ public class OrderDetailService {
     }
 
 
+
+    public void delete(OrderDetail orderDetail) {
+        orderDetailRepositories.delete(orderDetail);
+    }
 }
 
