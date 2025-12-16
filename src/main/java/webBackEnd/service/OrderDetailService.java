@@ -33,5 +33,9 @@ public class OrderDetailService {
         orderDetailRepositories.delete(orderDetail);
     }
 
+    public OrderDetail getOrderDetailByOrder(Orders o){
+        return orderDetailRepositories.findByOrder(o);
+    }
+
 }
 
