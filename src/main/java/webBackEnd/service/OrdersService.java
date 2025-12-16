@@ -3,6 +3,7 @@ package webBackEnd.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import webBackEnd.entity.Customer;
+import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
 import webBackEnd.repository.OrdersRepositories;
 
@@ -41,6 +42,14 @@ public class OrdersService {
     public List<Orders> findByCusOrdersId(String status,  Customer customer) {
         return ordersRepositories.findAllByStatusAndCustomer(status,customer);
     }
+
+    public void delete(Orders orders) {
+        ordersRepositories.delete(orders);
+    }
+
+
+
+
 
 
 }

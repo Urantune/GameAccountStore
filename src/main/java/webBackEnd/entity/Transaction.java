@@ -31,6 +31,19 @@ public class Transaction {
     public Transaction() {
     }
 
+    public  Transaction(Customer customer, BigDecimal amount, String description, LocalDateTime dateCreated) {
+        this.customer = customer;
+        this.amount = amount;
+        this.description = description;
+        this.dateCreated = dateCreated;
+
+    }
+
+    public Transaction(Customer  customer, BigDecimal amount) {
+        this.customer = customer;
+        this.amount = amount;
+    }
+
     public UUID getTransactionId() {
         return transactionId;
     }

@@ -21,4 +21,8 @@ public interface TransactionRepositories extends JpaRepository<Transaction,UUID>
             Customer customer, String keyword
     );
 
+    //Tìm giao dịch
+    List<Transaction> findByCustomerAndTransactionId(
+            Customer customer, UUID transactionId);
+
 }

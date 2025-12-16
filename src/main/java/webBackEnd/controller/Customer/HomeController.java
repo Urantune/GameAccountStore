@@ -87,14 +87,39 @@ public class HomeController {
         Customer customer =
                 customerService.findCustomerByUsername(principal.getName());
 
-        List<Transaction> transactionHistory;
+        // 🔹 luôn lấy full list để xử lý STT
+        List<Transaction> fullHistory =
+                transactionService.getTransactionHistory(customer);
+
+        List<Transaction> transactionHistory = fullHistory;
 
         if (search != null && !search.isBlank()) {
-            transactionHistory =
-                    transactionService.search(customer, search);
-        } else {
-            transactionHistory =
-                    transactionService.getTransactionHistory(customer);
+
+            // 1️⃣ Search theo STT (chỉ chứa số)
+            if (search.matches("\\d+")) {
+                int stt = Integer.parseInt(search) - 1;
+
+                if (stt >= 0 && stt < fullHistory.size()) {
+                    transactionHistory = List.of(fullHistory.get(stt));
+                } else {
+                    transactionHistory = List.of(); // không có kết quả
+                }
+
+            }
+            // 2️⃣ Search theo UUID
+            else if (search.matches(
+                    "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
+
+                transactionHistory =
+                        transactionService.searchByTransactionId(
+                                customer, UUID.fromString(search));
+
+            }
+            // 3️⃣ Search theo nội dung
+            else {
+                transactionHistory =
+                        transactionService.search(customer, search);
+            }
         }
 
         // TÍNH TIỀN

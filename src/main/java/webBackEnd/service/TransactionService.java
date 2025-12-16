@@ -8,6 +8,7 @@ import webBackEnd.entity.Transaction;
 import webBackEnd.repository.TransactionRepositories;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -38,4 +39,13 @@ public class TransactionService {
     public Transaction save(Transaction transaction) {
         return transactionRepositories.save(transaction);
     }
+
+    //TÌM LS GIAO DỊCH
+    public List<Transaction> searchByTransactionId(
+            Customer customer, UUID transactionId) {
+
+        return transactionRepositories
+                .findByCustomerAndTransactionId(customer, transactionId);
+    }
+
 }
