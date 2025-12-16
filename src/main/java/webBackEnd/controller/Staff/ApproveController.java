@@ -13,6 +13,7 @@ import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
 import webBackEnd.service.RentAccountGameService;
 import webBackEnd.successfullyDat.GetQuantity;
+import webBackEnd.successfullyDat.SendMailTest;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -33,20 +34,22 @@ public class ApproveController {
     private OrderDetailService orderDetailService;
 
     @Autowired
-    private AdministratorService  administratorService;
+    private AdministratorService administratorService;
     @Autowired
     private RentAccountGameService rentAccountGameService;
 
+    @Autowired
+    private SendMailTest sendMailTest;
+
 
     @GetMapping("/approveList")
-    public String approveList(Model model){
+    public String approveList(Model model) {
 
         List<Orders> list = ordersService.findAllByStatus("WAIT");
         list.sort(Comparator.comparing(Orders::getCreatedDate));
 
-        model.addAttribute("orderDetail", orderDetailService);
-        model.addAttribute("orderList",list);
-        model.addAttribute("getQuantity",getQuantity);
+        model.addAttribute("orderList", list);
+        model.addAttribute("getQuantity", getQuantity);
         return "staff/ApproveList";
     }
 
@@ -65,11 +68,13 @@ public class ApproveController {
     @PostMapping("/approve/accept")
     public String approveOrder(@RequestParam UUID orderId) {
 
+
+        StringBuilder accountHtml = new StringBuilder();
         Orders order = ordersService.findById(orderId);
 
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
-        for(OrderDetail a:orderDetails){
-            if(a.getDuration()!=0){
+        for (OrderDetail a : orderDetails) {
+            if (a.getDuration() != 0) {
                 RentAccountGame rentAccountGame = new RentAccountGame();
 
                 rentAccountGame.setCustomer(order.getCustomer());
@@ -81,6 +86,13 @@ public class ApproveController {
             }
             a.getGameAccount().setStatus("IN USE");
 
+
+            accountHtml.append("<b>game:</b> ").append(a.getGameAccount().getGame().getGameName()).append("<br>")
+                    .append("<b>username:</b> ").append(a.getGameAccount().getGameAccount()).append("<br>")
+                    .append("<b>password:</b> ").append(a.getGameAccount().getGamePassword()).append("<br>")
+                    .append("<br>"); // cách dòng giữa các account
+
+
         }
 
 
@@ -88,9 +100,41 @@ public class ApproveController {
         order.setStaff(
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
         ordersService.save(order);
+
+
+
+
+
+
+        String title = "Xác nhận tài khoản của bạn";
+
+        String content =
+                "Xin chào <b>" + order.getCustomer().getUsername() + "</b>,<br><br>"
+                        + "Cảm ơn bạn đã tin tưởng và mua hàng tại <b>ACCOUNT GAME STORE</b> của chúng tôi.<br>"
+                        + "Đơn hàng của bạn đã được xử lý thành công.<br><br>"
+                        + "Dưới đây là thông tin tài khoản game mà bạn đã mua:<br><br>"
+                        + "<div style='padding:12px;border:1px solid #ddd;border-radius:8px;'>"
+                        + accountHtml
+                        + "</div><br>"
+                        + "<b>LƯU Ý QUAN TRỌNG:</b><br>"
+                        + "- Không chia sẻ thông tin tài khoản cho người khác.<br>"
+                        + "- Nếu phát sinh lỗi đăng nhập hoặc tài khoản không đúng mô tả, hãy liên hệ với chúng tôi trong vòng 24h để được hỗ trợ.<br><br>"
+                        + "<b>HỖ TRỢ KHÁCH HÀNG:</b><br>"
+                        + "Hotline: 0923 445 566<br>"
+                        + "Email: support@shopgame.vn<br>"
+                        + "Hỗ trợ 24/7 – Phản hồi nhanh<br><br>"
+                        + "Chúc bạn có những giây phút trải nghiệm game vui vẻ!<br>"
+                        + "Trân trọng,<br><br>"
+                        + "<b>ACCOUNT GAME STORE</b><br>"
+                        + "Uy tín – Giá tốt – Giao dịch tự động 24/7";
+
+
+
+        sendMailTest.testSend(order.getCustomer().getEmail(), title, content);
+
+
         return "redirect:/staffHome/approveList";
     }
-
 
 
     @PostMapping("/approve/reject")

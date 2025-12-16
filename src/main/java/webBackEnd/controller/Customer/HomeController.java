@@ -89,30 +89,30 @@ public class HomeController {
 
         List<Transaction> transactionHistory;
 
-        if (search != null && !search.isBlank()) {
-            transactionHistory =
-                    transactionService.search(customer, search);
-        } else {
-            transactionHistory =
-                    transactionService.getTransactionHistory(customer);
-        }
+//        if (search != null && !search.isBlank()) {
+//            transactionHistory =
+//                    transactionService.search(customer, search);
+//        } else {
+//            transactionHistory =
+//                    transactionService.getTransactionHistory(customer);
+//        }
 
         // TÍNH TIỀN
         BigDecimal totalDeposit = BigDecimal.ZERO;
         BigDecimal totalSpent = BigDecimal.ZERO;
 
-        for (Transaction t : transactionHistory) {
-            if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                totalDeposit = totalDeposit.add(t.getAmount());
-            } else {
-                totalSpent = totalSpent.add(t.getAmount().abs());
-            }
-        }
+//        for (Transaction t : transactionHistory) {
+//            if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+//                totalDeposit = totalDeposit.add(t.getAmount());
+//            } else {
+//                totalSpent = totalSpent.add(t.getAmount().abs());
+//            }
+//        }
 
         model.addAttribute("balance", customer.getBalance());
         model.addAttribute("totalDeposit", totalDeposit);
         model.addAttribute("totalSpent", totalSpent);
-        model.addAttribute("walletHistory", transactionHistory);
+//        model.addAttribute("walletHistory", transactionHistory);
         model.addAttribute("search", search);
 
         return "customer/Transaction";
