@@ -1,16 +1,21 @@
 package webBackEnd.controller.Customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.*;
 import webBackEnd.service.*;
+import webBackEnd.service.very.MailService;
 import webBackEnd.successfullyDat.PathCheck;
+import webBackEnd.successfullyDat.SendMailTest;
 
 import java.math.BigDecimal;
+import java.security.MessageDigest;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +41,9 @@ public class HomeController {
     private OrdersService ordersService;
     @Autowired
     private OrderDetailService orderDetailService;
+
+    @Autowired
+    private SendMailTest sendMailTest;
 
     @GetMapping
     public String home(Model model) {
@@ -73,6 +81,87 @@ public class HomeController {
         model.addAttribute("customer", customer);
         return "customer/ProfileUser";
     }
+
+
+    @PostMapping("/profile/check-email")
+    public String checkEmailAndRedirect(
+            @RequestParam UUID userId,
+            @RequestParam String email,
+            Model model
+    ) {
+        Customer current = currentUser();
+
+
+        if (current == null || !current.getCustomerId().equals(userId)) {
+            return "redirect:/home/profile/" + userId;
+        }
+
+        Customer customer = customerService.findCustomerById(userId);
+
+        if (customer != null
+                && customer.getEmail() != null
+                && customer.getEmail().equalsIgnoreCase(email.trim())) {
+
+
+            return "redirect:/home/change-password" + customer.getCustomerId();
+        }
+
+
+        model.addAttribute("emailError", "Email không khớp.");
+        model.addAttribute("openChangePassModal", true);
+        model.addAttribute("customer", customer);
+        model.addAttribute("listGame", List.of());
+
+        return "customer/ProfileUser";
+    }
+
+
+    @GetMapping("/change-password/{id}")
+    public String page(@PathVariable UUID id) {
+        Customer c = customerService.findCustomerById(id);
+
+        LocalDateTime random = LocalDateTime.now();
+
+        int a = random.getHour();
+        int b = random.getSecond();
+
+
+        a *=b;
+
+
+        String input = String.valueOf(a) + c.getCustomerId();
+        String fi;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(input.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte d : digest) sb.append(String.format("%02x", d));
+            fi = sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+        String title = "Đổi mật khẩu của bạn";
+        String link = "http://localhost:8080/veryAccount/donePass/" + c.getCustomerId() + "/" + fi;
+
+        String content =
+                "<p>Hãy nhấp vào liên kết dưới đây để thay đổi mật khẩu của bạn:</p>"
+                        + "<p><a href=\"" + link + "\">Nhấn vào đây để đổi</a></p>"
+                        + "<p>Nếu không bấm được, copy link sau dán vào trình duyệt:<br>" + link + "</p>";
+        sendMailTest.testSend(c.getEmail(), title, content);
+
+
+
+        c.setStatus("CHANGE:"+ String.valueOf(a));
+        c.setDateUpdated(LocalDateTime.now());
+
+        return "customer/change-password";
+    }
+
+
+
+
 
     @GetMapping("/transaction")
     public String transaction(
