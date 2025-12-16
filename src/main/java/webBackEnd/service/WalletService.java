@@ -12,12 +12,16 @@ import java.math.BigDecimal;
 
 @Service
 public class WalletService {
+
     @Autowired
     private CustomerRepositories customerRepo;
-    @Autowired private TransactionRepositories transactionRepo;
 
-    @Transactional
+    @Autowired
+    private TransactionRepositories transactionRepo;
+
+    @Transactional   // ✅ chỉ giữ 1 dòng
     public void topUp(String username, BigDecimal amount) {
+
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Số tiền nạp phải > 0");
         }
@@ -30,7 +34,12 @@ public class WalletService {
         c.setBalance(c.getBalance().add(amount));
         customerRepo.save(c);
 
-        Transaction t = new Transaction(c, amount); // amount > 0 => auto description = "Nạp..."
+        Transaction t = new Transaction();
+        t.setCustomer(c);
+        t.setAmount(amount);
+        t.setDescription("Nạp tiền vào ví");
+        t.setDateCreated(java.time.LocalDateTime.now());
+
         transactionRepo.save(t);
     }
 }
