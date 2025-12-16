@@ -9,74 +9,96 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        :root { --orange: #ff7a2f; }
-
-        body{
-            background:#f5f5f5;
-            font-family:"Roboto",sans-serif;
-            min-height:100vh;
-            display:flex;
-            flex-direction:column;
-        }
-        .bar-top{
-            width:100%;
-            height:70px;
-            background:var(--orange);
-            display:flex;
-            align-items:center;
-            padding-left:30px;
-        }
-        .bar-bottom{
-            width:100%;
-            height:70px;
-            background:var(--orange);
-            margin-top:auto;
-        }
-        .content-wrapper{
-            flex:1;
-            padding:30px 40px 20px 40px;
+        body {
+            background: #f5f7fa;
+            font-family: "Roboto", sans-serif;
         }
 
-        .grid{
-            display:grid;
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background: #2a3f54;
+            position: fixed;
+            left: 0;
+            top: 0;
+            color: #ecf0f1;
+        }
+
+        .sidebar h5 {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px 24px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .sidebar a i { width: 22px; }
+
+        .sidebar a:hover {
+            background: #1abb9c;
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+
+        /* CARD STYLE */
+        .grid {
+            display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap:16px;
+            gap: 16px;
         }
+
         @media (max-width: 992px){
-            .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
         @media (max-width: 576px){
-            .grid{ grid-template-columns: 1fr; }
+            .grid { grid-template-columns: 1fr; }
         }
 
-        .card-box{
+        .card-box {
             background:white;
             border-radius:14px;
             box-shadow:0 6px 15px rgba(0,0,0,0.10);
             padding:16px 18px;
-            border-left:6px solid var(--orange);
+            border-left:6px solid #ff7a2f;
             min-height:140px;
         }
-        .label{ font-weight:600; color:#444; }
-        .value{ color:#222; word-break:break-word; }
-        .meta{ font-size:0.9rem; color:#666; }
-        .badge-status{ font-size:0.85rem; }
+
+        .label { font-weight:600; color:#444; }
+        .value { color:#222; word-break:break-word; }
+        .meta { font-size:0.9rem; color:#666; }
+        .badge-status { font-size:0.85rem; }
     </style>
 </head>
 
 <body>
 
-<div class="bar-top">
-    <h4 class="text-white m-0">
-        <i class="bi bi-receipt-cutoff me-2"></i> Order Details
-    </h4>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
+    <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a th:href="@{/staffHome/approveList}"><i class="bi bi-bag-check-fill"></i> Manage Orders</a>
+    <a th:href="@{/staffHome/rentApproveList}"><i class="bi bi-clock-history"></i> Rental Orders</a>
+    <a th:href="@{/staffHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
+    <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
 </div>
 
-<div class="content-wrapper container">
+<!-- MAIN CONTENT -->
+<div class="content container">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h5 class="mb-1">Order Detail List</h5>
+            <h4 class="mb-1"><i class="bi bi-receipt-cutoff me-2"></i> Order Details</h4>
 
             <div class="meta" th:if="${order != null}">
                 <span class="me-3">
@@ -109,7 +131,7 @@
         </a>
     </div>
 
-    <!-- 2 NÚT DUYỆT / TỪ CHỐI (nằm ngoài các ô) -->
+    <!-- Buttons Approve / Reject -->
     <div class="d-flex gap-2 mb-3" th:if="${order != null}">
         <form th:action="@{/staffHome/approve/accept}" method="post" class="m-0">
             <input type="hidden" name="orderId" th:value="${order.id}">
@@ -126,8 +148,8 @@
         </form>
     </div>
 
+    <!-- Order Details Grid -->
     <div class="grid">
-
         <div class="card-box" th:each="od : ${orderDetails}">
             <div class="mb-2">
                 <span class="label">OrderDetail ID</span><br>
@@ -146,10 +168,9 @@
 
             <div th:if="${od.gameAccount != null}">
                 <span class="label">Price</span><br>
-                <span class="value" th:text="${od.gameAccount.price}"></span>
+                <span class="value" th:text="${od.order.totalPrice}"></span>
             </div>
         </div>
-
     </div>
 
     <div class="text-center mt-4 text-muted" th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
@@ -157,8 +178,6 @@
     </div>
 
 </div>
-
-<div class="bar-bottom"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
