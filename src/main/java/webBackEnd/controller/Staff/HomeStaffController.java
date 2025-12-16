@@ -14,7 +14,7 @@ public class HomeStaffController {
         return "staff/StaffIndex";
     }
 
-    @GetMapping("/ChangePassword")
+    @GetMapping("/changePassword")
     public String changePassword(Model model) {
         return "staff/ChangePassword";
     }
