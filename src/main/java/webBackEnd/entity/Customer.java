@@ -36,8 +36,10 @@ public class Customer {
     @Column(name = "role",nullable = false)
     private String role;
 
-    @Column(name = "balance")
-    private BigDecimal balance;
+
+    @Column(name = "balance", nullable = false, precision = 18, scale = 2)
+    private BigDecimal balance = BigDecimal.ZERO;
+
 
     public Customer() {
     }
