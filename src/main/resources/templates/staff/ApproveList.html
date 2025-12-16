@@ -129,7 +129,7 @@
                     th:text="${getQuantity.findAllByOrderId(o.id) != null ? getQuantity.findAllByOrderId(o.id) : getQuantity.findAllByOrderId(o.id)}">12/12/2025 15:30</td>
 
                 <td class="text-end"
-                th:text="${#numbers.formatDecimal(@orderDetailService.getOrderdetailByOrder(o).gameAccount.price, 1, 'COMMA', 0, 'POINT')}"></td>
+                th:text="${#numbers.formatDecimal(@orderDetailService.getOrderDetailByOrder(o).gameAccount.price, 1, 'COMMA', 0, 'POINT')}"></td>
                 0
                 </td>
 
