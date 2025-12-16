@@ -38,6 +38,10 @@ public class Transaction {
         this.dateCreated = dateCreated;
 
     }
+    @PrePersist
+    public void prePersist() {
+        this.dateCreated = LocalDateTime.now();
+    }
 
     public Transaction(Customer  customer, BigDecimal amount) {
         this.customer = customer;
@@ -91,4 +95,7 @@ public class Transaction {
         this.description = description;
         this.dateCreated = dateCreated;
     }
+
+
+
 }
