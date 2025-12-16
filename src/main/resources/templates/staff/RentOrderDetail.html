@@ -18,6 +18,7 @@
             display:flex;
             flex-direction:column;
         }
+
         .bar-top{
             width:100%;
             height:70px;
@@ -26,12 +27,14 @@
             align-items:center;
             padding-left:30px;
         }
+
         .bar-bottom{
             width:100%;
             height:70px;
             background:var(--orange);
             margin-top:auto;
         }
+
         .content-wrapper{
             flex:1;
             padding:30px 40px 20px 40px;
@@ -57,6 +60,7 @@
             border-left:6px solid var(--orange);
             min-height:140px;
         }
+
         .label{ font-weight:600; color:#444; }
         .value{ color:#222; word-break:break-word; }
         .meta{ font-size:0.9rem; color:#666; }
@@ -68,7 +72,7 @@
 
 <div class="bar-top">
     <h4 class="text-white m-0">
-        <i class="bi bi-receipt-cutoff me-2"></i> Order Details
+        <i class="bi bi-receipt-cutoff me-2"></i> Rent Order Details
     </h4>
 </div>
 
@@ -90,7 +94,7 @@
                 <span class="me-3">
                     <span class="label">Status:</span>
                     <span class="badge badge-status"
-                          th:classappend="${order.status}=='WAIT' ? ' bg-warning text-dark' : ' bg-secondary'"
+                          th:classappend="${order.status}=='WAIT' ? ' bg-warning text-dark' : ' bg-secondary' "
                           th:text="${order.status}"></span>
                 </span>
                 <span>
@@ -109,7 +113,6 @@
         </a>
     </div>
 
-    <!-- 2 NÚT DUYỆT / TỪ CHỐI (nằm ngoài các ô) -->
     <div class="d-flex gap-2 mb-3" th:if="${order != null}">
         <form th:action="@{/staffHome/approve/accept}" method="post" class="m-0">
             <input type="hidden" name="orderId" th:value="${order.id}">
@@ -152,8 +155,8 @@
 
     </div>
 
-    <div class="text-center mt-4 text-muted" th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
-        No order details found.
+    <div class="text-center mt-4 text-muted" th:if="${rentOrderList == null || #lists.isEmpty(rentOrderList)}">
+        No rent order details found.
     </div>
 
 </div>
