@@ -24,6 +24,7 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
                 where od.gameAccount.gameAccountId = :gameAccountId
                   and o.status in ('WAIT', 'COMPLETED')
             """)
+
     boolean existsActiveOrderByGameAccount(@Param("gameAccountId") UUID gameAccountId);
 
 }
