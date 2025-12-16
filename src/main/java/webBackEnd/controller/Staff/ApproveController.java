@@ -68,6 +68,8 @@ public class ApproveController {
     @PostMapping("/approve/accept")
     public String approveOrder(@RequestParam UUID orderId) {
 
+
+        StringBuilder accountHtml = new StringBuilder();
         Orders order = ordersService.findById(orderId);
 
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
@@ -84,6 +86,13 @@ public class ApproveController {
             }
             a.getGameAccount().setStatus("IN USE");
 
+
+            accountHtml.append("<b>game:</b> ").append(a.getGameAccount().getGame().getGameName()).append("<br>")
+                    .append("<b>username:</b> ").append(a.getGameAccount().getGameAccount()).append("<br>")
+                    .append("<b>password:</b> ").append(a.getGameAccount().getGamePassword()).append("<br>")
+                    .append("<br>"); // cách dòng giữa các account
+
+
         }
 
 
@@ -93,13 +102,34 @@ public class ApproveController {
         ordersService.save(order);
 
 
+
+
+
+
         String title = "Xác nhận tài khoản của bạn";
 
         String content =
-                "<p>Hãy nhấp vào liên kết dưới đây để kích hoạt tài khoản của bạn (hạn 2 phút):</p>"
-                        + "<p><a href="
+                "Xin chào <b>" + order.getCustomer().getUsername() + "</b>,<br><br>"
+                        + "Cảm ơn bạn đã tin tưởng và mua hàng tại <b>ACCOUNT GAME STORE</b> của chúng tôi.<br>"
+                        + "Đơn hàng của bạn đã được xử lý thành công.<br><br>"
+                        + "Dưới đây là thông tin tài khoản game mà bạn đã mua:<br><br>"
+                        + "<div style='padding:12px;border:1px solid #ddd;border-radius:8px;'>"
+                        + accountHtml
+                        + "</div><br>"
+                        + "<b>LƯU Ý QUAN TRỌNG:</b><br>"
+                        + "- Không chia sẻ thông tin tài khoản cho người khác.<br>"
+                        + "- Nếu phát sinh lỗi đăng nhập hoặc tài khoản không đúng mô tả, hãy liên hệ với chúng tôi trong vòng 24h để được hỗ trợ.<br><br>"
+                        + "<b>HỖ TRỢ KHÁCH HÀNG:</b><br>"
+                        + "Hotline: 0923 445 566<br>"
+                        + "Email: support@shopgame.vn<br>"
+                        + "Hỗ trợ 24/7 – Phản hồi nhanh<br><br>"
+                        + "Chúc bạn có những giây phút trải nghiệm game vui vẻ!<br>"
+                        + "Trân trọng,<br><br>"
+                        + "<b>ACCOUNT GAME STORE</b><br>"
+                        + "Uy tín – Giá tốt – Giao dịch tự động 24/7";
 
-                        + "<p>Nếu không bấm được, copy link sau dán vào trình duyệt:<br></p>";
+
+
         sendMailTest.testSend(order.getCustomer().getEmail(), title, content);
 
 
