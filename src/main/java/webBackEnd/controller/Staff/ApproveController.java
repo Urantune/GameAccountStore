@@ -13,6 +13,7 @@ import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
 import webBackEnd.service.RentAccountGameService;
 import webBackEnd.successfullyDat.GetQuantity;
+import webBackEnd.successfullyDat.SendMailTest;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -33,19 +34,22 @@ public class ApproveController {
     private OrderDetailService orderDetailService;
 
     @Autowired
-    private AdministratorService  administratorService;
+    private AdministratorService administratorService;
     @Autowired
     private RentAccountGameService rentAccountGameService;
 
+    @Autowired
+    private SendMailTest sendMailTest;
+
 
     @GetMapping("/approveList")
-    public String approveList(Model model){
+    public String approveList(Model model) {
 
         List<Orders> list = ordersService.findAllByStatus("WAIT");
         list.sort(Comparator.comparing(Orders::getCreatedDate));
 
-        model.addAttribute("orderList",list);
-        model.addAttribute("getQuantity",getQuantity);
+        model.addAttribute("orderList", list);
+        model.addAttribute("getQuantity", getQuantity);
         return "staff/ApproveList";
     }
 
@@ -67,8 +71,8 @@ public class ApproveController {
         Orders order = ordersService.findById(orderId);
 
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
-        for(OrderDetail a:orderDetails){
-            if(a.getDuration()!=0){
+        for (OrderDetail a : orderDetails) {
+            if (a.getDuration() != 0) {
                 RentAccountGame rentAccountGame = new RentAccountGame();
 
                 rentAccountGame.setCustomer(order.getCustomer());
@@ -87,9 +91,20 @@ public class ApproveController {
         order.setStaff(
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
         ordersService.save(order);
+
+
+        String title = "Xác nhận tài khoản của bạn";
+
+        String content =
+                "<p>Hãy nhấp vào liên kết dưới đây để kích hoạt tài khoản của bạn (hạn 2 phút):</p>"
+                        + "<p><a href="
+
+                        + "<p>Nếu không bấm được, copy link sau dán vào trình duyệt:<br></p>";
+        sendMailTest.testSend(order.getCustomer().getEmail(), title, content);
+
+
         return "redirect:/staffHome/approveList";
     }
-
 
 
     @PostMapping("/approve/reject")
