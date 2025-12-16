@@ -69,6 +69,22 @@
             this.email = email;
         }
 
+        public UUID getGameAccountId() {
+            return gameAccountId;
+        }
+
+        public void setGameAccountId(UUID gameAccountId) {
+            this.gameAccountId = gameAccountId;
+        }
+
+        public int getVip() {
+            return vip;
+        }
+
+        public void setVip(int vip) {
+            this.vip = vip;
+        }
+
         public UUID getId() {
             return gameAccountId;
         }
