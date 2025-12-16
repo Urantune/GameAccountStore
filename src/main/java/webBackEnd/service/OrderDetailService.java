@@ -29,10 +29,5 @@ public class OrderDetailService {
         return orderDetailRepositories.findById(id).get();
     }
 
-    public OrderDetail getOrderdetailByOrder(Orders order){
-        return orderDetailRepositories.findByOrder(order);
-    }
-
-
 }
 
