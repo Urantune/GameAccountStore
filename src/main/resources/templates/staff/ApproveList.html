@@ -58,6 +58,16 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
 
+        #orderTable thead th {
+            font-size: 13px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        #orderTable thead th i {
+            font-size: 12px;
+        }
+
         th.sortable { cursor: pointer; user-select: none; }
         .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
     </style>
@@ -102,24 +112,51 @@
             <thead>
             <tr>
                 <th style="width: 60px;">#</th>
-                <th class="sortable" onclick="sortTable(1)">Order ID <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable" onclick="sortTable(2)">Username <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable" onclick="sortTable(3)">Voucher <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable" onclick="sortTable(4)">Created Date <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable text-end" onclick="sortTable(5)" style="width: 120px;">Quantity <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable text-end" onclick="sortTable(6)" style="width: 160px;">Price <i class="bi bi-arrow-down-up"></i></th>
+                <th class="sortable" onclick="sortTable(1)">
+                    Order ID <i class="bi bi-arrow-down-up"></i></th>
+
+                <th class="sortable" onclick="sortTable(2)">
+                    Username <i class="bi bi-arrow-down-up"></i></th>
+
+                <th class="sortable" onclick="sortTable(3)">
+                    Voucher <i class="bi bi-arrow-down-up"></i></th>
+
+                <th class="sortable" onclick="sortTable(4)">
+                    Created Date <i class="bi bi-arrow-down-up"></i></th>
+
+                <th class="sortable text-end" onclick="sortTable(5)" style="width: 120px;">
+                    Quantity <i class="bi bi-arrow-down-up"></i></th>
+
+                <th class="sortable text-end" onclick="sortTable(6)" style="width: 160px;">
+                    Price <i class="bi bi-arrow-down-up"></i></th>
+
+                <th class="sortable text-end" onclick="sortTable(7)" style="width: 160px;">
+                    Total Price <i class="bi bi-arrow-down-up"></i></th>
+
                 <th style="width: 90px;" class="text-center">Action</th>
+
             </tr>
             </thead>
 
             <tbody>
             <tr th:each="o, index : ${orderList}">
                 <td th:text="${index.index + 1}"></td>
+
                 <td class="mono" th:text="${o.id}"></td>
+
                 <td th:text="${o.customer.username}"></td>
-                <td th:if="${o.voucher != null}" th:text="${o.voucher.voucherName}"></td>
+
+                <td th:if="${o.voucher != null}"
+                    th:text="${o.voucher.voucherName}"></td>
+                <td th:unless="${o.voucher != null}">
+                    Not Voucher</td>
+
                 <td th:text="${#temporals.format(o.createdDate, 'HH:mm dd/MM/yyyy')}"></td>
+
                 <td class="text-end" th:text="${getQuantity.findAllByOrderId(o.id)}"></td>
+
+                <td class="text-end" th:text="${#numbers.formatDecimal(@orderDetailService.getOrderDetailByOrder(o).gameAccount.price,1, 'COMMA', 0, 'POINT')}"></td>
+
                 <td class="text-end" th:text="${#numbers.formatDecimal(o.totalPrice, 1, 'COMMA', 0, 'POINT')}"></td>
                 <td class="text-center">
                     <a th:href="@{'/staffHome/approve/' + ${o.id}}" class="btn btn-sm btn-outline-dark" title="View Detail">
