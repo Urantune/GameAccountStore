@@ -37,6 +37,8 @@ public class HomeController {
     @Autowired
     private OrderDetailService orderDetailService;
 
+
+
     @GetMapping
     public String home(Model model) {
 //        for(GameAccount a : gameAccountService.get20Profuct()){
@@ -122,6 +124,13 @@ public class HomeController {
             }
         }
 
+        //ĐỒNG BỘ SỐ DƯ TRƯỚC KHI THỰC HIỆN GIAO DỊCH
+        BigDecimal realBalance = transactionService.sumAmountByCustomer(customer.getCustomerId());
+        if (realBalance == null) {
+            realBalance = BigDecimal.ZERO;
+        }
+        customer.setBalance(realBalance);
+        customerService.save(customer);
         // TÍNH TIỀN
         BigDecimal totalDeposit = BigDecimal.ZERO;
         BigDecimal totalSpent = BigDecimal.ZERO;

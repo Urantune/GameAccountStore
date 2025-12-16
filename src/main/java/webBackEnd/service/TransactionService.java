@@ -7,6 +7,7 @@ import webBackEnd.entity.Customer;
 import webBackEnd.entity.Transaction;
 import webBackEnd.repository.TransactionRepositories;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,5 +48,17 @@ public class TransactionService {
         return transactionRepositories
                 .findByCustomerAndTransactionId(customer, transactionId);
     }
+
+    //ĐỒNG BỘ SỐ DƯ
+    public BigDecimal sumAmountByCustomer(UUID customerId) {
+
+        List<Transaction> transactions =
+                transactionRepositories.findByCustomer_CustomerId(customerId);
+
+        return transactions.stream()
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 
 }
