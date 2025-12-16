@@ -65,27 +65,30 @@ public class VerryController {
         model.addAttribute("customer", customer);
         model.addAttribute("idcustomer", id);
         model.addAttribute("codecustomer", fi);
-        return "HTML/ForgotPasword";
+        return "staff/ChangePassword";
     }
 
     @PostMapping("/donePass")
-    public String donePassAccount(@RequestParam UUID id,
-                                  @RequestParam String code,
-                                  @RequestParam String newPassword,
-                                  @RequestParam String confirmPassword,
-                                  RedirectAttributes ra) {
-
-
+    public String donePassAccount(
+            @RequestParam UUID id,
+            @RequestParam String code,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            RedirectAttributes ra
+    ) {
 
         Customer customer = customerService.findCustomerById(id);
 
 
+
         customer.setPassword(passwordEncoder.encode(newPassword));
         customer.setStatus("ACTIVE");
+        customer.setDateUpdated(LocalDateTime.now());
         customerService.save(customer);
 
         ra.addFlashAttribute("success", "Đổi mật khẩu thành công");
-        return "redirect:/welcome";
+        return "redirect:/home";
     }
+
 
 }
