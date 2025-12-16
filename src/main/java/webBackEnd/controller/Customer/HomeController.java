@@ -95,36 +95,37 @@ public class HomeController {
 
         List<Transaction> transactionHistory = fullHistory;
 
+        //Only search
+        List<Transaction> tableHistory = new ArrayList<>(fullHistory);
+
         if (search != null && !search.isBlank()) {
 
-            // 1️⃣ Search theo STT (chỉ chứa số)
-            if (search.matches("\\d+")) {
-                int stt = Integer.parseInt(search) - 1;
+            String keyword = search.trim();
 
-                if (stt >= 0 && stt < fullHistory.size()) {
-                    transactionHistory = List.of(fullHistory.get(stt));
-                } else {
-                    transactionHistory = List.of(); // không có kết quả
-                }
-
+            if (keyword.matches("\\d+")) {
+                int stt = Integer.parseInt(keyword) - 1;
+                tableHistory =
+                        (stt >= 0 && stt < fullHistory.size())
+                                ? List.of(fullHistory.get(stt))
+                                : List.of();
             }
-            // 2️⃣ Search theo UUID
-            else if (search.matches(
+            else if (keyword.matches(
                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
 
-                transactionHistory =
+                tableHistory =
                         transactionService.searchByTransactionId(
-                                customer, UUID.fromString(search));
-
+                                customer, UUID.fromString(keyword));
             }
-            // 3️⃣ Search theo nội dung
             else {
-                transactionHistory =
-                        transactionService.search(customer, search);
+                tableHistory =
+                        transactionService.search(customer, keyword);
             }
         }
+        //END SEARCH
 
-        //ĐỒNG BỘ SỐ DƯ TRƯỚC KHI THỰC HIỆN GIAO DỊCH
+
+
+        //ĐỒNG BỘ SỐ DƯ TRƯỚC KHI THỰC HIÊN
         BigDecimal realBalance = transactionService.sumAmountByCustomer(customer.getCustomerId());
         if (realBalance == null) {
             realBalance = BigDecimal.ZERO;
@@ -146,7 +147,7 @@ public class HomeController {
         model.addAttribute("balance", customer.getBalance());
         model.addAttribute("totalDeposit", totalDeposit);
         model.addAttribute("totalSpent", totalSpent);
-        model.addAttribute("walletHistory", transactionHistory);
+        model.addAttribute("walletHistory", tableHistory);
         model.addAttribute("search", search);
 
         return "customer/Transaction";
