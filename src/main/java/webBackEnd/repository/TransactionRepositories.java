@@ -25,4 +25,7 @@ public interface TransactionRepositories extends JpaRepository<Transaction,UUID>
     List<Transaction> findByCustomerAndTransactionId(
             Customer customer, UUID transactionId);
 
+    //Tìm user để đồng bộ số dư trước khi giao dịch
+    List<Transaction> findByCustomer_CustomerId(UUID customerId);
+
 }
