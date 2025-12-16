@@ -68,6 +68,9 @@ public class BuyController {
         Customer customer = customerService.findCustomerByUsername(authentication.getName());
         GameAccount game = getGame(gameId);
 
+
+
+
         if (packageValues == null || packageValues.isBlank()) {
             model.addAttribute("errorMessage", "Vui lòng chọn gói thuê");
             model.addAttribute("games", game);
@@ -143,6 +146,7 @@ public class BuyController {
         orderDetailRepositories.save(detail);
         model.addAttribute("successMessage", "Thanh toán thành công!");
         model.addAttribute("games", game);
+
 
         return "customer/Payment";
     }
