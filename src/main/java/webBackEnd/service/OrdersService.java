@@ -3,6 +3,7 @@ package webBackEnd.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import webBackEnd.entity.Customer;
+import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
 import webBackEnd.repository.OrdersRepositories;
 
@@ -45,6 +46,10 @@ public class OrdersService {
     public void delete(Orders orders) {
         ordersRepositories.delete(orders);
     }
+
+
+
+
 
 
 }

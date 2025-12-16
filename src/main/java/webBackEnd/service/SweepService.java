@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import webBackEnd.entity.Customer;
+import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
 import webBackEnd.entity.RentAccountGame;
 
@@ -20,6 +21,9 @@ public class SweepService {
     private OrdersService ordersService;
 
     @Autowired
+    private OrderDetailService orderDetailService;
+
+    @Autowired
     private RentAccountGameService rentAccountGameService;
 
     @Scheduled(fixedDelay = 60_000)
@@ -30,7 +34,11 @@ public class SweepService {
         List<Orders> orders = ordersService.findAllByStatus("WAIT");
 
         for(Orders order:orders){
-            if(order.getCreatedDate().plusMinutes(30).isAfter(now)){
+            if(order.getCreatedDate().plusMinutes(30).isBefore(now)){
+                List<OrderDetail> list = orderDetailService.findAllByOrderId(order.getId());
+                for(OrderDetail orderDetail:list){
+                    orderDetailService.delete(orderDetail);
+                }
                 ordersService.delete(order);
             }
 
@@ -46,11 +54,11 @@ public class SweepService {
         List<RentAccountGame> rentAccountGames = rentAccountGameService.findAll();
 
         for(RentAccountGame a : rentAccountGames){
-            if(now.minusDays(3).isAfter(a.getDateEnd())){
+            if(now.minusDays(3).isBefore(a.getDateEnd())){
             a.setStatus("EXPIRING");
             }
 
-            if(now.plusDays(3).isAfter(a.getDateEnd())){
+            if(now.plusDays(3).isBefore(a.getDateEnd())){
                 rentAccountGameService.delete(a);
             }
         }
