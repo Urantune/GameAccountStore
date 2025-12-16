@@ -29,5 +29,9 @@ public class OrderDetailService {
         return orderDetailRepositories.findById(id).get();
     }
 
+    public void delete(OrderDetail orderDetail) {
+        orderDetailRepositories.delete(orderDetail);
+    }
+
 }
 
