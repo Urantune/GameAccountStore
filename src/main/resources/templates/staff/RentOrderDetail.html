@@ -9,160 +9,190 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        :root { --orange: #ff7a2f; }
+        body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
+        .sidebar{
+            width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0;
+            color:#ecf0f1;
+        }
+        .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .sidebar a{ display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s; }
+        .sidebar a i{ width:22px; }
+        .sidebar a:hover{ background:#1abb9c; }
 
-        body{
-            background:#f5f5f5;
-            font-family:"Roboto",sans-serif;
-            min-height:100vh;
-            display:flex;
-            flex-direction:column;
-        }
-
-        .bar-top{
-            width:100%;
-            height:70px;
-            background:var(--orange);
-            display:flex;
-            align-items:center;
-            padding-left:30px;
-        }
-
-        .bar-bottom{
-            width:100%;
-            height:70px;
-            background:var(--orange);
-            margin-top:auto;
-        }
-
-        .content-wrapper{
-            flex:1;
-            padding:30px 40px 20px 40px;
-        }
-
-        .grid{
-            display:grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap:16px;
-        }
-        @media (max-width: 992px){
-            .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
-        @media (max-width: 576px){
-            .grid{ grid-template-columns: 1fr; }
-        }
+        .content{ margin-left:260px; padding:30px; }
 
         .card-box{
-            background:white;
-            border-radius:14px;
-            box-shadow:0 6px 15px rgba(0,0,0,0.10);
-            padding:16px 18px;
-            border-left:6px solid var(--orange);
-            min-height:140px;
+            background:#fff; border-radius:14px; box-shadow:0 6px 15px rgba(0,0,0,0.10);
+            padding:16px 18px; border-left:6px solid #ff7a2f;
         }
-
-        .label{ font-weight:600; color:#444; }
-        .value{ color:#222; word-break:break-word; }
         .meta{ font-size:0.9rem; color:#666; }
-        .badge-status{ font-size:0.85rem; }
+        .value{ color:#222; word-break:break-word; }
+        .mono{
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+        }
+        .table thead th{ background:#f3f5f8; }
+        .table td, .table th{ vertical-align: middle; }
+        .pill{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:#f3f5f8;
+            font-size:.9rem;
+            font-weight:700;
+            color:#495057;
+        }
+        .big-actions{
+            margin-top:18px;
+            display:flex;
+            gap:14px;
+            justify-content:flex-end;
+        }
+        .btn-big{
+            padding:14px 22px;
+            font-weight:800;
+            border-radius:14px;
+            min-width:180px;
+        }
+        .badge-status{ font-size:.85rem; }
     </style>
 </head>
 
 <body>
 
-<div class="bar-top">
-    <h4 class="text-white m-0">
-        <i class="bi bi-receipt-cutoff me-2"></i> Rent Order Details
-    </h4>
+<div class="sidebar">
+    <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
+    <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a th:href="@{/staffHome/approveList}"><i class="bi bi-bag-check-fill"></i> Manage Orders</a>
+    <a th:href="@{/staffHome/rentApproveList}"><i class="bi bi-clock-history"></i> Rental Orders</a>
+    <a th:href="@{/staffHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
+    <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
 </div>
 
-<div class="content-wrapper container">
+<div class="content container">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h5 class="mb-1">Rent Order Detail List</h5>
-
-            <div class="meta" th:if="${order != null}">
-                <span class="me-3">
-                    <span class="label">Order:</span>
-                    <span class="value" th:text="${order.id}"></span>
-                </span>
-                <span class="me-3">
-                    <span class="label">Username:</span>
-                    <span class="value" th:text="${order.customer != null ? order.customer.username : 'N/A'}"></span>
-                </span>
-                <span class="me-3">
-                    <span class="label">Status:</span>
-                    <span class="badge badge-status"
-                          th:classappend="${order.status}=='WAIT' ? ' bg-warning text-dark' : ' bg-secondary' "
-                          th:text="${order.status}"></span>
-                </span>
-                <span>
-                    <span class="label">Created:</span>
-                    <span class="value" th:text="${#temporals.format(order.createdDate,'yyyy-MM-dd HH:mm:ss')}"></span>
-                </span>
-            </div>
-
-            <div class="meta" th:if="${order == null}">
-                <span class="label">Order:</span> <span class="value" th:text="${orderId}"></span>
+            <h4 class="mb-1"><i class="bi bi-receipt me-2"></i>Rent Order Detail</h4>
+            <div class="meta">
+                Order ID:
+                <span class="mono" th:text="${order != null ? order.id : orderId}"></span>
+                <span class="ms-2">|</span>
+                Customer:
+                <b th:text="${order != null && order.customer != null ? order.customer.username : 'N/A'}"></b>
+                <span class="ms-2">|</span>
+                Status:
+                <span class="badge badge-status"
+                      th:classappend="${order != null && order.status == 'WAITRENT'} ? ' bg-warning text-dark' : ' bg-secondary' "
+                      th:text="${order != null ? order.status : 'N/A'}"></span>
             </div>
         </div>
 
-        <a th:href="@{/staffHome/approveList}" class="btn btn-sm btn-outline-secondary">
+        <a th:href="@{/staffHome/rentApproveList}" class="btn btn-sm btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i>Back
         </a>
     </div>
 
-    <div class="d-flex gap-2 mb-3" th:if="${order != null}">
-        <form th:action="@{/staffHome/approve/accept}" method="post" class="m-0">
-            <input type="hidden" name="orderId" th:value="${order.id}">
-            <button type="submit" class="btn btn-success">
-                <i class="bi bi-check2-circle me-1"></i>Duyệt đơn
-            </button>
-        </form>
-
-        <form th:action="@{/staffHome/approve/reject}" method="post" class="m-0">
-            <input type="hidden" name="orderId" th:value="${order.id}">
-            <button type="submit" class="btn btn-danger">
-                <i class="bi bi-x-circle me-1"></i>Từ chối
-            </button>
-        </form>
+    <div class="d-flex justify-content-end mb-3" th:if="${order != null}">
+        <div class="text-end">
+            <div class="meta">Created</div>
+            <div class="value"
+                 th:text="${order.createdDate != null ? #temporals.format(order.createdDate,'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></div>
+        </div>
     </div>
 
-    <div class="grid">
+    <div class="card-box">
 
-        <div class="card-box" th:each="od : ${rentOrderList}">
-            <div class="mb-2">
-                <span class="label">OrderDetail ID</span><br>
-                <span class="value" th:text="${od.id}"></span>
-            </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                <tr>
+                    <th style="min-width:220px;">OrderDetail ID</th>
+                    <th style="min-width:220px;">GameAccount</th>
+                    <th style="min-width:180px;">Game</th>
+                    <th style="min-width:160px;">Duration</th>
+                    <th style="min-width:160px;">Price</th>
+                </tr>
+                </thead>
 
-            <div class="mb-2">
-                <span class="label">GameAccount</span><br>
-                <span class="value" th:text="${od.gameAccount != null ? od.gameAccount.id : 'N/A'}"></span>
-            </div>
+                <tbody>
+                <tr th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
+                    <td colspan="5" class="text-center text-muted py-4">No details.</td>
+                </tr>
 
-            <div class="mb-2" th:if="${od.gameAccount != null && od.gameAccount.game != null}">
-                <span class="label">Game Name</span><br>
-                <span class="value" th:text="${od.gameAccount.game.gameName}"></span>
-            </div>
+                <tr th:each="od : ${orderDetails}">
+                    <td class="mono">
+                        <div class="value" th:text="${od.id}"></div>
+                    </td>
 
-            <div th:if="${od.gameAccount != null}">
-                <span class="label">Price</span><br>
-                <span class="value" th:text="${od.gameAccount.price}"></span>
-            </div>
+                    <td>
+                        <div class="value mono"
+                             th:text="${od.gameAccount != null ? od.gameAccount.gameAccountId : 'N/A'}"></div>
+                        <div class="meta"
+                             th:text="${od.gameAccount != null ? od.gameAccount.gameAccount : ''}"></div>
+                    </td>
+
+                    <td>
+                        <span class="value"
+                              th:text="${(od.game != null) ? od.game.gameName : (od.gameAccount != null && od.gameAccount.game != null ? od.gameAccount.game.gameName : 'N/A')}"></span>
+                    </td>
+
+                    <td>
+                        <span class="pill">
+                            <i class="bi bi-clock-history"></i>
+                            <span th:text="${od.duration != null ? od.duration : 0}"></span> month(s)
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="value"
+                              th:text="${od.price != null ? (#numbers.formatDecimal(od.price,0,'COMMA',0,'POINT') + ' đ') : 'N/A'}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
-    </div>
+        <form id="decisionForm" method="post" th:action="@{/staffHome/rentApprove/decision}" class="mt-3">
+            <input type="hidden" name="orderId" th:value="${order != null ? order.id : ''}">
+            <input type="hidden" name="decision" id="decisionInput" value="">
 
-    <div class="text-center mt-4 text-muted" th:if="${rentOrderList == null || #lists.isEmpty(rentOrderList)}">
-        No rent order details found.
-    </div>
+            <input type="hidden" th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
 
+            <div class="big-actions">
+                <button type="button" class="btn btn-success btn-big" id="btnAccept">
+                    <i class="bi bi-check2-circle me-2"></i>ACCEPT
+                </button>
+                <button type="button" class="btn btn-danger btn-big" id="btnReject">
+                    <i class="bi bi-x-circle me-2"></i>REJECT
+                </button>
+            </div>
+        </form>
+
+    </div>
 </div>
 
-<div class="bar-bottom"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.getElementById('btnAccept')?.addEventListener('click', () => {
+        const decisionInput = document.getElementById('decisionInput');
+        const form = document.getElementById('decisionForm');
+        if (decisionInput) decisionInput.value = 'ACCEPT';
+        if (form) form.submit();
+    });
+
+    document.getElementById('btnReject')?.addEventListener('click', () => {
+        const decisionInput = document.getElementById('decisionInput');
+        const form = document.getElementById('decisionForm');
+        if (decisionInput) decisionInput.value = 'REJECT';
+        if (form) form.submit();
+    });
+</script>
+
 </body>
 </html>

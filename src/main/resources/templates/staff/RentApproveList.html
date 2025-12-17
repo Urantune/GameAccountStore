@@ -9,63 +9,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body {
-            background: #f5f7fa;
-            font-family: "Roboto", sans-serif;
-        }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            min-height: 100vh;
-            background: #2a3f54;
-            position: fixed;
-            left: 0;
-            top: 0;
-            color: #ecf0f1;
-        }
-
-        .sidebar h5 {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 14px 24px;
-            color: #ecf0f1;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-
-        .sidebar a i { width: 22px; }
-
-        .sidebar a:hover {
-            background: #1abb9c;
-        }
-
-        /* CONTENT */
-        .content {
-            margin-left: 260px;
-            padding: 30px;
-        }
-
-        .table-wrapper {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
-
-        th.sortable { cursor: pointer; user-select: none; }
-        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+        body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
+        .sidebar{ width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0; color:#ecf0f1; }
+        .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .sidebar a{ display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:.2s; }
+        .sidebar a i{ width:22px; }
+        .sidebar a:hover{ background:#1abb9c; }
+        .content{ margin-left:260px; padding:30px; }
+        .table-wrapper{ background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.08); }
+        th.sortable{ cursor:pointer; user-select:none; }
+        .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
     </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
     <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
@@ -75,11 +33,10 @@
     <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="content">
 
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
-        <h4 class="mb-0"><i class="bi bi-receipt-cutoff me-2"></i> Rent Order List</h4>
+        <h4 class="mb-0"><i class="bi bi-receipt-cutoff me-2"></i> Rent Order List (WAITRENT)</h4>
 
         <div class="d-flex flex-wrap gap-2 align-items-center">
             <select id="searchType" class="form-select form-select-sm" style="width: 170px;">
@@ -101,35 +58,41 @@
         <table id="orderTable" class="table table-hover align-middle mb-0">
             <thead>
             <tr>
-                <th style="width: 60px;">#</th>
+                <th style="width:60px;">#</th>
                 <th class="sortable" onclick="sortTable(1)">Order ID <i class="bi bi-arrow-down-up"></i></th>
                 <th class="sortable" onclick="sortTable(2)">Username <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable" onclick="sortTable(3)">Date Start <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable" onclick="sortTable(4)">Date End <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable" onclick="sortTable(5)">Duration <i class="bi bi-arrow-down-up"></i></th>
-                <th class="sortable text-end" onclick="sortTable(6)" style="width: 160px;">Price <i class="bi bi-arrow-down-up"></i></th>
-                <th style="width: 90px;" class="text-center">Action</th>
+                <th class="sortable" onclick="sortTable(3)">Created Date <i class="bi bi-arrow-down-up"></i></th>
+                <th class="sortable" onclick="sortTable(4)">Duration (months) <i class="bi bi-arrow-down-up"></i></th>
+                <th class="sortable text-end" onclick="sortTable(5)" style="width:180px;">Total Price <i class="bi bi-arrow-down-up"></i></th>
+                <th style="width:90px;" class="text-center">Action</th>
             </tr>
             </thead>
 
             <tbody>
-            <tr th:each="o, index : ${rentOrderList}">
+            <tr th:each="o, index : ${orderList}">
                 <td th:text="${index.index + 1}"></td>
+
                 <td class="mono" th:text="${o.id}"></td>
-                <td th:text="${o.customer.username}"></td>
-                <td th:text="${#temporals.format(o.dateStart, 'HH:mm dd/MM/yyyy')}"></td>
-                <td th:text="${#temporals.format(o.dateEnd, 'HH:mm dd/MM/yyyy')}"></td>
-                <td th:text="${getQuantity.subtract(o.dateEnd)}"></td>
-                <td class="text-end" th:text="${#numbers.formatDecimal(o.gameAccount.price, 1, 'COMMA', 0, 'POINT')}"></td>
+
+                <td th:text="${o.customer != null ? o.customer.username : 'N/A'}"></td>
+
+                <td th:text="${o.createdDate != null ? #temporals.format(o.createdDate,'HH:mm dd/MM/yyyy') : '—'}"></td>
+
+                <td th:text="${firstDetailMap[o.id] != null ? firstDetailMap[o.id].duration : 0}"></td>
+
+                <td class="text-end"
+                    th:text="${o.totalPrice != null ? #numbers.formatDecimal(o.totalPrice,0,'COMMA',0,'POINT') : '0'}"></td>
+
                 <td class="text-center">
-                    <a th:href="@{'/staffHome/approve/' + ${o.id}}" class="btn btn-sm btn-outline-dark" title="View Detail">
+                    <a th:href="@{'/staffHome/rentApprove/' + ${o.id}}"
+                       class="btn btn-sm btn-outline-dark" title="View Detail">
                         <i class="bi bi-gear"></i>
                     </a>
                 </td>
             </tr>
 
-            <tr class="no-data" th:if="${#lists.isEmpty(rentOrderList)}">
-                <td colspan="8" class="text-center text-muted py-4">No orders found.</td>
+            <tr class="no-data" th:if="${orderList == null || #lists.isEmpty(orderList)}">
+                <td colspan="7" class="text-center text-muted py-4">No orders found.</td>
             </tr>
             </tbody>
         </table>
