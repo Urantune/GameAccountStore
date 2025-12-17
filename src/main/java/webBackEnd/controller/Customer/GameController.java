@@ -40,7 +40,6 @@ public class GameController {
     @GetMapping("/game/{gameId}")
     public String gameAccount(Model model, @PathVariable UUID gameId) {
 
-        List<GameAccount> gameAccounts = gameAccountService.findAllByGameId(gameId);
         Game game = gameService.findById(gameId);
 
         // ===== TITLE =====
@@ -53,23 +52,25 @@ public class GameController {
         } else if (game.getGameId().equals(FF_ID)) {
             title = "Tài khoản Game Free Fire";
         }
-        // ===== ACC ĐÃ BÁN / ĐÃ THUÊ =====
-        Set<UUID> soldOrRentedIds = gameAccountService.getSoldOrRentedAccountIds();
-        gameAccounts.sort((a, b) -> {
-            boolean aSold = soldOrRentedIds.contains(a.getId());
-            boolean bSold = soldOrRentedIds.contains(b.getId());
-            return Boolean.compare(aSold, bSold);
-        });
-        // ===== TRUYỀN SANG VIEW =====
-        model.addAttribute("accounts", gameAccounts);
-        model.addAttribute("soldOrRentedIds", soldOrRentedIds);
+
+        // ===== 4 MỨC GIÁ CỐ ĐỊNH =====
+        List<BigDecimal> prices = List.of(
+                BigDecimal.valueOf(50000),
+                BigDecimal.valueOf(100000),
+                BigDecimal.valueOf(150000),
+                BigDecimal.valueOf(200000)
+        );
         model.addAttribute("pageTitle", title);
+        model.addAttribute("gameId", gameId);
+        model.addAttribute("gameName", game.getGameName());
+        model.addAttribute("prices", prices);
 
         return "customer/GameAccount";
     }
 
 
-    @GetMapping("/gameDetail/{id}")
+
+    @GetMapping("/GameDetail/{id}")
     public String gameDetail(@PathVariable UUID id, Model model) {
         GameAccount p = gameAccountService.findGameAccountById(id);
         model.addAttribute("p", p);
@@ -80,5 +81,66 @@ public class GameController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return customerService.findCustomerByUsername(username);
     }
+
+    @GetMapping("/home/products")
+    public String products(
+            @RequestParam(required = false) UUID gameId,
+            Model model) {
+
+        List<BigDecimal> prices = List.of(
+                BigDecimal.valueOf(50000),
+                BigDecimal.valueOf(100000),
+                BigDecimal.valueOf(150000),
+                BigDecimal.valueOf(200000)
+        );
+
+        model.addAttribute("prices", prices);
+        model.addAttribute("gameId", gameId); // để dùng sau
+
+        return "customer/GameAccount";
+    }
+
+    @GetMapping("/GameDetail")
+    public String gameDetail(@RequestParam int price,
+                             @RequestParam String game,
+                             Model model) {
+
+        int skinMin = 0;
+        int skinMax = 0;
+
+        switch (price) {
+            case 50000:
+                skinMin = 10;
+                skinMax = 30;
+                break;
+            case 100000:
+                skinMin = 30;
+                skinMax = 60;
+                break;
+            case 150000:
+                skinMin = 60;
+                skinMax = 90;
+                break;
+            case 200000:
+                skinMin = 90;
+                skinMax = 150;
+                break;
+        }
+
+        // Random Level & VIP
+        int randomLevel = (int) (Math.random() * 50) + 1;
+        int randomVip = (int) (Math.random() * 10) + 1;
+
+        model.addAttribute("price", price);
+        model.addAttribute("gameName", game);
+        model.addAttribute("skinMin", skinMin);
+        model.addAttribute("skinMax", skinMax);
+        model.addAttribute("level", randomLevel);
+        model.addAttribute("vip", randomVip);
+        model.addAttribute("gameName", game);
+        return "customer/GameDetail";
+    }
+
+
 
 }

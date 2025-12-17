@@ -47,12 +47,6 @@ public class BuyController {
     @Autowired
     private CartService cartService;
 
-    @GetMapping("/payment/{id}")
-    public String checkout(@PathVariable("id") UUID id, Model model) {
-        GameAccount game = gameAccountService.findGameAccountById(id);
-        model.addAttribute("games", game);
-        return "customer/Payment";
-    }
 
     @GetMapping("/payment/cart")
     public String paymentCart(@RequestParam("ids") String ids, Model model) {
@@ -68,8 +62,7 @@ public class BuyController {
         return "customer/PaymentCart";
     }
 
-    @Transactional
-    @PostMapping("/order/confirmCart")
+    @GetMapping("/payment")
     public String confirmCart(
             @RequestParam("ids") String ids,
             @RequestParam(value = "voucherCode", required = false) String voucherCode,
@@ -99,14 +92,6 @@ public class BuyController {
         if (games.isEmpty()) {
             model.addAttribute("errorMessage", "Không có món nào hợp lệ để thanh toán!");
             return paymentCart(ids, model);
-        }
-
-        for (GameAccount g : games) {
-            boolean isOrdered = orderDetailRepositories.existsActiveOrderByGameAccount(g.getId());
-            if (isOrdered) {
-                model.addAttribute("errorMessage", "Có tài khoản đã được đặt/bán rồi: " + g.getId());
-                return paymentCart(ids, model);
-            }
         }
 
         BigDecimal totalAll = BigDecimal.ZERO;

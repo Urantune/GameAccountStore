@@ -669,14 +669,11 @@
                 <div class="tab-content">
                     <!-- TẤT CẢ SẢN PHẨM -->
                     <div id="tab-all" class="tab-pane fade show active p-0">
-
                         <!-- Căn giữa các card game -->
                         <div class="row g-4 justify-content-center">
-
                             <!-- Vòng lặp -->
                             <div class="col-md-6 col-lg-4 col-xl-3"
                                  th:each="p, i : ${game}">
-
                                 <div class="product-item rounded">
                                     <div class="product-item-inner border rounded pink">
                                         <div class="product-item-inner-item">
@@ -684,18 +681,15 @@
                                             <!-- Ảnh cứng luân phiên -->
                                             <img th:src="@{${i.index % 2 == 0 ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
                                                  class="img-fluid w-100 rounded-top product-img"/>
-
                                             <!-- Icon -->
                                             <div class="product-details">
                                                 <a th:href="@{/home/game/{gameId}(gameId=${p.gameId})}">
                                                     <i class="fa fa-eye fa-1x"></i>
                                                 </a>
                                             </div>
-
                                             <div class="text-center rounded-bottom p-4">
                                                 <a class="d-block h4" th:text="${p.gameName}"></a>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>

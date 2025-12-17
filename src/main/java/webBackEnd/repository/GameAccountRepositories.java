@@ -70,4 +70,17 @@ AND (:maxLevel IS NULL OR g.lovel <= :maxLevel)
         WHERE r.status = 'Still valid'
     """)
     List<GameAccount> findAllRentedAccounts();
+
+
+
+
+        @Query("""
+        SELECT g FROM GameAccount g
+        WHERE g.price = :price
+          AND g.status = 'ACTIVE'
+        ORDER BY g.createdDate DESC
+    """)
+        List<GameAccount> findByPrice(@Param("price") BigDecimal price);
+
+
 }
