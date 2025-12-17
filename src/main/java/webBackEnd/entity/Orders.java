@@ -29,7 +29,11 @@ public class Orders {
     @Column(name = "status")
     private String status;
 
-
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+        this.status = "WAIT";
+    }
 
     public Orders() {
     }
