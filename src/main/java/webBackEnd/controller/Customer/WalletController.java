@@ -24,42 +24,30 @@ public class WalletController {
     @Autowired private TransactionRepositories transactionRepo;
     @Autowired private WalletService walletService;
 
-    // URL riêng để không đụng HomeController: /home/wallet
+    // Trang ví: /home/wallet
     @GetMapping("/wallet")
-    public String wallet(Model model,
-                         Principal principal,
+    public String wallet(Model model, Principal principal,
                          @RequestParam(required = false) String search) {
 
         if (principal == null) return "redirect:/login";
 
-        Customer c = customerRepo
-                .findByUsernameIgnoreCase(principal.getName())
-                .orElseThrow();
-
+        Customer c = customerRepo.findByUsernameIgnoreCase(principal.getName()).orElseThrow();
         BigDecimal balance = (c.getBalance() == null) ? BigDecimal.ZERO : c.getBalance();
 
-        List<Transaction> history;
-        if (search != null && !search.isBlank()) {
-            history = transactionRepo
-                    .findByCustomerAndDescriptionContainingIgnoreCaseOrderByDateCreatedDesc(c, search);
-        } else {
-            history = transactionRepo
-                    .findByCustomerOrderByDateCreatedDesc(c);
-        }
+        List<Transaction> history = (search != null && !search.isBlank())
+                ? transactionRepo.findByCustomerAndDescriptionContainingIgnoreCaseOrderByDateCreatedDesc(c, search)
+                : transactionRepo.findByCustomerOrderByDateCreatedDesc(c);
 
-        model.addAttribute("balance", balance);
-        model.addAttribute("walletHistory", history);
-
-        // nếu bạn CHƯA có sumDeposit/sumSpent trong repo thì tạm tính ở đây
         BigDecimal totalDeposit = BigDecimal.ZERO;
         BigDecimal totalSpent = BigDecimal.ZERO;
-
         for (Transaction t : history) {
             if (t.getAmount() == null) continue;
             if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) totalDeposit = totalDeposit.add(t.getAmount());
             else totalSpent = totalSpent.add(t.getAmount().abs());
         }
 
+        model.addAttribute("balance", balance);
+        model.addAttribute("walletHistory", history);
         model.addAttribute("totalDeposit", totalDeposit);
         model.addAttribute("totalSpent", totalSpent);
         model.addAttribute("search", search);
@@ -67,7 +55,19 @@ public class WalletController {
         return "customer/Transaction";
     }
 
-    // URL mới: /home/wallet/topup
+    // ✅ Trang riêng để nạp tiền: /home/wallet/topup
+    @GetMapping("/wallet/topup")
+    public String topUpPage(Model model, Principal principal) {
+        if (principal == null) return "redirect:/login";
+
+        Customer c = customerRepo.findByUsernameIgnoreCase(principal.getName()).orElseThrow();
+        BigDecimal balance = (c.getBalance() == null) ? BigDecimal.ZERO : c.getBalance();
+        model.addAttribute("balance", balance);
+
+        return "customer/TopUp"; // tạo file TopUp.html
+    }
+
+    // ✅ Xử lý nạp tiền
     @PostMapping("/wallet/topup")
     public String topUp(@RequestParam BigDecimal amount,
                         Principal principal,

@@ -388,20 +388,37 @@
         </div>
     </div>
 
-    <form th:action="@{/home/wallet/topup}" method="post">
+    <!-- Nap tien -->
+    <a class="btn btn-success btn-topup"
+       th:href="@{/home/wallet/topup}">
+        <i class="fa-solid fa-circle-plus me-2"></i>
+        Nạp tiền
+    </a>
 
-        <input type="number"
-               name="amount"
-               min="1000"
-               step="1000"
-               class="form-control"
-               placeholder="Nhập số tiền (vd: 100000)"
-               required>
+    <style>
+        .btn-topup {
+            background-color: #E75480;
+            color: #fff;
+            font-size: 18px;
+            padding: 16px 40px;
+            font-weight: 700;
+            border-radius: 18px;
+            border: none;
+            box-shadow: 0 8px 20px rgba(231, 84, 128, 0.35);
+            transition:
+                    background-color 0.25s ease,
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
 
-        <button type="submit" class="btn btn-success">
-            <i class="fa fa-plus-circle me-1"></i>Nạp tiền
-        </button>
-    </form>
+        .btn-topup:hover {
+            background-color: #FC6A8D;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(231, 84, 128, 0.5);
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
 
 
     <form th:action="@{/home/transaction}"
