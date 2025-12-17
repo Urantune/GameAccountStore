@@ -3,6 +3,7 @@ package webBackEnd.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -89,10 +90,19 @@ public class SecurityConfig {
 
                     if (cause instanceof DisabledException) {
                         res.getWriter().write("{\"error\":\"Tài khoản đã bị khóa\"}");
-                    } else {
-                        res.getWriter().write("{\"error\":\"Sai username hoặc password\"}");
+                    }
+                    else if (cause instanceof AccountExpiredException) {
+                        res.getWriter().write(
+                                "{\"error\":\"Tài khoản đăng ký sau thời hạn cho phép\"}"
+                        );
+                    }
+                    else {
+                        res.getWriter().write(
+                                "{\"error\":\"Sai username hoặc password\"}"
+                        );
                     }
                 })
+
                 .permitAll()
         );
 

@@ -67,6 +67,7 @@
             this.lovel = lovel;
             this.vip = items;
             this.email = email;
+
         }
 
         public UUID getGameAccountId() {
