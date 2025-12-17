@@ -48,9 +48,7 @@
             justify-content:space-between;
             gap:10px;
         }
-        .ga-left{
-            min-width:0;
-        }
+        .ga-left{ min-width:0; }
         .ga-title{
             font-weight:800;
             line-height:1.2;
@@ -58,29 +56,16 @@
             overflow:hidden;
             text-overflow:ellipsis;
         }
-        .ga-sub{
-            font-size:0.88rem;
-            color:#6c757d;
-        }
+        .ga-sub{ font-size:0.88rem; color:#6c757d; }
         .ga-actions{
             display:flex;
             align-items:center;
             gap:10px;
             flex-shrink:0;
         }
-        .ga-price-title{
-            font-weight:800;
-            margin: 6px 0 12px;
-        }
-
-        .mark-ok{
-            color:#198754;
-            font-size:18px;
-        }
-        .mark-wait{
-            color:#adb5bd;
-            font-size:18px;
-        }
+        .ga-price-title{ font-weight:800; margin: 6px 0 12px; }
+        .mark-ok{ color:#198754; font-size:18px; }
+        .mark-wait{ color:#adb5bd; font-size:18px; }
 
         .big-actions{
             margin-top:18px;
@@ -182,29 +167,29 @@
                     </td>
 
                     <td>
-                <span class="value"
-                      th:text="${od.gameAccount != null && od.gameAccount.game != null ? od.gameAccount.game.gameName : 'N/A'}"></span>
+                        <span class="value"
+                              th:text="${od.gameAccount != null && od.gameAccount.game != null ? od.gameAccount.game.gameName : 'N/A'}"></span>
                     </td>
 
                     <td>
-                <span class="value"
-                      th:text="${od.gameAccount != null && od.gameAccount.price != null ? (#numbers.formatDecimal(od.gameAccount.price,1,'COMMA',0,'POINT') + ' đ') : 'N/A'}"></span>
+                        <span class="value"
+                              th:text="${od.price != null ? (#numbers.formatDecimal(od.price,0,'COMMA',0,'POINT') + ' đ') : 'N/A'}"></span>
                     </td>
 
                     <td>
-                <span class="pill" th:if="${od.duration == 0}">
-                    <i class="bi bi-bag"></i> BUY
-                </span>
+                        <span class="pill" th:if="${od.duration == 0}">
+                            <i class="bi bi-bag"></i> BUY
+                        </span>
                         <span class="pill" th:if="${od.duration != 0}">
-                    <i class="bi bi-clock-history"></i>
-                    <span th:text="${od.duration}"></span> month(s)
-                </span>
+                            <i class="bi bi-clock-history"></i>
+                            <span th:text="${od.duration}"></span> month(s)
+                        </span>
                     </td>
 
                     <td class="text-center">
-                <span class="mark-wait" th:attr="id=${'selMark-' + od.id}">
-                    <i class="bi bi-circle"></i>
-                </span>
+                        <span class="mark-wait" th:attr="id=${'selMark-' + od.id}">
+                            <i class="bi bi-circle"></i>
+                        </span>
                     </td>
 
                     <td class="text-end">
@@ -214,18 +199,19 @@
                                 data-bs-target="#gaOffcanvas"
                                 aria-controls="gaOffcanvas"
                                 th:attr="
-                            data-odid=${od.id},
-                            data-odduration=${od.duration},
-                            data-price=${od.gameAccount != null && od.gameAccount.price != null ? od.gameAccount.price : ''},
-                            data-game=${od.gameAccount != null && od.gameAccount.game != null ? od.gameAccount.game.gameName : ''}">
+  data-odid=${od.id},
+  data-odduration=${od.duration},
+  data-price=${od.price != null ? od.price : ''},
+  data-odgame=${(od.gameAccount != null && od.gameAccount.game != null) ? od.gameAccount.game.gameName : ''}"
+>
                             <i class="bi bi-plus"></i>
                         </button>
+
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
 
         <form id="decisionForm" method="post" th:action="@{/staffHome/approve/decision}">
             <input type="hidden" name="orderId" th:value="${order != null ? order.id : ''}">
@@ -250,7 +236,7 @@
             <h5 class="offcanvas-title" id="gaOffcanvasLabel">
                 <i class="bi bi-card-list me-2"></i>Pick Account By Price
             </h5>
-            <div class="meta">Chọn 1 account cho từng OrderDetail. BUY (duration=0) sẽ lấy kho duration null. RENT (duration>0) sẽ lấy kho duration=RENT.</div>
+            <div class="meta">BUY uses duration NULL. RENT uses duration RENT.</div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
@@ -280,705 +266,111 @@
                 </div>
             </div>
 
-            <div class="ga-price-title">
-                Choose 1 account in this bucket
-            </div>
+            <div class="ga-price-title">Choose 1 account in this bucket</div>
         </div>
 
         <div id="gaMatchWrap">
 
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="50000" data-mode="NULL"
-                 th:with="lst=${aovNull != null && aovNull['50000'] != null ? aovNull['50000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
+            <div th:each="p : ${priceBuckets}" class="mb-2">
+
+
+            <div class="ga-price-list d-none"
+                     th:attr="data-game='AOV',data-bucket=${p}">
+                    <div class="d-grid gap-2">
+                        <div class="ga-card ga-basic"
+                             th:each="ga : ${aovByPrice != null && aovByPrice.get(p) != null ? aovByPrice.get(p) : #lists.emptyList()}"
+                             th:attr="
+                        data-gaid=${ga.gameAccountId},
+                        data-game=${ga.game != null ? ga.game.gameName : ''},
+                        data-username=${ga.gameAccount},
+                        data-password=${ga.gamePassword},
+                        data-price=${ga.price},
+                        data-rank=${ga.rank},
+                        data-skin=${ga.skin},
+                        data-level=${ga.lovel},
+                        data-vip=${ga.vip},
+                        data-status=${ga.status},
+                        data-classify=${ga.classify},
+                        data-gaduration=${ga.duration},
+                        data-email=${ga.email},
+                        data-desc=${ga.description},
+                        data-img=${ga.imageMain}">
+                            <div class="ga-row">
+                                <div class="ga-left">
+                                    <div class="ga-title"
+                                         th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
+                                    <div class="ga-sub mono">
+                                        <span th:text="${ga.gameAccountId}"></span>
+                                        <span class="mx-1">|</span>
+                                        <span th:text="${ga.gameAccount}"></span>
+                                    </div>
+                                    <div class="ga-sub">
+                                        <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
+                                        <span class="badge bg-light text-dark ms-1"
+                                              th:text="${(ga.duration==null || #strings.isEmpty(#strings.trim(ga.duration))) ? 'BUY' : ga.duration}"></span>
+                                    </div>
                                 </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
+                                <div class="ga-actions">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
+                                    <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
                                 </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="50000" data-mode="RENT"
-                 th:with="lst=${aovRent != null && aovRent['50000'] != null ? aovRent['50000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
+                <div class="ga-price-list d-none"
+                     th:attr="data-game='FREE FIRE',data-bucket=${p}">
+                    <div class="d-grid gap-2">
+                        <div class="ga-card ga-basic"
+                             th:each="ga : ${ffByPrice != null && ffByPrice.get(p) != null ? ffByPrice.get(p) : #lists.emptyList()}"
+                             th:attr="
+                        data-gaid=${ga.gameAccountId},
+                        data-game=${ga.game != null ? ga.game.gameName : ''},
+                        data-username=${ga.gameAccount},
+                        data-password=${ga.gamePassword},
+                        data-price=${ga.price},
+                        data-rank=${ga.rank},
+                        data-skin=${ga.skin},
+                        data-level=${ga.lovel},
+                        data-vip=${ga.vip},
+                        data-status=${ga.status},
+                        data-classify=${ga.classify},
+                        data-gaduration=${ga.duration},
+                        data-email=${ga.email},
+                        data-desc=${ga.description},
+                        data-img=${ga.imageMain}">
+                            <div class="ga-row">
+                                <div class="ga-left">
+                                    <div class="ga-title"
+                                         th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
+                                    <div class="ga-sub mono">
+                                        <span th:text="${ga.gameAccountId}"></span>
+                                        <span class="mx-1">|</span>
+                                        <span th:text="${ga.gameAccount}"></span>
+                                    </div>
+                                    <div class="ga-sub">
+                                        <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
+                                        <span class="badge bg-light text-dark ms-1"
+                                              th:text="${(ga.duration==null || #strings.isEmpty(#strings.trim(ga.duration))) ? 'BUY' : ga.duration}"></span>
+                                    </div>
                                 </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
+                                <div class="ga-actions">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
+                                    <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
                                 </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="100000" data-mode="NULL"
-                 th:with="lst=${aovNull != null && aovNull['100000'] != null ? aovNull['100000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="100000" data-mode="RENT"
-                 th:with="lst=${aovRent != null && aovRent['100000'] != null ? aovRent['100000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="150000" data-mode="NULL"
-                 th:with="lst=${aovNull != null && aovNull['150000'] != null ? aovNull['150000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="150000" data-mode="RENT"
-                 th:with="lst=${aovRent != null && aovRent['150000'] != null ? aovRent['150000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="200000" data-mode="NULL"
-                 th:with="lst=${aovNull != null && aovNull['200000'] != null ? aovNull['200000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="AOV" data-bucket="200000" data-mode="RENT"
-                 th:with="lst=${aovRent != null && aovRent['200000'] != null ? aovRent['200000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="50000" data-mode="NULL"
-                 th:with="lst=${ffNull != null && ffNull['50000'] != null ? ffNull['50000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="50000" data-mode="RENT"
-                 th:with="lst=${ffRent != null && ffRent['50000'] != null ? ffRent['50000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="100000" data-mode="NULL"
-                 th:with="lst=${ffNull != null && ffNull['100000'] != null ? ffNull['100000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="100000" data-mode="RENT"
-                 th:with="lst=${ffRent != null && ffRent['100000'] != null ? ffRent['100000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="150000" data-mode="NULL"
-                 th:with="lst=${ffNull != null && ffNull['150000'] != null ? ffNull['150000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="150000" data-mode="RENT"
-                 th:with="lst=${ffRent != null && ffRent['150000'] != null ? ffRent['150000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="200000" data-mode="NULL"
-                 th:with="lst=${ffNull != null && ffNull['200000'] != null ? ffNull['200000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ga-price-list d-none" data-game="FREE FIRE" data-bucket="200000" data-mode="RENT"
-                 th:with="lst=${ffRent != null && ffRent['200000'] != null ? ffRent['200000'] : T(java.util.Collections).emptyList()}">
-                <div class="d-grid gap-2">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${lst}"
-                         th:attr="data-gaid=${ga.gameAccountId},
-                                  data-game=${ga.game != null ? ga.game.gameName : ''},
-                                  data-username=${ga.gameAccount},
-                                  data-password=${ga.gamePassword},
-                                  data-price=${ga.price},
-                                  data-rank=${ga.rank},
-                                  data-skin=${ga.skin},
-                                  data-level=${ga.lovel},
-                                  data-vip=${ga.vip},
-                                  data-status=${ga.status},
-                                  data-classify=${ga.classify},
-                                  data-duration=${ga.duration},
-                                  data-email=${ga.email},
-                                  data-desc=${ga.description},
-                                  data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title" th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                </div>
-                            </div>
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="gaNoBucket" class="text-muted d-none">
-                Bucket này không có account.
-            </div>
-
+            <div id="gaNoBucket" class="text-muted d-none">No accounts in this bucket.</div>
         </div>
 
     </div>
@@ -1003,7 +395,7 @@
                     <div class="ga-kv"><div class="k">Skins</div><div class="v" id="mSkin">-</div></div>
                     <div class="ga-kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
                     <div class="ga-kv"><div class="k">VIP</div><div class="v" id="mVip">-</div></div>
-                    <div class="ga-kv"><div class="k">Duration</div><div class="v" id="mDuration">-</div></div>
+                    <div class="ga-kv"><div class="k">GA Duration</div><div class="v" id="mDuration">-</div></div>
                     <div class="ga-kv"><div class="k">Classify</div><div class="v" id="mClassify">-</div></div>
                     <div class="ga-kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
                     <div class="ga-kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
@@ -1025,6 +417,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    // ====== Helpers ======
     const fmtVND = (v) => {
         if (v === null || v === undefined || v === '') return 'N/A';
         const s = String(v).trim();
@@ -1051,15 +444,27 @@
         return '';
     };
 
-    const modeFromOdDuration = (odDurationStr) => {
+    // OrderDetail: duration 0 => BUY, >0 => RENT
+    const odMode = (odDurationStr) => {
         const n = Number(String(odDurationStr ?? '').trim());
-        if (!isFinite(n)) return 'NULL';
-        return (n === 0) ? 'NULL' : 'RENT';
+        if (!isFinite(n)) return 'BUY';
+        return (n === 0) ? 'BUY' : 'RENT';
     };
+
+    // GameAccount: duration null/"" => BUY, "RENT" => RENT
+    const gaMode = (gaDurationStr) => {
+        if (gaDurationStr === null || gaDurationStr === undefined) return 'BUY';
+        const s = String(gaDurationStr).trim();
+        if (s === '' || s === '0') return 'BUY';
+        if (s.toUpperCase() === 'RENT') return 'RENT';
+        return 'BUY';
+    };
+
 
     const hideAllBuckets = () => {
         document.querySelectorAll('.ga-price-list').forEach(el => el.classList.add('d-none'));
-        document.getElementById('gaNoBucket').classList.add('d-none');
+        const nb = document.getElementById('gaNoBucket');
+        if (nb) nb.classList.add('d-none');
     };
 
     const setMarkSelected = (odId, ok) => {
@@ -1078,8 +483,11 @@
 
     const upsertHiddenSelection = (odId, gaId) => {
         const wrap = document.getElementById('selectedInputs');
+        if (!wrap) return;
+
         const name = 'selected[' + odId + ']';
         let input = wrap.querySelector('input[name="' + CSS.escape(name) + '"]');
+
         if (!input) {
             input = document.createElement('input');
             input.type = 'hidden';
@@ -1089,52 +497,103 @@
         input.value = gaId;
     };
 
+    // ====== State ======
     let currentOdId = '';
-    let currentMode = 'NULL';
+    let currentOdMode = 'BUY';
 
+    // ====== Click + to open bucket ======
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.ga-plus');
         if (!btn) return;
 
         const d = btn.dataset;
+
+        // data-odgame có thể rỗng vì WAIT chưa gán gameAccount
+        const rawGame  = d.odgame || d.game || '';
+        const rawPrice = d.price || '';
+
         currentOdId = d.odid || '';
-        currentMode = modeFromOdDuration(d.odduration);
+        currentOdMode = odMode(d.odduration);
 
-        document.getElementById('gaPanelEmpty').style.display = 'none';
-        document.getElementById('gaPanelHeader').classList.remove('d-none');
-        document.getElementById('curOdId').textContent = currentOdId || '-';
+        const empty = document.getElementById('gaPanelEmpty');
+        const header = document.getElementById('gaPanelHeader');
+        if (empty) empty.style.display = 'none';
+        if (header) header.classList.remove('d-none');
 
-        const gameKey = normalizeGame(d.game);
-        document.getElementById('gaGameText').textContent = gameKey || 'N/A';
+        const curOdEl = document.getElementById('curOdId');
+        if (curOdEl) curOdEl.textContent = currentOdId || '-';
+
+        const bucket  = bucketFromPrice(rawPrice);
+        const gameKey = normalizeGame(rawGame); // có thể ''
+
+        const bucketText = document.getElementById('gaBucketText');
+        const modeText   = document.getElementById('gaModeText');
+        const gameText   = document.getElementById('gaGameText');
+
+        if (bucketText) bucketText.textContent = bucket ? (bucket + ' đ') : 'N/A';
+        if (modeText) modeText.textContent = currentOdMode;
+        if (gameText) gameText.textContent = gameKey ? gameKey : 'ANY';
 
         hideAllBuckets();
 
-        const bucket = bucketFromPrice(d.price);
-        document.getElementById('gaBucketText').textContent = bucket ? (bucket + ' đ') : 'N/A';
-        document.getElementById('gaModeText').textContent = currentMode;
-
-        const selector = (bucket && gameKey)
-            ? '.ga-price-list[data-game="' + gameKey + '"][data-bucket="' + bucket + '"][data-mode="' + currentMode + '"]'
-            : '';
-
-        const bucketEl = selector ? document.querySelector(selector) : null;
-        if (!bucketEl || bucketEl.querySelectorAll('.ga-card').length === 0) {
-            document.getElementById('gaNoBucket').classList.remove('d-none');
+        if (!bucket) {
+            const nb = document.getElementById('gaNoBucket');
+            if (nb) nb.classList.remove('d-none');
             return;
         }
 
-        const selectedName = 'gaPickRadio-' + currentOdId;
-        bucketEl.querySelectorAll('input.ga-pick[type="radio"]').forEach(r => r.name = selectedName);
+        // ✅ Nếu biết game -> show đúng 1 list
+        // ✅ Nếu KHÔNG biết game -> show tất cả list cùng bucket (AOV + FREE FIRE)
+        const lists = gameKey
+            ? Array.from(document.querySelectorAll('.ga-price-list[data-game="' + gameKey + '"][data-bucket="' + bucket + '"]'))
+            : Array.from(document.querySelectorAll('.ga-price-list[data-bucket="' + bucket + '"]'));
 
-        const existed = document.querySelector('#selectedInputs input[name="' + CSS.escape('selected[' + currentOdId + ']') + '"]');
-        if (existed && existed.value) {
-            const r = bucketEl.querySelector('input.ga-pick[type="radio"][value="' + existed.value + '"]');
-            if (r) r.checked = true;
+        if (lists.length === 0) {
+            const nb = document.getElementById('gaNoBucket');
+            if (nb) nb.classList.remove('d-none');
+            return;
         }
 
-        bucketEl.classList.remove('d-none');
+        let totalShown = 0;
+
+        lists.forEach(el => {
+            const cards = Array.from(el.querySelectorAll('.ga-card'));
+            let shownHere = 0;
+
+            cards.forEach(card => {
+                const m = gaMode(card.dataset.gaduration);
+                if (m === currentOdMode) {
+                    card.style.display = '';
+                    shownHere++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (shownHere > 0) {
+                el.classList.remove('d-none');
+                totalShown += shownHere;
+
+                // radio name theo OD để pick 1 cái
+                const selectedName = 'gaPickRadio-' + currentOdId;
+                el.querySelectorAll('input.ga-pick[type="radio"]').forEach(r => r.name = selectedName);
+            }
+        });
+
+        if (totalShown === 0) {
+            const nb = document.getElementById('gaNoBucket');
+            if (nb) nb.classList.remove('d-none');
+            return;
+        }
+
+        // restore lựa chọn đã pick trước (nếu có)
+        const existed = document.querySelector('#selectedInputs input[name="' + CSS.escape('selected[' + currentOdId + ']') + '"]');
+        if (existed && existed.value) {
+            document.querySelectorAll('input.ga-pick[type="radio"][value="' + existed.value + '"]').forEach(r => r.checked = true);
+        }
     });
 
+    // ====== Pick radio ======
     document.addEventListener('change', (e) => {
         const r = e.target.closest('input.ga-pick[type="radio"]');
         if (!r) return;
@@ -1149,6 +608,7 @@
         setMarkSelected(currentOdId, true);
     });
 
+    // ====== Info modal ======
     document.addEventListener('click', (e) => {
         const infoBtn = e.target.closest('.ga-info');
         if (!infoBtn) return;
@@ -1156,56 +616,80 @@
         const card = infoBtn.closest('.ga-card');
         if (!card) return;
 
-        document.getElementById('mGaid').textContent = card.dataset.gaid || '-';
-        document.getElementById('mGame').textContent = card.dataset.game || '-';
-        document.getElementById('mUser').textContent = card.dataset.username || '-';
-        document.getElementById('mPass').textContent = card.dataset.password || '-';
-        document.getElementById('mPrice').textContent = fmtVND(card.dataset.price);
-        document.getElementById('mRank').textContent = card.dataset.rank || '-';
-        document.getElementById('mSkin').textContent = card.dataset.skin ?? '0';
-        document.getElementById('mLevel').textContent = card.dataset.level ?? '0';
-        document.getElementById('mVip').textContent = card.dataset.vip ?? '0';
-        document.getElementById('mDuration').textContent = card.dataset.duration || '-';
-        document.getElementById('mClassify').textContent = card.dataset.classify || '-';
-        document.getElementById('mStatus').textContent = card.dataset.status || '-';
-        document.getElementById('mEmail').textContent = card.dataset.email || '-';
-        document.getElementById('mDesc').textContent = card.dataset.desc || '-';
+        const setTxt = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = (val === null || val === undefined || val === '') ? '-' : String(val);
+        };
+
+        setTxt('mGaid', card.dataset.gaid || '-');
+        setTxt('mGame', card.dataset.game || '-');
+        setTxt('mUser', card.dataset.username || '-');
+        setTxt('mPass', card.dataset.password || '-');
+
+        const priceEl = document.getElementById('mPrice');
+        if (priceEl) priceEl.textContent = fmtVND(card.dataset.price);
+
+        setTxt('mRank', card.dataset.rank || '-');
+        setTxt('mSkin', (card.dataset.skin ?? '0'));
+        setTxt('mLevel', (card.dataset.level ?? '0'));
+        setTxt('mVip', (card.dataset.vip ?? '0'));
+
+        const dur = (card.dataset.gaduration && String(card.dataset.gaduration).trim()) ? card.dataset.gaduration : 'NULL';
+        setTxt('mDuration', dur);
+
+        setTxt('mClassify', card.dataset.classify || '-');
+        setTxt('mStatus', card.dataset.status || '-');
+        setTxt('mEmail', card.dataset.email || '-');
+        setTxt('mDesc', card.dataset.desc || '-');
 
         const imgWrap = document.getElementById('mImgWrap');
         const img = document.getElementById('mImg');
         const src = (card.dataset.img || '').trim();
-        if (src) {
-            img.src = src;
-            imgWrap.style.display = 'block';
-        } else {
-            img.removeAttribute('src');
-            imgWrap.style.display = 'none';
+
+        if (imgWrap && img) {
+            if (src) {
+                img.src = src;
+                imgWrap.style.display = 'block';
+            } else {
+                img.removeAttribute('src');
+                imgWrap.style.display = 'none';
+            }
         }
 
-        const modal = new bootstrap.Modal(document.getElementById('gaDetailModal'));
-        modal.show();
+        const modalEl = document.getElementById('gaDetailModal');
+        if (modalEl && window.bootstrap) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
     });
 
-    document.getElementById('btnAccept').addEventListener('click', () => {
+    // ====== Accept / Reject ======
+    document.getElementById('btnAccept')?.addEventListener('click', () => {
         const rows = document.querySelectorAll('[id^="selMark-"]');
         let okCount = 0;
         rows.forEach(el => { if (el.classList.contains('mark-ok')) okCount++; });
 
         const total = rows.length;
         if (total > 0 && okCount < total) {
-            alert('Chưa chọn đủ account cho tất cả OrderDetail. (' + okCount + '/' + total + ')');
+            alert('Not selected enough accounts. (' + okCount + '/' + total + ')');
             return;
         }
 
-        document.getElementById('decisionInput').value = 'ACCEPT';
-        document.getElementById('decisionForm').submit();
+        const decisionInput = document.getElementById('decisionInput');
+        const form = document.getElementById('decisionForm');
+        if (decisionInput) decisionInput.value = 'ACCEPT';
+        if (form) form.submit();
     });
 
-    document.getElementById('btnReject').addEventListener('click', () => {
-        document.getElementById('decisionInput').value = 'REJECT';
-        document.getElementById('decisionForm').submit();
+    document.getElementById('btnReject')?.addEventListener('click', () => {
+        const decisionInput = document.getElementById('decisionInput');
+        const form = document.getElementById('decisionForm');
+        if (decisionInput) decisionInput.value = 'REJECT';
+        if (form) form.submit();
     });
 </script>
+
+
 
 </body>
 </html>
