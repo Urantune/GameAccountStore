@@ -271,13 +271,11 @@
                 <img th:src="@{${gameName == 'AOV' ? '/img/aov.jpg' : '/img/ff.jpg'}}"
                      class="img-fluid rounded shadow"/>
             </div>
-
             <!-- INFO -->
             <div class="col-md-7">
                 <h3 class="fw-bold mb-3" th:text="'Game ' + ${gameName}"></h3>
 
                 <div class="border rounded p-4 mb-4">
-
                     <!-- ACCOUNT TYPE -->
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Loại tài khoản:</div>
@@ -294,7 +292,6 @@
                             </label>
                         </div>
                     </div>
-
                     <!-- RENT PACKAGE -->
                     <div class="row mb-3 d-none" id="rentPackage">
                         <div class="col-5 fw-bold">Gói thuê:</div>
@@ -307,7 +304,6 @@
                             </select>
                         </div>
                     </div>
-
                     <!-- SKIN -->
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Số lượng Skin:</div>
@@ -316,10 +312,8 @@
                                    class="form-control"
                                    readonly
                                    th:value="${skinMin} + ' - ' + ${skinMax} + ' skin'">
-
                         </div>
                     </div>
-
                     <!-- VOUCHER -->
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Voucher:</div>
@@ -336,8 +330,6 @@
                             </button>
                         </div>
                     </div>
-
-
                     <!-- PRICE -->
                     <div class="row">
                         <div class="col-5 fw-bold">Giá:</div>
@@ -353,25 +345,22 @@
                     <input type="hidden" id="voucherPercent" value="0">
 
                     <input type="hidden" id="basePrice" th:value="${price}">
-                </div>
+                    <input type="radio" name="accountType" value="permanent" checked>
+                    <input type="radio" name="accountType" value="rent">
 
+                </div>
                 <!-- ACTION -->
                 <form th:if="${#authorization.expression('isAuthenticated()')}"
                       th:action="@{/home/payment}"
                       method="post"
                       onsubmit="syncBeforeSubmit()">
-
                     <input type="hidden" name="accountType" id="accountTypeHidden">
                     <input type="hidden" name="rentMonth" id="rentMonthHidden">
                     <input type="hidden" name="skinRange" id="skinRangeHidden">
                     <input type="hidden" name="finalPrice" id="finalPriceHidden">
                     <input type="hidden" name="voucherCode" id="voucherHidden">
-
                     <button class="btn btn-dark px-4">🛒 Mua ngay</button>
                 </form>
-
-
-
                 <button th:if="${#authorization.expression('!isAuthenticated()')}"
                         class="btn btn-dark px-4"
                         onclick="alert('Bạn cần đăng nhập!')">
@@ -382,57 +371,34 @@
     </div>
 </section>
 <script>
-    function applyVoucher() {
-        const code = document.getElementById('voucherInput').value
-            .trim()
-            .toUpperCase();
-
-        let percent = 0;
-
-        // DEMO CLIENT (server sẽ check lại)
-        if (code === 'SALE10') percent = 10;
-        if (code === 'SALE20') percent = 20;
-
-        document.getElementById('voucherPercent').value = percent;
-
-        if (code !== '' && percent === 0) {
-            alert('Voucher không hợp lệ');
-        }
-
-        updatePriceDisplay();
-    }
-</script>
-
-<script>
     function getBasePrice() {
         return parseInt(document.getElementById('basePrice').value);
     }
-
     function getCurrentPrice() {
-        const accType = document.querySelector(
+        const accTypeRadio = document.querySelector(
             'input[name="accountType"]:checked'
-        ).value;
+        );
+        // 🔥 FIX: nếu chưa chọn thì mặc định permanent
+        const accType = accTypeRadio ? accTypeRadio.value : 'permanent';
 
         let price = getBasePrice();
-
         // RENT
         if (accType === 'rent') {
-            const month = document.getElementById('rentMonth').value;
+            const month = document.getElementById('rentMonth')?.value;
             if (month === '2') price *= 0.9;
             if (month === '3') price *= 0.85;
         }
-
         // VOUCHER
         const percent = parseInt(
-            document.getElementById('voucherPercent').value
+            document.getElementById('voucherPercent').value || 0
         );
+
         if (percent > 0) {
             price -= price * (percent / 100);
         }
 
         return Math.round(price);
     }
-
     function updatePriceDisplay() {
         const price = getCurrentPrice();
         const input = document.getElementById('priceInput');
@@ -450,40 +416,49 @@
     function updatePriceByRent() {
         updatePriceDisplay();
     }
-
     /* ===== VOUCHER (DEMO CLIENT) ===== */
     function applyVoucher() {
-        const code = document.getElementById('voucherInput').value.trim().toUpperCase();
+        const code = document.getElementById('voucherInput').value.trim();
+        if (!code) return;
 
-        // ⚠ DEMO – server sẽ check lại
-        let percent = 0;
-        if (code === 'SALE10') percent = 10;
-        if (code === 'SALE20') percent = 20;
-
-        if (percent === 0 && code !== '') {
-            alert('Voucher không hợp lệ');
-            document.getElementById('voucherPercent').value = 0;
-        } else {
-            document.getElementById('voucherPercent').value = percent;
-        }
-
-        updatePriceDisplay();
+        fetch(`/api/voucher/check?code=${encodeURIComponent(code)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.valid) {
+                    alert("Voucher không hợp lệ hoặc hết hạn");
+                    document.getElementById('voucherPercent').value = 0;
+                    document.getElementById('voucherHidden').value = ""; // clear hidden
+                } else {
+                    document.getElementById('voucherPercent').value = data.percent;
+                    // lưu trực tiếp vào hidden để chắc chắn server nhận được
+                    // nếu API trả về id, dùng id; còn không dùng code
+                    document.getElementById('voucherHidden').value = code;
+                    // nếu API trả về id: document.getElementById('voucherHidden').value = data.id;
+                }
+                updatePriceDisplay();
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Lỗi khi kiểm tra voucher");
+            });
     }
 
     /* ===== SUBMIT ===== */
     function syncBeforeSubmit() {
         document.getElementById('accountTypeHidden').value =
-            document.querySelector('input[name="accountType"]:checked').value;
+            (document.querySelector('input[name="accountType"]:checked') || {value:'permanent'}).value;
 
         document.getElementById('rentMonthHidden').value =
             document.getElementById('rentMonth')?.value || 0;
 
-        document.getElementById('finalPriceHidden').value =
-            document.getElementById('priceInput').dataset.price;
+        // dùng function getCurrentPrice() để chắc chắn giá gửi lên là giá tính mới nhất
+        document.getElementById('finalPriceHidden').value = getCurrentPrice();
 
+        // trim voucher trước khi submit
         document.getElementById('voucherHidden').value =
-            document.getElementById('voucherInput').value;
+            (document.getElementById('voucherHidden').value || "").trim();
     }
+
 </script>
 
 

@@ -1,5 +1,6 @@
 package webBackEnd.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +43,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 // static + public
+                .requestMatchers("/api/**").permitAll()
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
                         "/bestseller/**", "/assets/**", "/lib/**",
@@ -61,6 +63,20 @@ public class SecurityConfig {
                 .requestMatchers("/home/cart").authenticated()
                 .anyRequest().authenticated()
         );
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+
+                    if (request.getRequestURI().startsWith("/api/")) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json; charset=UTF-8");
+                        response.getWriter().write("{\"error\":\"Unauthorized\"}");
+                    } else {
+                        response.sendRedirect("/home");
+                    }
+
+                })
+        );
+
 
         http.formLogin(form -> form
                 .loginPage("/home")

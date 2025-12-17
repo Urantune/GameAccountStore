@@ -33,4 +33,13 @@ public class VoucherService {
         }
         return voucherRepositories.findValidVoucher(code.trim(), new Date());
     }
+
+    public Voucher getValidVouchers(String code) {
+        Date now = new Date();
+
+        return voucherRepositories.findByVoucherNameIgnoreCaseAndStartDateBeforeAndEndDateAfter(code, now, now).orElse(null);
+    }
+
+
+
 }

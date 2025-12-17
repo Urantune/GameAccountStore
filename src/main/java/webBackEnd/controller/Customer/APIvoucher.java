@@ -64,4 +64,20 @@ public class APIvoucher {
         result.put("totalPrice", totalPrice);
         return result;
     }
+
+    @GetMapping("/api/voucher/check")
+    @ResponseBody
+    public Map<String, Object> checkVoucher(@RequestParam String code) {
+        Voucher voucher = voucherService.getValidVoucher(code.trim());
+        if (voucher == null) {
+            return Map.of("valid", false);
+        }
+        return Map.of(
+                "valid", true,
+                "percent", voucher.getValue()
+        );
+    }
+
+
+
 }
