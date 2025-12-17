@@ -20,15 +20,17 @@ public class OrderDetail {
     private GameAccount gameAccount;
     @Column(name = "duration", nullable = false)
     private Integer duration;
+    private Integer price;
 
     public OrderDetail() {
     }
 
-    public OrderDetail(UUID id, Orders order, GameAccount gameAccount, Integer duration) {
+    public OrderDetail(UUID id, Orders order, GameAccount gameAccount, Integer duration, Integer price) {
         this.id = id;
         this.order = order;
         this.gameAccount = gameAccount;
         this.duration = duration;
+        this.price = price;
     }
 
 
@@ -64,6 +66,14 @@ public class OrderDetail {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 }
 

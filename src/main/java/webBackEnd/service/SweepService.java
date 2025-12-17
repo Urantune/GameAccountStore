@@ -34,7 +34,7 @@ public class SweepService {
         List<Orders> orders = ordersService.findAllByStatus("WAIT");
 
         for(Orders order:orders){
-            if(order.getCreatedDate().plusDays(3).isBefore(now)){
+            if(order.getCreatedDate().plusYears(300).isBefore(now)){
                 List<OrderDetail> list = orderDetailService.findAllByOrderId(order.getId());
                 for(OrderDetail orderDetail:list){
                     orderDetailService.delete(orderDetail);
