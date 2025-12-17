@@ -70,49 +70,80 @@ public class BuyController {
             Model model,
             RedirectAttributes ra
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()
-                || authentication.getPrincipal().equals("anonymousUser")) {
+
+        // ===================== AUTH =====================
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()
+                || "anonymousUser".equals(auth.getPrincipal())) {
             model.addAttribute("errorMessage", "Bạn chưa đăng nhập!");
             return paymentCart(ids, model);
         }
 
-        Customer customer = customerService.findCustomerByUsername(authentication.getName());
+        Customer customer = customerService.findCustomerByUsername(auth.getName());
+        if (customer == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy tài khoản khách hàng!");
+            return paymentCart(ids, model);
+        }
 
-        var gameIds = Arrays.stream(ids.split(","))
-                .filter(s -> !s.isBlank())
-                .map(UUID::fromString)
-                .toList();
+        // ===================== IDS =====================
+        if (ids == null || ids.isBlank()) {
+            model.addAttribute("errorMessage", "Giỏ hàng trống!");
+            return "redirect:/home";
+        }
 
-        var games = gameIds.stream()
+        List<UUID> gameIds;
+        try {
+            gameIds = Arrays.stream(ids.split(","))
+                    .filter(s -> !s.isBlank())
+                    .map(UUID::fromString)
+                    .toList();
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "ID sản phẩm không hợp lệ!");
+            return paymentCart(ids, model);
+        }
+
+        if (gameIds.isEmpty()) {
+            model.addAttribute("errorMessage", "Không có sản phẩm hợp lệ!");
+            return paymentCart(ids, model);
+        }
+
+        // ===================== LOAD GAME =====================
+        List<GameAccount> games = gameIds.stream()
                 .map(gameAccountService::findGameAccountById)
                 .filter(Objects::nonNull)
                 .toList();
 
         if (games.isEmpty()) {
-            model.addAttribute("errorMessage", "Không có món nào hợp lệ để thanh toán!");
+            model.addAttribute("errorMessage", "Không tìm thấy tài khoản game!");
             return paymentCart(ids, model);
         }
 
+        // ===================== PRICE CALC =====================
         BigDecimal totalAll = BigDecimal.ZERO;
         Map<UUID, Integer> durationMap = new HashMap<>();
 
         for (GameAccount g : games) {
+
             String pkgKey = "pkg_" + g.getId();
             String pkg = params.get(pkgKey);
 
-            boolean isRent = (g.getDuration() != null && "RENT".equalsIgnoreCase(String.valueOf(g.getDuration())));
+            boolean isRent = g.getDuration() != null
+                    && "RENT".equalsIgnoreCase(String.valueOf(g.getDuration()));
+
+            // --- CHECK PACKAGE ---
             if (isRent) {
                 if (pkg == null || pkg.isBlank()) {
-                    model.addAttribute("errorMessage", "Vui lòng chọn gói thuê cho tài khoản: " + g.getId());
+                    model.addAttribute("errorMessage",
+                            "Vui lòng chọn gói thuê cho tài khoản: " + g.getId());
                     return paymentCart(ids, model);
                 }
             } else {
-                if (pkg == null || pkg.isBlank()) pkg = "Vĩnh viễn";
+                pkg = "Vĩnh viễn";
             }
 
             BigDecimal price = g.getPrice();
 
+            // --- DISCOUNT BY DURATION ---
             if (pkg.contains("2 Tháng")) {
                 price = price.multiply(BigDecimal.valueOf(0.9));
             } else if (pkg.contains("3 Tháng")) {
@@ -122,41 +153,47 @@ public class BuyController {
             price = price.setScale(0, RoundingMode.HALF_UP);
             totalAll = totalAll.add(price);
 
-            int dur =
+            int duration =
                     pkg.contains("1 Tháng") ? 1 :
                             pkg.contains("2 Tháng") ? 2 :
                                     pkg.contains("3 Tháng") ? 3 : 0;
 
-            durationMap.put(g.getId(), dur);
+            durationMap.put(g.getId(), duration);
         }
 
+        // ===================== VOUCHER =====================
         Voucher voucher = null;
         if (voucherCode != null && !voucherCode.isBlank()) {
+
             voucher = voucherService.getValidVoucher(voucherCode);
             if (voucher == null) {
-                model.addAttribute("errorMessage", "Voucher không hợp lệ hoặc đã hết hạn");
+                model.addAttribute("errorMessage", "Voucher không hợp lệ hoặc đã hết hạn!");
                 return paymentCart(ids, model);
             }
 
-            boolean used = voucherCustomerRepository.existsByCustomerAndVoucher(customer, voucher);
-            if (used) {
-                model.addAttribute("errorMessage", "Voucher này đã được sử dụng trước đó");
+            if (voucherCustomerRepository.existsByCustomerAndVoucher(customer, voucher)) {
+                model.addAttribute("errorMessage", "Voucher đã được sử dụng!");
                 return paymentCart(ids, model);
             }
 
-            BigDecimal discountPercent = BigDecimal.valueOf(voucher.getValue()).divide(BigDecimal.valueOf(100));
-            totalAll = totalAll.subtract(totalAll.multiply(discountPercent));
-            totalAll = totalAll.setScale(0, RoundingMode.HALF_UP);
+            BigDecimal discountPercent =
+                    BigDecimal.valueOf(voucher.getValue()).divide(BigDecimal.valueOf(100));
+
+            totalAll = totalAll.subtract(totalAll.multiply(discountPercent))
+                    .setScale(0, RoundingMode.HALF_UP);
         }
 
+        // ===================== BALANCE =====================
         if (customer.getBalance().compareTo(totalAll) < 0) {
-            model.addAttribute("errorMessage", "Số dư không đủ");
+            model.addAttribute("errorMessage", "Số dư không đủ!");
             return paymentCart(ids, model);
         }
 
+        // ===================== DEDUCT MONEY =====================
         customer.setBalance(customer.getBalance().subtract(totalAll));
         customerRepositories.save(customer);
 
+        // ===================== SAVE VOUCHER USED =====================
         if (voucher != null) {
             VoucherCustomer vc = new VoucherCustomer();
             vc.setCustomer(customer);
@@ -165,22 +202,24 @@ public class BuyController {
             voucherCustomerRepository.save(vc);
         }
 
+        // ===================== TRANSACTION =====================
         Transaction transaction = new Transaction();
         transaction.setCustomer(customer);
         transaction.setAmount(totalAll.negate());
-        transaction.setDescription("Thanh toán giỏ hàng (" + games.size() + " món)");
+        transaction.setDescription("Thanh toán giỏ hàng (" + games.size() + " tài khoản)");
         transaction.setDateCreated(LocalDateTime.now());
         transactionService.save(transaction);
 
+        // ===================== ORDER =====================
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(totalAll);
-        order.setCreatedDate(LocalDateTime.now());
-        order.setStatus("WAIT");
         if (voucher != null) order.setVoucher(voucher);
+        // staff = null, status = WAIT (auto)
 
         Orders savedOrder = ordersRepositories.save(order);
 
+        // ===================== ORDER DETAIL =====================
         for (GameAccount g : games) {
             OrderDetail detail = new OrderDetail();
             detail.setOrder(savedOrder);
@@ -188,128 +227,15 @@ public class BuyController {
             detail.setDuration(durationMap.getOrDefault(g.getId(), 0));
             orderDetailRepositories.save(detail);
         }
-
+        // ===================== CLEAN CART =====================
         deleteCartItemsOfCustomer(customer, gameIds);
 
-        ra.addFlashAttribute("successPopup", "Thanh toán giỏ hàng thành công (" + totalAll.toPlainString() + " đ)");
+        ra.addFlashAttribute("successPopup",
+                "Thanh toán thành công (" + totalAll.toPlainString() + " đ)");
+
         return "redirect:/home";
     }
 
-    @Transactional
-    @PostMapping("/order/confirm/{gameId}")
-    public String confirmOrder(
-            @PathVariable UUID gameId,
-            @RequestParam("packageValues") String packageValues,
-            @RequestParam(value = "voucherCode", required = false) String voucherCode,
-            Model model,
-            RedirectAttributes ra
-    ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()
-                || authentication.getPrincipal().equals("anonymousUser")) {
-            model.addAttribute("errorMessage", "Bạn chưa đăng nhập!");
-            model.addAttribute("games", getGame(gameId));
-            return "customer/Payment";
-        }
-
-        Customer customer = customerService.findCustomerByUsername(authentication.getName());
-        GameAccount game = getGame(gameId);
-
-        boolean isOrdered = orderDetailRepositories.existsActiveOrderByGameAccount(game.getId());
-        if (isOrdered) {
-            model.addAttribute("errorMessage", "Tài khoản này đã được đặt hoặc đã bán, không thể tiếp tục đặt hàng!");
-            model.addAttribute("games", game);
-            return "customer/Payment";
-        }
-
-        boolean isRent = (game.getDuration() != null && "RENT".equalsIgnoreCase(String.valueOf(game.getDuration())));
-        if (isRent && (packageValues == null || packageValues.isBlank())) {
-            model.addAttribute("errorMessage", "Vui lòng chọn gói thuê");
-            model.addAttribute("games", game);
-            return "customer/Payment";
-        }
-        if (!isRent && (packageValues == null || packageValues.isBlank())) {
-            packageValues = "Vĩnh viễn";
-        }
-
-        BigDecimal totalPrice = game.getPrice();
-
-        if (packageValues.contains("2 Tháng")) {
-            totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.9));
-        } else if (packageValues.contains("3 Tháng")) {
-            totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.85));
-        }
-
-        Voucher voucher = null;
-        if (voucherCode != null && !voucherCode.isBlank()) {
-            voucher = voucherService.getValidVoucher(voucherCode);
-            if (voucher == null) {
-                model.addAttribute("errorMessage", "Voucher không hợp lệ hoặc đã hết hạn");
-                model.addAttribute("games", game);
-                return "customer/Payment";
-            }
-
-            boolean used = voucherCustomerRepository.existsByCustomerAndVoucher(customer, voucher);
-            if (used) {
-                model.addAttribute("errorMessage", "Voucher này đã được sử dụng trước đó");
-                model.addAttribute("games", game);
-                return "customer/Payment";
-            }
-
-            BigDecimal discountPercent = BigDecimal.valueOf(voucher.getValue()).divide(BigDecimal.valueOf(100));
-            totalPrice = totalPrice.subtract(totalPrice.multiply(discountPercent));
-        }
-
-        totalPrice = totalPrice.setScale(0, RoundingMode.HALF_UP);
-
-        if (customer.getBalance().compareTo(totalPrice) < 0) {
-            model.addAttribute("errorMessage", "Số dư không đủ");
-            model.addAttribute("games", game);
-            return "customer/Payment";
-        }
-
-        customer.setBalance(customer.getBalance().subtract(totalPrice));
-        customerRepositories.save(customer);
-
-        if (voucher != null) {
-            VoucherCustomer vc = new VoucherCustomer();
-            vc.setCustomer(customer);
-            vc.setVoucher(voucher);
-            vc.setDateUsed(LocalDateTime.now());
-            voucherCustomerRepository.save(vc);
-        }
-
-        Transaction transaction = new Transaction();
-        transaction.setCustomer(customer);
-        transaction.setAmount(totalPrice.negate());
-        transaction.setDescription("Thanh toán game ID: " + gameId);
-        transaction.setDateCreated(LocalDateTime.now());
-        transactionService.save(transaction);
-
-        Orders order = new Orders();
-        order.setCustomer(customer);
-        order.setTotalPrice(totalPrice);
-        order.setCreatedDate(LocalDateTime.now());
-        order.setStatus("WAIT");
-        if (voucher != null) order.setVoucher(voucher);
-
-        Orders savedOrder = ordersRepositories.save(order);
-
-        OrderDetail detail = new OrderDetail();
-        detail.setOrder(savedOrder);
-        detail.setGameAccount(game);
-        detail.setDuration(
-                packageValues.contains("1 Tháng") ? 1 :
-                        packageValues.contains("2 Tháng") ? 2 :
-                                packageValues.contains("3 Tháng") ? 3 : 0
-        );
-        orderDetailRepositories.save(detail);
-
-        deleteCartItemsOfCustomer(customer, List.of(gameId));
-
-        ra.addFlashAttribute("successPopup", "Thanh toán thành công (" + totalPrice.toPlainString() + " đ)");
-        return "redirect:/home";
-    }
 
     private void deleteCartItemsOfCustomer(Customer customer, List<UUID> gameIds) {
         var carts = cartService.getCartsByCustomer(customer);

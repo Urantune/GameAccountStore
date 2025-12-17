@@ -60,6 +60,7 @@ public class GameController {
                 BigDecimal.valueOf(150000),
                 BigDecimal.valueOf(200000)
         );
+
         model.addAttribute("pageTitle", title);
         model.addAttribute("gameId", gameId);
         model.addAttribute("gameName", game.getGameName());
@@ -138,6 +139,7 @@ public class GameController {
         model.addAttribute("level", randomLevel);
         model.addAttribute("vip", randomVip);
         model.addAttribute("gameName", game);
+
         return "customer/GameDetail";
     }
 

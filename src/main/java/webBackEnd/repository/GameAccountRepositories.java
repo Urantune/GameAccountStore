@@ -82,5 +82,14 @@ AND (:maxLevel IS NULL OR g.lovel <= :maxLevel)
     """)
         List<GameAccount> findByPrice(@Param("price") BigDecimal price);
 
+    @Query("""
+SELECT g FROM GameAccount g
+WHERE g.gameAccount = :game
+AND g.price = :price
+AND g.status = 'AVAILABLE'
+ORDER BY RAND()
+LIMIT 1
+""")
+    GameAccount findRandomByGameAndPrice(String game, BigDecimal price);
 
 }
