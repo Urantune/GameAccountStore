@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import webBackEnd.entity.Staff;
 import webBackEnd.repository.StaffRepositories;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -15,5 +16,9 @@ public class AdministratorService {
 
     public Staff getStaffByID(UUID id){
         return  staffRepositories.findById(id).orElse(null);
+    }
+
+    public List<Staff> getAll(){
+        return staffRepositories.findAll();
     }
 }

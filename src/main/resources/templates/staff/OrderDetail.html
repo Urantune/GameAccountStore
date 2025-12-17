@@ -168,7 +168,7 @@
 
                     <td>
                         <span class="value"
-                              th:text="${od.gameAccount != null && od.gameAccount.game != null ? od.gameAccount.game.gameName : 'N/A'}"></span>
+                              th:text="${od.game != null ? od.game.gameName : 'N/A'}"></span>
                     </td>
 
                     <td>
@@ -199,13 +199,13 @@
                                 data-bs-target="#gaOffcanvas"
                                 aria-controls="gaOffcanvas"
                                 th:attr="
-  data-odid=${od.id},
-  data-odduration=${od.duration},
-  data-price=${od.price != null ? od.price : ''},
-  data-odgame=${(od.gameAccount != null && od.gameAccount.game != null) ? od.gameAccount.game.gameName : ''}"
->
+          data-odid=${od.id},
+          data-odduration=${od.duration},
+          data-price=${od.price != null ? od.price : ''},
+          data-odgame=${od.game != null ? od.game.gameName : ''}">
                             <i class="bi bi-plus"></i>
                         </button>
+
 
                     </td>
                 </tr>
@@ -216,6 +216,11 @@
         <form id="decisionForm" method="post" th:action="@{/staffHome/approve/decision}">
             <input type="hidden" name="orderId" th:value="${order != null ? order.id : ''}">
             <input type="hidden" name="decision" id="decisionInput" value="">
+
+            <input type="hidden" th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
+
             <div id="selectedInputs"></div>
 
             <div class="big-actions">
@@ -430,7 +435,7 @@
         const s = String(priceStr || '').trim();
         const n = Number(s.replace(/,/g,''));
         if (!isFinite(n)) return '';
-        if (n === 50000) return '50000';
+        if (n === 50000)  return '50000';
         if (n === 100000) return '100000';
         if (n === 150000) return '150000';
         if (n === 200000) return '200000';
@@ -452,6 +457,7 @@
     };
 
     // GameAccount: duration null/"" => BUY, "RENT" => RENT
+    // (nếu DB m dùng kiểu khác, chỉnh ở đây)
     const gaMode = (gaDurationStr) => {
         if (gaDurationStr === null || gaDurationStr === undefined) return 'BUY';
         const s = String(gaDurationStr).trim();
@@ -460,16 +466,15 @@
         return 'BUY';
     };
 
-
     const hideAllBuckets = () => {
         document.querySelectorAll('.ga-price-list').forEach(el => el.classList.add('d-none'));
-        const nb = document.getElementById('gaNoBucket');
-        if (nb) nb.classList.add('d-none');
+        document.getElementById('gaNoBucket')?.classList.add('d-none');
     };
 
     const setMarkSelected = (odId, ok) => {
         const el = document.getElementById('selMark-' + odId);
         if (!el) return;
+
         if (ok) {
             el.classList.remove('mark-wait');
             el.classList.add('mark-ok');
@@ -501,96 +506,87 @@
     let currentOdId = '';
     let currentOdMode = 'BUY';
 
-    // ====== Click + to open bucket ======
+    // ====== Click + to open bucket (FILTER BY GAME) ======
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.ga-plus');
         if (!btn) return;
 
         const d = btn.dataset;
 
-        // data-odgame có thể rỗng vì WAIT chưa gán gameAccount
-        const rawGame  = d.odgame || d.game || '';
-        const rawPrice = d.price || '';
+        const rawGame  = (d.odgame || '').trim();   // MUST have
+        const rawPrice = (d.price || '').trim();
 
         currentOdId = d.odid || '';
         currentOdMode = odMode(d.odduration);
 
-        const empty = document.getElementById('gaPanelEmpty');
+        // UI header
+        const empty  = document.getElementById('gaPanelEmpty');
         const header = document.getElementById('gaPanelHeader');
         if (empty) empty.style.display = 'none';
         if (header) header.classList.remove('d-none');
 
-        const curOdEl = document.getElementById('curOdId');
-        if (curOdEl) curOdEl.textContent = currentOdId || '-';
+        document.getElementById('curOdId') && (document.getElementById('curOdId').textContent = currentOdId || '-');
 
         const bucket  = bucketFromPrice(rawPrice);
-        const gameKey = normalizeGame(rawGame); // có thể ''
+        const gameKey = normalizeGame(rawGame);
 
-        const bucketText = document.getElementById('gaBucketText');
-        const modeText   = document.getElementById('gaModeText');
-        const gameText   = document.getElementById('gaGameText');
-
-        if (bucketText) bucketText.textContent = bucket ? (bucket + ' đ') : 'N/A';
-        if (modeText) modeText.textContent = currentOdMode;
-        if (gameText) gameText.textContent = gameKey ? gameKey : 'ANY';
+        document.getElementById('gaBucketText') && (document.getElementById('gaBucketText').textContent = bucket ? (bucket + ' đ') : 'N/A');
+        document.getElementById('gaModeText') && (document.getElementById('gaModeText').textContent = currentOdMode);
+        document.getElementById('gaGameText') && (document.getElementById('gaGameText').textContent = gameKey ? gameKey : 'N/A');
 
         hideAllBuckets();
 
         if (!bucket) {
-            const nb = document.getElementById('gaNoBucket');
-            if (nb) nb.classList.remove('d-none');
+            document.getElementById('gaNoBucket')?.classList.remove('d-none');
+            return;
+        }
+        if (!gameKey) {
+            alert('OrderDetail chưa có Game (od.game). Không lọc được theo game.');
+            document.getElementById('gaNoBucket')?.classList.remove('d-none');
             return;
         }
 
-        // ✅ Nếu biết game -> show đúng 1 list
-        // ✅ Nếu KHÔNG biết game -> show tất cả list cùng bucket (AOV + FREE FIRE)
-        const lists = gameKey
-            ? Array.from(document.querySelectorAll('.ga-price-list[data-game="' + gameKey + '"][data-bucket="' + bucket + '"]'))
-            : Array.from(document.querySelectorAll('.ga-price-list[data-bucket="' + bucket + '"]'));
+        // ONLY 1 list by game + bucket
+        const selector = '.ga-price-list[data-game="' + gameKey + '"][data-bucket="' + bucket + '"]';
+        const el = document.querySelector(selector);
 
-        if (lists.length === 0) {
-            const nb = document.getElementById('gaNoBucket');
-            if (nb) nb.classList.remove('d-none');
+        if (!el) {
+            document.getElementById('gaNoBucket')?.classList.remove('d-none');
             return;
         }
 
-        let totalShown = 0;
+        // filter BUY/RENT
+        const cards = Array.from(el.querySelectorAll('.ga-card'));
+        let shown = 0;
 
-        lists.forEach(el => {
-            const cards = Array.from(el.querySelectorAll('.ga-card'));
-            let shownHere = 0;
-
-            cards.forEach(card => {
-                const m = gaMode(card.dataset.gaduration);
-                if (m === currentOdMode) {
-                    card.style.display = '';
-                    shownHere++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            if (shownHere > 0) {
-                el.classList.remove('d-none');
-                totalShown += shownHere;
-
-                // radio name theo OD để pick 1 cái
-                const selectedName = 'gaPickRadio-' + currentOdId;
-                el.querySelectorAll('input.ga-pick[type="radio"]').forEach(r => r.name = selectedName);
+        cards.forEach(card => {
+            const m = gaMode(card.dataset.gaduration);
+            if (m === currentOdMode) {
+                card.style.display = '';
+                shown++;
+            } else {
+                card.style.display = 'none';
             }
         });
 
-        if (totalShown === 0) {
-            const nb = document.getElementById('gaNoBucket');
-            if (nb) nb.classList.remove('d-none');
+        if (shown === 0) {
+            document.getElementById('gaNoBucket')?.classList.remove('d-none');
             return;
         }
 
-        // restore lựa chọn đã pick trước (nếu có)
+        // radio name by OD (choose 1)
+        const selectedName = 'gaPickRadio-' + currentOdId;
+        el.querySelectorAll('input.ga-pick[type="radio"]').forEach(r => r.name = selectedName);
+
+        // restore selected
         const existed = document.querySelector('#selectedInputs input[name="' + CSS.escape('selected[' + currentOdId + ']') + '"]');
         if (existed && existed.value) {
-            document.querySelectorAll('input.ga-pick[type="radio"][value="' + existed.value + '"]').forEach(r => r.checked = true);
+            const r = el.querySelector('input.ga-pick[type="radio"][value="' + existed.value + '"]');
+            if (r) r.checked = true;
         }
+
+        // show list
+        el.classList.remove('d-none');
     });
 
     // ====== Pick radio ======
@@ -608,7 +604,7 @@
         setMarkSelected(currentOdId, true);
     });
 
-    // ====== Info modal ======
+    // ====== Info modal (CLICK i BUTTON) ======
     document.addEventListener('click', (e) => {
         const infoBtn = e.target.closest('.ga-info');
         if (!infoBtn) return;
@@ -634,7 +630,9 @@
         setTxt('mLevel', (card.dataset.level ?? '0'));
         setTxt('mVip', (card.dataset.vip ?? '0'));
 
-        const dur = (card.dataset.gaduration && String(card.dataset.gaduration).trim()) ? card.dataset.gaduration : 'NULL';
+        const dur = (card.dataset.gaduration && String(card.dataset.gaduration).trim())
+            ? card.dataset.gaduration
+            : 'NULL';
         setTxt('mDuration', dur);
 
         setTxt('mClassify', card.dataset.classify || '-');
@@ -657,10 +655,7 @@
         }
 
         const modalEl = document.getElementById('gaDetailModal');
-        if (modalEl && window.bootstrap) {
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
-        }
+        if (modalEl && window.bootstrap) new bootstrap.Modal(modalEl).show();
     });
 
     // ====== Accept / Reject ======
