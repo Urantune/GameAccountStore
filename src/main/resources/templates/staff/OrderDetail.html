@@ -2,88 +2,173 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Order Detail</title>
+    <title>Approve List</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body {
-            background: #f5f7fa;
-            font-family: "Roboto", sans-serif;
+        body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
+        .sidebar{
+            width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0;
+            color:#ecf0f1;
+        }
+        .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .sidebar a{
+            display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s;
+        }
+        .sidebar a i{ width:22px; }
+        .sidebar a:hover{ background:#1abb9c; }
+
+        .content{ margin-left:260px; padding:30px; }
+
+        .page-wrap{
+            display:flex;
+            gap:14px;
+            align-items:flex-start;
+        }
+        .main-area{
+            flex:1 1 auto;
+            min-width:0;
+        }
+        .side-panel{
+            width:440px;
+            flex:0 0 440px;
+            position:sticky;
+            top:18px;
+            height: calc(100vh - 36px);
+            overflow:auto;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            min-height: 100vh;
-            background: #2a3f54;
-            position: fixed;
-            left: 0;
-            top: 0;
-            color: #ecf0f1;
+        .card-box{
+            background:#fff; border-radius:14px; box-shadow:0 6px 15px rgba(0,0,0,0.10);
+            padding:16px 18px; border-left:6px solid #ff7a2f;
+        }
+        .value{ color:#222; word-break:break-word; }
+        .meta{ font-size:0.9rem; color:#666; }
+        .badge-status{ font-size:0.85rem; }
+        .table thead th{ background:#f3f5f8; }
+        .table td, .table th { vertical-align: middle; }
+
+        .mono{
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
         }
 
-        .sidebar h5 {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .accounts-cell{
+            width:560px;
+            max-width:560px;
+            overflow:hidden;
         }
 
-        .sidebar a {
-            display: block;
-            padding: 14px 24px;
-            color: #ecf0f1;
-            text-decoration: none;
-            transition: 0.2s;
+        .ac-grid{
+            display:flex;
+            flex-wrap:nowrap;
+            gap:10px;
+            overflow-x:auto;
+            overflow-y:hidden;
+            padding-bottom:6px;
+            max-width: 560px;
+        }
+        .ac-grid::-webkit-scrollbar{ height:8px; }
+        .ac-grid::-webkit-scrollbar-thumb{ background:#d9dee6; border-radius:10px; }
+        .ac-grid::-webkit-scrollbar-track{ background:#f3f5f8; border-radius:10px; }
+
+        .ac-card{
+            flex: 0 0 280px;
+            background:#ffffff;
+            border:1px solid #e9ecef;
+            border-radius:12px;
+            padding:10px 12px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.05);
+        }
+        .ac-title{
+            display:flex; align-items:center; justify-content:space-between;
+            gap:10px; margin-bottom:6px;
+        }
+        .ac-title .name{
+            font-weight:700; font-size:0.95rem; line-height:1.1;
+            max-width: 170px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .sidebar a i { width: 22px; }
+        .ac-small{ font-size:0.85rem; color:#555; }
+        .ac-badge{ font-size:0.75rem; }
 
-        .sidebar a:hover {
-            background: #1abb9c;
+        .mini-grid{
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap:6px 10px;
+            margin-top:8px;
+            padding-top:8px;
+            border-top:1px dashed #eee;
+            font-size:0.88rem;
         }
+        .mini-grid .k{ color:#6c757d; }
+        .mini-grid .v{ font-weight:700; text-align:right; }
 
-        /* MAIN CONTENT */
-        .content {
-            margin-left: 260px;
-            padding: 30px;
-        }
-
-        /* CARD STYLE */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        @media (max-width: 992px){
-            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
-        @media (max-width: 576px){
-            .grid { grid-template-columns: 1fr; }
-        }
-
-        .card-box {
-            background:white;
+        .panel-card{
+            background:#fff;
             border-radius:14px;
             box-shadow:0 6px 15px rgba(0,0,0,0.10);
-            padding:16px 18px;
-            border-left:6px solid #ff7a2f;
-            min-height:140px;
+            border:1px solid #eef1f5;
+            overflow:hidden;
         }
+        .panel-head{
+            padding:14px 14px;
+            border-bottom:1px solid #eef1f5;
+            background:linear-gradient(180deg,#ffffff,#fbfbfd);
+        }
+        .panel-body{
+            padding:14px 14px;
+        }
+        .ga-card{
+            border:1px solid #e9ecef;
+            border-radius:14px;
+            padding:12px;
+            background:#fff;
+        }
+        .ga-head{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:10px;
+        }
+        .ga-title{
+            font-weight:800;
+            line-height:1.15;
+        }
+        .ga-sub{
+            font-size:0.9rem;
+            color:#666;
+        }
+        .ga-kv{
+            display:flex;
+            justify-content:space-between;
+            gap:10px;
+            padding-top:8px;
+            margin-top:8px;
+            border-top:1px dashed #eee;
+            font-size:0.92rem;
+        }
+        .ga-kv .k{ color:#6c757d; }
+        .ga-kv .v{ font-weight:800; text-align:right; word-break:break-word; }
 
-        .label { font-weight:600; color:#444; }
-        .value { color:#222; word-break:break-word; }
-        .meta { font-size:0.9rem; color:#666; }
-        .badge-status { font-size:0.85rem; }
+        .ga-img{
+            width:100%;
+            height:220px;
+            object-fit:cover;
+            border-radius:12px;
+            border:1px solid #eef1f5;
+            background:#f3f5f8;
+        }
     </style>
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
     <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
@@ -93,92 +178,407 @@
     <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="content container">
-
+<div class="content container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h4 class="mb-1"><i class="bi bi-receipt-cutoff me-2"></i> Order Details</h4>
-
-            <div class="meta" th:if="${order != null}">
-                <span class="me-3">
-                    <span class="label">Order:</span>
-                    <span class="value" th:text="${order.id}"></span>
-                </span>
-                <span class="me-3">
-                    <span class="label">Username:</span>
-                    <span class="value" th:text="${order.customer != null ? order.customer.username : 'N/A'}"></span>
-                </span>
-                <span class="me-3">
-                    <span class="label">Status:</span>
-                    <span class="badge badge-status"
-                          th:classappend="${order.status}=='WAIT' ? ' bg-warning text-dark' : ' bg-secondary'"
-                          th:text="${order.status}"></span>
-                </span>
-                <span>
-                    <span class="label">Created:</span>
-                    <span class="value" th:text="${#temporals.format(order.createdDate,'yyyy-MM-dd HH:mm:ss')}"></span>
-                </span>
-            </div>
-
-            <div class="meta" th:if="${order == null}">
-                <span class="label">Order:</span> <span class="value" th:text="${orderId}"></span>
-            </div>
-        </div>
-
-        <a th:href="@{/staffHome/approveList}" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Back
-        </a>
-    </div>
-
-    <!-- Buttons Approve / Reject -->
-    <div class="d-flex gap-2 mb-3" th:if="${order != null}">
-        <form th:action="@{/staffHome/approve/accept}" method="post" class="m-0">
-            <input type="hidden" name="orderId" th:value="${order.id}">
-            <button type="submit" class="btn btn-success">
-                <i class="bi bi-check2-circle me-1"></i>Duyệt đơn
-            </button>
-        </form>
-
-        <form th:action="@{/staffHome/approve/reject}" method="post" class="m-0">
-            <input type="hidden" name="orderId" th:value="${order.id}">
-            <button type="submit" class="btn btn-danger">
-                <i class="bi bi-x-circle me-1"></i>Từ chối
-            </button>
-        </form>
-    </div>
-
-    <!-- Order Details Grid -->
-    <div class="grid">
-        <div class="card-box" th:each="od : ${orderDetails}">
-            <div class="mb-2">
-                <span class="label">OrderDetail ID</span><br>
-                <span class="value" th:text="${od.id}"></span>
-            </div>
-
-            <div class="mb-2">
-                <span class="label">GameAccount</span><br>
-                <span class="value" th:text="${od.gameAccount != null ? od.gameAccount.id : 'N/A'}"></span>
-            </div>
-
-            <div class="mb-2" th:if="${od.gameAccount != null && od.gameAccount.game != null}">
-                <span class="label">Game Name</span><br>
-                <span class="value" th:text="${od.gameAccount.game.gameName}"></span>
-            </div>
-
-            <div th:if="${od.gameAccount != null}">
-                <span class="label">Price</span><br>
-                <span class="value" th:text="${od.order.totalPrice}"></span>
-            </div>
+            <h4 class="mb-1"><i class="bi bi-bag-check-fill me-2"></i>Approve Orders</h4>
+            <div class="meta">Orders with status <b>WAIT</b></div>
         </div>
     </div>
 
-    <div class="text-center mt-4 text-muted" th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
-        No order details found.
-    </div>
+    <div class="page-wrap">
+        <div class="main-area">
+            <div class="card-box">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th style="min-width:220px;">Order ID</th>
+                            <th style="min-width:160px;">Username</th>
+                            <th style="min-width:90px;">Items</th>
+                            <th style="min-width:160px;">Total</th>
+                            <th style="min-width:190px;">Created</th>
+                            <th style="min-width:110px;">Status</th>
+                            <th style="min-width:560px;">Accounts</th>
+                            <th style="min-width:120px;" class="text-end">Action</th>
+                        </tr>
+                        </thead>
 
+                        <tbody>
+                        <tr th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
+                            <td colspan="8" class="text-center text-muted py-4">No orders found.</td>
+                        </tr>
+
+                        <tr th:each="o : ${orderDetails}"
+                            th:with="oid=${o.id != null ? o.id : o.orderId},
+                                     details=${orderDetailsMap != null ? orderDetailsMap[oid] : null}">
+                            <td class="mono">
+                                <div class="value" th:text="${oid}"></div>
+                            </td>
+
+                            <td>
+                                <span class="value" th:text="${order.getCustomer() != null ? order.getCustomer().getUsername() : 'N/A'}"></span>
+                            </td>
+
+                            <td>
+                                <span class="value" th:text="${getQuantity != null ? getQuantity.getQuantity(oid) : (details != null ? #lists.size(details) : 0)}"></span>
+                            </td>
+
+                            <td>
+                                <span class="value"
+                                      th:text="${o.gameAccount.price != null ? (#numbers.formatDecimal(o.gameAccount.price,1,'COMMA',0,'POINT') + ' đ') : '0 đ'}"></span>
+                            </td>
+
+                            <td>
+                                <span class="value"
+                                      th:text="${order.getCreatedDate() != null ? #temporals.format(order.getCreatedDate(),'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></span>
+                            </td>
+
+                            <td>
+                                <span class="badge badge-status"
+                                      th:classappend="${order.status}=='WAIT' ? ' bg-warning text-dark' : ' bg-secondary'"
+                                      th:text="${order.status}"></span>
+                            </td>
+
+                            <td class="accounts-cell">
+                                <div th:if="${details != null && !#lists.isEmpty(details)}" class="ac-grid">
+
+                                    <div class="ac-card" th:each="od : ${details}">
+                                        <div class="ac-title">
+                                            <div class="name">
+                                                <i class="bi bi-controller me-1"></i>
+                                                <span th:text="${od.gameAccount != null && od.gameAccount.game != null ? od.gameAccount.game.gameName : 'N/A'}"></span>
+                                            </div>
+
+                                            <div class="d-flex align-items-center gap-1">
+                                                <span class="badge ac-badge"
+                                                      th:classappend="${od.duration != null && od.duration > 0 ? ' bg-info text-dark' : ' bg-success'}"
+                                                      th:text="${od.duration != null && od.duration > 0 ? 'RENT' : 'BUY'}"></span>
+
+                                                <button class="btn btn-sm btn-outline-secondary px-2 py-0 ga-plus"
+                                                        type="button"
+                                                        th:attr="
+                                                            data-orderid=${oid},
+                                                            data-game=${od.gameAccount != null && od.gameAccount.game != null ? od.gameAccount.game.gameName : ''},
+                                                            data-gaid=${od.gameAccount != null ? od.gameAccount.gameAccountId : ''},
+                                                            data-username=${od.gameAccount != null ? od.gameAccount.gameAccount : ''},
+                                                            data-password=${od.gameAccount != null ? od.gameAccount.gamePassword : ''},
+                                                            data-price=${od.gameAccount != null && od.gameAccount.price != null ? od.gameAccount.price : ''},
+                                                            data-rank=${od.gameAccount != null ? od.gameAccount.rank : ''},
+                                                            data-skin=${od.gameAccount != null ? od.gameAccount.skin : 0},
+                                                            data-level=${od.gameAccount != null ? od.gameAccount.lovel : 0},
+                                                            data-vip=${od.gameAccount != null ? od.gameAccount.vip : 0},
+                                                            data-status=${od.gameAccount != null ? od.gameAccount.status : ''},
+                                                            data-classify=${od.gameAccount != null ? od.gameAccount.classify : ''},
+                                                            data-duration=${od.gameAccount != null ? od.gameAccount.duration : ''},
+                                                            data-email=${od.gameAccount != null ? od.gameAccount.email : ''},
+                                                            data-desc=${od.gameAccount != null ? od.gameAccount.description : ''},
+                                                            data-img=${od.gameAccount != null ? od.gameAccount.imageMain : ''}">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="ac-small mono">
+                                            <div>
+                                                <span class="text-muted">GA ID:</span>
+                                                <span th:text="${od.gameAccount != null ? od.gameAccount.gameAccountId : 'N/A'}"></span>
+                                            </div>
+                                            <div>
+                                                <span class="text-muted">Status:</span>
+                                                <span th:text="${od.gameAccount != null ? od.gameAccount.status : 'N/A'}"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mini-grid">
+                                            <div class="k">Rank</div>
+                                            <div class="v" th:text="${od.gameAccount != null ? od.gameAccount.rank : 'N/A'}"></div>
+
+                                            <div class="k">Skins</div>
+                                            <div class="v" th:text="${od.gameAccount != null ? od.gameAccount.skin : 0}"></div>
+
+                                            <div class="k">Level</div>
+                                            <div class="v" th:text="${od.gameAccount != null ? od.gameAccount.lovel : 0}"></div>
+
+                                            <div class="k">VIP</div>
+                                            <div class="v" th:text="${od.gameAccount != null ? od.gameAccount.vip : 0}"></div>
+
+                                            <div class="k">Price</div>
+                                            <div class="v" th:text="${od.gameAccount != null && od.gameAccount.price != null ? (#numbers.formatDecimal(od.gameAccount.price,1,'COMMA',0,'POINT') + ' đ') : 'N/A'}"></div>
+
+                                            <div class="k">Classify</div>
+                                            <div class="v" th:text="${od.gameAccount != null ? od.gameAccount.classify : 'N/A'}"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="text-muted" th:if="${details == null || #lists.isEmpty(details)}">
+                                    No details
+                                </div>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-gear"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               th:href="@{/staffHome/approve/{id}(id=${oid})}">
+                                                <i class="bi bi-eye me-2"></i>View
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-panel d-none" id="gaSidePanel">
+            <div class="panel-card">
+                <div class="panel-head d-flex align-items-start justify-content-between gap-2">
+                    <div>
+                        <div class="fw-bold"><i class="bi bi-card-list me-2"></i>Account Panel</div>
+                        <div class="meta">Same price, rank, skins, level, vip (in this order)</div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" id="gaClosePanel">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <div class="panel-body">
+                    <div id="gaPanelSelected" class="mb-3"></div>
+
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="fw-bold">Matching list</div>
+                        <button class="btn btn-sm btn-outline-secondary" type="button" id="gaClearRemoved">
+                            <i class="bi bi-trash me-1"></i>Clear removed
+                        </button>
+                    </div>
+
+                    <div id="gaMatchList" class="d-grid gap-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const fmtVND = (v) => {
+        if (v === null || v === undefined || v === '') return 'N/A';
+        const s = String(v).trim();
+        const num = Number(s.replace(/,/g,''));
+        if (!isFinite(num)) return s + ' đ';
+        return num.toLocaleString('vi-VN') + ' đ';
+    };
+
+    const mkBadge = (status) => {
+        const s = (status || '').toUpperCase();
+        const span = document.createElement('span');
+        span.className = 'badge';
+        if (s === 'WAIT') span.classList.add('bg-warning','text-dark');
+        else if (s === 'SOLD' || s === 'DONE' || s === 'SUCCESS') span.classList.add('bg-success');
+        else span.classList.add('bg-secondary');
+        span.textContent = status || 'N/A';
+        return span;
+    };
+
+    const renderSelected = (d) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'ga-card';
+
+        const head = document.createElement('div');
+        head.className = 'ga-head';
+
+        const left = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'ga-title';
+        title.textContent = 'GameAccount';
+
+        const sub = document.createElement('div');
+        sub.className = 'ga-sub mono';
+        sub.textContent = d.gaid || 'N/A';
+
+        left.appendChild(title);
+        left.appendChild(sub);
+
+        const right = document.createElement('div');
+        right.appendChild(mkBadge(d.status));
+
+        head.appendChild(left);
+        head.appendChild(right);
+
+        wrap.appendChild(head);
+
+        if (d.img && d.img.trim() !== '') {
+            const img = document.createElement('img');
+            img.className = 'ga-img mt-2';
+            img.alt = 'Game Account Image';
+            img.src = d.img;
+            wrap.appendChild(img);
+        }
+
+        const kv = (k, v, mono=false) => {
+            const row = document.createElement('div');
+            row.className = 'ga-kv';
+            const kk = document.createElement('div');
+            kk.className = 'k';
+            kk.textContent = k;
+            const vv = document.createElement('div');
+            vv.className = 'v' + (mono ? ' mono' : '');
+            vv.textContent = v;
+            row.appendChild(kk);
+            row.appendChild(vv);
+            return row;
+        };
+
+        wrap.appendChild(kv('Game', d.game || 'N/A'));
+        wrap.appendChild(kv('Username', d.username || 'N/A', true));
+        wrap.appendChild(kv('Password', d.password || 'N/A', true));
+        wrap.appendChild(kv('Price', fmtVND(d.price)));
+        wrap.appendChild(kv('Rank', d.rank || 'N/A'));
+        wrap.appendChild(kv('Skins', String(d.skin ?? 0)));
+        wrap.appendChild(kv('Level', String(d.level ?? 0)));
+        wrap.appendChild(kv('VIP', String(d.vip ?? 0)));
+        wrap.appendChild(kv('Duration', d.duration || '-'));
+        wrap.appendChild(kv('Classify', d.classify || '-'));
+        wrap.appendChild(kv('Email', d.email || '-'));
+        wrap.appendChild(kv('Description', d.desc || '-'));
+
+        return wrap;
+    };
+
+    const renderMatchItem = (bd) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'ga-card';
+        wrap.dataset.gaid = bd.gaid || '';
+
+        const top = document.createElement('div');
+        top.className = 'd-flex align-items-start justify-content-between gap-2';
+
+        const left = document.createElement('div');
+        left.style.minWidth = '0';
+
+        const t = document.createElement('div');
+        t.className = 'fw-bold';
+        t.textContent = (bd.game ? bd.game + ' ' : '') + '(' + (bd.rank || 'N/A') + ')';
+
+        const sub = document.createElement('div');
+        sub.className = 'meta mono';
+        sub.textContent = bd.gaid || 'N/A';
+
+        left.appendChild(t);
+        left.appendChild(sub);
+
+        const right = document.createElement('div');
+        right.className = 'd-flex align-items-center gap-2';
+
+        const chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.className = 'form-check-input mt-1';
+        chk.title = 'Tick to remove from panel';
+
+        chk.addEventListener('change', () => {
+            if (chk.checked) {
+                wrap.style.display = 'none';
+                wrap.dataset.removed = '1';
+            }
+        });
+
+        right.appendChild(chk);
+        top.appendChild(left);
+        top.appendChild(right);
+
+        const kv = (k, v, mono=false) => {
+            const row = document.createElement('div');
+            row.className = 'ga-kv';
+            const kk = document.createElement('div');
+            kk.className = 'k';
+            kk.textContent = k;
+            const vv = document.createElement('div');
+            vv.className = 'v' + (mono ? ' mono' : '');
+            vv.textContent = v;
+            row.appendChild(kk);
+            row.appendChild(vv);
+            return row;
+        };
+
+        wrap.appendChild(top);
+        wrap.appendChild(kv('Price', fmtVND(bd.price)));
+        wrap.appendChild(kv('Skins / Level / VIP', `${bd.skin ?? 0} / ${bd.level ?? 0} / ${bd.vip ?? 0}`));
+        wrap.appendChild(kv('Username', bd.username || 'N/A', true));
+        wrap.appendChild(kv('Password', bd.password || 'N/A', true));
+        wrap.appendChild(kv('Status', bd.status || 'N/A'));
+        wrap.appendChild(kv('Description', bd.desc || '-'));
+
+        return wrap;
+    };
+
+    const openPanel = (btn) => {
+        const d = btn.dataset;
+
+        const panel = document.getElementById('gaSidePanel');
+        panel.classList.remove('d-none');
+
+        const selectedWrap = document.getElementById('gaPanelSelected');
+        selectedWrap.innerHTML = '';
+        selectedWrap.appendChild(renderSelected(d));
+
+        const orderId = d.orderid || '';
+        const key = {
+            price: String((d.price || '').trim()),
+            rank: String((d.rank || '').trim()),
+            skin: String((d.skin ?? '').trim()),
+            level: String((d.level ?? '').trim()),
+            vip: String((d.vip ?? '').trim())
+        };
+
+        const all = Array.from(document.querySelectorAll('.ga-plus'))
+            .filter(b => (b.dataset.orderid || '') === orderId);
+
+        const matches = all.filter(b => {
+            const bd = b.dataset;
+            return (String((bd.price || '').trim()) === key.price) &&
+                (String((bd.rank || '').trim()) === key.rank) &&
+                (String((bd.skin ?? '').trim()) === key.skin) &&
+                (String((bd.level ?? '').trim()) === key.level) &&
+                (String((bd.vip ?? '').trim()) === key.vip);
+        });
+
+        const list = document.getElementById('gaMatchList');
+        list.innerHTML = '';
+        matches.forEach((b) => {
+            list.appendChild(renderMatchItem(b.dataset));
+        });
+    };
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.ga-plus');
+        if (!btn) return;
+        openPanel(btn);
+    });
+
+    document.getElementById('gaClearRemoved').addEventListener('click', () => {
+        const list = document.getElementById('gaMatchList');
+        Array.from(list.querySelectorAll('[data-removed="1"]')).forEach(el => el.remove());
+    });
+
+    document.getElementById('gaClosePanel').addEventListener('click', () => {
+        document.getElementById('gaSidePanel').classList.add('d-none');
+        document.getElementById('gaPanelSelected').innerHTML = '';
+        document.getElementById('gaMatchList').innerHTML = '';
+    });
+</script>
+
 </body>
 </html>

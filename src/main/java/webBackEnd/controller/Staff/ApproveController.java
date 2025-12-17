@@ -12,9 +12,7 @@ import webBackEnd.successfullyDat.GetQuantity;
 import webBackEnd.successfullyDat.SendMailTest;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/staffHome")
@@ -47,8 +45,15 @@ public class ApproveController {
         List<Orders> list = ordersService.findAllByStatus("WAIT");
         list.sort(Comparator.comparing(Orders::getCreatedDate));
 
+        Map<UUID, List<OrderDetail>> orderDetailsMap = new HashMap<>();
+        for (Orders o : list) {
+            orderDetailsMap.put(o.getId(), orderDetailService.findAllByOrderId(o.getId()));
+        }
+
         model.addAttribute("orderList", list);
+        model.addAttribute("orderDetailsMap", orderDetailsMap);
         model.addAttribute("getQuantity", getQuantity);
+
         return "staff/ApproveList";
     }
 
@@ -61,8 +66,12 @@ public class ApproveController {
 
         Orders order = ordersService.findById(orderId);
         model.addAttribute("order", order);
+
         return "staff/OrderDetail";
     }
+
+
+
 
     @PostMapping("/approve/accept")
     public String approveOrder(@RequestParam UUID orderId) {
@@ -89,7 +98,7 @@ public class ApproveController {
             accountHtml.append("<b>game:</b> ").append(a.getGameAccount().getGame().getGameName()).append("<br>")
                     .append("<b>username:</b> ").append(a.getGameAccount().getGameAccount()).append("<br>")
                     .append("<b>password:</b> ").append(a.getGameAccount().getGamePassword()).append("<br>")
-                    .append("<br>"); // cách dòng giữa các account
+                    .append("<br>");
 
 
         }

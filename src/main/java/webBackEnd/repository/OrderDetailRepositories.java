@@ -16,7 +16,9 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
     @Query("SELECT od.gameAccount FROM OrderDetail od JOIN od.order o WHERE o.customer.customerId = :customerId")
     List<GameAccount> findAllGameAccountBoughtByCustomer(UUID customerId);
 
-    List<OrderDetail> findAllByOrderId(UUID orderId);
+    List<OrderDetail> findAllByOrder(Orders order);
+
+
 
     @Query("""
                 select count(od) > 0
@@ -27,6 +29,6 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
             """)
     boolean existsActiveOrderByGameAccount(@Param("gameAccountId") UUID gameAccountId);
 
-    OrderDetail findByOrder(Orders order);
+    List<OrderDetail> findByOrder(Orders order);
 
 }
