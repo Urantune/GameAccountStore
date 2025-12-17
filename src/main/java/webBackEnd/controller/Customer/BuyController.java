@@ -72,6 +72,7 @@ public class BuyController {
             @RequestParam(required = false) String voucherCode,
             RedirectAttributes ra
     ) {
+        System.out.println("DEBUG: voucherCode raw = '" + voucherCode + "'");
 
         // ===================== 1. CHECK LOGIN =====================
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -99,6 +100,7 @@ public class BuyController {
         Voucher usedVoucher = null;
 
         if (voucherCode != null && !voucherCode.isBlank()) {
+            String code = voucherCode.trim();
             usedVoucher = voucherService.getValidVoucher(voucherCode);
 
             if (usedVoucher == null) {
