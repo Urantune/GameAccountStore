@@ -11,8 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface VoucherCustomerRepository extends JpaRepository<VoucherCustomer, UUID> {
-
       boolean existsByCustomerAndVoucher(Customer customer, Voucher voucher);
-
-
 }

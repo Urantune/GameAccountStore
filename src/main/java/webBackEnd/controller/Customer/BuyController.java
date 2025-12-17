@@ -9,10 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.*;
-import webBackEnd.repository.CustomerRepositories;
-import webBackEnd.repository.GameAccountRepositories;
-import webBackEnd.repository.OrderDetailRepositories;
-import webBackEnd.repository.OrdersRepositories;
+import webBackEnd.repository.*;
 import webBackEnd.service.*;
 
 import java.math.BigDecimal;
@@ -41,6 +38,9 @@ public class BuyController {
     private VoucherService voucherService;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private VoucherCustomerRepository voucherCustomerRepository;
+
 
     @GetMapping("/payment/{id}")
     public String checkout(@PathVariable("id") UUID id, Model model) {
@@ -94,9 +94,11 @@ public class BuyController {
             totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.85));
         }
 
+
         // Voucher
         Voucher voucher = null;
         if (voucherCode != null && !voucherCode.isBlank()) {
+
             voucher = voucherService.getValidVoucher(voucherCode);
             if (voucher == null) {
                 model.addAttribute("errorMessage", "Voucher không hợp lệ hoặc đã hết hạn");
@@ -104,8 +106,19 @@ public class BuyController {
                 return "customer/Payment";
             }
 
+            //Check voucher đã sd
+            boolean used =
+                    voucherCustomerRepository.existsByCustomerAndVoucher(customer, voucher);
+            if (used) {
+                model.addAttribute("errorMessage", "Voucher này đã được sử dụng trước đó");
+                model.addAttribute("games", game);
+                return "customer/Payment";
+            }
+
+            // Áp dụng giảm giá
             BigDecimal discountPercent =
-                    BigDecimal.valueOf(voucher.getValue()).divide(BigDecimal.valueOf(100));
+                    BigDecimal.valueOf(voucher.getValue())
+                            .divide(BigDecimal.valueOf(100));
             totalPrice = totalPrice.subtract(totalPrice.multiply(discountPercent));
         }
 
@@ -120,6 +133,16 @@ public class BuyController {
         // Trừ tiền
         customer.setBalance(customer.getBalance().subtract(totalPrice));
         customerRepositories.save(customer);
+
+        if (voucher != null) {
+            VoucherCustomer vc = new VoucherCustomer();
+            vc.setCustomer(customer);
+            vc.setVoucher(voucher);
+            vc.setDateUsed(LocalDateTime.now());
+
+            voucherCustomerRepository.save(vc);
+        }
+
         // Transaction
         Transaction transaction = new Transaction();
         transaction.setCustomer(customer);
