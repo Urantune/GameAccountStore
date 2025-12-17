@@ -42,18 +42,6 @@ public class GameController {
 
         Game game = gameService.findById(gameId);
 
-        // ===== TITLE =====
-        UUID AOV_ID = UUID.fromString("E8301A2F-AEB4-42FB-9C3C-41B16D3DEA8D");
-        UUID FF_ID  = UUID.fromString("B1CF2298-5C85-4FBA-920B-63C028131163");
-
-        String title = "Danh sách tài khoản";
-        if (game.getGameId().equals(AOV_ID)) {
-            title = "Tài khoản Game AOV";
-        } else if (game.getGameId().equals(FF_ID)) {
-            title = "Tài khoản Game Free Fire";
-        }
-
-        // ===== 4 MỨC GIÁ CỐ ĐỊNH =====
         List<BigDecimal> prices = List.of(
                 BigDecimal.valueOf(50000),
                 BigDecimal.valueOf(100000),
@@ -61,13 +49,14 @@ public class GameController {
                 BigDecimal.valueOf(200000)
         );
 
-        model.addAttribute("pageTitle", title);
+        model.addAttribute("game", game);          // ✅ QUAN TRỌNG
         model.addAttribute("gameId", gameId);
         model.addAttribute("gameName", game.getGameName());
         model.addAttribute("prices", prices);
 
         return "customer/GameAccount";
     }
+
 
 
 
