@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import webBackEnd.entity.Cart;
 import webBackEnd.entity.Customer;
-import webBackEnd.entity.GameAccount;
+import webBackEnd.entity.Game;
 import webBackEnd.repository.CartRepositories;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -17,22 +18,16 @@ public class CartService {
     @Autowired
     private CartRepositories cartRepositories;
 
-    public void addToCart(Customer customer, GameAccount gameAccount) {
-
-
-        if (cartRepositories.existsByCustomerAndGameAccount(customer, gameAccount)) {
-            throw new RuntimeException("Account đã tồn tại trong giỏ hàng");
-        }
-
-
+    public void addToCart(Customer customer, Game game, BigDecimal basePrice, Integer duration) {
         Cart cart = new Cart();
         cart.setCustomer(customer);
-        cart.setGameAccount(gameAccount);
+        cart.setGame(game);
+        cart.setPrice(basePrice);
+        cart.setDuration(duration == null ? 0 : duration);
         cart.setCreatedAt(LocalDateTime.now());
-
-
         cartRepositories.save(cart);
     }
+
 
 
     public Cart getCartById(UUID id){
@@ -43,9 +38,7 @@ public class CartService {
         return cartRepositories.findByCustomer(customer);
     }
 
-
     public void delete(Cart cart){
         cartRepositories.delete(cart);
     }
-
 }

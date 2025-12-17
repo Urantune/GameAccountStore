@@ -1,7 +1,9 @@
 package webBackEnd.entity;
 
 import jakarta.persistence.*;
+import org.apache.poi.hpsf.Decimal;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -16,18 +18,20 @@ public class Cart {
     @JoinColumn(name = "customerId", referencedColumnName = "customerId",nullable = false)
     private Customer customer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gameAccountId", referencedColumnName = "gameAccountId", nullable = false)
-    private GameAccount gameAccount;
+    @JoinColumn(name = "gameId", referencedColumnName = "gameId", nullable = false)
+    private Game game;
     @Column(name = "Datecreate",nullable = false)
     private LocalDateTime createdAt;
+    private BigDecimal price;
+    private Integer duration;
 
     public Cart() {
     }
 
-    public Cart(UUID cartId, Customer customer, GameAccount gameAccount, LocalDateTime createdAt) {
+    public Cart(UUID cartId, Customer customer, Game gAme, LocalDateTime createdAt,Integer duration) {
         this.cartId = cartId;
         this.customer = customer;
-        this.gameAccount = gameAccount;
+        this.game = game;
         this.createdAt = createdAt;
     }
 
@@ -47,12 +51,20 @@ public class Cart {
         this.customer = user;
     }
 
-    public GameAccount getGameAccount() {
-        return gameAccount;
+    public Game getGame() {
+        return game;
     }
 
-    public void setGameAccount(GameAccount gameAccount) {
-        this.gameAccount = gameAccount;
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -61,5 +73,13 @@ public class Cart {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 }

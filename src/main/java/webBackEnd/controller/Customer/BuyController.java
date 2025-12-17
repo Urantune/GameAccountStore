@@ -46,6 +46,8 @@ public class BuyController {
 
     @Autowired
     private CartService cartService;
+    @Autowired
+    private GameService gameService;
 
 
     @GetMapping("/payment/cart")
@@ -62,13 +64,51 @@ public class BuyController {
         return "customer/PaymentCart";
     }
 
+
+
+    @GetMapping("/api/voucher/check")
+    @ResponseBody
+    public Map<String, Object> checkVoucher(@RequestParam String code) {
+
+        Map<String, Object> rs = new HashMap<>();
+        String c = (code == null) ? "" : code.trim();
+
+        Voucher v = voucherService.getValidVoucher(c);
+        if (v == null) {
+            rs.put("valid", false);
+            rs.put("percent", 0);
+            rs.put("used", false);
+            return rs;
+        }
+
+        rs.put("valid", true);
+        rs.put("percent", v.getValue()); // sửa đúng field % của Voucher bạn
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean logged = auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal());
+
+        if (!logged) {
+            rs.put("used", false);
+            return rs;
+        }
+
+        Customer customer = customerService.findCustomerByUsername(auth.getName());
+        boolean used = voucherCustomerRepository.existsByCustomerAndVoucher(customer, v);
+
+        rs.put("used", used);
+        return rs;
+    }
+
+
+
     @PostMapping("/payment")
     @Transactional
     public String buyRandomAccount(
-            @RequestParam String accountType,               // permanent | rent
-            @RequestParam(defaultValue = "0") int rentMonth, // 0 | 1 | 2 | 3
-            @RequestParam String skinRange,                  // vd: 20 - 30 skin
-            @RequestParam BigDecimal finalPrice,             // giá cuối cùng
+            @RequestParam UUID gameId,
+            @RequestParam String accountType,
+            @RequestParam(defaultValue = "0") int rentMonth,
+            @RequestParam BigDecimal basePrice,
+            @RequestParam BigDecimal finalPrice,
             @RequestParam(required = false) String voucherCode,
             RedirectAttributes ra
     ) {
@@ -96,26 +136,25 @@ public class BuyController {
             return "redirect:/home";
         }
 
-        // ===================== 3. XỬ LÝ VOUCHER =====================
+// ===================== 3. XỬ LÝ VOUCHER =====================
         Voucher usedVoucher = null;
 
         if (voucherCode != null && !voucherCode.isBlank()) {
             String code = voucherCode.trim();
-            usedVoucher = voucherService.getValidVoucher(voucherCode);
+            usedVoucher = voucherService.getValidVoucher(code);
 
             if (usedVoucher == null) {
                 ra.addFlashAttribute("error", "Voucher không hợp lệ hoặc đã hết hạn");
-                return "redirect:/home";
+                return "redirect:/home/gameDetail/" + gameId;
             }
 
-            boolean used = voucherCustomerRepository
-                    .existsByCustomerAndVoucher(customer, usedVoucher);
-
-            if (used) {
+            if (voucherCustomerRepository.existsByCustomerAndVoucher(customer, usedVoucher)) {
                 ra.addFlashAttribute("error", "Voucher đã được sử dụng");
-                return "redirect:/home";
+                return "redirect:/home/gameDetail/" + gameId;
             }
         }
+
+
 
         // ===================== 4. CHECK SỐ DƯ =====================
         if (customer.getBalance().compareTo(finalPrice) < 0) {
@@ -141,6 +180,7 @@ public class BuyController {
 
         // ===================== 7. LƯU ORDER DETAIL =====================
         OrderDetail detail = new OrderDetail();
+        detail.setGame(gameService.findById(gameId));
         detail.setOrder(savedOrder);
 
         // ❗ RANDOM ACCOUNT → CHƯA GÁN ACC
@@ -150,7 +190,7 @@ public class BuyController {
                 "rent".equals(accountType) ? rentMonth : 0
         );
 
-        detail.setPrice(finalPrice.intValue());
+        detail.setPrice(basePrice.intValue());
 
         orderDetailRepositories.save(detail);
 
@@ -181,13 +221,14 @@ public class BuyController {
         Set<UUID> set = new HashSet<>(gameIds);
 
         for (Cart c : carts) {
-            if (c.getGameAccount() != null && c.getGameAccount().getId() != null) {
-                if (set.contains(c.getGameAccount().getId())) {
+            if (c.getGame() != null && c.getGame().getGameId() != null) {
+                if (set.contains(c.getGame().getGameId())) {
                     cartService.delete(c);
                 }
             }
         }
     }
+
 
     private GameAccount getGame(UUID gameId) {
         return gameAccountRepositories.findById(gameId)

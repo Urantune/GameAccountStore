@@ -1,681 +1,800 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="utf-8">
-    <title>Cửa Hàng bán Tài Khoản Game</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="utf-8">
+        <title>Cửa Hàng bán Tài Khoản Game</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
 
-    <link rel="preconnect" th:href="@{https://fonts.googleapis.com}">
-    <link rel="preconnect" th:href="@{https://fonts.gstatic.com}" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{https://use.fontawesome.com/releases/v5.15.4/css/all.css}"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
-    <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
+        <link rel="preconnect" th:href="@{https://fonts.googleapis.com}">
+        <link rel="preconnect" th:href="@{https://fonts.gstatic.com}" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{https://use.fontawesome.com/releases/v5.15.4/css/all.css}"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+        <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
+        <link th:href="@{/lib/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
 
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/css/style.css}" rel="stylesheet">
+        <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/css/style.css}" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-</head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    </head>
 
-<body>
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="loginError" class="alert alert-danger d-none"></div>
-                <form id="loginForm">
-                    <div class="mb-3">
-                        <label for="loginUsername" class="form-label">Username:</label>
-                        <input name="username" class="form-control" id="loginUsername" placeholder="Nhập username của bạn" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="loginPassword" class="form-label">Mật khẩu:</label>
-                        <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
-                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký ngay</a></p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div th:if="${error}" class="alert alert-danger">
-                    <span th:text="${error}"></span>
+    <body>
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div th:if="${success}" class="alert alert-success text-center">
-                    <p th:text="${success}"></p>
-                </div>
-
-                <form id="registerForm">
-                    <div class="mb-3">
-                        <label for="registerUsername" class="form-label">Tên người dùng:</label>
-                        <input name="username" type="text" class="form-control" id="registerUsername" placeholder="Nhập tên người dùng" th:value="${username}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="registerEmail" class="form-label">Email:</label>
-                        <input name="email" type="email" class="form-control" id="registerEmail" placeholder="Nhập email" th:value="${email}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="registerPassword" class="form-label">Mật khẩu:</label>
-                        <input name="password" type="password" class="form-control" id="registerPassword" placeholder="Tạo mật khẩu" th:value="${password}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
-                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
-                    </div>
-                    <div id="registerError" class="text-danger mt-2"></div>
-                    <div id="registerSuccess" class="text-success mt-2"></div>
-                </form>
-            </div>
-
-            <div class="modal-footer justify-content-center">
-                <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-</div>
-
-<nav class="navbar navbar-expand-lg game-nav shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" th:href="@{/home}">
-            <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
-        </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="mainNavbar">
-            <ul class="navbar-nav mx-auto align-items-center nav-center">
-                <li class="nav-item">
-                    <a class="nav-link nav-pill" th:href="@{/home}">
-                        <i class="fa fa-home me-2"></i>Trang Chủ
-                    </a>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link nav-pill dropdown-toggle require-login"
-                       href="#"
-                       data-bs-toggle="dropdown"
-                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
-                    </a>
-                    <ul class="dropdown-menu dropdown-soft">
-                        <li><a class="dropdown-item" href="#">Free Fire</a></li>
-                        <li><a class="dropdown-item" href="#">AOV</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-pill require-login"
-                       th:href="@{/home/transaction}"
-                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-credit-card me-2"></i>Ví
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link nav-pill require-login"
-                       th:href="@{/home/cart}"
-                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-coins me-2"></i>Giỏ Hàng
-                    </a>
-                </li>
-            </ul>
-
-            <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
-                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold">Khách</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                        <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
-                        <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-fix">
-                        <li>
-                            <a class="dropdown-item"
-                               th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
-                                Thông tin tài khoản
-                            </a>
-                        </li>
-                        <li>
-                            <form th:action="@{/logout}" method="post" class="px-3 py-1">
-                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<style>
-    .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center;}
-    .game-nav .container-fluid{display:flex;align-items:center;}
-    .nav-logo{height:180px;width:auto;}
-    .nav-center{gap:26px;}
-    .game-nav .navbar-nav .nav-link{color:#111 !important;font-weight:500;}
-    .nav-pill{background:transparent;color:#000 !important;border:1px solid transparent;transition:background .15s ease, box-shadow .15s ease, transform .15s ease;border-radius:18px !important;padding:10px 18px !important;}
-    .nav-pill:hover{color:#f7931e !important;background:#F8F8FF;box-shadow:0 6px 18px rgba(0,0,0,.08) !important;transform:none !important;}
-    .nav-pill:focus,.nav-pill:active{background:#f5e6d7 !important;color:#000 !important;box-shadow:0 6px 18px rgba(0,0,0,.08) !important;}
-    .dropdown-soft{border-radius:14px;padding:6px;}
-</style>
-
-<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none"
-     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
-    ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
-</div>
-<!-- Carousel Start -->
-<div class="container-fluid carousel bg-light px-0">
-    <div class="row g-0 justify-content-end">
-        <div class="col-12 col-lg-7 col-xl-9">
-            <div class="header-carousel owl-carousel bg-light py-5">
-                <div class="row g-0 header-carousel-item align-items-center">
-                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                        <img src="/img/lqdemo1.jpg" class="img-fluid w-100" alt="Image">
-                    </div>
-                    <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
-                            style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân </h4>
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
-                            giao dịch qua thẻ ngân hàng</h1>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
-                           th:href="@{/home/gameDetail/{id}(id=E3FBB1AF-8AE9-48E2-9DE1-061219893D01)}">Mua ngay</a>
-                    </div>
-                </div>
-                <div class="row g-0 header-carousel-item align-items-center">
-                    <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
-                        <img src="/img/ffdemo1.jpg" class="img-fluid w-100" alt="Image">
-                    </div>
-                    <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
-                            style="letter-spacing: 3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
-                            giao dịch qua thẻ ngân hàng</h1>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
-                           th:href="@{/home/gameDetail/{id}(id=A0731F64-961E-42F8-A3E0-129721B7BF3C)}">Mua ngay</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s">
-            <div class="carousel-header-banner h-100">
-                <img src="/img/lqdemo3.jpg" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Image">
-                <div class="carousel-banner-offer">
-                    <p class="text-primary fs-5 fw-bold mb-0">Ưu đãi đặc biệt</p>
-                </div>
-                <div class="carousel-banner">
-                    <div class="carousel-banner-content text-center p-4">
-                        <a href="#" class="d-block mb-2">Loại trang phục</a>
-                        <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
-                    </div>
-                    <a  th:href="@{/home/gameDetail/{id}(id=91B4A36C-27C3-4B20-8D99-3C95F70233E0)}" class="btn btn-primary rounded-pill py-2 px-4"><i
-                            class="fas fa-shopping-cart me-2"></i> Mua</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Carousel End -->
-<section class="py-5">
-    <div class="container px-4 px-lg-5 my-5">
-        <div class="row g-4">
-
-            <!-- IMAGE -->
-            <div class="col-md-5">
-                <img th:src="@{${gameName == 'AOV' ? '/img/aov.jpg' : '/img/ff.jpg'}}"
-                     class="img-fluid rounded shadow"/>
-            </div>
-            <!-- INFO -->
-            <div class="col-md-7">
-                <h3 class="fw-bold mb-3" th:text="'Game ' + ${gameName}"></h3>
-
-                <div class="border rounded p-4 mb-4">
-                    <!-- ACCOUNT TYPE -->
-                    <div class="row mb-3">
-                        <div class="col-5 fw-bold">Loại tài khoản:</div>
-                        <div class="col-7 d-flex gap-3">
-                            <label>
-                                <input type="radio" name="accountType" value="permanent"
-                                       checked onclick="toggleRent(false)">
-                                Vĩnh viễn
-                            </label>
-                            <label>
-                                <input type="radio" name="accountType" value="rent"
-                                       onclick="toggleRent(true)">
-                                Thuê
-                            </label>
+                <div class="modal-body">
+                    <div id="loginError" class="alert alert-danger d-none"></div>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginUsername" class="form-label">Username:</label>
+                            <input name="username" class="form-control" id="loginUsername" placeholder="Nhập username của bạn" required>
                         </div>
-                    </div>
-                    <!-- RENT PACKAGE -->
-                    <div class="row mb-3 d-none" id="rentPackage">
-                        <div class="col-5 fw-bold">Gói thuê:</div>
-                        <div class="col-7">
-                            <select id="rentMonth" class="form-select"
-                                    onchange="updatePriceByRent()">
-                                <option value="1">1 tháng</option>
-                                <option value="2">2 tháng (Giảm 10%)</option>
-                                <option value="3">3 tháng (Giảm 15%)</option>
-                            </select>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Mật khẩu:</label>
+                            <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
+                            <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
                         </div>
-                    </div>
-                    <!-- SKIN -->
-                    <div class="row mb-3">
-                        <div class="col-5 fw-bold">Số lượng Skin:</div>
-                        <div class="col-7">
-                            <input id="skinRangeInput"
-                                   class="form-control"
-                                   readonly
-                                   th:value="${skinMin} + ' - ' + ${skinMax} + ' skin'">
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
                         </div>
-                    </div>
-                    <!-- VOUCHER -->
-                    <div class="row mb-3">
-                        <div class="col-5 fw-bold">Voucher:</div>
-                        <div class="col-7 d-flex gap-2">
-                            <input type="text"
-                                   id="voucherInput"
-                                   class="form-control"
-                                   placeholder="Nhập mã giảm giá">
-
-                            <button type="button"
-                                    class="btn btn-outline-dark"
-                                    onclick="applyVoucher()">
-                                Áp dụng
-                            </button>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
                         </div>
-                    </div>
-                    <!-- PRICE -->
-                    <div class="row">
-                        <div class="col-5 fw-bold">Giá:</div>
-                        <div class="col-7">
-                            <input id="priceInput"
-                                   disabled
-                                   class="form-control text-danger fw-bold"
-                                   th:value="${#numbers.formatDecimal(price,0,'COMMA',0,'POINT')} + ' đ'"
-                                   th:data-price="${price}">
-
-                        </div>
-                    </div>
-                    <input type="hidden" id="voucherPercent" value="0">
-
-                    <input type="hidden" id="basePrice" th:value="${price}">
-                    <input type="radio" name="accountType" value="permanent" checked>
-                    <input type="radio" name="accountType" value="rent">
-
+                    </form>
                 </div>
-                <!-- ACTION -->
-                <form th:if="${#authorization.expression('isAuthenticated()')}"
-                      th:action="@{/home/payment}"
-                      method="post"
-                      onsubmit="syncBeforeSubmit()">
-                    <input type="hidden" name="accountType" id="accountTypeHidden">
-                    <input type="hidden" name="rentMonth" id="rentMonthHidden">
-                    <input type="hidden" name="skinRange" id="skinRangeHidden">
-                    <input type="hidden" name="finalPrice" id="finalPriceHidden">
-                    <input type="hidden" name="voucherCode" id="voucherHidden">
-                    <button class="btn btn-dark px-4">🛒 Mua ngay</button>
-                </form>
-                <button th:if="${#authorization.expression('!isAuthenticated()')}"
-                        class="btn btn-dark px-4"
-                        onclick="alert('Bạn cần đăng nhập!')">
-                    🛒 Mua ngay
-                </button>
-                <button th:if="${#authorization.expression('!isAuthenticated()')}"
-                        class="btn btn-outline-dark px-4 ms-2"
-                        onclick="alert('Bạn cần đăng nhập!')">
-                    🛒 Thêm vào giỏ hàng
-                </button>
-                <form th:if="${#authorization.expression('isAuthenticated()')}"
-                      th:action="@{/home/cart/add}"
-                      method="post"
-                      onsubmit="syncBeforeSubmit()"
-                      class="d-inline">
-
-                    <input type="hidden" name="accountType" id="accountTypeHiddenCart">
-                    <input type="hidden" name="rentMonth" id="rentMonthHiddenCart">
-                    <input type="hidden" name="skinRange" id="skinRangeHiddenCart">
-                    <input type="hidden" name="finalPrice" id="finalPriceHiddenCart">
-                    <input type="hidden" name="voucherCode" id="voucherHiddenCart">
-
-                    <button type="submit" class="btn btn-outline-dark px-4 ms-2">
-                        🛒 Thêm vào giỏ hàng
-                    </button>
-                </form>
-
-
+                <div class="modal-footer justify-content-center">
+                    <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký ngay</a></p>
+                </div>
             </div>
         </div>
     </div>
-</section>
-<script>
-    function getBasePrice() {
-        return parseInt(document.getElementById('basePrice').value);
-    }
-    function getCurrentPrice() {
-        const accTypeRadio = document.querySelector(
-            'input[name="accountType"]:checked'
-        );
-        // 🔥 FIX: nếu chưa chọn thì mặc định permanent
-        const accType = accTypeRadio ? accTypeRadio.value : 'permanent';
 
-        let price = getBasePrice();
-        // RENT
-        if (accType === 'rent') {
-            const month = document.getElementById('rentMonth')?.value;
-            if (month === '2') price *= 0.9;
-            if (month === '3') price *= 0.85;
-        }
-        // VOUCHER
-        const percent = parseInt(
-            document.getElementById('voucherPercent').value || 0
-        );
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div th:if="${error}" class="alert alert-danger">
+                        <span th:text="${error}"></span>
+                    </div>
+                    <div th:if="${success}" class="alert alert-success text-center">
+                        <p th:text="${success}"></p>
+                    </div>
 
-        if (percent > 0) {
-            price -= price * (percent / 100);
-        }
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="registerUsername" class="form-label">Tên người dùng:</label>
+                            <input name="username" type="text" class="form-control" id="registerUsername" placeholder="Nhập tên người dùng" th:value="${username}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">Email:</label>
+                            <input name="email" type="email" class="form-control" id="registerEmail" placeholder="Nhập email" th:value="${email}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Mật khẩu:</label>
+                            <input name="password" type="password" class="form-control" id="registerPassword" placeholder="Tạo mật khẩu" th:value="${password}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
+                            <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
+                        </div>
+                        <div id="registerError" class="text-danger mt-2"></div>
+                        <div id="registerSuccess" class="text-success mt-2"></div>
+                    </form>
+                </div>
 
-        return Math.round(price);
-    }
-    function updatePriceDisplay() {
-        const price = getCurrentPrice();
-        const input = document.getElementById('priceInput');
-
-        input.value = price.toLocaleString('vi-VN') + ' đ';
-        input.dataset.price = price;
-    }
-
-    function toggleRent(isRent) {
-        const rentDiv = document.getElementById('rentPackage');
-        rentDiv.classList.toggle('d-none', !isRent);
-        updatePriceDisplay();
-    }
-
-    function updatePriceByRent() {
-        updatePriceDisplay();
-    }
-    /* ===== VOUCHER (DEMO CLIENT) ===== */
-    function applyVoucher() {
-        const code = document.getElementById('voucherInput').value.trim();
-        if (!code) return;
-
-        fetch(`/api/voucher/check?code=${encodeURIComponent(code)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (!data.valid) {
-                    alert("Voucher không hợp lệ hoặc hết hạn");
-                    document.getElementById('voucherPercent').value = 0;
-                    document.getElementById('voucherHidden').value = ""; // clear hidden
-                } else {
-                    document.getElementById('voucherPercent').value = data.percent;
-                    // lưu trực tiếp vào hidden để chắc chắn server nhận được
-                    // nếu API trả về id, dùng id; còn không dùng code
-                    document.getElementById('voucherHidden').value = code;
-                    // nếu API trả về id: document.getElementById('voucherHidden').value = data.id;
-                }
-                updatePriceDisplay();
-            })
-            .catch(err => {
-                console.error(err);
-                alert("Lỗi khi kiểm tra voucher");
-            });
-    }
-
-    /* ===== SUBMIT ===== */
-    function syncBeforeSubmit() {
-        document.getElementById('accountTypeHidden').value =
-            (document.querySelector('input[name="accountType"]:checked') || {value:'permanent'}).value;
-
-        document.getElementById('rentMonthHidden').value =
-            document.getElementById('rentMonth')?.value || 0;
-
-        // dùng function getCurrentPrice() để chắc chắn giá gửi lên là giá tính mới nhất
-        document.getElementById('finalPriceHidden').value = getCurrentPrice();
-
-        // trim voucher trước khi submit
-        document.getElementById('voucherHidden').value =
-            (document.getElementById('voucherHidden').value || "").trim();
-    }
-</script>
-
-
-
-
-
-<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
-                <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
-                <p>Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.</p>
-                <div class="d-flex mt-3 gap-3">
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
+                <div class="modal-footer justify-content-center">
+                    <a href="#" class="text-decoration-none open-login">Đăng nhập ngay</a>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-lg-4 col-md-6">
-                <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
-                <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
-                <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>
-                <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
-                <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
-                    <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
-                </button>
-            </div>
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 
-            <div class="col-lg-4 col-md-6">
-                <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
-                <ul class="footer-links">
-                    <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
+    <nav class="navbar navbar-expand-lg game-nav shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/home}">
+                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mx-auto align-items-center nav-center">
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill" th:href="@{/home}">
+                            <i class="fa fa-home me-2"></i>Trang Chủ
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link nav-pill dropdown-toggle require-login"
+                           href="#"
+                           data-bs-toggle="dropdown"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                        </a>
+                        <ul class="dropdown-menu dropdown-soft">
+                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
+                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           th:href="@{/home/transaction}"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-credit-card me-2"></i>Ví
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-pill require-login"
+                           th:href="@{/home/cart}"
+                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                        </a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                            <span class="fw-semibold">Khách</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-fix">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
+                            <span class="fw-semibold" th:text="${#authentication.name}"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-fix">
+                            <li>
+                                <a class="dropdown-item"
+                                   th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                                    Thông tin tài khoản
+                                </a>
+                            </li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="px-3 py-1">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
+    </nav>
 
-        <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
-            <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
-            <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
+    <style>
+        .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center;}
+        .game-nav .container-fluid{display:flex;align-items:center;}
+        .nav-logo{height:180px;width:auto;}
+        .nav-center{gap:26px;}
+        .game-nav .navbar-nav .nav-link{color:#111 !important;font-weight:500;}
+        .nav-pill{background:transparent;color:#000 !important;border:1px solid transparent;transition:background .15s ease, box-shadow .15s ease, transform .15s ease;border-radius:18px !important;padding:10px 18px !important;}
+        .nav-pill:hover{color:#f7931e !important;background:#F8F8FF;box-shadow:0 6px 18px rgba(0,0,0,.08) !important;transform:none !important;}
+        .nav-pill:focus,.nav-pill:active{background:#f5e6d7 !important;color:#000 !important;box-shadow:0 6px 18px rgba(0,0,0,.08) !important;}
+        .dropdown-soft{border-radius:14px;padding:6px;}
+    </style>
+
+    <div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none"
+         style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+        ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
+    </div>
+    <!-- Carousel Start -->
+    <div class="container-fluid carousel bg-light px-0">
+        <div class="row g-0 justify-content-end">
+            <div class="col-12 col-lg-7 col-xl-9">
+                <div class="header-carousel owl-carousel bg-light py-5">
+                    <div class="row g-0 header-carousel-item align-items-center">
+                        <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
+                            <img src="/img/lqdemo1.jpg" class="img-fluid w-100" alt="Image">
+                        </div>
+                        <div class="col-xl-6 carousel-content p-4">
+                            <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                                style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân </h4>
+                            <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
+                                giao dịch qua thẻ ngân hàng</h1>
+                            <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                               th:href="@{/home/gameDetail/{id}(id=E3FBB1AF-8AE9-48E2-9DE1-061219893D01)}">Mua ngay</a>
+                        </div>
+                    </div>
+                    <div class="row g-0 header-carousel-item align-items-center">
+                        <div class="col-xl-6 carousel-img wow fadeInLeft" data-wow-delay="0.1s">
+                            <img src="/img/ffdemo1.jpg" class="img-fluid w-100" alt="Image">
+                        </div>
+                        <div class="col-xl-6 carousel-content p-4">
+                            <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                                style="letter-spacing: 3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
+                            <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
+                                giao dịch qua thẻ ngân hàng</h1>
+                            <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                               th:href="@{/home/gameDetail/{id}(id=A0731F64-961E-42F8-A3E0-129721B7BF3C)}">Mua ngay</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5 col-xl-3 wow fadeInRight" data-wow-delay="0.1s">
+                <div class="carousel-header-banner h-100">
+                    <img src="/img/lqdemo3.jpg" class="img-fluid w-100 h-100" style="object-fit: cover;" alt="Image">
+                    <div class="carousel-banner-offer">
+                        <p class="text-primary fs-5 fw-bold mb-0">Ưu đãi đặc biệt</p>
+                    </div>
+                    <div class="carousel-banner">
+                        <div class="carousel-banner-content text-center p-4">
+                            <a href="#" class="d-block mb-2">Loại trang phục</a>
+                            <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
+                        </div>
+                        <a  th:href="@{/home/gameDetail/{id}(id=91B4A36C-27C3-4B20-8D99-3C95F70233E0)}" class="btn btn-primary rounded-pill py-2 px-4"><i
+                                class="fas fa-shopping-cart me-2"></i> Mua</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+    <!-- Carousel End -->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="row g-4"> th:action="@{/home/payment}" method="post" onsubmit="syncBefore
 
-<style>
-    .footer-links{list-style:none;padding:0;}
-    .footer-links li{margin-bottom:8px;}
-    .footer-links a{color:#444;text-decoration:none;transition:0.2s;}
-    .footer-links a:hover{color:#ff8800;padding-left:4px;}
-</style>
+                <!-- IMAGE -->
+                <div class="col-md-5">
+                    <img th:src="@{${gameName == 'AOV' ? '/img/aov.jpg' : '/img/ff.jpg'}}"
+                         class="img-fluid rounded shadow"/>
+                </div>
+                <!-- INFO -->
+                <div class="col-md-7">
+                    <h3 class="fw-bold mb-3" th:text="'Game ' + ${gameName}"></h3>
 
-<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/lib/wow/wow.min.js}"></script>
-<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
-<script th:src="@{/js/main.js}"></script>
+                    <div class="border rounded p-4 mb-4">
+                        <!-- ACCOUNT TYPE -->
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold">Loại tài khoản:</div>
+                            <div class="col-7 d-flex gap-3">
+                                <label>
+                                    <input type="radio" name="accountType" value="permanent"
+                                           checked onclick="toggleRent(false)">
+                                    Vĩnh viễn
+                                </label>
+                                <label>
+                                    <input type="radio" name="accountType" value="rent"
+                                           onclick="toggleRent(true)">
+                                    Thuê
+                                </label>
+                            </div>
+                        </div>
+                        <!-- RENT PACKAGE -->
+                        <div class="row mb-3 d-none" id="rentPackage">
+                            <div class="col-5 fw-bold">Gói thuê:</div>
+                            <div class="col-7">
+                                <select id="rentMonth" class="form-select"
+                                        onchange="updatePriceByRent()">
+                                    <option value="1">1 tháng</option>
+                                    <option value="2">2 tháng (Giảm 10%)</option>
+                                    <option value="3">3 tháng (Giảm 15%)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- SKIN -->
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold">Số lượng Skin:</div>
+                            <div class="col-7">
+                                <input id="skinRangeInput"
+                                       class="form-control"
+                                       readonly
+                                       th:value="${skinMin} + ' - ' + ${skinMax} + ' skin'">
+                            </div>
+                        </div>
+                        <!-- VOUCHER -->
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold">Voucher:</div>
+                            <div class="col-7 d-flex gap-2">
+                                <input type="text"
+                                       id="voucherInput"
+                                       class="form-control"
+                                       placeholder="Nhập mã giảm giá">
 
-<script>
-    document.querySelectorAll('.require-login').forEach(link => {
-        link.addEventListener('click', function (e) {
-            const isLogged = this.dataset.logged === 'true';
-            if (!isLogged) {
-                e.preventDefault();
-                const alertBox = document.getElementById('loginAlert');
-                alertBox.classList.remove('d-none');
-                setTimeout(() => alertBox.classList.add('d-none'), 3000);
-            }
-        });
-    });
+                                <button type="button"
+                                        class="btn btn-outline-dark"
+                                        onclick="applyVoucher()">
+                                    Áp dụng
+                                </button>
+                            </div>
+                        </div>
+                        <!-- PRICE -->
+                        <div class="row">
+                            <div class="col-5 fw-bold">Giá:</div>
+                            <div class="col-7">
+                                <input id="priceInput"
+                                       disabled
+                                       class="form-control text-danger fw-bold"
+                                       th:value="${#numbers.formatDecimal(price,0,'COMMA',0,'POINT')} + ' đ'"
+                                       th:data-price="${price}">
 
-    function addToCart(btn) {
-        const gameAccountId = btn.dataset.id;
-        fetch(`/home/add/${gameAccountId}`, { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } })
-            .then(async res => {
-                const text = await res.text();
-                if (!res.ok) throw new Error(text || "Lỗi");
-                alert(text);
-            })
-            .catch(err => alert(err.message));
-    }
+                            </div>
+                        </div>
+                        <input type="hidden" id="voucherPercent" value="0">
 
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-        const username = document.getElementById("loginUsername").value;
-        const password = document.getElementById("loginPassword").value;
+                        <input type="hidden" id="basePrice" th:value="${price}">
+                        <input type="radio" name="accountType" value="permanent" checked>
+                        <input type="radio" name="accountType" value="rent">
 
-        fetch("/login", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Requested-With": "XMLHttpRequest" },
-            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-        })
-            .then(async res => {
-                if (!res.ok) {
-                    const err = await res.json();
-                    const errorBox = document.getElementById("loginError");
-                    errorBox.textContent = err.error;
-                    errorBox.classList.remove("d-none");
-                    setTimeout(() => errorBox.classList.add("d-none"), 3000);
-                    return null;
-                }
-                return res.json();
-            })
-            .then(data => { if (data?.redirect) window.location.href = data.redirect; })
-            .catch(err => console.error(err));
-    });
+                    </div>
+                    <!-- ACTION -->
+                    <form th:if="${#authorization.expression('isAuthenticated()')}"
+                          th:action="@{/home/payment}"
+                          method="post"
+                          onsubmit="syncBeforeSubmit()">
+                        <input type="hidden" name="accountType" id="accountTypeHidden">
+                        <input type="hidden" name="gameId" th:value="${gameId}">
+                        <input type="hidden" name="rentMonth" id="rentMonthHidden">
+                        <input type="hidden" name="skinRange" id="skinRangeHidden">
+                        <input type="hidden" name="basePrice" id="basePriceHidden" th:value="${price}">
+                        <input type="hidden" name="finalPrice" id="finalPriceHidden">
+                        <input type="hidden" name="voucherCode" id="voucherHidden">
+                        <button class="btn btn-dark px-4">🛒 Mua ngay</button>
+                    </form>
+                    <button th:if="${#authorization.expression('!isAuthenticated()')}"
+                            class="btn btn-dark px-4"
+                            onclick="alert('Bạn cần đăng nhập!')">
+                        🛒 Mua ngay
+                    </button>
+                    <button th:if="${#authorization.expression('!isAuthenticated()')}"
+                            class="btn btn-outline-dark px-4 ms-2"
+                            onclick="alert('Bạn cần đăng nhập!')">
+                        🛒 Thêm vào giỏ hàng
+                    </button>
+                    <form th:if="${#authorization.expression('isAuthenticated()')}"
+                          th:action="@{/home/cart/add/{id}(id=${gameId})}"
+                          method="post"
+                          class="d-inline">
+                        <input type="hidden" name="basePrice" th:value="${price}">
+                        <button th:if="${#authorization.expression('isAuthenticated()')}"
+                                type="button"
+                                class="btn btn-outline-dark px-4 ms-2"
+                                th:attr="data-game-id=${gameId},data-base-price=${price}"
+                                onclick="addToCart(this)">
+                            🛒 Thêm vào giỏ hàng
+                        </button>
 
-    document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const loginModalEl = document.getElementById("loginModal");
-            const loginModal = bootstrap.Modal.getInstance(loginModalEl);
-            loginModalEl.addEventListener('hidden.bs.modal', function handler() {
-                loginModalEl.removeEventListener('hidden.bs.modal', handler);
-                new bootstrap.Modal(document.getElementById("registerModal")).show();
-            });
-            loginModal.hide();
-        });
-    });
+                    </form>
 
-    document.querySelectorAll(".open-login").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const registerModalEl = document.getElementById("registerModal");
-            const registerModal = bootstrap.Modal.getInstance(registerModalEl);
-            registerModalEl.addEventListener('hidden.bs.modal', function handler() {
-                registerModalEl.removeEventListener('hidden.bs.modal', handler);
-                new bootstrap.Modal(document.getElementById("loginModal")).show();
-            });
-            registerModal.hide();
-        });
-    });
 
-    document.querySelectorAll(".open-register").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const loginEl = document.getElementById("loginModal");
-            const loginModal = bootstrap.Modal.getInstance(loginEl);
-            loginEl.addEventListener("hidden.bs.modal", function handler() {
-                loginEl.removeEventListener("hidden.bs.modal", handler);
-                new bootstrap.Modal(document.getElementById("registerModal")).show();
-            });
-            loginModal.hide();
-        });
-    });
 
-    document.getElementById("registerBtn").addEventListener("click", function () {
-        const formData = new FormData(document.getElementById("registerForm"));
-        fetch("/register", {
-            method: "POST",
-            body: new URLSearchParams(formData),
-            headers: { "X-Requested-With": "XMLHttpRequest" }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const errorDiv = document.getElementById("registerError");
-                const successDiv = document.getElementById("registerSuccess");
-                if (data.error) {
-                    errorDiv.innerText = data.error;
-                    successDiv.innerText = "";
-                    document.getElementById("registerPassword").value = "";
-                    document.getElementById("confirmPassword").value = "";
-                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);
-                } else if (data.success) {
-                    successDiv.innerText = data.success;
-                    errorDiv.innerText = "";
-                    document.getElementById("registerForm").reset();
-                    setTimeout(() => { successDiv.innerText = ""; }, 3000);
-                }
-            })
-            .catch(err => console.error(err));
-    });
 
-    setTimeout(() => {
-        const spinner = document.getElementById("spinner");
-        if (spinner) spinner.classList.remove("show");
-    }, 500);
-</script>
-<script>
-    function toggleRent(show) {
-        const rentRow = document.getElementById("rentPackage");
-        if (show) {
-            rentRow.classList.remove("d-none");
-        } else {
-            rentRow.classList.add("d-none");
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function getBasePrice() {
+            return parseInt(document.getElementById('basePrice').value);
         }
-    }
-</script>
+        function getCurrentPrice() {
+            const accTypeRadio = document.querySelector(
+                'input[name="accountType"]:checked'
+            );
+            // 🔥 FIX: nếu chưa chọn thì mặc định permanent
+            const accType = accTypeRadio ? accTypeRadio.value : 'permanent';
 
-<script th:src="@{/js/product.js}"></script>
-</body>
-</html>
+            let price = getBasePrice();
+            // RENT
+            if (accType === 'rent') {
+                const month = document.getElementById('rentMonth')?.value;
+                if (month === '2') price *= 0.9;
+                if (month === '3') price *= 0.85;
+            }
+            // VOUCHER
+            const percent = parseInt(
+                document.getElementById('voucherPercent').value || 0
+            );
+
+            if (percent > 0) {
+                price -= price * (percent / 100);
+            }
+
+            return Math.round(price);
+        }
+        function updatePriceDisplay() {
+            const price = getCurrentPrice();
+            const input = document.getElementById('priceInput');
+
+            input.value = price.toLocaleString('vi-VN') + ' đ';
+            input.dataset.price = price;
+        }
+
+        function toggleRent(isRent) {
+            const rentDiv = document.getElementById('rentPackage');
+            rentDiv.classList.toggle('d-none', !isRent);
+            updatePriceDisplay();
+        }
+
+        function updatePriceByRent() {
+            updatePriceDisplay();
+        }
+        /* ===== VOUCHER (DEMO CLIENT) ===== */
+        function applyVoucher() {
+            const code = document.getElementById('voucherInput').value.trim();
+            if (!code) return;
+
+            fetch(`/home/api/voucher/check?code=${encodeURIComponent(code)}`)
+                    .then(res => res.json())
+                .then(data => {
+                    if (!data.valid) {
+                        alert("Voucher không hợp lệ hoặc hết hạn");
+                        document.getElementById('voucherPercent').value = 0;
+                        document.getElementById('voucherHidden').value = "";
+                    } else if (data.used) {
+                        alert("Voucher đã được sử dụng");
+                        document.getElementById('voucherPercent').value = 0;
+                        document.getElementById('voucherHidden').value = "";
+                    } else {
+                        document.getElementById('voucherPercent').value = data.percent;
+                        document.getElementById('voucherHidden').value = code;
+                    }
+                    updatePriceDisplay();
+                })
+
+                .catch(err => {
+                    console.error(err);
+                    alert("Lỗi khi kiểm tra voucher");
+                });
+        }
+
+        /* ===== SUBMIT ===== */
+        function syncBeforeSubmit() {
+            const accType =
+            (document.querySelector('input[name="accountType"]:checked') || { value: 'permanent' }).value;
+
+            const rentMonth = document.getElementById('rentMonth')?.value || 0;
+            const skinRange = document.getElementById('skinRangeInput')?.value || "";
+            const finalPrice = getCurrentPrice();
+            const voucherCode = (document.getElementById('voucherHidden')?.value || "").trim();
+
+            // ===== form BUY (/home/payment) =====
+            const at = document.getElementById('accountTypeHidden');
+            if (at) at.value = accType;
+
+            const rm = document.getElementById('rentMonthHidden');
+            if (rm) rm.value = rentMonth;
+
+            const sr = document.getElementById('skinRangeHidden');
+            if (sr) sr.value = skinRange;
+
+            const fp = document.getElementById('finalPriceHidden');
+            if (fp) fp.value = finalPrice;
+
+            const vc = document.getElementById('voucherHidden');
+            if (vc) vc.value = voucherCode;
+
+            // ===== base price (gốc) =====
+            const basePrice = parseInt(document.getElementById('basePrice')?.value || 0, 10);
+            const bp = document.getElementById('basePriceHidden');
+            if (bp) bp.value = basePrice;
+
+            // ===== form CART (/home/cart/add) =====
+            const atC = document.getElementById('accountTypeHiddenCart');
+            if (atC) atC.value = accType;
+
+            const rmC = document.getElementById('rentMonthHiddenCart');
+            if (rmC) rmC.value = rentMonth;
+
+            const srC = document.getElementById('skinRangeHiddenCart');
+            if (srC) srC.value = skinRange;
+
+            const fpC = document.getElementById('finalPriceHiddenCart');
+            if (fpC) fpC.value = finalPrice;
+
+            const vcC = document.getElementById('voucherHiddenCart');
+            if (vcC) vcC.value = voucherCode;
+        }
+    </script>
+
+
+
+    <div th:if="${error}" class="d-none" id="serverError" th:text="${error}"></div>
+
+    <script th:inline="javascript">
+        const msg = document.getElementById("serverError")?.innerText;
+        if (msg && msg.trim().length > 0) {
+            alert(msg);
+        }
+    </script>
+
+
+
+    <div id="cartToast"
+         class="position-fixed top-0 end-0 p-3"
+         style="z-index: 99999;">
+        <div id="cartToastBox"
+             class="toast align-items-center text-bg-success border-0"
+             role="alert" aria-live="assertive" aria-atomic="true"
+             data-bs-delay="3000">
+            <div class="d-flex">
+                <div class="toast-body" id="cartToastMsg">Đã thêm vào giỏ hàng</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
+                    <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
+                    <p>Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.</p>
+                    <div class="d-flex mt-3 gap-3">
+                        <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
+                    <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
+                    <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>
+                    <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
+                    <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
+                        <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
+                    </button>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
+                    <ul class="footer-links">
+                        <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
+                        <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
+                        <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
+                        <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
+                        <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
+                        <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
+                <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
+                <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .footer-links{list-style:none;padding:0;}
+        .footer-links li{margin-bottom:8px;}
+        .footer-links a{color:#444;text-decoration:none;transition:0.2s;}
+        .footer-links a:hover{color:#ff8800;padding-left:4px;}
+    </style>
+
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/lib/wow/wow.min.js}"></script>
+    <script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+
+    <script>
+        document.querySelectorAll('.require-login').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const isLogged = this.dataset.logged === 'true';
+                if (!isLogged) {
+                    e.preventDefault();
+                    const alertBox = document.getElementById('loginAlert');
+                    alertBox.classList.remove('d-none');
+                    setTimeout(() => alertBox.classList.add('d-none'), 3000);
+                }
+            });
+        });
+
+        function showCartToast(message, ok) {
+            const box = document.getElementById("cartToastBox");
+            const msg = document.getElementById("cartToastMsg");
+
+            msg.innerText = message || "";
+
+            box.classList.remove("text-bg-success", "text-bg-danger");
+            box.classList.add(ok ? "text-bg-success" : "text-bg-danger");
+
+            // ✅ INIT đúng Bootstrap Toast
+            const toastEl = document.getElementById("cartToastBox");
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            toast.show();
+        }
+
+        function addToCart(btn) {
+            const gameId = btn.dataset.gameId;
+            const basePrice = btn.dataset.basePrice;
+
+            const accType = (document.querySelector('input[name="accountType"]:checked') || { value: 'permanent' }).value;
+            const duration = (accType === 'rent')
+                ? parseInt(document.getElementById('rentMonth')?.value || '1', 10)
+                : 0;
+
+            fetch(`/home/cart/add/${gameId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: `basePrice=${encodeURIComponent(basePrice)}&duration=${encodeURIComponent(duration)}`
+            })
+                .then(async res => {
+                    const text = await res.text();
+                    if (!res.ok) throw new Error(text || "Lỗi");
+                    showCartToast("✅ Đã thêm vào giỏ hàng", true);   // ✅ popup success luôn
+                })
+                .catch(err => {
+                    showCartToast(err.message || "Lỗi", false);
+                });
+        }
+
+        function addToCart(btn) {
+            const gameId = btn.dataset.gameId;
+            const basePrice = btn.dataset.basePrice;
+
+            const accType = (document.querySelector('input[name="accountType"]:checked') || { value: 'permanent' }).value;
+            const duration = (accType === 'rent')
+                ? parseInt(document.getElementById('rentMonth')?.value || '1', 10)
+                : 0;
+
+            fetch(`/home/cart/add/${gameId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: `basePrice=${encodeURIComponent(basePrice)}&duration=${encodeURIComponent(duration)}`
+            })
+                .then(async res => {
+                    const text = await res.text();
+                    if (!res.ok) throw new Error(text || "Lỗi");
+                    showCartToast(text, true);
+                })
+                .catch(err => showCartToast(err.message || "Lỗi", false));
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+
+            fetch("/login", {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/x-www-form-urlencoded", "X-Requested-With": "XMLHttpRequest" },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        const err = await res.json();
+                        const errorBox = document.getElementById("loginError");
+                        errorBox.textContent = err.error;
+                        errorBox.classList.remove("d-none");
+                        setTimeout(() => errorBox.classList.add("d-none"), 3000);
+                        return null;
+                    }
+                    return res.json();
+                })
+                .then(data => { if (data?.redirect) window.location.href = data.redirect; })
+                .catch(err => console.error(err));
+        });
+
+        document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const loginModalEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+                loginModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                    new bootstrap.Modal(document.getElementById("registerModal")).show();
+                });
+                loginModal.hide();
+            });
+        });
+
+        document.querySelectorAll(".open-login").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const registerModalEl = document.getElementById("registerModal");
+                const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+                registerModalEl.addEventListener('hidden.bs.modal', function handler() {
+                    registerModalEl.removeEventListener('hidden.bs.modal', handler);
+                    new bootstrap.Modal(document.getElementById("loginModal")).show();
+                });
+                registerModal.hide();
+            });
+        });
+
+        document.querySelectorAll(".open-register").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const loginEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginEl);
+                loginEl.addEventListener("hidden.bs.modal", function handler() {
+                    loginEl.removeEventListener("hidden.bs.modal", handler);
+                    new bootstrap.Modal(document.getElementById("registerModal")).show();
+                });
+                loginModal.hide();
+            });
+        });
+
+        document.getElementById("registerBtn").addEventListener("click", function () {
+            const formData = new FormData(document.getElementById("registerForm"));
+            fetch("/register", {
+                method: "POST",
+                body: new URLSearchParams(formData),
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const errorDiv = document.getElementById("registerError");
+                    const successDiv = document.getElementById("registerSuccess");
+                    if (data.error) {
+                        errorDiv.innerText = data.error;
+                        successDiv.innerText = "";
+                        document.getElementById("registerPassword").value = "";
+                        document.getElementById("confirmPassword").value = "";
+                        setTimeout(() => { errorDiv.innerText = ""; }, 3000);
+                    } else if (data.success) {
+                        successDiv.innerText = data.success;
+                        errorDiv.innerText = "";
+                        document.getElementById("registerForm").reset();
+                        setTimeout(() => { successDiv.innerText = ""; }, 3000);
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+
+        setTimeout(() => {
+            const spinner = document.getElementById("spinner");
+            if (spinner) spinner.classList.remove("show");
+        }, 500);
+    </script>
+    <script>
+        function toggleRent(show) {
+            const rentRow = document.getElementById("rentPackage");
+            if (show) {
+                rentRow.classList.remove("d-none");
+            } else {
+                rentRow.classList.add("d-none");
+            }
+        }
+    </script>
+
+    <script th:src="@{/js/product.js}"></script>
+    </body>
+    </html>
