@@ -1,17 +1,13 @@
 package webBackEnd.controller.Staff;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import webBackEnd.entity.OrderDetail;
-import webBackEnd.entity.Orders;
-import webBackEnd.entity.RentAccountGame;
-import webBackEnd.entity.Staff;
-import webBackEnd.service.AdministratorService;
-import webBackEnd.service.OrderDetailService;
-import webBackEnd.service.OrdersService;
-import webBackEnd.service.RentAccountGameService;
+import webBackEnd.controller.Customer.CustomUserDetails;
+import webBackEnd.entity.*;
+import webBackEnd.service.*;
 import webBackEnd.successfullyDat.GetQuantity;
 import webBackEnd.successfullyDat.SendMailTest;
 
@@ -29,6 +25,9 @@ public class ApproveController {
 
     @Autowired
     private GetQuantity getQuantity;
+
+    @Autowired
+    private CustomerService customerService;
 
     @Autowired
     private OrderDetailService orderDetailService;
@@ -131,7 +130,8 @@ public class ApproveController {
 
 
     @PostMapping("/approve/reject")
-    public String rejectOrder(@RequestParam UUID orderId) {
+    public String rejectOrder(@RequestParam UUID orderId,
+                              @AuthenticationPrincipal CustomUserDetails user) {
 
         Orders order = ordersService.findById(orderId);
 
@@ -140,7 +140,11 @@ public class ApproveController {
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
         ordersService.save(order);
 
-        ordersService.save(order);
+
+        Customer customer = customerService.findCustomerByUsername(user.getUsername());
+        customer.setBalance(customer.getBalance().add(order.getTotalPrice()));
+
+
 
         return "redirect:/staffHome/approveList";
     }
