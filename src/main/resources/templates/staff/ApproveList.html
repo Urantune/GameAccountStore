@@ -9,73 +9,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body {
-            background: #f5f7fa;
-            font-family: "Roboto", sans-serif;
-        }
+        body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
+        .sidebar { width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0; color:#ecf0f1; }
+        .sidebar h5 { padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .sidebar a { display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s; }
+        .sidebar a i { width:22px; }
+        .sidebar a:hover { background:#1abb9c; }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            min-height: 100vh;
-            background: #2a3f54;
-            position: fixed;
-            left: 0;
-            top: 0;
-            color: #ecf0f1;
-        }
+        .content { margin-left:260px; padding:30px; }
+        .table-wrapper { background:#ffffff; border-radius:12px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.08); }
 
-        .sidebar h5 {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 14px 24px;
-            color: #ecf0f1;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-
-        .sidebar a i { width: 22px; }
-
-        .sidebar a:hover {
-            background: #1abb9c;
-        }
-
-        /* CONTENT */
-        .content {
-            margin-left: 260px;
-            padding: 30px;
-        }
-
-        .table-wrapper {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
-
-        #orderTable thead th {
-            font-size: 13px;
-            line-height: 1.2;
-            white-space: nowrap;
-        }
-
-        #orderTable thead th i {
-            font-size: 12px;
-        }
-
-        th.sortable { cursor: pointer; user-select: none; }
-        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+        #orderTable thead th { font-size:13px; line-height:1.2; white-space:nowrap; }
+        #orderTable thead th i { font-size:12px; }
+        th.sortable { cursor:pointer; user-select:none; }
+        .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
     </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
     <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
@@ -85,7 +37,6 @@
     <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="content">
 
     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
@@ -112,29 +63,36 @@
             <thead>
             <tr>
                 <th style="width: 60px;">#</th>
+
                 <th class="sortable" onclick="sortTable(1)">
-                    Order ID <i class="bi bi-arrow-down-up"></i></th>
+                    Order ID <i class="bi bi-arrow-down-up"></i>
+                </th>
 
                 <th class="sortable" onclick="sortTable(2)">
-                    Username <i class="bi bi-arrow-down-up"></i></th>
+                    Username <i class="bi bi-arrow-down-up"></i>
+                </th>
 
                 <th class="sortable" onclick="sortTable(3)">
-                    Voucher <i class="bi bi-arrow-down-up"></i></th>
+                    Voucher <i class="bi bi-arrow-down-up"></i>
+                </th>
 
                 <th class="sortable" onclick="sortTable(4)">
-                    Created Date <i class="bi bi-arrow-down-up"></i></th>
+                    Created Date <i class="bi bi-arrow-down-up"></i>
+                </th>
 
                 <th class="sortable text-end" onclick="sortTable(5)" style="width: 120px;">
-                    Quantity <i class="bi bi-arrow-down-up"></i></th>
+                    Quantity <i class="bi bi-arrow-down-up"></i>
+                </th>
 
                 <th class="sortable text-end" onclick="sortTable(6)" style="width: 160px;">
-                    Price <i class="bi bi-arrow-down-up"></i></th>
+                    Avg Price <i class="bi bi-arrow-down-up"></i>
+                </th>
 
                 <th class="sortable text-end" onclick="sortTable(7)" style="width: 160px;">
-                    Total Price <i class="bi bi-arrow-down-up"></i></th>
+                    Total Price <i class="bi bi-arrow-down-up"></i>
+                </th>
 
                 <th style="width: 90px;" class="text-center">Action</th>
-
             </tr>
             </thead>
 
@@ -144,29 +102,33 @@
 
                 <td class="mono" th:text="${o.id}"></td>
 
-                <td th:text="${o.customer.username}"></td>
+                <td th:text="${o.customer != null ? o.customer.username : 'N/A'}"></td>
 
-                <td th:if="${o.voucher != null}"
-                    th:text="${o.voucher.voucherName}"></td>
-                <td th:unless="${o.voucher != null}">
-                    Not Voucher</td>
+                <td th:text="${o.voucher != null ? o.voucher.voucherName : 'Not Voucher'}"></td>
 
-                <td th:text="${#temporals.format(o.createdDate, 'HH:mm dd/MM/yyyy')}"></td>
+                <td th:text="${o.createdDate != null ? #temporals.format(o.createdDate, 'HH:mm dd/MM/yyyy') : 'N/A'}"></td>
 
-                <td class="text-end" th:text="${getQuantity.findAllByOrderId(o.id)}"></td>
+                <td class="text-end"
+                    th:text="${getQuantity.findAllByOrderId(o.id)}"></td>
 
-                <td class="text-end" th:text="${#numbers.formatDecimal(@orderDetailService.getOrderDetailByOrder(o).gameAccount.price,1, 'COMMA', 0, 'POINT')}"></td>
+                <td class="text-end"
+                    th:text="${(getQuantity.findAllByOrderId(o.id) != null and getQuantity.findAllByOrderId(o.id) > 0 and o.totalPrice != null)
+                                ? #numbers.formatDecimal(o.totalPrice / getQuantity.findAllByOrderId(o.id), 1, 'COMMA', 0, 'POINT')
+                                : '0'}"></td>
 
-                <td class="text-end" th:text="${#numbers.formatDecimal(o.totalPrice, 1, 'COMMA', 0, 'POINT')}"></td>
+                <td class="text-end"
+                    th:text="${o.totalPrice != null ? #numbers.formatDecimal(o.totalPrice, 1, 'COMMA', 0, 'POINT') : '0'}"></td>
+
                 <td class="text-center">
-                    <a th:href="@{'/staffHome/approve/' + ${o.id}}" class="btn btn-sm btn-outline-dark" title="View Detail">
+                    <a th:href="@{'/staffHome/approve/' + ${o.id}}"
+                       class="btn btn-sm btn-outline-dark" title="View Detail">
                         <i class="bi bi-gear"></i>
                     </a>
                 </td>
             </tr>
 
             <tr class="no-data" th:if="${#lists.isEmpty(orderList)}">
-                <td colspan="8" class="text-center text-muted py-4">No orders found.</td>
+                <td colspan="9" class="text-center text-muted py-4">No orders found.</td>
             </tr>
             </tbody>
         </table>
@@ -224,7 +186,6 @@
             if (type === "orderId") cellValue = row.children[1].innerText.toLowerCase();
             if (type === "username") cellValue = row.children[2].innerText.toLowerCase();
             if (type === "date") cellValue = row.children[4].innerText.toLowerCase();
-
             row.style.display = cellValue.includes(value) ? "" : "none";
         });
 
