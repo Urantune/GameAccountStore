@@ -18,6 +18,7 @@ import webBackEnd.service.GameAccountService;
 import webBackEnd.service.GameService;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -52,23 +53,13 @@ public class GameController {
         } else if (game.getGameId().equals(FF_ID)) {
             title = "Tài khoản Game Free Fire";
         }
-
         // ===== ACC ĐÃ BÁN / ĐÃ THUÊ =====
-        List<GameAccount> soldOrRentedAccounts =
-                rentAccountGameRepositories.findAllRentedOrSoldAccounts();
-
-        Set<UUID> soldOrRentedIds = soldOrRentedAccounts.stream()
-                .map(GameAccount::getId)
-                .collect(Collectors.toSet());
-
-        // ===== SORT: CÒN BÁN LÊN TRÊN – HẾT HÀNG XUỐNG DƯỚI =====
+        Set<UUID> soldOrRentedIds = gameAccountService.getSoldOrRentedAccountIds();
         gameAccounts.sort((a, b) -> {
             boolean aSold = soldOrRentedIds.contains(a.getId());
             boolean bSold = soldOrRentedIds.contains(b.getId());
             return Boolean.compare(aSold, bSold);
-            // false (chưa bán) sẽ đứng trước true (đã bán)
         });
-
         // ===== TRUYỀN SANG VIEW =====
         model.addAttribute("accounts", gameAccounts);
         model.addAttribute("soldOrRentedIds", soldOrRentedIds);
@@ -76,9 +67,6 @@ public class GameController {
 
         return "customer/GameAccount";
     }
-
-
-
 
 
     @GetMapping("/gameDetail/{id}")

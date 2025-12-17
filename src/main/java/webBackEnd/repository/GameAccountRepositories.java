@@ -53,4 +53,21 @@ AND (:maxLevel IS NULL OR g.lovel <= :maxLevel)
     );
 
 
+
+
+
+    @Query("""
+        SELECT DISTINCT od.gameAccount
+        FROM OrderDetail od
+        JOIN od.order o
+        WHERE o.status = 'COMPLETED'
+    """)
+    List<GameAccount> findAllSoldAccounts();
+
+    @Query("""
+        SELECT DISTINCT r.gameAccount
+        FROM RentAccountGame r
+        WHERE r.status = 'Still valid'
+    """)
+    List<GameAccount> findAllRentedAccounts();
 }

@@ -6,7 +6,9 @@ import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.repository.GameAccountRepositories;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -39,5 +41,18 @@ public class GameAccountService {
         return gameAccountRepositories.findById(gameId)
                 .orElseThrow(() ->
                         new RuntimeException("Không tìm thấy game"));
+    }
+
+
+    public Set<UUID> getSoldOrRentedAccountIds() {
+        Set<UUID> ids = new HashSet<>();
+
+        gameAccountRepositories.findAllSoldAccounts()
+                .forEach(acc -> ids.add(acc.getId()));
+
+        gameAccountRepositories.findAllRentedAccounts()
+                .forEach(acc -> ids.add(acc.getId()));
+
+        return ids;
     }
 }
