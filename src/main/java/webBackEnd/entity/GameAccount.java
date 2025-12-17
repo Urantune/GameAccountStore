@@ -45,14 +45,11 @@
         @Column(name = "vip")
         private int vip;
         private String email;
-        private int quantity;
-        @Column(name = "createdBy")
-        private String createdBy;
         public GameAccount() {
         }
 
 
-        public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, String duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items, String email,int quantity, String createdBy) {
+        public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, String duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items, String email) {
             this.gameAccountId = id;
             this.gameAccount = gameAccount;
             this.gamePassword = gamePassword;
@@ -70,8 +67,7 @@
             this.lovel = lovel;
             this.vip = items;
             this.email = email;
-            this.quantity = quantity;
-            this.createdBy = createdBy;
+
         }
 
         public UUID getGameAccountId() {
@@ -224,21 +220,5 @@
 
         public void setEmail(String email) {
             this.email = email;
-        }
-
-        public String getCreatedBy() {
-            return createdBy;
-        }
-
-        public void setCreatedBy(String createdBy) {
-            this.createdBy = createdBy;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
         }
     }
