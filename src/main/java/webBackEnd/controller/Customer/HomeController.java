@@ -27,10 +27,8 @@ public class HomeController {
 
     @Autowired
     private TransactionService transactionService;
-
     @Autowired
     private GameAccountService gameAccountService;
-
     @Autowired
     private PathCheck pathCheck;
     @Autowired
@@ -41,7 +39,6 @@ public class HomeController {
     private OrdersService ordersService;
     @Autowired
     private OrderDetailService orderDetailService;
-
     @Autowired
     private SendMailTest sendMailTest;
 
@@ -184,7 +181,7 @@ public class HomeController {
 
         if (search != null && !search.isBlank()) {
 
-            // 1️⃣ Search theo STT (chỉ chứa số)
+            // 1⃣ Search theo STT (chỉ chứa số)
             if (search.matches("\\d+")) {
                 int stt = Integer.parseInt(search) - 1;
 
@@ -195,7 +192,7 @@ public class HomeController {
                 }
 
             }
-            // 2️⃣ Search theo UUID
+            // 2️ Search theo UUID
             else if (search.matches(
                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
 

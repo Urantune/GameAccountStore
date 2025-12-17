@@ -2,6 +2,7 @@ package webBackEnd.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,6 +13,7 @@ import webBackEnd.entity.Customer;
 import webBackEnd.repository.CustomerRepositories;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,16 +23,30 @@ public class CustomerService implements UserDetailsService {
 
     @Autowired
     private CustomerRepositories customerRepositories;
+
+    private static final LocalDateTime BLOCK_AFTER_DATE =
+            LocalDateTime.of(2025, 1, 1, 0, 0); // acc tạo  >= 01/01/2025 dc login
+
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
 
-        Customer customer = customerRepositories.findByUsernameIgnoreCase(username)
+        Customer customer = customerRepositories
+                .findByUsernameIgnoreCase(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
+        if (customer.getDateCreated().isBefore(BLOCK_AFTER_DATE)) {
+            throw new AccountExpiredException(
+                    "Account created after allowed date"
+            );
+        }
+        if ("LOCKED".equalsIgnoreCase(customer.getStatus())) {
+            throw new DisabledException("Account is locked");
+        }
 
         return new CustomUserDetails(customer);
     }
+
 
 
     public List<Customer> findAllCustomers() {
