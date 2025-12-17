@@ -366,6 +366,29 @@
                         onclick="alert('Bạn cần đăng nhập!')">
                     🛒 Mua ngay
                 </button>
+                <button th:if="${#authorization.expression('!isAuthenticated()')}"
+                        class="btn btn-outline-dark px-4 ms-2"
+                        onclick="alert('Bạn cần đăng nhập!')">
+                    🛒 Thêm vào giỏ hàng
+                </button>
+                <form th:if="${#authorization.expression('isAuthenticated()')}"
+                      th:action="@{/home/cart/add}"
+                      method="post"
+                      onsubmit="syncBeforeSubmit()"
+                      class="d-inline">
+
+                    <input type="hidden" name="accountType" id="accountTypeHiddenCart">
+                    <input type="hidden" name="rentMonth" id="rentMonthHiddenCart">
+                    <input type="hidden" name="skinRange" id="skinRangeHiddenCart">
+                    <input type="hidden" name="finalPrice" id="finalPriceHiddenCart">
+                    <input type="hidden" name="voucherCode" id="voucherHiddenCart">
+
+                    <button type="submit" class="btn btn-outline-dark px-4 ms-2">
+                        🛒 Thêm vào giỏ hàng
+                    </button>
+                </form>
+
+
             </div>
         </div>
     </div>
@@ -458,7 +481,6 @@
         document.getElementById('voucherHidden').value =
             (document.getElementById('voucherHidden').value || "").trim();
     }
-
 </script>
 
 
