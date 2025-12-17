@@ -109,6 +109,13 @@
             <!--                <button id="btnChangePassword">Đổi mật khẩu</button>-->
             <!--            </a>-->
             <button id="btnToggle2FA">Bật/Tắt 2FA</button>
+            <button type="button"
+                    class="btn btn-danger mt-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#changePassEmailModal">
+                Đổi mật khẩu
+            </button>
+
             <button id="btnDeleteAccount" class="btn btn-danger mt-2">Xóa tài khoản</button>
         </div>
     </div>
@@ -134,6 +141,38 @@
         </div>
     </div>
 </div>
+
+
+<!--ChanePass-->
+
+<div class="modal fade" id="changePassEmailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+            <form th:action="@{/home/profile/check-email}" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận email</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="userId"
+                           th:value="${customer.customerId}"/>
+
+                    <label class="form-label">Nhập email</label>
+                    <input type="email" name="email" class="form-control" required>
+
+                    <p class="text-danger mt-2" th:if="${emailError}" th:text="${emailError}"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 <div id="pinPopup" class="modal"
      style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center;">
@@ -373,6 +412,13 @@
         else document.getElementById('pinError').textContent = 'PIN không đúng. Vui lòng thử lại.';
     }
 </script>
+<script th:if="${openChangePassModal}">
+    document.addEventListener('DOMContentLoaded', () => {
+        const m = new bootstrap.Modal(document.getElementById('changePassEmailModal'));
+        m.show();
+    });
+</script>
+
 <script th:src="@{/Accest/JS/code.js}"></script>
 </body>
 </html>

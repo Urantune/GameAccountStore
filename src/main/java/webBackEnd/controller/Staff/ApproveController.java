@@ -101,11 +101,6 @@ public class ApproveController {
                 administratorService.getStaffByID(UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91B")));
         ordersService.save(order);
 
-
-
-
-
-
         String title = "Xác nhận tài khoản của bạn";
 
         String content =
@@ -131,8 +126,6 @@ public class ApproveController {
 
 
         sendMailTest.testSend(order.getCustomer().getEmail(), title, content);
-
-
         return "redirect:/staffHome/approveList";
     }
 
