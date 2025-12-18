@@ -104,4 +104,12 @@ public class VerryController {
         ra.addFlashAttribute("successMessage", "Đổi mật khẩu thành công.");
         return "redirect:/home";
     }
+
+
+
+    @GetMapping("/forgot-password")
+    public String forgotPasswordPage() {
+
+        return "passchane/ForgetPassword";
+    }
 }

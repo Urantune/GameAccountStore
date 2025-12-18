@@ -77,7 +77,11 @@
                     <div class="mb-3">
                         <label for="loginPassword" class="form-label">Mật khẩu:</label>
                         <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
-                        <a href="#" id="openForgotModal" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                        <a th:href="@{/veryAccount/forgot-password}"
+                           class="form-text text-muted text-decoration-none float-end">
+                            Quên mật khẩu?
+                        </a>
+
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -224,6 +228,16 @@
                                 Free Fire
                             </a>
                         </li>
+
+
+                        <li class="nav-item">
+                            <a class="nav-link nav-pill require-login"
+                               th:href="@{/home/pendingOrders}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                <i class="fa fa-clock me-2"></i>Đơn hàng đang chờ
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
 
