@@ -1,72 +1,227 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8"/>
-    <title>Nạp tiền</title>
+    <meta charset="UTF-8">
+    <title>Nạp tiền vào ví</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background:#f5f9ff;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        /* ================= HEADER ================= */
+        .game-nav{
+            background:pink;
+            border-top:2px solid #e6d8c8;
+            height:86px;
+        }
+
+        .nav-logo{ height:180px; }
+
+        .nav-pill{
+            border-radius:18px;
+            padding:10px 18px;
+            transition:.2s;
+            color:#111 !important;
+        }
+
+        .nav-pill:hover{
+            background:#F8F8FF;
+            box-shadow:0 6px 18px rgba(0,0,0,.08);
+            color:#f7931e !important;
+        }
+
+        /* ================= TOPUP CARD ================= */
+        .topup-card{
+            background:#fff;
+            border-radius:20px;
+            padding:40px;
+            box-shadow:0 12px 30px rgba(0,0,0,.08);
+        }
+
+        .topup-title{
+            font-size:26px;
+            font-weight:700;
+            margin-bottom:25px;
+        }
+
+        .balance-box{
+            background:linear-gradient(135deg,#00e0b3,#a8ff3e);
+            color:#fff;
+            border-radius:16px;
+            padding:20px 30px;
+            margin-bottom:30px;
+        }
+
+        .balance-box span{
+            font-size:32px;
+            font-weight:700;
+        }
+
+        .amount-btn{
+            border-radius:16px;
+            border:1.5px solid #f3c6d8;
+            padding:14px;
+            font-weight:600;
+            background:transparent;
+            transition:.2s;
+        }
+
+        .amount-btn:hover{
+            background:#F8F8FF;
+            box-shadow:0 6px 18px rgba(0,0,0,.08);
+            color:#f7931e;
+        }
+
+        .btn-confirm{
+            margin-top:30px;
+            background:transparent;
+            border:1.5px solid #f3c6d8;
+            border-radius:18px;
+            padding:16px;
+            font-size:18px;
+            font-weight:600;
+            transition:.2s;
+        }
+
+        .btn-confirm:hover{
+            background:#F8F8FF;
+            box-shadow:0 6px 18px rgba(0,0,0,.08);
+            color:#f7931e;
+        }
+    </style>
 </head>
-<body class="bg-light">
 
-<div class="container py-5" style="max-width:720px;">
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
+<body>
 
-            <h4 class="fw-bold mb-3">nạp tiền vào ví</h4>
+<!-- ================= HEADER ================= -->
+<nav class="navbar navbar-expand-lg game-nav shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/home">
+            <img src="/img/logoFinal.png" class="nav-logo">
+        </a>
 
-            <div class="mb-3">
-                <span class="text-muted">số dư hiện tại: </span>
-                <b th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">0 đ</b>
-            </div>
+        <ul class="navbar-nav mx-auto gap-3">
+            <li class="nav-item"><a class="nav-link nav-pill" href="/home">Trang Chủ</a></li>
+            <li class="nav-item"><a class="nav-link nav-pill" href="/home/transaction">Ví</a></li>
+            <li class="nav-item"><a class="nav-link nav-pill" href="/home/cart">Giỏ Hàng</a></li>
+        </ul>
 
-            <form th:action="@{/home/wallet/topup}" method="post" class="row g-2">
-                <div class="col-12">
-                    <label class="form-label">số tiền muốn nạp</label>
-                    <input type="number" name="amount" class="form-control"
-                           min="1000" step="1000"
-                           placeholder="ví dụ: 100000" required>
+        <ul class="navbar-nav">
+            <li sec:authorize="isAuthenticated()" class="nav-item d-flex align-items-center gap-2">
+                <img src="/img/customer.png" width="35" class="rounded-circle">
+                <span th:text="${#authentication.name}"></span>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ================= TOPUP CONTENT ================= -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="topup-card">
+
+                <div class="topup-title">
+                    <i class="fa-solid fa-wallet me-2 text-success"></i>
+                    Nạp tiền vào ví
                 </div>
 
-                <div class="col-12 d-flex gap-2 mt-2">
-                    <button class="btn btn-primary">xác nhận nạp</button>
-                    <a class="btn btn-outline-secondary" th:href="@{/home/wallet}">quay lại ví</a>
-                </div>
-            </form>
-
-            <div class="mt-4" th:if="${idpayment != null}">
-                <hr>
-
-                <h5 class="fw-bold mb-2">QR thanh toán</h5>
-
-                <div class="text-muted mb-2" style="font-size:13px;">
-                    Mã giao dịch:
-                    <b th:text="${idpayment}">TOPUP-XXX</b>
-                    |
-                    Số tiền:
-                    <b th:text="${#numbers.formatDecimal(amount,0,'COMMA',0,'POINT')} + ' đ'">0 đ</b>
+                <!-- Số dư -->
+                <div class="balance-box">
+                    Số dư hiện tại:
+                    <span th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">0 đ</span>
                 </div>
 
-                <div class="d-flex justify-content-center">
-                    <img class="border rounded p-2 bg-white"
-                         th:src="@{/home/wallet/qr.png(idpayment=${idpayment})}"
-                         alt="QR Code">
-                </div>
+                <!-- ===== FORM NẠP TIỀN (BACKEND GIỮ NGUYÊN) ===== -->
+                <form th:action="@{/home/wallet/topup}" method="post">
 
-                <form th:action="@{/home/wallet/topup/confirm}" method="post"
-                      class="mt-3 d-flex justify-content-center gap-2">
-                    <input type="hidden" name="idpayment" th:value="${idpayment}">
-                    <input type="hidden" name="amount" th:value="${amount}">
-                    <button class="btn btn-success px-4">xác nhận đã thanh toán</button>
+                    <!-- Chọn nhanh -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-4">
+                            <button type="button" class="w-100 amount-btn" onclick="setAmount(50000)">50.000 đ</button>
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="w-100 amount-btn" onclick="setAmount(100000)">100.000 đ</button>
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="w-100 amount-btn" onclick="setAmount(200000)">200.000 đ</button>
+                        </div>
+                    </div>
+
+                    <!-- Nhập số tiền -->
+                    <label class="fw-semibold mb-2">Hoặc nhập số tiền</label>
+                    <input id="amountInput"
+                           type="number"
+                           name="amount"
+                           class="form-control form-control-lg"
+                           min="1000"
+                           step="1000"
+                           placeholder="Ví dụ: 100000"
+                           required>
+
+                    <button type="submit" class="w-100 btn-confirm">
+                        <i class="fa-solid fa-circle-plus me-2"></i>
+                        Xác nhận nạp tiền
+                    </button>
                 </form>
-            </div>
 
-            <div class="mt-3 text-muted" style="font-size:13px;">
-                nạp tiền demo nội bộ, không phải thanh toán thật
+                <!-- ===== QR + CONFIRM (BACKEND CŨ) ===== -->
+                <div class="mt-4" th:if="${idpayment != null}">
+                    <hr>
+                    <h5 class="fw-bold mb-2">QR thanh toán</h5>
+
+                    <div class="text-muted mb-2" style="font-size:13px;">
+                        Mã giao dịch:
+                        <b th:text="${idpayment}"></b> |
+                        Số tiền:
+                        <b th:text="${#numbers.formatDecimal(amount,0,'COMMA',0,'POINT')} + ' đ'"></b>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <img class="border rounded p-2 bg-white"
+                             th:src="@{/home/wallet/qr.png(idpayment=${idpayment})}">
+                    </div>
+
+                    <form th:action="@{/home/wallet/topup/confirm}"
+                          method="post"
+                          class="mt-3 d-flex justify-content-center gap-2">
+                        <input type="hidden" name="idpayment" th:value="${idpayment}">
+                        <input type="hidden" name="amount" th:value="${amount}">
+                        <button class="btn btn-success px-4">
+                            xác nhận đã thanh toán
+                        </button>
+                        <a class="btn btn-outline-secondary"
+                           th:href="@{/home/transaction}">
+                            quay lại ví
+                        </a>
+                    </form>
+                </div>
+
+                <div class="mt-3 text-muted" style="font-size:13px;">
+                    nạp tiền demo nội bộ, không phải thanh toán thật
+                </div>
+
             </div>
 
         </div>
     </div>
 </div>
+
+<script>
+    function setAmount(value){
+        document.getElementById('amountInput').value = value;
+    }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
