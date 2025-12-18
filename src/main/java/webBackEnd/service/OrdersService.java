@@ -43,6 +43,8 @@ public class OrdersService {
         return ordersRepositories.findAllByStatusAndCustomer(status,customer);
     }
 
+
+
     public void delete(Orders orders) {
         ordersRepositories.delete(orders);
     }

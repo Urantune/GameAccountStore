@@ -31,4 +31,10 @@ public interface OrderDetailRepositories extends JpaRepository<OrderDetail, UUID
 
     List<OrderDetail> findByOrder(Orders order);
 
+    List<OrderDetail> findAllByGameAccount(GameAccount gameAccount);
+
+    long countByOrder(Orders order);
+
+    List<OrderDetail> findAllByOrder_Id(UUID orderId);
+
 }

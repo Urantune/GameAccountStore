@@ -38,6 +38,17 @@ public class OrderDetailService {
         return list.isEmpty() ? null : list.get(0);
     }
 
+
+    public List<OrderDetail> findAllByGameAccount(GameAccount ga) {
+        return orderDetailRepositories.findAllByGameAccount(ga);
+    }
+
+    public long countByOrder(Orders order) {
+        return orderDetailRepositories.countByOrder(order);
+    }
+
+
+
     public OrderDetail findById(UUID id) {
         return orderDetailRepositories.findById(id).get();
     }

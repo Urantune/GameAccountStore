@@ -67,7 +67,7 @@ AND (:maxLevel IS NULL OR g.lovel <= :maxLevel)
     @Query("""
         SELECT DISTINCT r.gameAccount
         FROM RentAccountGame r
-        WHERE r.status = 'Still valid'
+        WHERE r.status = 'STILL VALID'
     """)
     List<GameAccount> findAllRentedAccounts();
 
