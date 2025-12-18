@@ -132,7 +132,7 @@ public class AdminVoucherController {
     }
 
 
-    @PostMapping("/adminHome/deleteVoucher/{id}")
+    @PostMapping("/deleteVoucher/{id}")
     public String deleteVoucher(@PathVariable UUID id,
                                 RedirectAttributes ra) {
         System.out.println(id);
