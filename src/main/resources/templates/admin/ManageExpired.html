@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MANAGE EXPIRED</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
+        .sidebar { width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0; color:#ecf0f1; }
+        .sidebar h5 { padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .sidebar a { display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s; }
+        .sidebar a i { width:22px; }
+        .sidebar a:hover, .sidebar a.active { background:#1abb9c; }
+
+        .content { margin-left:260px; padding:30px; }
+        .table-wrapper { background:#ffffff; border-radius:12px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.08); }
+
+        #gaTable thead th { font-size:13px; line-height:1.2; white-space:nowrap; }
+        #gaTable thead th i { font-size:12px; }
+        th.sortable { cursor:pointer; user-select:none; }
+        .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+        .badge-exp { background:#dc3545; }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h5><i class="bi bi-gear-fill me-2"></i>Admin Panel</h5>
+
+    <a th:href="@{/adminHome}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+
+    <a th:href="@{/adminHome/userList}">
+        <i class="bi bi-people-fill"></i> Users
+    </a>
+
+    <a th:href="@{/adminHome/gameSelect}">
+        <i class="bi bi-controller"></i> Game Accounts
+    </a>
+
+    <a th:href="@{/adminHome/listVoucher}">
+        <i class="bi bi-ticket-perforated"></i> Vouchers
+    </a>
+
+    <a th:href="@{/adminHome/shift}">
+        <i class="bi bi-calendar2-week-fill"></i> Shift Management
+    </a>
+
+    <a th:href="@{/adminHome/manageExpired}" class="active">
+        <i class="bi bi-exclamation-triangle-fill"></i> EXPIRED
+    </a>
+</div>
+
+<div class="content">
+
+    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>MANAGE EXPIRED</h4>
+
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <select id="searchType" class="form-select form-select-sm" style="width: 180px;">
+                <option value="id">GameAccount ID</option>
+                <option value="username">Game Username</option>
+                <option value="game">Game</option>
+                <option value="duration">Duration</option>
+            </select>
+
+            <input type="text" id="searchInput" class="form-control form-control-sm"
+                   placeholder="Search..." style="width: 280px;">
+        </div>
+    </div>
+
+    <div class="table-wrapper table-responsive">
+        <table id="gaTable" class="table table-hover align-middle mb-0">
+            <thead>
+            <tr>
+                <th style="width: 60px;">#</th>
+
+                <th class="sortable" onclick="sortTable(1)">
+                    GameAccount ID <i class="bi bi-arrow-down-up"></i>
+                </th>
+
+                <th class="sortable" onclick="sortTable(2)">
+                    Game Username <i class="bi bi-arrow-down-up"></i>
+                </th>
+
+                <th class="sortable" onclick="sortTable(3)">
+                    Game <i class="bi bi-arrow-down-up"></i>
+                </th>
+
+                <th class="sortable" onclick="sortTable(4)">
+                    Status <i class="bi bi-arrow-down-up"></i>
+                </th>
+
+                <th class="sortable" onclick="sortTable(5)">
+                    Duration <i class="bi bi-arrow-down-up"></i>
+                </th>
+
+                <th style="width: 90px;" class="text-center">Action</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="ga, index : ${expiredList}">
+                <td th:text="${index.index + 1}"></td>
+
+                <td class="mono" th:text="${ga.gameAccountId}"></td>
+
+                <td th:text="${ga.gameAccount}"></td>
+
+                <td th:text="${ga.game != null ? ga.game.gameName : 'N/A'}"></td>
+
+                <td>
+                    <span class="badge badge-exp" th:text="${ga.status != null ? ga.status : 'EXPIRED'}"></span>
+                </td>
+
+                <td class="mono" th:text="${ga.duration != null ? ga.duration : 'N/A'}"></td>
+
+                <td class="text-center">
+                    <a th:href="@{'/adminHome/updateGameAccount/' + ${ga.gameAccountId}}"
+                       class="btn btn-sm btn-outline-dark" title="Edit">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                </td>
+            </tr>
+
+            <tr class="no-data" th:if="${#lists.isEmpty(expiredList)}">
+                <td colspan="7" class="text-center text-muted py-4">No expired accounts found.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function sortTable(columnIndex) {
+        const table = document.getElementById("gaTable");
+        const tbody = table.querySelector("tbody");
+
+        const noDataRow = tbody.querySelector("tr.no-data");
+        if (noDataRow) noDataRow.style.display = "none";
+
+        const rows = Array.from(tbody.querySelectorAll("tr"))
+            .filter(r => !r.classList.contains("no-data"));
+
+        const asc = table.getAttribute("data-sort-col") != columnIndex ||
+            table.getAttribute("data-sort-dir") === "desc";
+
+        rows.sort((a, b) => {
+            let A = a.children[columnIndex].innerText.trim();
+            let B = b.children[columnIndex].innerText.trim();
+
+            const numA = parseFloat(A.replaceAll(",", ""));
+            const numB = parseFloat(B.replaceAll(",", ""));
+            const bothNum = !Number.isNaN(numA) && !Number.isNaN(numB);
+
+            if (bothNum) return asc ? (numA - numB) : (numB - numA);
+
+            A = A.toLowerCase();
+            B = B.toLowerCase();
+            return asc ? A.localeCompare(B) : B.localeCompare(A);
+        });
+
+        rows.forEach(r => tbody.appendChild(r));
+        table.setAttribute("data-sort-col", columnIndex);
+        table.setAttribute("data-sort-dir", asc ? "asc" : "desc");
+    }
+
+    const searchInput = document.getElementById("searchInput");
+    const searchType = document.getElementById("searchType");
+
+    searchInput.addEventListener("keyup", function () {
+        const value = this.value.trim().toLowerCase();
+        const type = searchType.value;
+        const table = document.getElementById("gaTable");
+        const rows = table.querySelectorAll("tbody tr:not(.no-data)");
+
+        rows.forEach(row => {
+            let cellValue = "";
+            if (type === "id") cellValue = row.children[1].innerText.toLowerCase();
+            if (type === "username") cellValue = row.children[2].innerText.toLowerCase();
+            if (type === "game") cellValue = row.children[3].innerText.toLowerCase();
+            if (type === "duration") cellValue = row.children[5].innerText.toLowerCase();
+            row.style.display = cellValue.includes(value) ? "" : "none";
+        });
+
+        checkNoResult();
+    });
+
+    function checkNoResult() {
+        const table = document.getElementById("gaTable");
+        const rows = table.querySelectorAll("tbody tr:not(.no-data)");
+        const noDataRow = table.querySelector("tbody tr.no-data");
+        if (!noDataRow) return;
+
+        let visible = 0;
+        rows.forEach(r => { if (r.style.display !== "none") visible++; });
+        noDataRow.style.display = (visible === 0) ? "" : "none";
+    }
+</script>
+
+</body>
+</html>
