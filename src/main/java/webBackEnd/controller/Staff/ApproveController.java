@@ -29,9 +29,7 @@ public class ApproveController {
     @Autowired private GameAccountService gameAccountService;
     @Autowired private SendMailTest sendMailTest;
     @Autowired private GameService gameService;
-
-    @Autowired
-    private TransactionService transactionService;
+    @Autowired private TransactionService transactionService;
 
     @GetMapping("/approveList")
     public String approveList(Model model) {
@@ -73,37 +71,24 @@ public class ApproveController {
 
         for (GameAccount ga : listAOV) {
             if (ga.getPrice() == null) continue;
-
             String key = ga.getPrice().setScale(0).toPlainString();
-            List<GameAccount> bucket = aovByPrice.get(key);
-            if (bucket != null) bucket.add(ga);
+            if (aovByPrice.containsKey(key)) aovByPrice.get(key).add(ga);
         }
 
         for (GameAccount ga : listFF) {
             if (ga.getPrice() == null) continue;
-
             String key = ga.getPrice().setScale(0).toPlainString();
-            List<GameAccount> bucket = ffByPrice.get(key);
-            if (bucket != null) bucket.add(ga);
+            if (ffByPrice.containsKey(key)) ffByPrice.get(key).add(ga);
         }
-
 
         model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetails);
         model.addAttribute("priceBuckets", priceBuckets);
         model.addAttribute("aovByPrice", aovByPrice);
         model.addAttribute("ffByPrice", ffByPrice);
-        System.out.println("AOV bucket sizes: " + aovByPrice.entrySet().stream()
-                .map(e -> e.getKey() + "=" + e.getValue().size()).toList());
-
-        System.out.println("FF bucket sizes: " + ffByPrice.entrySet().stream()
-                .map(e -> e.getKey() + "=" + e.getValue().size()).toList());
-
-
 
         return "staff/OrderDetail";
     }
-
 
     @PostMapping("/approve/decision")
     @Transactional
@@ -127,11 +112,8 @@ public class ApproveController {
                     ? customerService.findCustomerByUsername(user.getUsername())
                     : order.getCustomer();
 
-
             if (customer != null && order.getTotalPrice() != null) {
-                if (customer.getBalance() == null)
-                    customer.setBalance(BigDecimal.ZERO);
-
+                if (customer.getBalance() == null) customer.setBalance(BigDecimal.ZERO);
                 customer.setBalance(customer.getBalance().add(order.getTotalPrice()));
                 customerService.save(customer);
 
@@ -143,76 +125,32 @@ public class ApproveController {
                 transactionService.save(tx);
             }
 
-
             List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
             for (OrderDetail od : orderDetails) {
                 orderDetailService.delete(od);
             }
 
-
             ordersService.delete(order);
+
+            sendRejectEmail(order.getCustomer(), order);
 
             return "redirect:/staffHome/approveList";
         }
 
-
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
-        if (orderDetails == null || orderDetails.isEmpty()) return "redirect:/staffHome/approve/" + orderId;
+        if (orderDetails == null || orderDetails.isEmpty())
+            return "redirect:/staffHome/approve/" + orderId;
 
-        Map<UUID, UUID> selected = new HashMap<>();
-        for (Map.Entry<String, String> e : params.entrySet()) {
-            String k = e.getKey();
-            if (k != null && k.startsWith("selected[") && k.endsWith("]")) {
-                String odIdStr = k.substring("selected[".length(), k.length() - 1);
-                String gaIdStr = e.getValue();
-                if (gaIdStr == null || gaIdStr.trim().isEmpty()) continue;
-                try {
-                    selected.put(UUID.fromString(odIdStr), UUID.fromString(gaIdStr));
-                } catch (Exception ignored) {}
-            }
-        }
+        Map<UUID, UUID> selected = extractSelected(params);
 
         Set<UUID> usedGa = new HashSet<>();
         for (OrderDetail od : orderDetails) {
             UUID pick = selected.get(od.getId());
-            if (pick == null || !usedGa.add(pick)) return "redirect:/staffHome/approve/" + orderId;
+            if (pick == null || !usedGa.add(pick))
+                return "redirect:/staffHome/approve/" + orderId;
         }
 
-        java.util.function.Function<OrderDetail, String> odMode =
-                od -> (od.getDuration() == null || od.getDuration() == 0) ? "BUY" : "RENT";
-        java.util.function.Function<GameAccount, String> gaMode =
-                ga -> (ga.getDuration() == null || ga.getDuration().trim().isEmpty() || "0".equals(ga.getDuration().trim()))
-                        ? "BUY" : "RENT";
-
-        StringBuilder accountHtml = new StringBuilder();
-
-        for (OrderDetail od : orderDetails) {
-            GameAccount ga = gameAccountService.getGameById(selected.get(od.getId()));
-            if (ga == null) return "redirect:/staffHome/approve/" + orderId;
-
-            od.setGameAccount(ga);
-            orderDetailService.save(od);
-
-            if (od.getDuration() != null && od.getDuration() != 0) {
-                RentAccountGame rent = new RentAccountGame();
-                rent.setCustomer(order.getCustomer());
-                rent.setGameAccount(ga);
-                rent.setDateStart(order.getCreatedDate());
-                rent.setDateEnd(order.getCreatedDate().plusMonths(od.getDuration()));
-                rent.setStatus("Still valid");
-                rentAccountGameService.save(rent);
-            }
-
-            ga.setStatus("IN USE");
-            gameAccountService.save(ga);
-
-            accountHtml.append("<b>OrderDetail:</b> ").append(od.getId()).append("<br>")
-                    .append("<b>Mode:</b> ").append(odMode.apply(od).equals("RENT") ? "RENT " + od.getDuration() + " month(s)" : "BUY").append("<br>")
-                    .append("<b>Game:</b> ").append(ga.getGame() != null ? ga.getGame().getGameName() : "").append("<br>")
-                    .append("<b>Username:</b> ").append(ga.getGameAccount()).append("<br>")
-                    .append("<b>Password:</b> ").append(ga.getGamePassword()).append("<br>")
-                    .append("<b>Price:</b> ").append(ga.getPrice() != null ? ga.getPrice().toPlainString() : "").append(" đ<br><br>");
-        }
+        String accountHtml = handleAcceptAndBuildMail(order, orderDetails, selected);
 
         order.setStatus("COMPLETED");
         if (staff != null) order.setStaff(staff);
@@ -223,22 +161,99 @@ public class ApproveController {
             Transaction tx = new Transaction();
             tx.setCustomer(customer);
             tx.setAmount(order.getTotalPrice().negate());
-            tx.setDescription("Payment completed orderId=" + order.getId());
+            tx.setDescription("PAYMENT_COMPLETED_ORDER_" + order.getId());
             tx.setDateCreated(LocalDateTime.now());
             transactionService.save(tx);
         }
 
-        if (order.getCustomer() != null && order.getCustomer().getEmail() != null) {
-            sendMailTest.testSend(
-                    order.getCustomer().getEmail(),
-                    "Account confirmation",
-                    accountHtml.toString()
-            );
-        }
+        sendAcceptEmail(order.getCustomer(), accountHtml);
 
         return "redirect:/staffHome/approveList";
     }
 
+    private Map<UUID, UUID> extractSelected(Map<String, String> params) {
+        Map<UUID, UUID> selected = new HashMap<>();
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            String k = e.getKey();
+            if (k != null && k.startsWith("selected[") && k.endsWith("]")) {
+                String odId = k.substring(9, k.length() - 1);
+                String gaId = e.getValue();
+                try {
+                    selected.put(UUID.fromString(odId), UUID.fromString(gaId));
+                } catch (Exception ignored) {}
+            }
+        }
+        return selected;
+    }
 
+    private String handleAcceptAndBuildMail(Orders order,
+                                            List<OrderDetail> orderDetails,
+                                            Map<UUID, UUID> selected) {
 
+        StringBuilder html = new StringBuilder();
+
+        for (OrderDetail od : orderDetails) {
+            GameAccount ga = gameAccountService.getGameById(selected.get(od.getId()));
+            od.setGameAccount(ga);
+            orderDetailService.save(od);
+
+            if (od.getDuration() != null && od.getDuration() > 0) {
+                RentAccountGame rent = new RentAccountGame();
+                rent.setCustomer(order.getCustomer());
+                rent.setGameAccount(ga);
+                rent.setDateStart(order.getCreatedDate());
+                rent.setDateEnd(order.getCreatedDate().plusMonths(od.getDuration()));
+                rent.setStatus("STILL VALID");
+                rentAccountGameService.save(rent);
+            }
+
+            ga.setStatus("IN USE");
+            gameAccountService.save(ga);
+
+            html.append("<b>TRÒ CHƠI:</b> ").append(ga.getGame().getGameName()).append("<br>")
+                    .append("<b>TÀI KHOẢN:</b> ").append(ga.getGameAccount()).append("<br>")
+                    .append("<b>MẬT KHẨU:</b> ").append(ga.getGamePassword()).append("<br>")
+                    .append("<b>HÌNH THỨC:</b> ")
+                    .append(od.getDuration() != null && od.getDuration() > 0
+                            ? "THUÊ " + od.getDuration() + " THÁNG"
+                            : "MUA VĨNH VIỄN")
+                    .append("<br>")
+                    .append("<b>GIÁ:</b> ").append(ga.getPrice().toPlainString()).append(" đ<br><br>");
+        }
+
+        return html.toString();
+    }
+
+    private void sendRejectEmail(Customer customer, Orders order) {
+        if (customer == null || customer.getEmail() == null) return;
+
+        String body =
+                "<b>Kính chào quý khách,</b><br><br>" +
+                        "Đơn hàng của bạn đã bị <b>TỪ CHỐI</b> do hiện tại cửa hàng đã <b>HẾT TÀI KHOẢN PHÙ HỢP</b>.<br><br>" +
+                        "<b>MÃ ĐƠN HÀNG:</b> " + order.getId() + "<br><br>" +
+                        "Số tiền đã được hoàn lại vào ví của bạn.<br>" +
+                        "Vui lòng quay lại sau hoặc liên hệ hỗ trợ để được tư vấn thêm.<br><br>" +
+                        "Xin cảm ơn.";
+
+        sendMailTest.testSend(customer.getEmail(), "ĐƠN HÀNG BỊ TỪ CHỐI", body);
+    }
+
+    private void sendAcceptEmail(Customer customer, String accountHtml) {
+        if (customer == null || customer.getEmail() == null) return;
+
+        String body =
+                "<b>Kính chào quý khách,</b><br><br>" +
+                        "Đơn hàng của bạn đã được <b>XÁC NHẬN THÀNH CÔNG</b>.<br>" +
+                        "Dưới đây là thông tin tài khoản game bạn đã mua / thuê:<br><br>" +
+                        accountHtml +
+                        "<hr>" +
+                        "<b>LƯU Ý QUAN TRỌNG:</b><br>" +
+                        "- Vui lòng <b>ĐỔI MẬT KHẨU NGAY</b> sau khi đăng nhập.<br>" +
+                        "- Không chia sẻ thông tin tài khoản cho người khác.<br>" +
+                        "- Với tài khoản thuê, hệ thống sẽ <b>TỰ ĐỘNG THU HỒI</b> khi hết hạn.<br>" +
+                        "- Mọi khiếu nại vui lòng liên hệ trong vòng <b>24 GIỜ</b> kể từ khi nhận tài khoản.<br><br>" +
+                        "Xin cảm ơn và chúc bạn chơi game vui vẻ.";
+
+        sendMailTest.testSend(customer.getEmail(), "THÔNG TIN TÀI KHOẢN GAME", body);
+    }
 }
