@@ -29,11 +29,9 @@
 <body>
 
 <div class="content">
-
     <h4 class="mb-4">
         <i class="bi bi-graph-up-arrow me-2"></i>Revenue Overview
     </h4>
-
     <!-- STAT -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
@@ -57,12 +55,25 @@
             </div>
         </div>
     </div>
-
     <!-- CHART -->
     <div class="card-box mb-4">
         <canvas id="revenueChart" height="120"></canvas>
     </div>
+    <!-- EXPORT BUTTON -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">
+            <i class="bi bi-list-ul me-2"></i>Transaction List
+        </h5>
 
+        <div class="d-flex gap-2">
+            <!-- Export Excel -->
+            <a href="/staffHome/revenue/export/excel"
+               class="btn btn-sm btn-outline-success">
+                <i class="bi bi-file-earmark-excel me-1"></i>
+                Xuất Excel
+            </a>
+        </div>
+    </div>
     <!-- TABLE -->
     <div class="card-box table-responsive">
         <table class="table table-hover align-middle">
@@ -89,7 +100,6 @@
             </tbody>
         </table>
     </div>
-
 </div>
 
 <script th:inline="javascript">

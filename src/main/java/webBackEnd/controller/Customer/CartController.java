@@ -69,7 +69,10 @@ public class CartController {
         Game game = gameService.findById(gameId);
 
         if (game == null) return ResponseEntity.status(404).body("Không tìm thấy game");
-
+        List<Cart> carts = cartRepositories.findByCustomer(customer);
+        if(carts.size()>=5){
+            return ResponseEntity.ok("Số lượng đơn hàng trong cart đã đạt tối đa");
+        }
         cartService.addToCart(customer, game, basePrice, duration);
         return ResponseEntity.ok("Đã thêm vào giỏ hàng");
     }
