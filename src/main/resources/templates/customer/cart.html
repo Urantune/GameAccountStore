@@ -355,9 +355,8 @@
 <div class="container-fluid py-5">
     <div class="container py-5">
 
-        <form th:action="@{/home/cart/checkout}" method="post" id="checkoutForm">
-
-            <div class="table-responsive">
+        <form id="checkoutForm" onsubmit="return submitCheckout(event)">
+        <div class="table-responsive">
                 <table class="table">
                     <thead>
                     <tr>
@@ -472,6 +471,8 @@
                             <h5 class="mb-0 ps-4 me-4">Total</h5>
                             <p class="mb-0 pe-4 fw-semibold" id="finalTotal">0 đ</p>
                         </div>
+                        <div id="checkoutError" class="alert alert-danger d-none"></div>
+                        <div id="checkoutSuccess" class="alert alert-success d-none"></div>
 
                         <button class="btn btn-primary rounded-pill px-4 py-3 text-uppercase mb-4 ms-4"
                                 type="submit">
@@ -480,11 +481,59 @@
                     </div>
                 </div>
             </div>
-
         </form>
 
     </div>
 </div>
+<script>
+    function submitCheckout(e) {
+        e.preventDefault(); // ❌ chặn submit thường
+
+        const errorBox = document.getElementById("checkoutError");
+        const successBox = document.getElementById("checkoutSuccess");
+
+        errorBox.classList.add("d-none");
+        successBox.classList.add("d-none");
+
+        const form = document.getElementById("checkoutForm");
+        const formData = new FormData(form);
+
+        fetch("/home/cart/checkout", {
+            method: "POST",
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    errorBox.textContent = data.message;
+                    errorBox.classList.remove("d-none");
+
+                    // ⏱ auto hide sau 3s
+                    setTimeout(() => {
+                        errorBox.classList.add("d-none");
+                    }, 3000);
+                } else {
+                    successBox.textContent = data.message;
+                    successBox.classList.remove("d-none");
+
+                    setTimeout(() => {
+                        // 👉 nếu muốn reload hoặc redirect khi thành công
+                        window.location.href = "/home";
+                    }, 2000);
+                }
+            })
+            .catch(() => {
+                errorBox.textContent = "Lỗi hệ thống, vui lòng thử lại";
+                errorBox.classList.remove("d-none");
+
+                setTimeout(() => {
+                    errorBox.classList.add("d-none");
+                }, 3000);
+            });
+
+        return false;
+    }
+</script>
 
 <div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
     <div class="container">
