@@ -145,12 +145,23 @@ public class SecurityConfig {
 
         http.logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/home?logout=true")
+                .logoutSuccessHandler((req, res, auth) -> {
+                    String ref = req.getHeader("Referer");
+                    String to = "/home?logout=true";
+
+                    if (ref != null) {
+                        if (ref.contains("/adminHome")) to = "/adminHome?logout=true";
+                        else if (ref.contains("/staffHome")) to = "/staffHome?logout=true";
+                    }
+
+                    res.sendRedirect(to);
+                })
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .clearAuthentication(true)
                 .permitAll()
         );
+
 
         return http.build();
     }

@@ -31,7 +31,7 @@ public class CartController {
     @Autowired private GameService gameService;
     @Autowired private CartRepositories cartRepositories;
 
-    // ✅ thêm để lưu order
+
     @Autowired private OrdersRepositories ordersRepositories;
     @Autowired private OrderDetailRepositories orderDetailRepositories;
     @Autowired private CustomerRepositories customerRepositories;
