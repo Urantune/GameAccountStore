@@ -30,6 +30,9 @@ public class ApproveController {
     @Autowired private SendMailTest sendMailTest;
     @Autowired private GameService gameService;
 
+    @Autowired
+    private TransactionService transactionService;
+
     @GetMapping("/approveList")
     public String approveList(Model model) {
         List<Orders> list = ordersService.findAllByStatus("WAIT");
@@ -112,14 +115,12 @@ public class ApproveController {
         Orders order = ordersService.findById(orderId);
         if (order == null) return "redirect:/staffHome/approveList";
 
-        // staff mặc định theo ID bạn đưa
         final UUID DEFAULT_STAFF_ID = UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91C");
         Staff staff = null;
         try {
-            staff = administratorService.getStaffByID(DEFAULT_STAFF_ID); // trả về Staff
+            staff = administratorService.getStaffByID(DEFAULT_STAFF_ID);
         } catch (Exception ignored) {}
 
-        // ===== REJECT =====
         if ("REJECT".equalsIgnoreCase(decision)) {
             order.setStatus("REJECTED");
             if (staff != null) order.setStaff(staff);
@@ -133,11 +134,18 @@ public class ApproveController {
                 if (customer.getBalance() == null) customer.setBalance(BigDecimal.ZERO);
                 customer.setBalance(customer.getBalance().add(order.getTotalPrice()));
                 customerService.save(customer);
+
+                Transaction tx = new Transaction();
+                tx.setCustomer(customer);
+                tx.setAmount(order.getTotalPrice());
+                tx.setDescription("Refund orderId=" + order.getId());
+                tx.setDateCreated(LocalDateTime.now());
+                transactionService.save(tx);
             }
+
             return "redirect:/staffHome/approveList";
         }
 
-        // ===== ACCEPT =====
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
         if (orderDetails == null || orderDetails.isEmpty()) return "redirect:/staffHome/approve/" + orderId;
 
@@ -154,57 +162,23 @@ public class ApproveController {
             }
         }
 
-        // đủ pick + không trùng GA
         Set<UUID> usedGa = new HashSet<>();
         for (OrderDetail od : orderDetails) {
-            if (od == null) continue;
             UUID pick = selected.get(od.getId());
-            if (pick == null) return "redirect:/staffHome/approve/" + orderId;
-            if (!usedGa.add(pick)) return "redirect:/staffHome/approve/" + orderId;
+            if (pick == null || !usedGa.add(pick)) return "redirect:/staffHome/approve/" + orderId;
         }
 
-        java.util.function.Function<OrderDetail, String> odMode = (od) -> {
-            Integer d = od.getDuration();
-            return (d == null || d == 0) ? "BUY" : "RENT";
-        };
-        java.util.function.Function<GameAccount, String> gaMode = (ga) -> {
-            String d = ga.getDuration();
-            return (d == null || d.trim().isEmpty() || "0".equals(d.trim())) ? "BUY" : "RENT";
-        };
+        java.util.function.Function<OrderDetail, String> odMode =
+                od -> (od.getDuration() == null || od.getDuration() == 0) ? "BUY" : "RENT";
+        java.util.function.Function<GameAccount, String> gaMode =
+                ga -> (ga.getDuration() == null || ga.getDuration().trim().isEmpty() || "0".equals(ga.getDuration().trim()))
+                        ? "BUY" : "RENT";
 
         StringBuilder accountHtml = new StringBuilder();
 
         for (OrderDetail od : orderDetails) {
-            UUID pick = selected.get(od.getId());
-            GameAccount ga = gameAccountService.getGameById(pick);
+            GameAccount ga = gameAccountService.getGameById(selected.get(od.getId()));
             if (ga == null) return "redirect:/staffHome/approve/" + orderId;
-
-
-            if (ga.getStatus() == null || !"ACTIVE".equalsIgnoreCase(ga.getStatus())) {
-                return "redirect:/staffHome/approve/" + orderId;
-            }
-
-
-
-            if (od.getGame() != null && ga.getGame() != null) {
-                if (!od.getGame().getGameId().equals(ga.getGame().getGameId())) {
-                    return "redirect:/staffHome/approve/" + orderId;
-                }
-            }
-
-
-            if (od.getPrice() != null && ga.getPrice() != null) {
-                BigDecimal odPrice = BigDecimal.valueOf(od.getPrice());
-                if (odPrice.compareTo(ga.getPrice()) != 0) {
-                    return "redirect:/staffHome/approve/" + orderId;
-                }
-            }
-
-
-            // check đúng BUY/RENT
-            if (!odMode.apply(od).equals(gaMode.apply(ga))) {
-                return "redirect:/staffHome/approve/" + orderId;
-            }
 
             od.setGameAccount(ga);
             orderDetailService.save(od);
@@ -223,36 +197,38 @@ public class ApproveController {
             gameAccountService.save(ga);
 
             accountHtml.append("<b>OrderDetail:</b> ").append(od.getId()).append("<br>")
-                    .append("<b>Mode:</b> ").append(("RENT".equals(odMode.apply(od))) ? ("RENT " + od.getDuration() + " month(s)") : "BUY").append("<br>")
-                    .append("<b>Game:</b> ").append(ga.getGame() != null ? ga.getGame().getGameName() : "N/A").append("<br>")
+                    .append("<b>Mode:</b> ").append(odMode.apply(od).equals("RENT") ? "RENT " + od.getDuration() + " month(s)" : "BUY").append("<br>")
+                    .append("<b>Game:</b> ").append(ga.getGame() != null ? ga.getGame().getGameName() : "").append("<br>")
                     .append("<b>Username:</b> ").append(ga.getGameAccount()).append("<br>")
                     .append("<b>Password:</b> ").append(ga.getGamePassword()).append("<br>")
-                    .append("<b>Price:</b> ").append(ga.getPrice() != null ? ga.getPrice().toPlainString() : "N/A").append(" đ<br><br>");
+                    .append("<b>Price:</b> ").append(ga.getPrice() != null ? ga.getPrice().toPlainString() : "").append(" đ<br><br>");
         }
 
         order.setStatus("COMPLETED");
         if (staff != null) order.setStaff(staff);
         ordersService.save(order);
 
-        String title = "Account confirmation";
-        String content =
-                "Hello <b>" + (order.getCustomer() != null ? order.getCustomer().getUsername() : "") + "</b>,<br><br>"
-                        + "Your order has been processed successfully.<br><br>"
-                        + "Account information:<br><br>"
-                        + "<div style='padding:12px;border:1px solid #ddd;border-radius:8px;'>"
-                        + accountHtml
-                        + "</div><br>"
-                        + "<b>NOTE:</b><br>"
-                        + "- Do not share account information with others.<br>"
-                        + "- If there is any issue, contact us within 24h.<br><br>"
-                        + "Best regards,<br><b>ACCOUNT GAME STORE</b>";
+        Customer customer = order.getCustomer();
+        if (customer != null && order.getTotalPrice() != null) {
+            Transaction tx = new Transaction();
+            tx.setCustomer(customer);
+            tx.setAmount(order.getTotalPrice().negate());
+            tx.setDescription("Payment completed orderId=" + order.getId());
+            tx.setDateCreated(LocalDateTime.now());
+            transactionService.save(tx);
+        }
 
         if (order.getCustomer() != null && order.getCustomer().getEmail() != null) {
-            sendMailTest.testSend(order.getCustomer().getEmail(), title, content);
+            sendMailTest.testSend(
+                    order.getCustomer().getEmail(),
+                    "Account confirmation",
+                    accountHtml.toString()
+            );
         }
 
         return "redirect:/staffHome/approveList";
     }
+
 
 
 }
