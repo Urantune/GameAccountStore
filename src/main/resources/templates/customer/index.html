@@ -327,14 +327,27 @@
                            href="#"
                            data-bs-toggle="dropdown"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                            <i class="fa fa-list me-2"></i>Danh sách tài khoản
                         </a>
 
                         <ul class="dropdown-menu dropdown-soft">
-                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
-                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                            <li>
+                                <a class="dropdown-item require-login"
+                                   th:href="@{/home/listAcc(game='AOV')}"
+                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                    AOV
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item require-login"
+                                   th:href="@{/home/listAcc(game='FREE FIRE')}"
+                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                    Free Fire
+                                </a>
+                            </li>
                         </ul>
                     </li>
+
 
                     <!-- TÀI KHOẢN ĐANG THUÊ -->
                     <li class="nav-item">
