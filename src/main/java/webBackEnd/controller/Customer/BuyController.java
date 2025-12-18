@@ -2,6 +2,8 @@ package webBackEnd.controller.Customer;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -102,64 +104,78 @@ public class BuyController {
 
 
     @PostMapping("/payment")
+    @ResponseBody
     @Transactional
-    public String buyRandomAccount(
+    public ResponseEntity<Map<String, Object>> buyRandomAccount(
             @RequestParam UUID gameId,
             @RequestParam String accountType,
             @RequestParam(defaultValue = "0") int rentMonth,
             @RequestParam BigDecimal basePrice,
             @RequestParam BigDecimal finalPrice,
-            @RequestParam(required = false) String voucherCode,
-            RedirectAttributes ra
+            @RequestParam(required = false) String voucherCode
     ) {
-        System.out.println("DEBUG: voucherCode raw = '" + voucherCode + "'");
 
         // ===================== 1. CHECK LOGIN =====================
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()
                 || auth.getPrincipal().equals("anonymousUser")) {
-            ra.addFlashAttribute("error", "Bạn chưa đăng nhập");
-            return "redirect:/login";
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Bạn chưa đăng nhập"
+                    ));
         }
 
-        Customer customer = customerService
-                .findCustomerByUsername(auth.getName());
+        Customer customer = customerService.findCustomerByUsername(auth.getName());
 
         // ===================== 2. VALIDATE INPUT =====================
         if (finalPrice == null || finalPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            ra.addFlashAttribute("error", "Giá không hợp lệ");
-            return "redirect:/home";
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Giá không hợp lệ"
+                    ));
         }
 
         if ("rent".equals(accountType) && rentMonth <= 0) {
-            ra.addFlashAttribute("error", "Vui lòng chọn gói thuê");
-            return "redirect:/home";
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Vui lòng chọn gói thuê"
+                    ));
         }
 
-// ===================== 3. XỬ LÝ VOUCHER =====================
+        // ===================== 3. XỬ LÝ VOUCHER =====================
         Voucher usedVoucher = null;
 
         if (voucherCode != null && !voucherCode.isBlank()) {
-            String code = voucherCode.trim();
-            usedVoucher = voucherService.getValidVoucher(code);
+            usedVoucher = voucherService.getValidVoucher(voucherCode.trim());
 
             if (usedVoucher == null) {
-                ra.addFlashAttribute("error", "Voucher không hợp lệ hoặc đã hết hạn");
-                return "redirect:/home/gameDetail/" + gameId;
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Voucher không hợp lệ hoặc đã hết hạn"
+                        ));
             }
 
             if (voucherCustomerRepository.existsByCustomerAndVoucher(customer, usedVoucher)) {
-                ra.addFlashAttribute("error", "Voucher đã được sử dụng");
-                return "redirect:/home/gameDetail/" + gameId;
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Voucher đã được sử dụng"
+                        ));
             }
         }
 
-
-
         // ===================== 4. CHECK SỐ DƯ =====================
         if (customer.getBalance().compareTo(finalPrice) < 0) {
-            ra.addFlashAttribute("error", "Số dư không đủ");
-            return "redirect:/home";
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Số dư không đủ"
+                    ));
         }
 
         // ===================== 5. TRỪ TIỀN =====================
@@ -182,14 +198,8 @@ public class BuyController {
         OrderDetail detail = new OrderDetail();
         detail.setGame(gameService.findById(gameId));
         detail.setOrder(savedOrder);
-
-        // ❗ RANDOM ACCOUNT → CHƯA GÁN ACC
-        detail.setGameAccount(null);
-
-        detail.setDuration(
-                "rent".equals(accountType) ? rentMonth : 0
-        );
-
+        detail.setGameAccount(null); // RANDOM
+        detail.setDuration("rent".equals(accountType) ? rentMonth : 0);
         detail.setPrice(basePrice.intValue());
 
         orderDetailRepositories.save(detail);
@@ -200,18 +210,18 @@ public class BuyController {
             vc.setCustomer(customer);
             vc.setVoucher(usedVoucher);
             vc.setDateUsed(LocalDateTime.now());
-
             voucherCustomerRepository.save(vc);
         }
 
         // ===================== 9. SUCCESS =====================
-        ra.addFlashAttribute(
-                "success",
-                "Mua acc random thành công! Vui lòng chờ admin xử lý."
+        return ResponseEntity.ok(
+                Map.of(
+                        "success", true,
+                        "message", "Mua acc random thành công! Vui lòng chờ admin xử lý."
+                )
         );
-
-        return "redirect:/home";
     }
+
 
 
     private void deleteCartItemsOfCustomer(Customer customer, List<UUID> gameIds) {
