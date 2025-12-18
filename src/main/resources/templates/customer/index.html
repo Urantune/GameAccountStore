@@ -336,14 +336,15 @@
                         </ul>
                     </li>
 
-                    <!-- TÀI KHOẢN -->
+                    <!-- TÀI KHOẢN ĐANG THUÊ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
+                           th:href="@{/home/renting}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
+                            <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
                         </a>
                     </li>
+
 
                     <!-- VÍ -->
                     <li class="nav-item">

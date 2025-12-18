@@ -49,7 +49,7 @@ public class GameController {
                 BigDecimal.valueOf(200000)
         );
 
-        model.addAttribute("game", game);          // ✅ QUAN TRỌNG
+        model.addAttribute("game", game);
         model.addAttribute("gameId", gameId);
         model.addAttribute("gameName", game.getGameName());
         model.addAttribute("prices", prices);
@@ -85,7 +85,7 @@ public class GameController {
         );
 
         model.addAttribute("prices", prices);
-        model.addAttribute("gameId", gameId); // để dùng sau
+        model.addAttribute("gameId", gameId);
 
         return "customer/GameAccount";
     }
@@ -123,6 +123,7 @@ public class GameController {
 
         model.addAttribute("price", price);
         model.addAttribute("gameName", game);
+        model.addAttribute("gameId", gameService.findGameByGameName(game).getGameId());
         model.addAttribute("skinMin", skinMin);
         model.addAttribute("skinMax", skinMax);
         model.addAttribute("level", randomLevel);

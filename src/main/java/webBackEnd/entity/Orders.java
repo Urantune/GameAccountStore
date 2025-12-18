@@ -32,8 +32,11 @@ public class Orders {
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
-        this.status = "WAIT";
+        if (this.status == null) {
+            this.status = "WAIT";
+        }
     }
+
 
     public Orders() {
     }
@@ -104,4 +107,6 @@ public class Orders {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 }
