@@ -39,6 +39,14 @@ public class RentAccountGameService {
                 );
     }
 
+    public void deleteByGameAccountId(UUID gameAccountId) {
+        rentAccountGameRepositories.deleteByGameAccount_GameAccountId(gameAccountId);
+    }
+
+    public boolean existsByGameAccountId(UUID gameAccountId) {
+        return rentAccountGameRepositories.existsByGameAccount_GameAccountId(gameAccountId);
+    }
+
     public void delete(RentAccountGame rentAccountGame){
         rentAccountGameRepositories.delete(rentAccountGame);
     }
