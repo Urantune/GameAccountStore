@@ -138,7 +138,7 @@ public class ApproveController {
                 Transaction tx = new Transaction();
                 tx.setCustomer(customer);
                 tx.setAmount(order.getTotalPrice());
-                tx.setDescription("Refund orderId=" + order.getId());
+                tx.setDescription("REJECT");
                 tx.setDateCreated(LocalDateTime.now());
                 transactionService.save(tx);
             }
