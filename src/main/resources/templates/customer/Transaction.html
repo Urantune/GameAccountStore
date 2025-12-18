@@ -156,51 +156,74 @@
         </div>
     </div>
 </div>
+<!-- Navbar & Hero Start -->
 <nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
 
         <div class="container-fluid">
+            <!-- Logo -->
             <a class="navbar-brand d-flex align-items-center" href="/home">
                 <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
             </a>
 
+            <!-- Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#mainNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            <!-- MENU -->
             <div class="collapse navbar-collapse" id="mainNavbar">
 
+                <!-- MENU GIỮA -->
                 <ul class="navbar-nav mx-auto align-items-center nav-center">
 
+                    <!-- Trang chủ luôn cho phép -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill" href="/home">
                             <i class="fa fa-home me-2"></i>Trang Chủ
                         </a>
                     </li>
 
+                    <!-- LỊCH SỬ MUA -->
                     <li class="nav-item dropdown">
                         <a class="nav-link nav-pill dropdown-toggle require-login"
                            href="#"
                            data-bs-toggle="dropdown"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                            <i class="fa fa-list me-2"></i>Danh sách tài khoản
                         </a>
 
                         <ul class="dropdown-menu dropdown-soft">
-                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
-                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                            <li>
+                                <a class="dropdown-item require-login"
+                                   th:href="@{/home/listAcc(game='AOV')}"
+                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                    AOV
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item require-login"
+                                   th:href="@{/home/listAcc(game='FREE FIRE')}"
+                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                    Free Fire
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
+
+                    <!-- TÀI KHOẢN ĐANG THUÊ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
+                           th:href="@{/home/renting}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
+                            <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
                         </a>
                     </li>
 
+
+                    <!-- VÍ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
                            th:href="@{/home/transaction}"
@@ -209,6 +232,7 @@
                         </a>
                     </li>
 
+                    <!-- GIỎ HÀNG -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
                            th:href="@{/home/cart}"
@@ -219,6 +243,7 @@
                 </ul>
 
 
+                <!-- Navbar styles -->
                 <style>
                     .game-nav{
                         background:pink;
@@ -298,8 +323,10 @@
 
                 </style>
 
+                <!-- Right: User -->
                 <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
 
+                    <!-- Anonymous -->
                     <li class="nav-item dropdown" sec:authorize="isAnonymous()">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
                             <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
@@ -311,6 +338,8 @@
                         </ul>
                     </li>
 
+                    <!-- Authenticated -->
+
                     <li sec:authorize="isAuthenticated()">
                         <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold" th:text="${#authentication.name}"></span>
@@ -319,18 +348,16 @@
                             Thông tin tài khoản
                         </a>
                     </li>
-                </ul>
             </div>
+            </ul>
         </div>
     </div>
 </nav>
-
 <div id="loginAlert"
      class="alert alert-warning text-center fw-semibold d-none"
      style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
     ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
 </div>
-
 <script>
     document.querySelectorAll('.require-login').forEach(link => {
         link.addEventListener('click', function (e) {
@@ -354,6 +381,9 @@
         }, 3000);
     }
 </script>
+
+<!-- Navbar & Hero End -->
+
 <div class="container py-4">
 
     <div class="row mb-4">

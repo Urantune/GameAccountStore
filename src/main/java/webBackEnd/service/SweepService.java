@@ -4,11 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import webBackEnd.entity.Customer;
-import webBackEnd.entity.OrderDetail;
-import webBackEnd.entity.Orders;
-import webBackEnd.entity.RentAccountGame;
+import webBackEnd.entity.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,45 +24,55 @@ public class SweepService {
     @Autowired
     private RentAccountGameService rentAccountGameService;
 
+    @Autowired
+    private TransactionService transactionService;
+
     @Scheduled(fixedDelay = 60_000)
     @Transactional
-    public void order() {
-        LocalDateTime now = LocalDateTime.now();
+    public void checkBancle() {
+        List<Customer> customers = customerService.findAllCustomers();
 
-        List<Orders> orders = ordersService.findAllByStatus("WAIT");
+        for (Customer customer : customers) {
+            List<Transaction> transactions = transactionService.findByCustomer(customer);
 
-        for(Orders order:orders){
-            if(order.getCreatedDate().plusDays(3).isBefore(now)){
-                List<OrderDetail> list = orderDetailService.findAllByOrderId(order.getId());
-                for(OrderDetail orderDetail:list){
-                    orderDetailService.delete(orderDetail);
+            BigDecimal total = BigDecimal.ZERO;
+            for (Transaction t : transactions) {
+                if (t.getAmount() != null) {
+                    total = total.add(t.getAmount());
                 }
-                ordersService.delete(order);
             }
 
+            customer.setBalance(total);
+            customerService.save(customer);
         }
     }
+
 
     @Scheduled(fixedDelay = 120_000)
     @Transactional
     public void rent() {
-
         LocalDateTime now = LocalDateTime.now();
 
         List<RentAccountGame> rentAccountGames = rentAccountGameService.findAll();
 
-        for(RentAccountGame a : rentAccountGames){
-            if(now.minusDays(3).isBefore(a.getDateEnd())){
-            a.setStatus("EXPIRING");
+        for (RentAccountGame a : rentAccountGames) {
+            if (a.getDateEnd() == null) continue;
+
+            if (!now.isBefore(a.getDateEnd())) {
+                if (!"EXPIRED".equalsIgnoreCase(a.getStatus())) {
+                    a.setStatus("EXPIRED");
+                    rentAccountGameService.save(a);
+                }
+                continue;
             }
 
-            if(now.plusDays(3).isBefore(a.getDateEnd())){
-                rentAccountGameService.delete(a);
+            if (!now.isBefore(a.getDateEnd().minusDays(3))) {
+                if (!"EXPIRING".equalsIgnoreCase(a.getStatus())) {
+                    a.setStatus("EXPIRING");
+                    rentAccountGameService.save(a);
+                }
             }
         }
-
-
-
     }
 
 

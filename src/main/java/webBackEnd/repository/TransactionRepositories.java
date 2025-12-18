@@ -12,21 +12,19 @@ import java.util.UUID;
 @Repository
 public interface TransactionRepositories extends JpaRepository<Transaction,UUID> {
 
-    // Lấy lịch sử theo customer
     List<Transaction> findByCustomerOrderByDateCreatedDesc(Customer customer);
 
-    // Search theo mô tả
     List<Transaction>
     findByCustomerAndDescriptionContainingIgnoreCaseOrderByDateCreatedDesc(
             Customer customer, String keyword
     );
 
-    //Tìm giao dịch
     List<Transaction> findByCustomerAndTransactionId(
             Customer customer, UUID transactionId);
 
-    //Tìm user để đồng bộ số dư trước khi giao dịch
     List<Transaction> findByCustomer_CustomerId(UUID customerId);
+
+    List<Transaction> findByCustomer(Customer customer);
 
 
 }

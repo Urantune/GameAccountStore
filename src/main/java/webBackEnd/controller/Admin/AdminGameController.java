@@ -17,6 +17,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/adminHome")
 public class AdminGameController {
+
     @Autowired
     private CustomerService customerService;
 
@@ -29,42 +30,34 @@ public class AdminGameController {
     @Autowired
     private TypeService typeService;
 
-
     @Autowired
     private VoucherService voucherService;
 
     @Autowired
     private AdministratorService administratorService;
 
-
     @Autowired
     private PathCheck pathCheck;
 
-
-
+    @Autowired
+    private RentAccountGameService rentAccountGameService;
 
     @GetMapping("/gameSelect")
     public String selectGameAccount(Model model) {
-
         model.addAttribute("AOV", "AOV");
         model.addAttribute("FF", "FF");
         return "admin/GameAccountSelect";
     }
 
     @GetMapping("/gameList")
-    public String gameList(@RequestParam String nameGame, Model model)
-    {
+    public String gameList(@RequestParam String nameGame, Model model) {
         Game game = gameService.findGameByGameName(nameGame);
-//            for(GameAccount a : gameAccountService.findGameAccountByGame(game)){
-//                System.out.println(a.getGameAccount());
-//            }
         model.addAttribute("listGame", gameAccountService.findGameAccountByGame(game));
         return "admin/GameList";
     }
 
     @GetMapping("/gameDetail/{id}")
     public String gameDetails(@PathVariable("id") UUID id, Model model) {
-
         GameAccount gameAccount = gameAccountService.findGameAccountById(id);
 
         Game game = gameAccount.getGame();
@@ -76,7 +69,6 @@ public class AdminGameController {
 
         return "admin/GameDetail";
     }
-
 
     @GetMapping("/gameUpdate/{id}")
     public String gameUpdate(@PathVariable("id") UUID id, Model model) {
@@ -91,8 +83,6 @@ public class AdminGameController {
 
         return "admin/GameUpdate";
     }
-
-
 
     @PostMapping("/saveUpdate")
     public String saveUpdateGame(
@@ -117,15 +107,17 @@ public class AdminGameController {
             throw new RuntimeException("GameAccount not found with id: " + id);
         }
 
+        if (rentAccountGameService.existsByGameAccountId(id)) {
+            rentAccountGameService.deleteByGameAccountId(id);
+        }
+
         existing.setGameAccount(gameAccountName);
         existing.setGamePassword(gamePassword);
         existing.setPrice(price);
         existing.setDescription(description);
         existing.setClassify(classify);
         existing.setStatus(status);
-
         existing.setDuration((duration == null || duration.isBlank()) ? null : duration);
-
         existing.setImageMain(imageMain);
         existing.setRank(rank);
         existing.setSkin(skin);
@@ -144,5 +136,4 @@ public class AdminGameController {
         String gameName = existing.getGame().getGameName();
         return "redirect:/adminHome/gameList?nameGame=" + gameName;
     }
-
 }

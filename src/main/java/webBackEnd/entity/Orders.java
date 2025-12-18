@@ -29,6 +29,13 @@ public class Orders {
     @Column(name = "status")
     private String status;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = "WAIT";
+        }
+    }
 
 
     public Orders() {
@@ -100,4 +107,6 @@ public class Orders {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 }

@@ -6,6 +6,7 @@ import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.repository.GameAccountRepositories;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,4 +56,27 @@ public class GameAccountService {
 
         return ids;
     }
+
+    public List<GameAccount> getPrice50() {
+        return gameAccountRepositories.findByPrice(BigDecimal.valueOf(50));
+    }
+
+    public List<GameAccount> getPrice100() {
+        return gameAccountRepositories.findByPrice(BigDecimal.valueOf(100));
+    }
+
+    public List<GameAccount> getPrice150() {
+        return gameAccountRepositories.findByPrice(BigDecimal.valueOf(150));
+    }
+
+    public List<GameAccount> getPrice200() {
+        return gameAccountRepositories.findByPrice(BigDecimal.valueOf(200));
+    }
+
+    public List<GameAccount> findExpired() {
+        return gameAccountRepositories.findByStatus("EXPIRED");
+    }
+
+
+
 }

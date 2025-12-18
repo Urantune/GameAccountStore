@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import webBackEnd.entity.Voucher;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -19,4 +20,13 @@ public interface VoucherRepositories extends JpaRepository<Voucher, UUID> {
     """)
     Voucher findValidVoucher(@Param("code") String code,
                              @Param("now") Date now);
+
+
+    Optional<Voucher> findByVoucherNameIgnoreCaseAndStartDateBeforeAndEndDateAfter(
+            String voucherName,
+            Date startDate,
+            Date endDate
+    );
+
+
 }

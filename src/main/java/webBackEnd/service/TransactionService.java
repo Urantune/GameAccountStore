@@ -22,13 +22,11 @@ public class TransactionService {
         return transactionRepositories.findAll();
     }
 
-    // LỊCH SỬ GIAO DỊCH
     public List<Transaction> getTransactionHistory(Customer customer) {
         return transactionRepositories
                 .findByCustomerOrderByDateCreatedDesc(customer);
     }
 
-    // SEARCH
     public List<Transaction> search(Customer customer, String keyword) {
         return transactionRepositories
                 .findByCustomerAndDescriptionContainingIgnoreCaseOrderByDateCreatedDesc(
@@ -36,12 +34,10 @@ public class TransactionService {
                 );
     }
 
-    // LƯU TRANSACTION (DÙNG KHI MUA / NẠP)
     public Transaction save(Transaction transaction) {
         return transactionRepositories.save(transaction);
     }
 
-    //TÌM LS GIAO DỊCH
     public List<Transaction> searchByTransactionId(
             Customer customer, UUID transactionId) {
 
@@ -49,7 +45,6 @@ public class TransactionService {
                 .findByCustomerAndTransactionId(customer, transactionId);
     }
 
-    //ĐỒNG BỘ SỐ DƯ
     public BigDecimal sumAmountByCustomer(UUID customerId) {
 
         List<Transaction> transactions =
@@ -58,6 +53,10 @@ public class TransactionService {
         return transactions.stream()
                 .map(Transaction::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<Transaction> findByCustomer(Customer customer) {
+        return transactionRepositories.findByCustomer(customer);
     }
 
 

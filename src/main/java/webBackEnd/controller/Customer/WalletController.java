@@ -112,7 +112,7 @@ public class WalletController {
         if (user == null) return "redirect:/login";
 
         Customer customer = customerRepo.findByUsername(user.getUsername());
-//        customer.setBalance(customer.getBalance().add(amount));
+
 
         walletService.topUp(customer.getUsername(), amount);
 

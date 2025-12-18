@@ -75,11 +75,11 @@
 <!-- SIDEBAR -->
 <div class="sidebar">
     <h5><i class="bi bi-gear-fill me-2"></i>Admin Panel</h5>
-    <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a th:href="@{/adminHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
     <a th:href="@{/adminHome/userList}"><i class="bi bi-people-fill"></i> Users</a>
     <a th:href="@{/adminHome/gameSelect}"><i class="bi bi-controller"></i> Game Accounts</a>
     <a th:href="@{/adminHome/listVoucher}"><i class="bi bi-ticket-perforated"></i> Vouchers</a>
-    <a href="#"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
+    <a th:href="@{/adminHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
     <a th:href="@{/adminHome/shift}"><i class="bi bi-calendar2-week-fill"></i> Shift Management</a>
 </div>
 
@@ -124,15 +124,34 @@
                 <td th:text="${v.staff != null ? v.staff.username : 'N/A'}"></td>
 
                 <td class="text-center">
-                    <a th:href="@{/adminHome/voucherDetail/{id}(id=${v.id})}"
-                       class="btn btn-sm btn-outline-primary me-1 btn-access">
-                        <i class="bi bi-info-circle"></i>
-                    </a>
-                    <a th:href="@{/adminHome/voucherUpdate/{id}(id=${v.id})}"
-                       class="btn btn-sm btn-outline-warning btn-access">
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
+                    <div class="d-flex justify-content-center gap-1">
+                        <!-- Detail -->
+                        <a th:href="@{/adminHome/voucherDetail/{id}(id=${v.id})}"
+                           class="btn btn-sm btn-outline-primary btn-access"
+                           title="Chi tiết">
+                            <i class="bi bi-info-circle"></i>
+                        </a>
+
+                        <!-- Update -->
+                        <a th:href="@{/adminHome/voucherUpdate/{id}(id=${v.id})}"
+                           class="btn btn-sm btn-outline-warning btn-access"
+                           title="Chỉnh sửa">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <!-- Delete -->
+                        <form th:action="@{/adminHome/deleteVoucher/{id}(id=${v.id})}"
+                              method="post"
+                              class="m-0"
+                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa voucher này không?');">
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger btn-access"
+                                    title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
                 </td>
+
             </tr>
 
             <tr th:if="${#lists.isEmpty(listVoucher)}">

@@ -37,14 +37,12 @@ public class APIvoucher {
         GameAccount game = gameAccountService.getGameById(gameId);
         BigDecimal totalPrice = game.getPrice();
 
-        //giảm giá gói
         if (packageValues.contains("2 Tháng")) {
             totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.9));
         } else if (packageValues.contains("3 Tháng")) {
             totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.85));
         }
 
-        //giảm giá voucher
         if (voucherCode != null && !voucherCode.isBlank()) {
             Voucher voucher = voucherService.getValidVoucher(voucherCode);
             if (voucher == null) {
@@ -64,4 +62,20 @@ public class APIvoucher {
         result.put("totalPrice", totalPrice);
         return result;
     }
+
+    @GetMapping("/api/voucher/check")
+    @ResponseBody
+    public Map<String, Object> checkVoucher(@RequestParam String code) {
+        Voucher voucher = voucherService.getValidVoucher(code.trim());
+        if (voucher == null) {
+            return Map.of("valid", false);
+        }
+        return Map.of(
+                "valid", true,
+                "percent", voucher.getValue()
+        );
+    }
+
+
+
 }

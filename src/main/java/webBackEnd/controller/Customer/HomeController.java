@@ -91,7 +91,6 @@ public class HomeController {
     ) {
         Customer current = currentUser();
 
-
         if (current == null || !current.getCustomerId().equals(userId)) {
             return "redirect:/home/profile/" + userId;
         }
@@ -101,19 +100,15 @@ public class HomeController {
         if (customer != null
                 && customer.getEmail() != null
                 && customer.getEmail().equalsIgnoreCase(email.trim())) {
-
-
-            return "redirect:/home/change-password" + customer.getCustomerId();
+            return "redirect:/home/change-password/" + customer.getCustomerId();
         }
-
 
         model.addAttribute("emailError", "Email không khớp.");
         model.addAttribute("openChangePassModal", true);
         model.addAttribute("customer", customer);
-        model.addAttribute("listGame", List.of());
-
         return "customer/ProfileUser";
     }
+
 
 
     @GetMapping("/change-password/{id}")
@@ -176,7 +171,6 @@ public class HomeController {
         Customer customer =
                 customerService.findCustomerByUsername(principal.getName());
 
-        // 🔹 luôn lấy full list để xử lý STT
         List<Transaction> fullHistory =
                 transactionService.getTransactionHistory(customer);
 
@@ -189,7 +183,6 @@ public class HomeController {
 
             String keyword = search.trim().toLowerCase();
 
-            // 1️⃣ Search theo STT
             if (keyword.matches("\\d+")) {
                 int stt = Integer.parseInt(keyword) - 1;
                 tableHistory =
@@ -197,7 +190,7 @@ public class HomeController {
                                 ? List.of(fullHistory.get(stt))
                                 : List.of();
             }
-            // 2️⃣ Search theo UUID
+
             else if (keyword.matches(
                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
 
@@ -207,7 +200,7 @@ public class HomeController {
                         .filter(t -> t.getCustomer().equals(id))
                         .toList();
             }
-            // 3️⃣ Search theo nội dung
+
             else {
                 tableHistory = fullHistory.stream()
                         .filter(t ->
@@ -218,8 +211,6 @@ public class HomeController {
             }
         }
 
-
-        // TÍNH TIỀN
         BigDecimal totalDeposit = BigDecimal.ZERO;
         BigDecimal totalSpent = BigDecimal.ZERO;
 
@@ -239,6 +230,38 @@ public class HomeController {
 
         return "customer/Transaction";
     }
+
+    @PostMapping("/profile/delete")
+    public String deleteAccount(
+            @RequestParam UUID userId,
+            @RequestParam String email,
+            Model model
+    ) {
+        Customer current = currentUser();
+
+        if (current == null || !current.getCustomerId().equals(userId)) {
+            return "redirect:/home/profile/" + userId;
+        }
+
+        Customer customer = customerService.findCustomerById(userId);
+
+        if (customer != null
+                && customer.getEmail() != null
+                && customer.getEmail().equalsIgnoreCase(email.trim())) {
+
+            customer.setStatus("DELETED");
+            customer.setDateUpdated(LocalDateTime.now());
+            customerService.save(customer);
+
+            return "redirect:/logout";
+        }
+
+        model.addAttribute("deleteError", "Email không khớp.");
+        model.addAttribute("openDeleteModal", true);
+        model.addAttribute("customer", customer);
+        return "customer/ProfileUser";
+    }
+
 
 
 

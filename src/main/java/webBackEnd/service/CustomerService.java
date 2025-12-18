@@ -74,5 +74,11 @@ public class CustomerService implements UserDetailsService {
                 .getBalance();
     }
 
+    public void delete(String username) {
+        customerRepositories.delete(findCustomerByUsername(username));
+    }
+
+
+
 
 }

@@ -47,6 +47,10 @@ public class OrderDetailService {
     }
 
 
+    public OrderDetail save(OrderDetail orderDetail) {
+        return orderDetailRepositories.save(orderDetail);
+    }
+
 
 }
 

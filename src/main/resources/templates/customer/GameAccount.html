@@ -147,7 +147,6 @@
 <!-- Spinner End -->
 
 
-
 <!-- Navbar & Hero Start -->
 <nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
@@ -183,23 +182,37 @@
                            href="#"
                            data-bs-toggle="dropdown"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-shopping-cart me-2"></i>Lịch Sử Mua
+                            <i class="fa fa-list me-2"></i>Danh sách tài khoản
                         </a>
 
                         <ul class="dropdown-menu dropdown-soft">
-                            <li><a class="dropdown-item" href="#">Free Fire</a></li>
-                            <li><a class="dropdown-item" href="#">AOV</a></li>
+                            <li>
+                                <a class="dropdown-item require-login"
+                                   th:href="@{/home/listAcc(game='AOV')}"
+                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                    AOV
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item require-login"
+                                   th:href="@{/home/listAcc(game='FREE FIRE')}"
+                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                    Free Fire
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
-                    <!-- TÀI KHOẢN -->
+
+                    <!-- TÀI KHOẢN ĐANG THUÊ -->
                     <li class="nav-item">
                         <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}"
+                           th:href="@{/home/renting}"
                            th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-user-circle me-2"></i>Tài Khoản
+                            <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
                         </a>
                     </li>
+
 
                     <!-- VÍ -->
                     <li class="nav-item">
@@ -326,9 +339,8 @@
                             Thông tin tài khoản
                         </a>
                     </li>
-                </ul>
-             </div>
-
+            </div>
+            </ul>
         </div>
     </div>
 </nav>
@@ -348,7 +360,6 @@
             }
         });
     });
-
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
 
@@ -418,640 +429,547 @@
     </div>
 </div>
 <!-- Carousel End -->
-
-<!-- Services Start -->
-<div class="container-fluid px-0">
-
-    <form method="get" th:action="@{/home/game}">
-        <div class="row g-0 bg-white shadow-sm rounded-3 overflow-hidden mb-4">
-
-            <!-- 1. Loại tài khoản -->
-            <div class="col-lg-3 p-3 border-end">
-                <label class="fw-bold mb-2">Tài khoản</label>
-                <select class="form-select" name="duration">
-                    <option value="">Tất cả</option>
-                    <option value="RENT">Thuê</option>
-                    <option value="PERMANENT">Vĩnh viễn</option>
-                </select>
-            </div>
-            <!-- 2. Giá -->
-            <div class="col-lg-3 p-3 border-end">
-                <label class="fw-bold mb-2">Giá</label>
-                <select class="form-select" name="price">
-                    <option value="">Tất cả</option>
-                    <option value="0-100000">Dưới 100k</option>
-                    <option value="100000-300000">100k - 300k</option>
-                    <option value="300000-500000">300k - 500k</option>
-                    <option value="500000+">Trên 500k</option>
-                </select>
-            </div>
-
-            <!-- 3. VIP -->
-            <div class="col-lg-3 p-3 border-end">
-                <label class="fw-bold mb-2">VIP</label>
-                <select class="form-select" name="vip">
-                    <option value="">Tất cả</option>
-                    <option value="1">VIP</option>
-                    <option value="0">Không VIP</option>
-                </select>
-            </div>
-            <!-- 4. Skins -->
-            <div class="col-lg-3 p-3 border-end">
-                <label class="fw-bold mb-2">Skins</label>
-                <select class="form-select" name="skins">
-                    <option value="">Tất cả</option>
-                    <option value="0-50">Dưới 50</option>
-                    <option value="50-100">50 - 100</option>
-                    <option value="100+">Trên 100</option>
-                </select>
-            </div>
-        </div>
-        <button class="btn btn-danger w-20 fw-bold mt-2">
-            Tìm kiếm
-        </button>
-    </form>
-    <!-- Searvices End -->
     <!-- Our Products Start -->
     <div class="container-fluid product py-5">
         <div class="container py-5">
             <div class="tab-class">
                 <div class="row g-4">
-                    <div class="col-lg-4 text-start">
-                        <h1 th:text="${pageTitle}"></h1>
-                    </div>
-                    <div class="tab-content">
-                        <!-- TẤT CẢ SẢN PHẨM -->
-                        <div id="tab-all" class="tab-pane fade show active p-0">
-                            <div class="row g-4">
-                                <div class="col-md-6 col-lg-4 col-xl-3"
-                                     th:each="p : ${accounts}">
-                                    <div class="card game-card h-100 border-0 shadow-sm rounded-4">
-                                        <!-- IMAGE -->
-                                        <div class="position-relative overflow-hidden rounded-top-4">
-                                            <!-- IMAGE -->
-                                            <img th:src="@{'/images/' + ${p.imageMain}}"
-                                                 class="card-img-top game-img"
-                                                 th:classappend="${soldOrRentedIds.contains(p.id)} ? 'opacity-50' : ''">
-                                            <!-- ĐÃ BÁN / ĐÃ THUÊ -->
-                                            <span th:if="${soldOrRentedIds.contains(p.id)}"
-                                                  class="badge bg-danger position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
-    <i class="fa fa-ban me-1"></i>
-</span>
-                                            <!-- VĨNH VIỄN -->
-                                            <span th:if="${!soldOrRentedIds.contains(p.id) and p.duration == null}"
-                                                  class="badge badge-permanent position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
-                <i class="fa fa-infinity me-1"></i> Vĩnh viễn
-            </span>
-                                            <!-- THUÊ -->
-                                            <span th:if="${!soldOrRentedIds.contains(p.id) and p.duration == 'RENT'}"
-                                                  class="badge badge-rent position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
-                <i class="fa fa-clock me-1"></i> Thuê
-            </span>
-                                            <!-- VIEW -->
-                                            <a th:if="${!soldOrRentedIds.contains(p.id)}"
-                                               th:href="@{/home/gameDetail/{id}(id=${p.id})}"
-                                               class="view-btn">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
+                    <h2 class="text-center my-4" th:text="${pageTitle}"></h2>
 
+                    <div class="container">
+                        <div class="row g-4">
+                            <div class="col-md-6 col-lg-4 col-xl-3"
+                                 th:each="price : ${prices}">
+                                <div class="card game-card h-100 border-0 shadow-sm rounded-4">
+
+                                    <!-- IMAGE -->
+                                    <div class="position-relative overflow-hidden rounded-top-4">
+                                        <img th:src="@{${gameName == 'AOV' ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
+                                             class="card-img-top game-img">
+
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
+                        Acc Giá <span th:text="${#numbers.formatDecimal(price,0,'COMMA',0,'POINT')}"></span> đ
+                    </span>
+                                    </div>
+                                    <!-- BODY -->
+                                    <div class="card-body text-center">
+                                        <h5 class="fw-bold mb-2"
+                                            th:text="${gameName}"></h5>
+                                        <div class="text-danger fw-bold fs-5 mb-3"
+                                             th:text="${#numbers.formatDecimal(price,0,'COMMA',0,'POINT')} + ' đ'">
                                         </div>
-                                        <!-- BODY -->
-                                        <div class="card-body text-center">
-                                            <h5 class="card-title fw-bold mb-2"
-                                                th:text="${p.game.gameName}"></h5>
-
-                                            <div class="text-danger fw-bold fs-5 mb-3"
-                                                 th:text="${#numbers.formatDecimal(p.price,0,'COMMA',0,'POINT')} + ' đ'">
-                                            </div>
-
-                                            <div class="row text-dark small">
-                                                <div class="col-6 mb-2">
-                                                    <span class="fw-semibold">Rank:</span>
-                                                    <span th:text="${p.rank}"></span>
-                                                </div>
-
-                                                <div class="col-6 mb-2">
-                                                    <span class="fw-semibold">Skins:</span>
-                                                    <span th:text="${p.skin}"></span>
-                                                </div>
-
-                                                <div class="col-6 mb-2">
-                                                    <span class="fw-semibold">Level:</span>
-                                                    <span th:text="${p.lovel}"></span>
-                                                </div>
-
-                                                <div class="col-6 mb-2">
-                                                    <span class="fw-semibold">VIP:</span>
-                                                    <span th:text="${p.items}"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- FOOTER -->
-                                        <div class="card-footer border-0 pb-4 text-center">
-                                            <a th:if="${!soldOrRentedIds.contains(p.id)}"
-                                               th:href="@{/home/gameDetail/{id}(id=${p.id})}"
-                                               class="btn btn-outline-primary btn-sm rounded-pill px-4">
-                                                Xem chi tiết
-                                            </a>
-
-                                            <button th:if="${soldOrRentedIds.contains(p.id)}"
-                                                    class="btn btn-secondary btn-sm rounded-pill px-4"
-                                                    disabled>
-                                                Hết hàng
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <!-- FOOTER -->
+                                    <div class="card-footer border-0 pb-4 text-center">
+                                        <a th:href="@{/home/GameDetail(price=${price}, game=${gameName})}"
+                                           class="btn btn-outline-primary btn-sm rounded-pill px-4">
+                                            Mua
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
-         </div>
-    </div>
-<style>
-    .form-select {
-        border-radius: 12px;
-        font-size: 14px;
-    }
+        </div>
+        <style>
+            .form-select {
+                border-radius: 12px;
+                font-size: 14px;
+            }
 
-    label {
-        color: #d63384;
-    }
+            label {
+                color: #d63384;
+            }
 
-    /* ===== BASE BADGE ===== */
-    /* ================= BASE ================= */
-    .badge-permanent,
-    .badge-rent {
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: .5px;
-        text-transform: uppercase;
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        transition: all .3s ease;
-    }
+            /* ===== BASE BADGE ===== */
+            /* ================= BASE ================= */
+            .badge-permanent,
+            .badge-rent {
+                font-size: 0.85rem;
+                font-weight: 700;
+                letter-spacing: .5px;
+                text-transform: uppercase;
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                transition: all .3s ease;
+            }
 
-    /* ================= VĨNH VIỄN ================= */
-    .badge-permanent {
-        background: linear-gradient(135deg, #16a34a, #22c55e);
-        color: #fff;
-        box-shadow:
-                0 0 8px rgba(34,197,94,.8),
-                0 0 20px rgba(34,197,94,.6);
-        animation: neonPulse 1.6s infinite alternate;
-    }
+            /* ================= VĨNH VIỄN ================= */
+            .badge-permanent {
+                background: linear-gradient(135deg, #16a34a, #22c55e);
+                color: #fff;
+                box-shadow: 0 0 8px rgba(34, 197, 94, .8),
+                0 0 20px rgba(34, 197, 94, .6);
+                animation: neonPulse 1.6s infinite alternate;
+            }
 
-    /* Vòng sáng xoay */
-    .badge-permanent::before {
-        content: "";
-        position: absolute;
-        inset: -2px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
-        animation: rotateLight 2.5s linear infinite;
-    }
+            /* Vòng sáng xoay */
+            .badge-permanent::before {
+                content: "";
+                position: absolute;
+                inset: -2px;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .6), transparent);
+                animation: rotateLight 2.5s linear infinite;
+            }
 
-    /* ================= THUÊ ================= */
-    .badge-rent {
-        background: linear-gradient(135deg, #facc15, #f59e0b);
-        color: #111;
-        box-shadow:
-                0 0 8px rgba(250,204,21,.8),
-                0 0 18px rgba(250,204,21,.6);
-    }
+            /* ================= THUÊ ================= */
+            .badge-rent {
+                background: linear-gradient(135deg, #facc15, #f59e0b);
+                color: #111;
+                box-shadow: 0 0 8px rgba(250, 204, 21, .8),
+                0 0 18px rgba(250, 204, 21, .6);
+            }
 
-    /* Shine quét */
-    .badge-rent::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -120%;
-        width: 60%;
-        height: 100%;
-        background: rgba(255,255,255,.6);
-        transform: skewX(-25deg);
-        animation: shineMove 2.2s infinite;
-    }
+            /* Shine quét */
+            .badge-rent::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -120%;
+                width: 60%;
+                height: 100%;
+                background: rgba(255, 255, 255, .6);
+                transform: skewX(-25deg);
+                animation: shineMove 2.2s infinite;
+            }
 
-    /* ================= HOVER ================= */
-    .badge-permanent:hover,
-    .badge-rent:hover {
-        transform: scale(1.15);
-        box-shadow:
-                0 0 20px rgba(255,255,255,.9),
-                0 0 40px rgba(255,255,255,.7);
-    }
+            /* ================= HOVER ================= */
+            .badge-permanent:hover,
+            .badge-rent:hover {
+                transform: scale(1.15);
+                box-shadow: 0 0 20px rgba(255, 255, 255, .9),
+                0 0 40px rgba(255, 255, 255, .7);
+            }
 
-    /* ================= ANIMATION ================= */
-    @keyframes neonPulse {
-        from {
-            box-shadow:
-                    0 0 6px rgba(34,197,94,.6),
-                    0 0 15px rgba(34,197,94,.4);
-        }
-        to {
-            box-shadow:
-                    0 0 15px rgba(34,197,94,1),
-                    0 0 35px rgba(34,197,94,.9);
-        }
-    }
+            /* ================= ANIMATION ================= */
+            @keyframes neonPulse {
+                from {
+                    box-shadow: 0 0 6px rgba(34, 197, 94, .6),
+                    0 0 15px rgba(34, 197, 94, .4);
+                }
+                to {
+                    box-shadow: 0 0 15px rgba(34, 197, 94, 1),
+                    0 0 35px rgba(34, 197, 94, .9);
+                }
+            }
 
-    @keyframes rotateLight {
-        from { transform: rotate(0deg); }
-        to   { transform: rotate(360deg); }
-    }
+            @keyframes rotateLight {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
 
-    @keyframes shineMove {
-        0% { left: -120%; }
-        60% { left: 120%; }
-        100% { left: 120%; }
-    }
-
-
-    /* Ảnh game */
-    .game-img {
-        height: 220px;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-    }
-
-    /* Overlay tối */
-    .game-thumb::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.35);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    /* Hover effect */
-    .game-card:hover .game-img {
-        transform: scale(1.08);
-    }
-
-    .game-card:hover .game-thumb::after {
-        opacity: 1;
-    }
+            @keyframes shineMove {
+                0% {
+                    left: -120%;
+                }
+                60% {
+                    left: 120%;
+                }
+                100% {
+                    left: 120%;
+                }
+            }
 
 
-    .view-btn {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        background: rgba(0,0,0,0.6);
-        color: #fff;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .card-body{
-        background-color:#FFEED8;
-    }
-    .card-footer{
-        background-color: #FFEED8;
-    }
-    .view-btn {
-        position: absolute;
-        bottom: 15px;
-        right: 15px;
-        width: 42px;
-        height: 42px;
-        background: rgba(0,0,0,0.65);
-        color: #fff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+            /* Ảnh game */
+            .game-img {
+                height: 220px;
+                object-fit: cover;
+                transition: transform 0.4s ease;
+            }
 
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.3s ease;
-    }
+            /* Overlay tối */
+            .game-thumb::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.35);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
 
-    .game-card:hover .view-btn {
-        opacity: 1;
-        transform: translateY(0);
-    }
+            /* Hover effect */
+            .game-card:hover .game-img {
+                transform: scale(1.08);
+            }
 
-    .view-btn:hover {
-        background: pink;
-        transform: scale(1.1);
-    }
-
-    .badge-anim {
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
+            .game-card:hover .game-thumb::after {
+                opacity: 1;
+            }
 
 
-</style>
-<!-- Our Products End -->
+            .view-btn {
+                position: absolute;
+                bottom: 10px;
+                right: 10px;
+                background: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .card-body {
+                background-color: #FFEED8;
+            }
+
+            .card-footer {
+                background-color: #FFEED8;
+            }
+
+            .view-btn {
+                position: absolute;
+                bottom: 15px;
+                right: 15px;
+                width: 42px;
+                height: 42px;
+                background: rgba(0, 0, 0, 0.65);
+                color: #fff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s ease;
+            }
+
+            .game-card:hover .view-btn {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .view-btn:hover {
+                background: pink;
+                transform: scale(1.1);
+            }
+
+            .badge-anim {
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.05);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
 
 
-<!-- Footer Start -->
-<div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
-    <div class="container">
+        </style>
+        <!-- Our Products End -->
 
-        <div class="row g-4">
 
-            <!-- LOGO + INTRO -->
-            <div class="col-lg-4 col-md-6">
-                <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
-                <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
-                <p>
-                    Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>
-                    Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.
-                </p>
-                <div class="d-flex mt-3 gap-3">
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
-                    <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
+        <!-- Footer Start -->
+        <div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
+            <div class="container">
+
+                <div class="row g-4">
+
+                    <!-- LOGO + INTRO -->
+                    <div class="col-lg-4 col-md-6">
+                        <img src="/img/logoFinal.png" style="width:130px;" class="mb-3">
+                        <h5 class="fw-bold text-dark">Shop Bán & Thuê Tài Khoản Game</h5>
+                        <p>
+                            Uy tín – Giá rẻ – Giao dịch tự động 24/7.<br>
+                            Đảm bảo an toàn tuyệt đối khi mua và thuê tài khoản.
+                        </p>
+                        <div class="d-flex mt-3 gap-3">
+                            <a href="#" class="text-dark fs-5"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-dark fs-5"><i class="fab fa-discord"></i></a>
+                            <a href="#" class="text-dark fs-5"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- SUPPORT -->
+                    <div class="col-lg-4 col-md-6">
+                        <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
+
+                        <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
+                        <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn
+                        </p>
+                        <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
+
+                        <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
+                            <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
+                        </button>
+                    </div>
+
+                    <!-- QUICK LINKS -->
+                    <div class="col-lg-4 col-md-6">
+                        <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
+                        <ul class="footer-links">
+                            <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
+                            <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
+                        </ul>
+                    </div>
+
                 </div>
+
+                <!-- COPYRIGHT -->
+                <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
+                    <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
+                    <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
+                </div>
+
             </div>
-
-            <!-- SUPPORT -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="fw-bold text-dark mb-3">HỖ TRỢ KHÁCH HÀNG</h5>
-
-                <p><i class="fa fa-phone text-warning me-2"></i><strong>Hotline:</strong> 0923 445 566</p>
-                <p><i class="fa fa-envelope text-warning me-2"></i><strong>Email:</strong> support@shopgame.vn</p>
-                <p><i class="fa fa-clock text-warning me-2"></i>Hỗ trợ 24/7 – Tư vấn nhanh chóng</p>
-
-                <button class="btn btn-warning px-4 py-2 mt-2 fw-semibold rounded-pill">
-                    <i class="fa fa-headset me-2"></i>Liên Hệ Ngay
-                </button>
-            </div>
-
-            <!-- QUICK LINKS -->
-            <div class="col-lg-4 col-md-6">
-                <h5 class="fw-bold text-dark mb-3">DANH MỤC</h5>
-                <ul class="footer-links">
-                    <li><a href="/home"><i class="fa fa-angle-right me-2"></i>Trang Chủ</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Mua Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Thuê Tài Khoản</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Nạp Tiền</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Dịch Vụ Game</a></li>
-                    <li><a href="#"><i class="fa fa-angle-right me-2"></i>Chính Sách & Bảo Hành</a></li>
-                </ul>
-            </div>
-
         </div>
+        <style>
+            .footer-links {
+                list-style: none;
+                padding: 0;
+            }
 
-        <!-- COPYRIGHT -->
-        <div class="text-center mt-5 pt-3" style="border-top:1px solid #eee;">
-            <p class="mb-1">© 2025 Shop Bán & Thuê Tài Khoản Game</p>
-            <small>Phát triển bởi <strong>Urantune</strong> — Phiên bản <strong>1.1</strong></small>
-        </div>
+            .footer-links li {
+                margin-bottom: 8px;
+            }
 
-    </div>
-</div>
-<style>
-    .footer-links {
-        list-style: none;
-        padding: 0;
-    }
+            .footer-links a {
+                color: #444;
+                text-decoration: none;
+                transition: 0.2s;
+            }
 
-    .footer-links li {
-        margin-bottom: 8px;
-    }
-
-    .footer-links a {
-        color: #444;
-        text-decoration: none;
-        transition: 0.2s;
-    }
-
-    .footer-links a:hover {
-        color: #ff8800;
-        padding-left: 4px;
-    }
-</style>
-<!-- Footer End -->
+            .footer-links a:hover {
+                color: #ff8800;
+                padding-left: 4px;
+            }
+        </style>
+        <!-- Footer End -->
 
 
-<!-- JavaScript Libraries -->
-<script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
-<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/lib/wow/wow.min.js}"></script>
-<script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
-<!-- Template Javascript -->
-<script th:src="@{/js/main.js}"></script>
+        <!-- JavaScript Libraries -->
+        <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>
+        <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/lib/wow/wow.min.js}"></script>
+        <script th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+        <!-- Template Javascript -->
+        <script th:src="@{/js/main.js}"></script>
 
-<!--JS hiển thị lỗi Login-->
-<script>
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const username = document.getElementById("loginUsername").value;
-        const password = document.getElementById("loginPassword").value;
-
-        fetch("/login", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-Requested-With": "XMLHttpRequest"
-            },
-            body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-        })
-            .then(async res => {
-                if (!res.ok) {
-                    const err = await res.json();
-
-                    const errorBox = document.getElementById("loginError");
-                    errorBox.textContent = err.error;
-                    errorBox.classList.remove("d-none");
-
-                    // Ẩn lỗi sau 3 giây
-                    setTimeout(() => {
-                        errorBox.classList.add("d-none");
-                    }, 3000);
-
-                    return;
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (data?.redirect) window.location.href = data.redirect;
-            })
-            .catch(err => console.error(err));
-    });
-</script>
-
-
-<!--JS chuyển đổi giữa các Model-->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        // Khi bấm "Đăng ký ngay" trong Login → mở Register
-        document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
-            btn.addEventListener("click", function (e) {
+        <!--JS hiển thị lỗi Login-->
+        <script>
+            document.getElementById("loginForm").addEventListener("submit", function (e) {
                 e.preventDefault();
 
-                const loginModalEl = document.getElementById("loginModal");
-                const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+                const username = document.getElementById("loginUsername").value;
+                const password = document.getElementById("loginPassword").value;
 
-                // Đợi login đóng xong mới mở register
-                loginModalEl.addEventListener('hidden.bs.modal', function handler() {
-                    loginModalEl.removeEventListener('hidden.bs.modal', handler);
-                    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
-                    registerModal.show();
+                fetch("/login", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+                })
+                    .then(async res => {
+                        if (!res.ok) {
+                            const err = await res.json();
+
+                            const errorBox = document.getElementById("loginError");
+                            errorBox.textContent = err.error;
+                            errorBox.classList.remove("d-none");
+
+                            // Ẩn lỗi sau 3 giây
+                            setTimeout(() => {
+                                errorBox.classList.add("d-none");
+                            }, 3000);
+
+                            return;
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        if (data?.redirect) window.location.href = data.redirect;
+                    })
+                    .catch(err => console.error(err));
+            });
+        </script>
+
+
+        <!--JS chuyển đổi giữa các Model-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                // Khi bấm "Đăng ký ngay" trong Login → mở Register
+                document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+                    btn.addEventListener("click", function (e) {
+                        e.preventDefault();
+
+                        const loginModalEl = document.getElementById("loginModal");
+                        const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+
+                        // Đợi login đóng xong mới mở register
+                        loginModalEl.addEventListener('hidden.bs.modal', function handler() {
+                            loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                            const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                            registerModal.show();
+                        });
+
+                        loginModal.hide();
+                    });
                 });
 
-                loginModal.hide();
+                // Khi bấm "Đăng nhập ngay" trong Register → mở Login
+                document.querySelectorAll(".open-login").forEach(btn => {
+                    btn.addEventListener("click", function (e) {
+                        e.preventDefault();
+
+                        const registerModalEl = document.getElementById("registerModal");
+                        const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+
+                        // Đợi register đóng xong mới mở login
+                        registerModalEl.addEventListener('hidden.bs.modal', function handler() {
+                            registerModalEl.removeEventListener('hidden.bs.modal', handler);
+                            const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                            loginModal.show();
+                        });
+
+                        registerModal.hide();
+                    });
+                });
             });
-        });
+        </script>
+        <!--JS tắt Model Login mở Model Register-->
+        <script>
+            document.querySelectorAll(".open-register").forEach(btn => {
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
 
-        // Khi bấm "Đăng nhập ngay" trong Register → mở Login
-        document.querySelectorAll(".open-login").forEach(btn => {
-            btn.addEventListener("click", function (e) {
-                e.preventDefault();
+                    const loginEl = document.getElementById("loginModal");
+                    const loginModal = bootstrap.Modal.getInstance(loginEl);
 
-                const registerModalEl = document.getElementById("registerModal");
-                const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+                    loginEl.addEventListener("hidden.bs.modal", function handler() {
+                        loginEl.removeEventListener("hidden.bs.modal", handler);
 
-                // Đợi register đóng xong mới mở login
-                registerModalEl.addEventListener('hidden.bs.modal', function handler() {
-                    registerModalEl.removeEventListener('hidden.bs.modal', handler);
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                        const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                        registerModal.show();
+                    });
+
+                    loginModal.hide();
+                });
+            });
+
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                if (window.location.search.includes("error=true")) {
+                    var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
                     loginModal.show();
-                });
-
-                registerModal.hide();
-            });
-        });
-    });
-</script>
-<!--JS tắt Model Login mở Model Register-->
-<script>
-    document.querySelectorAll(".open-register").forEach(btn => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            const loginEl = document.getElementById("loginModal");
-            const loginModal = bootstrap.Modal.getInstance(loginEl);
-
-            loginEl.addEventListener("hidden.bs.modal", function handler() {
-                loginEl.removeEventListener("hidden.bs.modal", handler);
-
-                const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
-                registerModal.show();
-            });
-
-            loginModal.hide();
-        });
-    });
-
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        if (window.location.search.includes("error=true")) {
-            var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-        }
-    });
-</script>
-
-<script th:if="${openRegister}">
-    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
-    registerModal.show();
-</script>
-
-<!--JS k reload form Đăng ký-->
-<script>
-    document.getElementById("registerBtn").addEventListener("click", function () {
-        const formData = new FormData(document.getElementById("registerForm"));
-        fetch("/register", {
-            method: "POST",
-            body: new URLSearchParams(formData),
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const errorDiv = document.getElementById("registerError");
-                const successDiv = document.getElementById("registerSuccess");
-
-                if (data.error) {
-                    errorDiv.innerText = data.error;
-                    successDiv.innerText = "";
-                    // Reset password fields
-                    document.getElementById("registerPassword").value = "";
-                    document.getElementById("confirmPassword").value = "";
-
-                    // Ẩn lỗi sau 3 giây
-                    setTimeout(() => {
-                        errorDiv.innerText = "";
-                    }, 3000);
-                } else if (data.success) {
-                    successDiv.innerText = data.success;
-                    errorDiv.innerText = "";
-                    document.getElementById("registerForm").reset();
-
-                    // Ẩn thông báo thành công sau 3 giây
-                    setTimeout(() => {
-                        successDiv.innerText = "";
-                    }, 3000);
                 }
-            })
-            .catch(err => console.error(err));
-    });
-</script>
+            });
+        </script>
 
-<script>
-    setTimeout(() => {
-        const spinner = document.getElementById("spinner");
-        if (spinner) spinner.classList.remove("show");
-    }, 500);
-</script>
+        <script th:if="${openRegister}">
+            const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+            registerModal.show();
+        </script>
 
-<script>
-    document.addEventListener("click", function (event) {
-        const categoryBox = document.getElementById("allCat");        // menu category
-        const toggleBtn = document.querySelector("[data-bs-target='#allCat']"); // nút bấm All Categories
+        <!--JS k reload form Đăng ký-->
+        <script>
+            document.getElementById("registerBtn").addEventListener("click", function () {
+                const formData = new FormData(document.getElementById("registerForm"));
+                fetch("/register", {
+                    method: "POST",
+                    body: new URLSearchParams(formData),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const errorDiv = document.getElementById("registerError");
+                        const successDiv = document.getElementById("registerSuccess");
 
-        // Nếu click không nằm trong menu và không nằm trên nút mở menu → đóng
-        if (!categoryBox.contains(event.target) && !toggleBtn.contains(event.target)) {
-            let bsCollapse = bootstrap.Collapse.getInstance(categoryBox);
-            if (bsCollapse) {
-                bsCollapse.hide();
-            }
-        }
-    });
-</script>
+                        if (data.error) {
+                            errorDiv.innerText = data.error;
+                            successDiv.innerText = "";
+                            // Reset password fields
+                            document.getElementById("registerPassword").value = "";
+                            document.getElementById("confirmPassword").value = "";
 
-<script>
-    new Swiper(".mySwiper1", {
-        loop: true,
-        autoplay: {delay: 2000},
-        pagination: {
-            el: ".mySwiper1 .swiper-pagination",
-            clickable: true,
-        },
-    });
+                            // Ẩn lỗi sau 3 giây
+                            setTimeout(() => {
+                                errorDiv.innerText = "";
+                            }, 3000);
+                        } else if (data.success) {
+                            successDiv.innerText = data.success;
+                            errorDiv.innerText = "";
+                            document.getElementById("registerForm").reset();
 
-    new Swiper(".mySwiper2", {
-        loop: true,
-        autoplay: {delay: 2000},
-        pagination: {
-            el: ".mySwiper2 .swiper-pagination",
-            clickable: true,
-        },
-    });
-</script>
+                            // Ẩn thông báo thành công sau 3 giây
+                            setTimeout(() => {
+                                successDiv.innerText = "";
+                            }, 3000);
+                        }
+                    })
+                    .catch(err => console.error(err));
+            });
+        </script>
 
-<script th:src="@{/js/product.js}"></script>
+        <script>
+            setTimeout(() => {
+                const spinner = document.getElementById("spinner");
+                if (spinner) spinner.classList.remove("show");
+            }, 500);
+        </script>
+
+        <script>
+            document.addEventListener("click", function (event) {
+                const categoryBox = document.getElementById("allCat");        // menu category
+                const toggleBtn = document.querySelector("[data-bs-target='#allCat']"); // nút bấm All Categories
+
+                // Nếu click không nằm trong menu và không nằm trên nút mở menu → đóng
+                if (!categoryBox.contains(event.target) && !toggleBtn.contains(event.target)) {
+                    let bsCollapse = bootstrap.Collapse.getInstance(categoryBox);
+                    if (bsCollapse) {
+                        bsCollapse.hide();
+                    }
+                }
+            });
+        </script>
+
+        <script>
+            new Swiper(".mySwiper1", {
+                loop: true,
+                autoplay: {delay: 2000},
+                pagination: {
+                    el: ".mySwiper1 .swiper-pagination",
+                    clickable: true,
+                },
+            });
+
+            new Swiper(".mySwiper2", {
+                loop: true,
+                autoplay: {delay: 2000},
+                pagination: {
+                    el: ".mySwiper2 .swiper-pagination",
+                    clickable: true,
+                },
+            });
+        </script>
+
+        <script th:src="@{/js/product.js}"></script>
 </body>
 </html>

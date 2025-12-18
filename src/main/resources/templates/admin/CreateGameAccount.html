@@ -9,40 +9,94 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        :root { --orange: #ff7a2f; }
+        :root {
+            --primary: #1abb9c;
+            --primary-dark: #169f82;
+            --dark: #2a3f54;
+            --bg: #f5f7fa;
+        }
+
         body {
-            background: #f5f5f5;
+            background: var(--bg);
             font-family: "Roboto", sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
+
         .bar-top {
             width: 100%;
             height: 70px;
-            background: var(--orange);
+            background: var(--dark);
             display: flex;
             align-items: center;
             padding-left: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
+
+        .bar-top h4 {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
         .bar-bottom {
             width: 100%;
-            height: 70px;
-            background: var(--orange);
+            height: 60px;
+            background: var(--dark);
             margin-top: auto;
         }
+
         .content-wrapper {
             flex: 1;
             padding: 30px 40px 20px 40px;
         }
+
         .card-detail {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            padding: 25px 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            padding: 28px 32px;
         }
-        .form-label { font-weight: 500; }
-        .value-readonly { background-color: #f8f9fa; }
+
+        .form-label {
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 10px 14px;
+            border: 1px solid #dce1e7;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.15rem rgba(26,187,156,.25);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: 30px;
+            padding: 8px 22px;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary,
+        .btn-outline-secondary {
+            border-radius: 30px;
+            padding: 8px 22px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
     </style>
 </head>
 
@@ -58,40 +112,40 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">New Game Account</h5>
-        <a th:href="@{/adminHome/gameAccountSelect}" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Back to select game
+        <a th:href="@{/adminHome/gameSelect}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back
         </a>
     </div>
 
-    <form th:action="@{/adminHome/saveNewGameAccount}"
-          th:object="${gameAccount}"
-          method="post">
+    <form th:action="@{/adminHome/saveNewGameAccount}" method="post" enctype="multipart/form-data">
 
         <div class="card-detail">
             <div class="row g-3">
 
                 <div class="col-md-6">
                     <label class="form-label">Game Username</label>
-                    <input type="text" class="form-control"
-                           th:field="*{gameAccount}" required>
+                    <input type="text" class="form-control" name="gameAccount" required>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Game Password</label>
-                    <input type="text" class="form-control"
-                           th:field="*{gamePassword}" required>
+                    <input type="text" class="form-control" name="gamePassword" required>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Price</label>
-                    <input type="number" step="0.01" min="0"
-                           class="form-control"
-                           th:field="*{price}" required>
+                    <select class="form-select" name="price" required>
+                        <option value="" disabled selected>Select price</option>
+                        <option value="50000">50,000</option>
+                        <option value="100000">100,000</option>
+                        <option value="150000">150,000</option>
+                        <option value="200000">200,000</option>
+                    </select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Game</label>
-                    <select class="form-select" name="gameId" required>
+                    <select class="form-select" name="gameId" id="gameIdSelect" required>
                         <option value="" disabled selected>Select game</option>
                         <option th:each="g : ${games}"
                                 th:value="${g.gameId}"
@@ -101,20 +155,10 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Category</label>
-                    <select class="form-select" name="category" required>
-                        <option value="" disabled selected>Select type</option>
-                        <option th:each="t : ${types}"
-                                th:value="${t.typeName}"
-                                th:text="${t.typeName}">
-                        </option>
-                    </select>
-                </div>
-
-                <div class="col-md-6">
                     <label class="form-label">Classify</label>
-                    <select class="form-select" th:field="*{classify}">
-                        <option th:each="c : ${classifies}"
+                    <select class="form-select" name="classify" required>
+                        <option value="" disabled selected>Select classify</option>
+                        <option th:each="c : ${classifyList}"
                                 th:value="${c}"
                                 th:text="${c}">
                         </option>
@@ -123,65 +167,67 @@
 
                 <div class="col-md-6">
                     <label class="form-label">Rank</label>
-                    <select class="form-select" th:field="*{rank}">
-                        <option th:each="r : ${ranks}"
+
+                    <select class="form-select d-none" id="rankAovSelect" name="rank">
+                        <option value="" disabled selected>Select rank</option>
+                        <option th:each="r : ${rankAOV}"
                                 th:value="${r}"
                                 th:text="${r}">
                         </option>
+                    </select>
+
+                    <select class="form-select d-none" id="rankFfSelect" name="rank">
+                        <option value="" disabled selected>Select rank</option>
+                        <option th:each="r : ${rankFF}"
+                                th:value="${r}"
+                                th:text="${r}">
+                        </option>
+                    </select>
+
+                    <select class="form-select" id="rankFallback" disabled>
+                        <option selected>Select game first</option>
                     </select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Status</label>
-                    <select class="form-select" th:field="*{status}">
+                    <select class="form-select" name="status" required>
                         <option value="ACTIVE">ACTIVE</option>
                         <option value="INACTIVE">INACTIVE</option>
                         <option value="HIDDEN">HIDDEN</option>
                     </select>
                 </div>
 
+                <div class="col-md-6">
+                    <label class="form-label">Main Image</label>
+                    <input type="file" class="form-control" name="imageFile" accept="image/*" required>
+                </div>
+
                 <div class="col-12">
                     <label class="form-label">Description</label>
-                    <textarea class="form-control" rows="3"
-                              th:field="*{description}"
-                              placeholder="Account details, champs, skins, notes..."></textarea>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Main Image Path</label>
-                    <input type="text" class="form-control"
-                           th:field="*{imageMain}" placeholder="e.g. img/aov/xxx.jpg">
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Duration (expired at)</label>
-                    <input type="datetime-local" class="form-control"
-                           th:field="*{duration}">
+                    <textarea class="form-control" rows="3" name="description"></textarea>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label">Skins</label>
-                    <input type="number" class="form-control"
-                           th:field="*{skin}" min="0">
+                    <input type="number" class="form-control" name="skin" min="0" value="0">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label">Level</label>
-                    <input type="number" class="form-control"
-                           th:field="*{lovel}" min="0">
+                    <input type="number" class="form-control" name="lovel" min="0" value="0">
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label">VIP / Items</label>
-                    <input type="number" class="form-control"
-                           th:field="*{items}" min="0">
+                    <label class="form-label">VIP</label>
+                    <input type="number" class="form-control" name="vip" min="0" value="0">
                 </div>
 
                 <div class="col-12 mt-3 d-flex justify-content-end gap-2">
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-plus-circle me-1"></i>Create
                     </button>
-                    <a th:href="@{/adminHome/gameAccountSelect}" class="btn btn-secondary">
+                    <a th:href="@{/adminHome/gameSelect}" class="btn btn-secondary">
                         Cancel
                     </a>
                 </div>
@@ -196,20 +242,35 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-
-
     document.addEventListener("DOMContentLoaded", function () {
-        const priceInput = document.querySelector('input[name="price"]');
-        if (priceInput) {
-            priceInput.addEventListener("input", function () {
-                const v = parseFloat(this.value);
-                if (isNaN(v) || v < 0) {
-                    this.value = "";
-                }
-            });
-        }
-    });
+        const gameSelect = document.getElementById("gameIdSelect");
+        const aovSel = document.getElementById("rankAovSelect");
+        const ffSel = document.getElementById("rankFfSelect");
+        const fallback = document.getElementById("rankFallback");
 
+        function showRankSelectByGameName() {
+            const selectedOption = gameSelect.options[gameSelect.selectedIndex];
+            const gameName = selectedOption ? selectedOption.textContent.trim().toUpperCase() : "";
+
+            aovSel.classList.add("d-none");
+            ffSel.classList.add("d-none");
+            fallback.classList.remove("d-none");
+
+            aovSel.selectedIndex = 0;
+            ffSel.selectedIndex = 0;
+
+            if (gameName === "AOV") {
+                fallback.classList.add("d-none");
+                aovSel.classList.remove("d-none");
+            } else if (gameName === "FREE FIRE" || gameName === "FREEFIRE") {
+                fallback.classList.add("d-none");
+                ffSel.classList.remove("d-none");
+            }
+        }
+
+        gameSelect.addEventListener("change", showRankSelectByGameName);
+        showRankSelectByGameName();
+    });
 </script>
 
 </body>

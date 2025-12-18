@@ -47,8 +47,6 @@
         private String email;
         public GameAccount() {
         }
-
-
         public GameAccount(UUID id, String gameAccount, String gamePassword, BigDecimal price, String description, LocalDateTime createdDate, String duration, LocalDateTime updatedDate, String classify, String status, Game game, String imageMain, String rank, int skin, int lovel, int items, String email) {
             this.gameAccountId = id;
             this.gameAccount = gameAccount;

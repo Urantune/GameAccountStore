@@ -27,10 +27,30 @@ public class VoucherService {
     }
 
 
+    public void delete(Voucher voucher){
+        voucherRepositories.delete(voucher);
+    }
+
+    public void deleteById(UUID id) {
+        Voucher voucher = voucherRepositories.findById(id)
+                .orElseThrow(() -> new RuntimeException("Voucher not found"));
+        voucherRepositories.delete(voucher);
+    }
+
+
     public Voucher getValidVoucher(String code) {
         if (code == null || code.isBlank()) {
             return null;
         }
         return voucherRepositories.findValidVoucher(code.trim(), new Date());
     }
+
+    public Voucher getValidVouchers(String code) {
+        Date now = new Date();
+
+        return voucherRepositories.findByVoucherNameIgnoreCaseAndStartDateBeforeAndEndDateAfter(code, now, now).orElse(null);
+    }
+
+
+
 }
