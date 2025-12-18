@@ -19,6 +19,8 @@ public interface RentAccountGameRepositories extends JpaRepository<RentAccountGa
 
     Optional<RentAccountGame> findFirstByCustomer_CustomerIdAndGameAccount_GameAccountId(UUID customerId, UUID gameAccountId);
 
+    void deleteByGameAccount_GameAccountId(UUID gameAccountId);
+    boolean existsByGameAccount_GameAccountId(UUID gameAccountId);
 
 
 }

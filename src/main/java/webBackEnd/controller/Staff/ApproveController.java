@@ -122,29 +122,39 @@ public class ApproveController {
         } catch (Exception ignored) {}
 
         if ("REJECT".equalsIgnoreCase(decision)) {
-            order.setStatus("REJECTED");
-            if (staff != null) order.setStaff(staff);
-            ordersService.save(order);
 
             Customer customer = (user != null)
                     ? customerService.findCustomerByUsername(user.getUsername())
                     : order.getCustomer();
 
+
             if (customer != null && order.getTotalPrice() != null) {
-                if (customer.getBalance() == null) customer.setBalance(BigDecimal.ZERO);
+                if (customer.getBalance() == null)
+                    customer.setBalance(BigDecimal.ZERO);
+
                 customer.setBalance(customer.getBalance().add(order.getTotalPrice()));
                 customerService.save(customer);
 
                 Transaction tx = new Transaction();
                 tx.setCustomer(customer);
                 tx.setAmount(order.getTotalPrice());
-                tx.setDescription("Refund orderId=" + order.getId());
+                tx.setDescription("REJECT");
                 tx.setDateCreated(LocalDateTime.now());
                 transactionService.save(tx);
             }
 
+
+            List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
+            for (OrderDetail od : orderDetails) {
+                orderDetailService.delete(od);
+            }
+
+
+            ordersService.delete(order);
+
             return "redirect:/staffHome/approveList";
         }
+
 
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
         if (orderDetails == null || orderDetails.isEmpty()) return "redirect:/staffHome/approve/" + orderId;

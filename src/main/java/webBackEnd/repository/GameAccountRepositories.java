@@ -92,4 +92,6 @@ LIMIT 1
 """)
     GameAccount findRandomByGameAndPrice(String game, BigDecimal price);
 
+
+    List<GameAccount> findByStatus(String status);
 }

@@ -19,7 +19,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/staffHome")
-public class RevenueController {
+public class StaffRevenueController {
 
     @Autowired
     private TransactionService transactionService;

@@ -51,23 +51,28 @@ public class SweepService {
     @Scheduled(fixedDelay = 120_000)
     @Transactional
     public void rent() {
-
         LocalDateTime now = LocalDateTime.now();
 
         List<RentAccountGame> rentAccountGames = rentAccountGameService.findAll();
 
-        for(RentAccountGame a : rentAccountGames){
-            if(now.minusDays(3).isBefore(a.getDateEnd())){
-            a.setStatus("EXPIRING");
+        for (RentAccountGame a : rentAccountGames) {
+            if (a.getDateEnd() == null) continue;
+
+            if (!now.isBefore(a.getDateEnd())) {
+                if (!"EXPIRED".equalsIgnoreCase(a.getStatus())) {
+                    a.setStatus("EXPIRED");
+                    rentAccountGameService.save(a);
+                }
+                continue;
             }
 
-            if(now.plusDays(3).isBefore(a.getDateEnd())){
-                rentAccountGameService.delete(a);
+            if (!now.isBefore(a.getDateEnd().minusDays(3))) {
+                if (!"EXPIRING".equalsIgnoreCase(a.getStatus())) {
+                    a.setStatus("EXPIRING");
+                    rentAccountGameService.save(a);
+                }
             }
         }
-
-
-
     }
 
 

@@ -72,4 +72,11 @@ public class GameAccountService {
     public List<GameAccount> getPrice200() {
         return gameAccountRepositories.findByPrice(BigDecimal.valueOf(200));
     }
+
+    public List<GameAccount> findExpired() {
+        return gameAccountRepositories.findByStatus("EXPIRED");
+    }
+
+
+
 }
