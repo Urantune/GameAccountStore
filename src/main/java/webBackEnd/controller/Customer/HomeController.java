@@ -189,7 +189,7 @@ public class HomeController {
 
             String keyword = search.trim().toLowerCase();
 
-            // 1️⃣ Search theo STT
+            // Search by STT
             if (keyword.matches("\\d+")) {
                 int stt = Integer.parseInt(keyword) - 1;
                 tableHistory =
@@ -197,7 +197,7 @@ public class HomeController {
                                 ? List.of(fullHistory.get(stt))
                                 : List.of();
             }
-            // 2️⃣ Search theo UUID
+            // Search by UUID
             else if (keyword.matches(
                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
 
@@ -207,7 +207,7 @@ public class HomeController {
                         .filter(t -> t.getCustomer().equals(id))
                         .toList();
             }
-            // 3️⃣ Search theo nội dung
+            // Search by nội dung
             else {
                 tableHistory = fullHistory.stream()
                         .filter(t ->

@@ -23,23 +23,29 @@
     </head>
 
     <body>
+    <!--Model Login Start-->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Hiển thị lỗi -->
                     <div id="loginError" class="alert alert-danger d-none"></div>
+                    <!--Khi submit form action gửi về SecurytiConfig kiểm tra-->
                     <form id="loginForm">
                         <div class="mb-3">
                             <label for="loginUsername" class="form-label">Username:</label>
-                            <input name="username" class="form-control" id="loginUsername" placeholder="Nhập username của bạn" required>
+                            <input name="username" class="form-control" id="loginUsername"
+                                   placeholder="Nhập username của bạn" required>
                         </div>
                         <div class="mb-3">
                             <label for="loginPassword" class="form-label">Mật khẩu:</label>
-                            <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
+                            <input type="password" name="password" class="form-control" id="loginPassword"
+                                   placeholder="Nhập mật khẩu" required>
                             <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
                         </div>
                         <div class="mb-3 form-check">
@@ -52,18 +58,24 @@
                     </form>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký ngay</a></p>
+                    <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký
+                        ngay</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+    <!--Model Login End-->
 
+
+    <!--Model Register Start-->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div th:if="${error}" class="alert alert-danger">
@@ -76,19 +88,24 @@
                     <form id="registerForm">
                         <div class="mb-3">
                             <label for="registerUsername" class="form-label">Tên người dùng:</label>
-                            <input name="username" type="text" class="form-control" id="registerUsername" placeholder="Nhập tên người dùng" th:value="${username}" required>
+                            <input name="username" type="text" class="form-control" id="registerUsername"
+                                   placeholder="Nhập tên người dùng" th:value="${username}" required>
                         </div>
                         <div class="mb-3">
                             <label for="registerEmail" class="form-label">Email:</label>
-                            <input name="email" type="email" class="form-control" id="registerEmail" placeholder="Nhập email" th:value="${email}" required>
+                            <input name="email" type="email" class="form-control" id="registerEmail"
+                                   placeholder="Nhập email" th:value="${email}" required>
                         </div>
+
                         <div class="mb-3">
                             <label for="registerPassword" class="form-label">Mật khẩu:</label>
-                            <input name="password" type="password" class="form-control" id="registerPassword" placeholder="Tạo mật khẩu" th:value="${password}" required>
+                            <input name="password" type="password" class="form-control" id="registerPassword"
+                                   placeholder="Tạo mật khẩu" th:value="${password}" required>
                         </div>
                         <div class="mb-3">
                             <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
-                            <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                            <input name="confirmPassword" type="password" class="form-control" id="confirmPassword"
+                                   placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
                         </div>
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
@@ -104,6 +121,7 @@
             </div>
         </div>
     </div>
+    <!--Model Register End-->
 
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -264,7 +282,7 @@
     <!-- Carousel End -->
     <section class="py-5">
         <div class="container px-4 px-lg-5 my-5">
-            <div class="row g-4"> th:action="@{/home/payment}" method="post" onsubmit="syncBefore
+            <div class="row g-4">
 
                 <!-- IMAGE -->
                 <div class="col-md-5">
@@ -314,6 +332,31 @@
                                        th:value="${skinMin} + ' - ' + ${skinMax} + ' skin'">
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold">Rank :</div>
+                            <div class="col-7">
+                                <input class="form-control"
+                                       readonly
+                                       value="Random">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold">Vip :</div>
+                            <div class="col-7">
+                                <input class="form-control"
+                                       readonly
+                                       value="Random">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-5 fw-bold">Level :</div>
+                            <div class="col-7">
+                                <input class="form-control"
+                                       readonly
+                                       value="Random">
+                            </div>
+                        </div>
+
                         <!-- VOUCHER -->
                         <div class="row mb-3">
                             <div class="col-5 fw-bold">Voucher:</div>
@@ -361,13 +404,42 @@
                         <input type="hidden" name="basePrice" id="basePriceHidden" th:value="${price}">
                         <input type="hidden" name="finalPrice" id="finalPriceHidden">
                         <input type="hidden" name="voucherCode" id="voucherHidden">
-                        <button class="btn btn-dark px-4">🛒 Mua ngay</button>
                     </form>
+                    <!-- ERROR MESSAGE -->
+                    <div th:if="${error}"
+                         class="alert alert-danger mt-3">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span th:text="${error}"></span>
+                    </div>
+
+                    <!-- SUCCESS MESSAGE -->
+                    <div th:if="${success}"
+                         class="alert alert-success mt-3">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span th:text="${success}"></span>
+                    </div>
+
+<!--                    <button th:if="${#authorization.expression('!isAuthenticated()')}"-->
+<!--                            class="btn btn-dark px-4"-->
+<!--                            onclick="alert('Bạn cần đăng nhập!')">-->
+<!--                        🛒 Mua ngay-->
+<!--                    </button>-->
+                    <div id="buyError" class="alert alert-danger d-none"></div>
+                    <div id="buySuccess" class="alert alert-success d-none"></div>
                     <button th:if="${#authorization.expression('!isAuthenticated()')}"
+                            type="button"
                             class="btn btn-dark px-4"
                             onclick="alert('Bạn cần đăng nhập!')">
                         🛒 Mua ngay
                     </button>
+                    <button th:if="${#authorization.expression('isAuthenticated()')}"
+                            type="button"
+                            class="btn btn-dark px-4"
+                            onclick="submitBuy()">
+                        🛒 Mua ngay
+                    </button>
+
+
                     <button th:if="${#authorization.expression('!isAuthenticated()')}"
                             class="btn btn-outline-dark px-4 ms-2"
                             onclick="alert('Bạn cần đăng nhập!')">
@@ -385,16 +457,73 @@
                                 onclick="addToCart(this)">
                             🛒 Thêm vào giỏ hàng
                         </button>
-
                     </form>
-
-
-
-
                 </div>
             </div>
         </div>
     </section>
+    <script>
+        function submitBuy() {
+            const errorBox = document.getElementById("buyError");
+            const successBox = document.getElementById("buySuccess");
+
+            // reset
+            errorBox.classList.add("d-none");
+            successBox.classList.add("d-none");
+
+            const formData = new FormData();
+            formData.append("gameId", document.querySelector("[name='gameId']").value);
+            formData.append(
+                "accountType",
+                document.querySelector("input[name='accountType']:checked").value
+            );
+            formData.append("rentMonth", document.getElementById("rentMonth")?.value || 0);
+            formData.append("basePrice", document.getElementById("basePriceHidden").value);
+            formData.append("finalPrice", getCurrentPrice());
+            formData.append(
+                "voucherCode",
+                document.getElementById("voucherHidden")?.value || ""
+            );
+
+            fetch("/home/payment", {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        errorBox.textContent = data.message;
+                        errorBox.classList.remove("d-none");
+
+                        // ⏱ auto hide after 3s
+                        setTimeout(() => {
+                            errorBox.classList.add("d-none");
+                        }, 3000);
+
+                    } else {
+                        successBox.textContent = data.message;
+                        successBox.classList.remove("d-none");
+
+                        // ⏱ auto hide after 3s
+                        setTimeout(() => {
+                            successBox.classList.add("d-none");
+                        }, 3000);
+                    }
+                })
+                .catch(() => {
+                    errorBox.textContent = "Có lỗi hệ thống, vui lòng thử lại";
+                    errorBox.classList.remove("d-none");
+
+                    setTimeout(() => {
+                        errorBox.classList.add("d-none");
+                    }, 3000);
+                });
+
+            return false; // ❗ quan trọng: chặn submit & reload
+        }
+    </script>
+
+
     <script>
         function getBasePrice() {
             return parseInt(document.getElementById('basePrice').value);
@@ -793,6 +922,167 @@
                 rentRow.classList.add("d-none");
             }
         }
+    </script>
+    <!--JS hiển thị lỗi Login-->
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById("loginUsername").value;
+            const password = document.getElementById("loginPassword").value;
+
+            fetch("/login", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        const err = await res.json();
+
+                        const errorBox = document.getElementById("loginError");
+                        errorBox.textContent = err.error;
+                        errorBox.classList.remove("d-none");
+
+                        // Ẩn lỗi sau 3 giây
+                        setTimeout(() => {
+                            errorBox.classList.add("d-none");
+                        }, 3000);
+
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data?.redirect) window.location.href = data.redirect;
+                })
+                .catch(err => console.error(err));
+        });
+    </script>
+
+
+    <!--JS chuyển đổi giữa các Model-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Khi bấm "Đăng ký ngay" trong Login → mở Register
+            document.querySelectorAll("[data-bs-target='#registerModal']").forEach(btn => {
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    const loginModalEl = document.getElementById("loginModal");
+                    const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+
+                    // Đợi login đóng xong mới mở register
+                    loginModalEl.addEventListener('hidden.bs.modal', function handler() {
+                        loginModalEl.removeEventListener('hidden.bs.modal', handler);
+                        const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                        registerModal.show();
+                    });
+
+                    loginModal.hide();
+                });
+            });
+
+            // Khi bấm "Đăng nhập ngay" trong Register → mở Login
+            document.querySelectorAll(".open-login").forEach(btn => {
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    const registerModalEl = document.getElementById("registerModal");
+                    const registerModal = bootstrap.Modal.getInstance(registerModalEl);
+
+                    // Đợi register đóng xong mới mở login
+                    registerModalEl.addEventListener('hidden.bs.modal', function handler() {
+                        registerModalEl.removeEventListener('hidden.bs.modal', handler);
+                        const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                        loginModal.show();
+                    });
+
+                    registerModal.hide();
+                });
+            });
+        });
+    </script>
+    <!--JS tắt Model Login mở Model Register-->
+    <script>
+        document.querySelectorAll(".open-register").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const loginEl = document.getElementById("loginModal");
+                const loginModal = bootstrap.Modal.getInstance(loginEl);
+
+                loginEl.addEventListener("hidden.bs.modal", function handler() {
+                    loginEl.removeEventListener("hidden.bs.modal", handler);
+
+                    const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+                    registerModal.show();
+                });
+
+                loginModal.hide();
+            });
+        });
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.location.search.includes("error=true")) {
+                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+            }
+        });
+    </script>
+
+    <script th:if="${openRegister}">
+        const registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+        registerModal.show();
+    </script>
+
+    <!--JS k reload form Đăng ký-->
+    <script>
+        document.getElementById("registerBtn").addEventListener("click", function () {
+            const formData = new FormData(document.getElementById("registerForm"));
+            fetch("/register", {
+                method: "POST",
+                body: new URLSearchParams(formData),
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const errorDiv = document.getElementById("registerError");
+                    const successDiv = document.getElementById("registerSuccess");
+
+                    if (data.error) {
+                        errorDiv.innerText = data.error;
+                        successDiv.innerText = "";
+                        // Reset password fields
+                        document.getElementById("registerPassword").value = "";
+                        document.getElementById("confirmPassword").value = "";
+
+                        // Ẩn lỗi sau 3 giây
+                        setTimeout(() => {
+                            errorDiv.innerText = "";
+                        }, 3000);
+                    } else if (data.success) {
+                        successDiv.innerText = data.success;
+                        errorDiv.innerText = "";
+                        document.getElementById("registerForm").reset();
+
+                        // Ẩn thông báo thành công sau 3 giây
+                        setTimeout(() => {
+                            successDiv.innerText = "";
+                        }, 3000);
+                    }
+                })
+                .catch(err => console.error(err));
+        });
     </script>
 
     <script th:src="@{/js/product.js}"></script>
