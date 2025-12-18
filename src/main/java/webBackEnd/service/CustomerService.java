@@ -25,7 +25,7 @@ public class CustomerService implements UserDetailsService {
     private CustomerRepositories customerRepositories;
 
     private static final LocalDateTime BLOCK_AFTER_DATE =
-            LocalDateTime.of(2025, 1, 1, 0, 0); // acc tạo  >= 01/01/2025 dc login
+            LocalDateTime.of(2025, 1, 1, 0, 0);
 
     @Override
     public UserDetails loadUserByUsername(String username)
