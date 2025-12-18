@@ -84,7 +84,7 @@ public class BuyController {
         }
 
         rs.put("valid", true);
-        rs.put("percent", v.getValue()); // sửa đúng field % của Voucher bạn
+        rs.put("percent", v.getValue());
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean logged = auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal());
@@ -212,6 +212,9 @@ public class BuyController {
             vc.setDateUsed(LocalDateTime.now());
             voucherCustomerRepository.save(vc);
         }
+
+
+
 
         // ===================== 9. SUCCESS =====================
         return ResponseEntity.ok(

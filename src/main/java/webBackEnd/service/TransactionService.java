@@ -60,5 +60,9 @@ public class TransactionService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    public List<Transaction> findByCustomer(Customer customer) {
+        return transactionRepositories.findByCustomer(customer);
+    }
+
 
 }

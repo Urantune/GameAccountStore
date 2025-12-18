@@ -15,6 +15,7 @@ import webBackEnd.repository.*;
 import webBackEnd.service.CartService;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameService;
+import webBackEnd.service.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,6 +35,9 @@ public class CartController {
     @Autowired private OrdersRepositories ordersRepositories;
     @Autowired private OrderDetailRepositories orderDetailRepositories;
     @Autowired private CustomerRepositories customerRepositories;
+
+    @Autowired
+    private TransactionService transactionService;
 
     @GetMapping("/cart")
     public String showCart(Model model) {
@@ -77,20 +81,18 @@ public class CartController {
         return "redirect:/home/cart";
     }
 
-    // ✅ PROCEED CHECKOUT: lưu Orders + nhiều OrderDetail, không voucher
+
     @PostMapping("/cart/checkout")
     @Transactional
     public String checkoutFromCart(
             @RequestParam(value = "selectedCartIds", required = false) List<UUID> selectedCartIds,
             RedirectAttributes ra
     ) {
-        // 1) validate tick
         if (selectedCartIds == null || selectedCartIds.isEmpty()) {
             ra.addFlashAttribute("errorPopup", "Vui lòng tick ít nhất 1 món để thanh toán");
             return "redirect:/home/cart";
         }
 
-        // 2) check login
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             ra.addFlashAttribute("errorPopup", "Bạn chưa đăng nhập");
@@ -103,14 +105,12 @@ public class CartController {
             return "redirect:/home/cart";
         }
 
-        // 3) load carts theo selected ids
         List<Cart> carts = selectedCartIds.stream()
                 .map(cartService::getCartById) // hoặc cartRepositories.findById(id).orElse(null)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        // 4) đảm bảo cart thuộc đúng customer
-        UUID cusId = customer.getCustomerId();
+         UUID cusId = customer.getCustomerId();
         carts = carts.stream()
                 .filter(c -> c.getCustomer() != null
                         && c.getCustomer().getCustomerId() != null
@@ -122,8 +122,7 @@ public class CartController {
             return "redirect:/home/cart";
         }
 
-        // 5) tính total
-        BigDecimal total = carts.stream()
+       BigDecimal total = carts.stream()
                 .map(c -> c.getPrice() != null ? c.getPrice() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -132,45 +131,42 @@ public class CartController {
             return "redirect:/home/cart";
         }
 
-        // 6) check số dư
         if (customer.getBalance() == null || customer.getBalance().compareTo(total) < 0) {
             ra.addFlashAttribute("errorPopup", "Số dư không đủ");
             return "redirect:/home/wallet";
         }
 
-        // 7) trừ tiền
-        customer.setBalance(customer.getBalance().subtract(total));
+       customer.setBalance(customer.getBalance().subtract(total));
         customerRepositories.save(customer);
 
-        // 8) tạo Orders
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(total);
         order.setStatus("WAIT");
-        // nếu Orders có createdDate thì set (tuỳ entity mày)
-        // order.setCreatedDate(LocalDateTime.now());
 
         Orders savedOrder = ordersRepositories.save(order);
 
-        // 9) tạo nhiều OrderDetail (gameAccount null, price = giá gốc, duration giữ nguyên)
-        for (Cart c : carts) {
+         for (Cart c : carts) {
             OrderDetail d = new OrderDetail();
             d.setOrder(savedOrder);
             d.setGame(c.getGame());
             d.setGameAccount(null);
             d.setDuration(c.getDuration() == null ? 0 : c.getDuration());
 
-            // price gốc: lấy từ cart.price (không voucher)
+
             BigDecimal p = c.getPrice() != null ? c.getPrice() : BigDecimal.ZERO;
             d.setPrice(p.intValue());
 
             orderDetailRepositories.save(d);
         }
 
-        // 10) xoá cart đã thanh toán
+
         for (Cart c : carts) {
             cartService.delete(c);
         }
+
+
+
 
         ra.addFlashAttribute("successPopup", "Thanh toán giỏ hàng thành công! Vui lòng chờ admin xử lý.");
         return "redirect:/home";
