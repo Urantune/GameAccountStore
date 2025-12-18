@@ -24,8 +24,7 @@ public class CustomerService implements UserDetailsService {
     @Autowired
     private CustomerRepositories customerRepositories;
 
-    private static final LocalDateTime BLOCK_AFTER_DATE =
-            LocalDateTime.of(2025, 1, 1, 0, 0);
+
 
     @Override           
     public UserDetails loadUserByUsername(String username)
@@ -35,11 +34,7 @@ public class CustomerService implements UserDetailsService {
                 .findByUsernameIgnoreCase(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
-        if (customer.getDateCreated().isBefore(BLOCK_AFTER_DATE)) {
-            throw new AccountExpiredException(
-                    "Account created after allowed date"
-            );
-        }
+
         if ("LOCKED".equalsIgnoreCase(customer.getStatus())) {
             throw new DisabledException("Account is locked");
         }
