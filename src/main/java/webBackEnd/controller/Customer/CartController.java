@@ -86,92 +86,88 @@ public class CartController {
 
 
     @PostMapping("/cart/checkout")
+    @ResponseBody
     @Transactional
-    public String checkoutFromCart(
-            @RequestParam(value = "selectedCartIds", required = false) List<UUID> selectedCartIds,
-            RedirectAttributes ra
+    public Map<String, Object> checkoutFromCart(
+            @RequestParam(value = "selectedCartIds", required = false) List<UUID> selectedCartIds
     ) {
+        Map<String, Object> res = new HashMap<>();
+
         if (selectedCartIds == null || selectedCartIds.isEmpty()) {
-            ra.addFlashAttribute("errorPopup", "Vui lòng tick ít nhất 1 món để thanh toán");
-            return "redirect:/home/cart";
+            res.put("success", false);
+            res.put("message", "Vui lòng tick ít nhất 1 món để thanh toán");
+            return res;
         }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-            ra.addFlashAttribute("errorPopup", "Bạn chưa đăng nhập");
-            return "redirect:/login";
+        if (auth == null || !auth.isAuthenticated()
+                || "anonymousUser".equals(auth.getPrincipal())) {
+            res.put("success", false);
+            res.put("message", "Bạn chưa đăng nhập");
+            return res;
         }
 
         Customer customer = customerService.findCustomerByUsername(auth.getName());
         if (customer == null) {
-            ra.addFlashAttribute("errorPopup", "Không tìm thấy khách hàng");
-            return "redirect:/home/cart";
+            res.put("success", false);
+            res.put("message", "Không tìm thấy khách hàng");
+            return res;
         }
 
         List<Cart> carts = selectedCartIds.stream()
-                .map(cartService::getCartById) // hoặc cartRepositories.findById(id).orElse(null)
+                .map(cartService::getCartById)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-         UUID cusId = customer.getCustomerId();
-        carts = carts.stream()
                 .filter(c -> c.getCustomer() != null
-                        && c.getCustomer().getCustomerId() != null
-                        && c.getCustomer().getCustomerId().equals(cusId))
-                .collect(Collectors.toList());
+                        && c.getCustomer().getCustomerId().equals(customer.getCustomerId()))
+                .toList();
 
         if (carts.isEmpty()) {
-            ra.addFlashAttribute("errorPopup", "Giỏ hàng không hợp lệ");
-            return "redirect:/home/cart";
+            res.put("success", false);
+            res.put("message", "Giỏ hàng không hợp lệ");
+            return res;
         }
 
-       BigDecimal total = carts.stream()
+        BigDecimal total = carts.stream()
                 .map(c -> c.getPrice() != null ? c.getPrice() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (total.compareTo(BigDecimal.ZERO) <= 0) {
-            ra.addFlashAttribute("errorPopup", "Tổng tiền không hợp lệ");
-            return "redirect:/home/cart";
+            res.put("success", false);
+            res.put("message", "Tổng tiền không hợp lệ");
+            return res;
         }
 
-        if (customer.getBalance() == null || customer.getBalance().compareTo(total) < 0) {
-            ra.addFlashAttribute("errorPopup", "Số dư không đủ");
-            return "redirect:/home/wallet";
+        if (customer.getBalance() == null
+                || customer.getBalance().compareTo(total) < 0) {
+            res.put("success", false);
+            res.put("message", "Số dư không đủ");
+            return res;
         }
 
-       customer.setBalance(customer.getBalance().subtract(total));
+        // ===== THANH TOÁN =====
+        customer.setBalance(customer.getBalance().subtract(total));
         customerRepositories.save(customer);
 
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(total);
         order.setStatus("WAIT");
-
         Orders savedOrder = ordersRepositories.save(order);
 
-         for (Cart c : carts) {
+        for (Cart c : carts) {
             OrderDetail d = new OrderDetail();
             d.setOrder(savedOrder);
             d.setGame(c.getGame());
-            d.setGameAccount(null);
             d.setDuration(c.getDuration() == null ? 0 : c.getDuration());
-
-
-            BigDecimal p = c.getPrice() != null ? c.getPrice() : BigDecimal.ZERO;
-            d.setPrice(p.intValue());
-
+            d.setPrice(c.getPrice().intValue());
             orderDetailRepositories.save(d);
         }
 
+        carts.forEach(cartService::delete);
 
-        for (Cart c : carts) {
-            cartService.delete(c);
-        }
-
-
-
-
-        ra.addFlashAttribute("successPopup", "Thanh toán giỏ hàng thành công! Vui lòng chờ admin xử lý.");
-        return "redirect:/home";
+        res.put("success", true);
+        res.put("message", "Thanh toán giỏ hàng thành công! Vui lòng chờ admin xử lý.");
+        return res;
     }
+
 }
