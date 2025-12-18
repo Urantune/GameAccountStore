@@ -86,7 +86,7 @@ public class StaffRevenueController {
         XSSFWorkbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Revenue");
 
-        /* ================= STYLE ================= */
+         
         DataFormat df = workbook.createDataFormat();
 
         CellStyle titleStyle = workbook.createCellStyle();
@@ -121,7 +121,7 @@ public class StaffRevenueController {
 
         int rowIdx = 0;
 
-        /* ================= TITLE ================= */
+         
         Row titleRow = sheet.createRow(rowIdx++);
         Cell titleCell = titleRow.createCell(0);
         titleCell.setCellValue("REVENUE REPORT");
@@ -137,7 +137,7 @@ public class StaffRevenueController {
 
         rowIdx += 2;
 
-        /* ================= TABLE ================= */
+         
         Row headerRow = sheet.createRow(rowIdx++);
         String[] headers = {"Customer", "Description", "Amount", "Date"};
         for (int i = 0; i < headers.length; i++) {
@@ -167,7 +167,7 @@ public class StaffRevenueController {
 
         for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
 
-        /* ================= CHART SHEET ================= */
+         
         XSSFSheet chartSheet = workbook.createSheet("Chart");
 
         Row h = chartSheet.createRow(0);

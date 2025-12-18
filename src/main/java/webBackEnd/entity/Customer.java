@@ -56,20 +56,17 @@ public class Customer {
         this.balance = balance;
     }
 
-    // Hàm tự set ngày khi tạo mới
     @PrePersist
     protected void onCreate() {
         this.dateCreated = LocalDateTime.now();
         this.dateUpdated = LocalDateTime.now();
     }
 
-    // Hàm tự cập nhật ngày khi update
     @PreUpdate
     protected void onUpdate() {
         this.dateUpdated = LocalDateTime.now();
     }
 
-    // Getter - Setter
     public UUID getCustomerId() {
         return customerId;
     }

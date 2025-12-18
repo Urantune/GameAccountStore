@@ -115,7 +115,6 @@ public class BuyController {
             @RequestParam(required = false) String voucherCode
     ) {
 
-        // ===================== 1. CHECK LOGIN =====================
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()
                 || auth.getPrincipal().equals("anonymousUser")) {
@@ -129,7 +128,6 @@ public class BuyController {
 
         Customer customer = customerService.findCustomerByUsername(auth.getName());
 
-        // ===================== 2. VALIDATE INPUT =====================
         if (finalPrice == null || finalPrice.compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.badRequest()
                     .body(Map.of(
@@ -146,7 +144,6 @@ public class BuyController {
                     ));
         }
 
-        // ===================== 3. XỬ LÝ VOUCHER =====================
         Voucher usedVoucher = null;
 
         if (voucherCode != null && !voucherCode.isBlank()) {
@@ -169,7 +166,6 @@ public class BuyController {
             }
         }
 
-        // ===================== 4. CHECK SỐ DƯ =====================
         if (customer.getBalance().compareTo(finalPrice) < 0) {
             return ResponseEntity.badRequest()
                     .body(Map.of(
@@ -178,11 +174,9 @@ public class BuyController {
                     ));
         }
 
-        // ===================== 5. TRỪ TIỀN =====================
         customer.setBalance(customer.getBalance().subtract(finalPrice));
         customerRepositories.save(customer);
 
-        // ===================== 6. LƯU ORDERS =====================
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(finalPrice);
@@ -194,7 +188,6 @@ public class BuyController {
 
         Orders savedOrder = ordersRepositories.save(order);
 
-        // ===================== 7. LƯU ORDER DETAIL =====================
         OrderDetail detail = new OrderDetail();
         detail.setGame(gameService.findById(gameId));
         detail.setOrder(savedOrder);
@@ -204,7 +197,6 @@ public class BuyController {
 
         orderDetailRepositories.save(detail);
 
-        // ===================== 8. LƯU VOUCHER CUSTOMER =====================
         if (usedVoucher != null) {
             VoucherCustomer vc = new VoucherCustomer();
             vc.setCustomer(customer);
@@ -213,10 +205,6 @@ public class BuyController {
             voucherCustomerRepository.save(vc);
         }
 
-
-
-
-        // ===================== 9. SUCCESS =====================
         return ResponseEntity.ok(
                 Map.of(
                         "success", true,

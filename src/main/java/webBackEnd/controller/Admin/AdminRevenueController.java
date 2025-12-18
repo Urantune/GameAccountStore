@@ -46,7 +46,6 @@ public class AdminRevenueController {
         model.addAttribute("totalRefund", totalRefund);
         model.addAttribute("netRevenue", totalIncome.subtract(totalRefund));
 
-        // ✅ thêm 2 list để JS ăn thẳng
         model.addAttribute("revenueLabels", new ArrayList<>(revenueByDate.keySet()));
         model.addAttribute("revenueData", revenueByDate.values().stream()
                 .map(v -> v == null ? 0.0 : v.doubleValue())

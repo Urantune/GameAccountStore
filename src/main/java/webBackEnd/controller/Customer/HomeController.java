@@ -171,7 +171,6 @@ public class HomeController {
         Customer customer =
                 customerService.findCustomerByUsername(principal.getName());
 
-        // 🔹 luôn lấy full list để xử lý STT
         List<Transaction> fullHistory =
                 transactionService.getTransactionHistory(customer);
 
@@ -184,7 +183,6 @@ public class HomeController {
 
             String keyword = search.trim().toLowerCase();
 
-            // Search by STT
             if (keyword.matches("\\d+")) {
                 int stt = Integer.parseInt(keyword) - 1;
                 tableHistory =
@@ -192,7 +190,7 @@ public class HomeController {
                                 ? List.of(fullHistory.get(stt))
                                 : List.of();
             }
-            // Search by UUID
+
             else if (keyword.matches(
                     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) {
 
@@ -202,7 +200,7 @@ public class HomeController {
                         .filter(t -> t.getCustomer().equals(id))
                         .toList();
             }
-            // Search by nội dung
+
             else {
                 tableHistory = fullHistory.stream()
                         .filter(t ->
@@ -213,8 +211,6 @@ public class HomeController {
             }
         }
 
-
-        // TÍNH TIỀN
         BigDecimal totalDeposit = BigDecimal.ZERO;
         BigDecimal totalSpent = BigDecimal.ZERO;
 

@@ -117,7 +117,6 @@ public class GameController {
                 break;
         }
 
-        // Random Level & VIP
         int randomLevel = (int) (Math.random() * 50) + 1;
         int randomVip = (int) (Math.random() * 10) + 1;
 

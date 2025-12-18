@@ -37,14 +37,12 @@ public class APIvoucher {
         GameAccount game = gameAccountService.getGameById(gameId);
         BigDecimal totalPrice = game.getPrice();
 
-        //giảm giá gói
         if (packageValues.contains("2 Tháng")) {
             totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.9));
         } else if (packageValues.contains("3 Tháng")) {
             totalPrice = totalPrice.multiply(BigDecimal.valueOf(0.85));
         }
 
-        //giảm giá voucher
         if (voucherCode != null && !voucherCode.isBlank()) {
             Voucher voucher = voucherService.getValidVoucher(voucherCode);
             if (voucher == null) {
