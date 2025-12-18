@@ -27,6 +27,17 @@ public class VoucherService {
     }
 
 
+    public void delete(Voucher voucher){
+        voucherRepositories.delete(voucher);
+    }
+
+    public void deleteById(UUID id) {
+        Voucher voucher = voucherRepositories.findById(id)
+                .orElseThrow(() -> new RuntimeException("Voucher not found"));
+        voucherRepositories.delete(voucher);
+    }
+
+
     public Voucher getValidVoucher(String code) {
         if (code == null || code.isBlank()) {
             return null;

@@ -28,4 +28,5 @@ public interface VoucherRepositories extends JpaRepository<Voucher, UUID> {
             Date endDate
     );
 
+
 }

@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.Staff;
 import webBackEnd.entity.Voucher;
 import webBackEnd.service.*;
@@ -39,8 +40,6 @@ public class AdminVoucherController {
 
     @Autowired
     private PathCheck pathCheck;
-
-
 
 
 
@@ -133,7 +132,19 @@ public class AdminVoucherController {
     }
 
 
+    @PostMapping("/adminHome/deleteVoucher/{id}")
+    public String deleteVoucher(@PathVariable UUID id,
+                                RedirectAttributes ra) {
+        System.out.println(id);
+        try {
+            voucherService.delete(voucherService.getVoucherById(id));
 
+            ra.addFlashAttribute("success", "Xóa voucher thành công");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Không thể xóa voucher");
+        }
+        return "redirect:/adminHome/listVoucher";
+    }
 
 
 
