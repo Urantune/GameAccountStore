@@ -1,7 +1,6 @@
 package webBackEnd.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import webBackEnd.entity.Cart;
 import webBackEnd.entity.Customer;
@@ -37,6 +36,7 @@ public interface CartRepositories extends JpaRepository<Cart, UUID> {
 
 
     Optional<Cart> findTopByCustomerAndGameOrderByCreatedAtDesc(Customer customer, Game game);
+
 
 
 

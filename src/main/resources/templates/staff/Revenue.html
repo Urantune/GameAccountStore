@@ -11,56 +11,27 @@
 
     <style>
         body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
-
-        /* SIDEBAR */
-        .sidebar{
-            width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0;
-            color:#ecf0f1;
-        }
-        .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
-        .sidebar a{ display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:.2s; }
-        .sidebar a i{ width:22px; }
-        .sidebar a:hover{ background:#1abb9c; }
-
-        /* CONTENT */
         .content { margin-left:260px; padding:30px; }
-
         .card-box {
             background:#fff; border-radius:12px; padding:20px;
             box-shadow:0 4px 10px rgba(0,0,0,0.08);
         }
-        .stat { text-align:center; }
+        .stat {
+            text-align:center;
+        }
         .stat h5 { color:#888; }
         .stat h3 { font-weight:700; }
         .income { color:#1abb9c; }
         .refund { color:#e74c3c; }
-
-        /* fix chart height */
-        .chart-wrap { height: 320px; }
     </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
-    <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a th:href="@{/staffHome/approveList}"><i class="bi bi-bag-check-fill"></i> Manage Orders</a>
-    <a th:href="@{/staffHome/rentApproveList}"><i class="bi bi-clock-history"></i> Rental Orders</a>
-    <a th:href="@{/staffHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
-    <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
-</div>
-
 <div class="content">
-
-    <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
-        <h4 class="mb-0"><i class="bi bi-graph-up-arrow me-2"></i>Revenue Overview</h4>
-        <a th:href="@{/staffHome}" class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
-        </a>
-    </div>
-
+    <h4 class="mb-4">
+        <i class="bi bi-graph-up-arrow me-2"></i>Revenue Overview
+    </h4>
     <!-- STAT -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
@@ -84,15 +55,28 @@
             </div>
         </div>
     </div>
-
     <!-- CHART -->
-    <div class="card-box mb-4 chart-wrap">
-        <canvas id="revenueChart"></canvas>
+    <div class="card-box mb-4">
+        <canvas id="revenueChart" height="120"></canvas>
     </div>
+    <!-- EXPORT BUTTON -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">
+            <i class="bi bi-list-ul me-2"></i>Transaction List
+        </h5>
 
+        <div class="d-flex gap-2">
+            <!-- Export Excel -->
+            <a href="/staffHome/revenue/export/excel"
+               class="btn btn-sm btn-outline-success">
+                <i class="bi bi-file-earmark-excel me-1"></i>
+                Xuất Excel
+            </a>
+        </div>
+    </div>
     <!-- TABLE -->
     <div class="card-box table-responsive">
-        <table class="table table-hover align-middle mb-0">
+        <table class="table table-hover align-middle">
             <thead>
             <tr>
                 <th>#</th>
@@ -109,26 +93,26 @@
                 <td th:text="${t.description}"></td>
                 <td class="text-end"
                     th:classappend="${t.amount.signum() > 0 ? 'income' : 'refund'}"
-                    th:text="${#numbers.formatDecimal(t.amount,1,'COMMA',0,'POINT')}"></td>
-                <td th:text="${t.dateCreated != null ? #temporals.format(t.dateCreated,'HH:mm dd/MM/yyyy') : 'N/A'}"></td>
-            </tr>
-
-            <tr th:if="${#lists.isEmpty(transactions)}">
-                <td colspan="5" class="text-center text-muted py-4">No transactions found.</td>
+                    th:text="${#numbers.formatDecimal(t.amount,1,'COMMA',0,'POINT')}">
+                </td>
+                <td th:text="${#temporals.format(t.dateCreated,'HH:mm dd/MM/yyyy')}"></td>
             </tr>
             </tbody>
         </table>
     </div>
-
 </div>
 
 <script th:inline="javascript">
+    // Thymeleaf inline: phải dùng /*[[...]]*/ để ra đúng JS array
     const labels = /*[[${revenueLabels}]]*/ [];
     const data   = /*[[${revenueData}]]*/ [];
 
     const ctx = document.getElementById('revenueChart');
 
-    if (window.__revenueChart) window.__revenueChart.destroy();
+    // Nếu reload lại trang nhiều lần tránh chart chồng (optional)
+    if (window.__revenueChart) {
+        window.__revenueChart.destroy();
+    }
 
     window.__revenueChart = new Chart(ctx, {
         type: 'bar',
@@ -145,7 +129,10 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 900, easing: 'easeOutQuart' },
+            animation: {
+                duration: 900,
+                easing: 'easeOutQuart'
+            },
             plugins: {
                 legend: { display: false },
                 tooltip: {
@@ -158,16 +145,21 @@
                 }
             },
             scales: {
-                x: { grid: { display: false }, ticks: { maxRotation: 0 } },
+                x: {
+                    grid: { display: false },
+                    ticks: { maxRotation: 0 }
+                },
                 y: {
                     beginAtZero: true,
-                    ticks: { callback: (value) => Number(value).toLocaleString() + ' đ' }
+                    ticks: {
+                        callback: (value) => Number(value).toLocaleString() + ' đ'
+                    }
                 }
             }
         }
     });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
