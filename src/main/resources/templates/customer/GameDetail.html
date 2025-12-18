@@ -321,8 +321,8 @@
                                 Thông tin tài khoản
                             </a>
                         </li>
+                    </ul>
                 </div>
-                </ul>
             </div>
         </div>
     </nav>
@@ -438,6 +438,14 @@
                                 </label>
                             </div>
                         </div>
+                        <input type="radio" name="accountType" value="permanent"
+                               onclick="toggleRent(false)">
+                        Vĩnh viễn
+
+                        <input type="radio" name="accountType" value="rent"
+                               onclick="toggleRent(true)">
+                        Thuê
+
                         <!-- RENT PACKAGE -->
                         <div class="row mb-3 d-none" id="rentPackage">
                             <div class="col-5 fw-bold">Gói thuê:</div>
@@ -516,8 +524,6 @@
                         <input type="hidden" id="voucherPercent" value="0">
 
                         <input type="hidden" id="basePrice" th:value="${price}">
-                        <input type="radio" name="accountType" value="permanent" checked>
-                        <input type="radio" name="accountType" value="rent">
 
                     </div>
                     <!-- ACTION -->
@@ -599,12 +605,38 @@
             errorBox.classList.add("d-none");
             successBox.classList.add("d-none");
 
+            // ===== CHECK: CHƯA CHỌN LOẠI TÀI KHOẢN =====
+            const accountTypeEl = document.querySelector("input[name='accountType']:checked");
+            if (!accountTypeEl) {
+                errorBox.textContent = "Vui lòng chọn loại tài khoản";
+                errorBox.classList.remove("d-none");
+
+                setTimeout(() => {
+                    errorBox.classList.add("d-none");
+                }, 3000);
+                return false; // ❌ chặn submit
+            }
+
+            const accountType = accountTypeEl.value;
+
+            // ===== CHECK: THUÊ NHƯNG CHƯA CHỌN GÓI =====
+            if (accountType === "rent") {
+                const rentMonth = document.getElementById("rentMonth")?.value;
+                if (!rentMonth || rentMonth <= 0) {
+                    errorBox.textContent = "Vui lòng chọn gói thuê";
+                    errorBox.classList.remove("d-none");
+
+                    setTimeout(() => {
+                        errorBox.classList.add("d-none");
+                    }, 3000);
+                    return false; // ❌ chặn submit
+                }
+            }
+
+            // ===== BUILD FORM DATA =====
             const formData = new FormData();
             formData.append("gameId", document.querySelector("[name='gameId']").value);
-            formData.append(
-                "accountType",
-                document.querySelector("input[name='accountType']:checked").value
-            );
+            formData.append("accountType", accountType);
             formData.append("rentMonth", document.getElementById("rentMonth")?.value || 0);
             formData.append("basePrice", document.getElementById("basePriceHidden").value);
             formData.append("finalPrice", getCurrentPrice());
@@ -613,6 +645,7 @@
                 document.getElementById("voucherHidden")?.value || ""
             );
 
+            // ===== CALL API =====
             fetch("/home/payment", {
                 method: "POST",
                 body: formData
@@ -623,16 +656,13 @@
                         errorBox.textContent = data.message;
                         errorBox.classList.remove("d-none");
 
-                        // ⏱ auto hide after 3s
                         setTimeout(() => {
                             errorBox.classList.add("d-none");
                         }, 3000);
-
                     } else {
                         successBox.textContent = data.message;
                         successBox.classList.remove("d-none");
 
-                        // ⏱ auto hide after 3s
                         setTimeout(() => {
                             successBox.classList.add("d-none");
                         }, 3000);
@@ -647,9 +677,10 @@
                     }, 3000);
                 });
 
-            return false; // ❗ quan trọng: chặn submit & reload
+            return false; // ❗ chặn reload
         }
     </script>
+y
 
 
     <script>
