@@ -44,12 +44,13 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
-    <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a th:href="@{/staffHome/approveList}"><i class="bi bi-bag-check-fill"></i> Manage Orders</a>
-    <a th:href="@{/staffHome/rentApproveList}"><i class="bi bi-clock-history"></i> Rental Orders</a>
-    <a th:href="@{/staffHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
-    <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
+    <h5><i class="bi bi-gear-fill me-2"></i>Admin Panel</h5>
+    <a th:href="@{/adminHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a th:href="@{/adminHome/userList}"><i class="bi bi-people-fill"></i> Users</a>
+    <a th:href="@{/adminHome/gameSelect}"><i class="bi bi-controller"></i> Game Accounts</a>
+    <a th:href="@{/adminHome/listVoucher}"><i class="bi bi-ticket-perforated"></i> Vouchers</a>
+    <a th:href="@{/adminHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
+    <a th:href="@{/adminHome/shift}"><i class="bi bi-calendar2-week-fill"></i> Shift Management</a>
 </div>
 
 <div class="content">
