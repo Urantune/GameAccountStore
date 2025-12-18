@@ -27,7 +27,7 @@ public class CustomerService implements UserDetailsService {
     private static final LocalDateTime BLOCK_AFTER_DATE =
             LocalDateTime.of(2025, 1, 1, 0, 0);
 
-    @Override
+    @Override           
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
 
