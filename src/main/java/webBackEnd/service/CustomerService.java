@@ -42,6 +42,10 @@ public class CustomerService implements UserDetailsService {
         return new CustomUserDetails(customer);
     }
 
+    public Customer findByEmail(String email) {
+        return customerRepositories.findByEmail(email);
+    }
+
 
 
     public List<Customer> findAllCustomers() {

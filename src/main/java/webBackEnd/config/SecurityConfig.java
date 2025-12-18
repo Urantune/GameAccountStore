@@ -49,6 +49,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/**").permitAll()
+
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
                         "/bestseller/**", "/assets/**", "/lib/**",
@@ -56,6 +57,8 @@ public class SecurityConfig {
                 ).permitAll()
 
                 .requestMatchers("/register", "/register/**").permitAll()
+
+                .requestMatchers("/veryAccount/**").permitAll()
 
                 .requestMatchers(HttpMethod.GET, "/home", "/home/").permitAll()
                 .requestMatchers(HttpMethod.GET, "/home/gameDetail/**").permitAll()
@@ -161,7 +164,6 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .permitAll()
         );
-
 
         return http.build();
     }

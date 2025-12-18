@@ -147,5 +147,31 @@ public class SweepService {
         }
     }
 
+    @Scheduled(fixedDelay = 60_000)
+    @Transactional
+    public void revertChangePasswordAfter15m() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Customer> customers = customerService.findAllCustomers();
+        for (Customer c : customers) {
+
+            if (c.getStatus() == null) continue;
+
+
+            if (!c.getStatus().startsWith("CHANGE")) continue;
+
+
+            if (c.getDateUpdated() == null) continue;
+
+
+            if (c.getDateUpdated().plusMinutes(15).isBefore(now)) {
+                c.setStatus("ACTIVE");
+                c.setDateUpdated(now);
+                customerService.save(c);
+            }
+        }
+    }
+
+
 
 }

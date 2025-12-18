@@ -7,6 +7,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,6 +58,8 @@
     </div>
 </div>
 
+
+
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -72,7 +77,7 @@
                     <div class="mb-3">
                         <label for="loginPassword" class="form-label">Mật khẩu:</label>
                         <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
-                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                        <a href="#" id="openForgotModal" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -89,6 +94,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -136,6 +142,41 @@
         </div>
     </div>
 </div>
+
+
+
+<div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="forgotModalLabel">Quên mật khẩu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="forgotMsg" class="alert d-none"></div>
+
+                <form id="forgotForm">
+                    <div class="mb-3">
+                        <label for="forgotEmail" class="form-label">Nhập email đã đăng ký:</label>
+                        <input type="email" class="form-control" id="forgotEmail" name="email" placeholder="example@gmail.com" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Gửi email đổi mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none" id="backToLogin">Quay lại đăng nhập</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
     <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
@@ -690,5 +731,100 @@
 </script>
 
 <script th:src="@{/js/product.js}"></script>
+
+
+<script>
+    function getCsrf() {
+        const tokenEl = document.querySelector('meta[name="_csrf"]');
+        const headerEl = document.querySelector('meta[name="_csrf_header"]');
+        const token = tokenEl ? tokenEl.getAttribute('content') : null;
+        const header = headerEl ? headerEl.getAttribute('content') : null;
+        return { token, header };
+    }
+
+    function showForgotMsg(type, text) {
+        const box = document.getElementById("forgotMsg");
+        box.classList.remove("d-none", "alert-danger", "alert-success", "alert-warning");
+        box.classList.add(type === "success" ? "alert-success" : "alert-danger");
+        box.textContent = text;
+        setTimeout(() => box.classList.add("d-none"), 3500);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const openForgot = document.getElementById("openForgotModal");
+        const backToLogin = document.getElementById("backToLogin");
+
+        const loginEl = document.getElementById("loginModal");
+        const forgotEl = document.getElementById("forgotModal");
+
+        if (openForgot) {
+            openForgot.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const loginModal = bootstrap.Modal.getInstance(loginEl);
+                loginEl.addEventListener("hidden.bs.modal", function handler() {
+                    loginEl.removeEventListener("hidden.bs.modal", handler);
+                    const forgotModal = new bootstrap.Modal(forgotEl);
+                    forgotModal.show();
+                });
+
+                if (loginModal) loginModal.hide();
+                else new bootstrap.Modal(loginEl).hide();
+            });
+        }
+
+        if (backToLogin) {
+            backToLogin.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const forgotModal = bootstrap.Modal.getInstance(forgotEl);
+                forgotEl.addEventListener("hidden.bs.modal", function handler() {
+                    forgotEl.removeEventListener("hidden.bs.modal", handler);
+                    const loginModal = new bootstrap.Modal(loginEl);
+                    loginModal.show();
+                });
+
+                if (forgotModal) forgotModal.hide();
+                else new bootstrap.Modal(forgotEl).hide();
+            });
+        }
+
+        const forgotForm = document.getElementById("forgotForm");
+        if (forgotForm) {
+            forgotForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const email = document.getElementById("forgotEmail").value.trim();
+                if (!email) return;
+
+                const { token, header } = getCsrf();
+                const headers = {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest"
+                };
+                if (token && header) headers[header] = token;
+
+                fetch("/home/forgot-password", {
+                    method: "POST",
+                    headers,
+                    body: `email=${encodeURIComponent(email)}`
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.error) {
+                            showForgotMsg("error", data.error);
+                        } else if (data.success) {
+                            showForgotMsg("success", data.success);
+                            forgotForm.reset();
+                        } else {
+                            showForgotMsg("error", "Có lỗi xảy ra. Vui lòng thử lại.");
+                        }
+                    })
+                    .catch(() => showForgotMsg("error", "Không thể kết nối server. Vui lòng thử lại."));
+            });
+        }
+    });
+</script>
+
 </body>
 </html>
