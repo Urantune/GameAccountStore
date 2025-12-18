@@ -127,9 +127,44 @@ public class CartController {
             return res;
         }
 
-        BigDecimal total = carts.stream()
-                .map(c -> c.getPrice() != null ? c.getPrice() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Cart c : carts) {
+            BigDecimal basePrice = (c.getPrice() != null) ? c.getPrice() : BigDecimal.ZERO;
+            if (basePrice.compareTo(BigDecimal.ZERO) <= 0) {
+                res.put("success", false);
+                res.put("message", "Có sản phẩm trong giỏ có giá không hợp lệ");
+                return res;
+            }
+
+            int duration = (c.getDuration() == null) ? 0 : c.getDuration();
+            if (duration < 0 || duration > 3) {
+                res.put("success", false);
+                res.put("message", "Có sản phẩm có duration không hợp lệ (chỉ 0-3)");
+                return res;
+            }
+
+            BigDecimal itemTotal;
+
+            if (duration == 0) {
+
+                itemTotal = basePrice;
+            } else {
+
+                BigDecimal months = BigDecimal.valueOf(duration);
+                BigDecimal raw = basePrice.multiply(months);
+
+                BigDecimal rate = BigDecimal.ONE;       // 1.00
+                if (duration == 2) rate = new BigDecimal("0.90");
+                if (duration == 3) rate = new BigDecimal("0.85");
+
+                itemTotal = raw.multiply(rate);
+            }
+
+            itemTotal = itemTotal.setScale(0, java.math.RoundingMode.HALF_UP);
+            total = total.add(itemTotal);
+        }
 
         if (total.compareTo(BigDecimal.ZERO) <= 0) {
             res.put("success", false);
@@ -137,14 +172,13 @@ public class CartController {
             return res;
         }
 
-        if (customer.getBalance() == null
-                || customer.getBalance().compareTo(total) < 0) {
+        if (customer.getBalance() == null || customer.getBalance().compareTo(total) < 0) {
             res.put("success", false);
             res.put("message", "Số dư không đủ");
             return res;
         }
 
-        // ===== THANH TOÁN =====
+
         customer.setBalance(customer.getBalance().subtract(total));
         customerRepositories.save(customer);
 
@@ -154,12 +188,16 @@ public class CartController {
         order.setStatus("WAIT");
         Orders savedOrder = ordersRepositories.save(order);
 
+
         for (Cart c : carts) {
+            BigDecimal basePrice = (c.getPrice() != null) ? c.getPrice() : BigDecimal.ZERO;
+            int duration = (c.getDuration() == null) ? 0 : c.getDuration();
+
             OrderDetail d = new OrderDetail();
             d.setOrder(savedOrder);
             d.setGame(c.getGame());
-            d.setDuration(c.getDuration() == null ? 0 : c.getDuration());
-            d.setPrice(c.getPrice().intValue());
+            d.setDuration(duration);
+            d.setPrice(basePrice.setScale(0, java.math.RoundingMode.HALF_UP).intValue());
             orderDetailRepositories.save(d);
         }
 
@@ -169,5 +207,6 @@ public class CartController {
         res.put("message", "Thanh toán giỏ hàng thành công! Vui lòng chờ admin xử lý.");
         return res;
     }
+
 
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import webBackEnd.entity.Game;
 import webBackEnd.entity.GameAccount;
+import webBackEnd.entity.Type;
 import webBackEnd.service.*;
 import webBackEnd.successfullyDat.PathCheck;
 
@@ -88,6 +89,16 @@ public class AdminGameAccountController {
         if (game == null) {
             throw new IllegalArgumentException("Game not found with id: " + gameId);
         }
+        Type type;
+        if ("AOV".equalsIgnoreCase(game.getGameName())) {
+            type = typeService.findByTypeName("MOBA");
+        } else {
+            type = typeService.findByTypeName("BATTLE ROYALE");
+        }
+        if (type != null) {
+            game.setTypeId(type);
+        }
+
 
         GameAccount ga = new GameAccount();
         ga.setGame(game);

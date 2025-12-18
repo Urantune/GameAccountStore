@@ -688,30 +688,30 @@ y
             return parseInt(document.getElementById('basePrice').value);
         }
         function getCurrentPrice() {
-            const accTypeRadio = document.querySelector(
-                'input[name="accountType"]:checked'
-            );
-            // 🔥 FIX: nếu chưa chọn thì mặc định permanent
+            const accTypeRadio = document.querySelector('input[name="accountType"]:checked');
             const accType = accTypeRadio ? accTypeRadio.value : 'permanent';
 
-            let price = getBasePrice();
-            // RENT
-            if (accType === 'rent') {
-                const month = document.getElementById('rentMonth')?.value;
-                if (month === '2') price *= 0.9;
-                if (month === '3') price *= 0.85;
-            }
-            // VOUCHER
-            const percent = parseInt(
-                document.getElementById('voucherPercent').value || 0
-            );
+            const base = getBasePrice();
+            let price = base;
 
+            if (accType === 'rent') {
+                const month = parseInt(document.getElementById('rentMonth')?.value || '1', 10);
+
+                let rate = 1;
+                if (month === 2) rate = 0.90;
+                if (month === 3) rate = 0.85;
+
+                price = (base * month) * rate;
+            }
+
+            const percent = parseInt(document.getElementById('voucherPercent').value || 0, 10);
             if (percent > 0) {
-                price -= price * (percent / 100);
+                price = price - (price * (percent / 100));
             }
 
             return Math.round(price);
         }
+
         function updatePriceDisplay() {
             const price = getCurrentPrice();
             const input = document.getElementById('priceInput');

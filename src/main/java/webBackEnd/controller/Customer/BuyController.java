@@ -116,70 +116,99 @@ public class BuyController {
     ) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()
-                || auth.getPrincipal().equals("anonymousUser")) {
-
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of(
-                            "success", false,
-                            "message", "Bạn chưa đăng nhập"
-                    ));
+                    .body(Map.of("success", false, "message", "Bạn chưa đăng nhập"));
         }
 
         Customer customer = customerService.findCustomerByUsername(auth.getName());
-
-        if (finalPrice == null || finalPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of(
-                            "success", false,
-                            "message", "Giá không hợp lệ"
-                    ));
+        if (customer == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "Không tìm thấy khách hàng"));
         }
 
-        if ("rent".equals(accountType) && rentMonth <= 0) {
+        if (basePrice == null || basePrice.compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.badRequest()
-                    .body(Map.of(
-                            "success", false,
-                            "message", "Vui lòng chọn gói thuê"
-                    ));
+                    .body(Map.of("success", false, "message", "Giá gốc không hợp lệ"));
         }
+
+        boolean isRent = "rent".equalsIgnoreCase(accountType);
+
+        if (isRent) {
+            if (rentMonth < 1 || rentMonth > 3) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("success", false, "message", "Chỉ được chọn thuê 1 - 3 tháng"));
+            }
+        } else {
+            rentMonth = 0;
+        }
+
+        Game game = gameService.findById(gameId);
+        if (game == null) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Không tìm thấy game"));
+        }
+
+
+        BigDecimal totalBeforeVoucher;
+
+        if (!isRent) {
+
+            totalBeforeVoucher = basePrice;
+        } else {
+            BigDecimal months = BigDecimal.valueOf(rentMonth);
+            BigDecimal raw = basePrice.multiply(months);
+
+            BigDecimal discountRate = BigDecimal.ONE; // 1.00
+            if (rentMonth == 2) discountRate = new BigDecimal("0.90");
+            if (rentMonth == 3) discountRate = new BigDecimal("0.85");
+
+            totalBeforeVoucher = raw.multiply(discountRate);
+        }
+
+
+        totalBeforeVoucher = totalBeforeVoucher.setScale(0, RoundingMode.HALF_UP);
+
 
         Voucher usedVoucher = null;
+        BigDecimal totalAfterVoucher = totalBeforeVoucher;
 
         if (voucherCode != null && !voucherCode.isBlank()) {
             usedVoucher = voucherService.getValidVoucher(voucherCode.trim());
-
             if (usedVoucher == null) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of(
-                                "success", false,
-                                "message", "Voucher không hợp lệ hoặc đã hết hạn"
-                        ));
+                        .body(Map.of("success", false, "message", "Voucher không hợp lệ hoặc đã hết hạn"));
             }
 
             if (voucherCustomerRepository.existsByCustomerAndVoucher(customer, usedVoucher)) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of(
-                                "success", false,
-                                "message", "Voucher đã được sử dụng"
-                        ));
+                        .body(Map.of("success", false, "message", "Voucher đã được sử dụng"));
+            }
+
+            BigDecimal percent = BigDecimal.valueOf(usedVoucher.getValue()); // vd 10, 15...
+            BigDecimal discount = totalBeforeVoucher.multiply(percent).divide(new BigDecimal("100"), 0, RoundingMode.HALF_UP);
+            totalAfterVoucher = totalBeforeVoucher.subtract(discount);
+
+            if (totalAfterVoucher.compareTo(BigDecimal.ZERO) <= 0) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("success", false, "message", "Giá sau voucher không hợp lệ"));
             }
         }
 
-        if (customer.getBalance().compareTo(finalPrice) < 0) {
+
+        if (customer.getBalance() == null || customer.getBalance().compareTo(totalAfterVoucher) < 0) {
             return ResponseEntity.badRequest()
-                    .body(Map.of(
-                            "success", false,
-                            "message", "Số dư không đủ"
-                    ));
+                    .body(Map.of("success", false, "message", "Số dư không đủ"));
         }
 
-        customer.setBalance(customer.getBalance().subtract(finalPrice));
+
+        customer.setBalance(customer.getBalance().subtract(totalAfterVoucher));
         customerRepositories.save(customer);
+
 
         Orders order = new Orders();
         order.setCustomer(customer);
-        order.setTotalPrice(finalPrice);
+        order.setTotalPrice(totalAfterVoucher);
         order.setStatus("WAIT");
 
         if (usedVoucher != null) {
@@ -188,14 +217,18 @@ public class BuyController {
 
         Orders savedOrder = ordersRepositories.save(order);
 
+
         OrderDetail detail = new OrderDetail();
-        detail.setGame(gameService.findById(gameId));
         detail.setOrder(savedOrder);
-        detail.setGameAccount(null); // RANDOM
-        detail.setDuration("rent".equals(accountType) ? rentMonth : 0);
-        detail.setPrice(basePrice.intValue());
+        detail.setGame(game);
+        detail.setGameAccount(null);
+        detail.setDuration(isRent ? rentMonth : 0);
+
+
+        detail.setPrice(basePrice.setScale(0, RoundingMode.HALF_UP).intValue());
 
         orderDetailRepositories.save(detail);
+
 
         if (usedVoucher != null) {
             VoucherCustomer vc = new VoucherCustomer();
@@ -212,6 +245,7 @@ public class BuyController {
                 )
         );
     }
+
 
 
 

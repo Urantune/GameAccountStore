@@ -96,10 +96,15 @@ public class RentController {
             return "redirect:/home/renting";
         }
 
-        BigDecimal base = BigDecimal.ZERO;
-        if (ga.getPrice() != null) base = ga.getPrice();
+        BigDecimal base = (ga.getPrice() != null) ? ga.getPrice() : BigDecimal.ZERO;
+        BigDecimal monthsBD = BigDecimal.valueOf(months);
+        BigDecimal subtotal = base.multiply(monthsBD);
 
-        BigDecimal total = base.multiply(BigDecimal.valueOf(months));
+        BigDecimal discountRate = BigDecimal.ONE;
+        if (months == 2) discountRate = new BigDecimal("0.90");
+        if (months == 3) discountRate = new BigDecimal("0.85");
+
+        BigDecimal total = subtotal.multiply(discountRate).setScale(0, java.math.RoundingMode.HALF_UP);
 
         Orders order = new Orders();
         order.setCustomer(customer);
@@ -127,5 +132,6 @@ public class RentController {
         ra.addFlashAttribute("successMessage", "Gia hạn +" + months + " tháng. Đã tạo đơn WAITRENT.");
         return "redirect:/home/renting";
     }
+
 
 }
