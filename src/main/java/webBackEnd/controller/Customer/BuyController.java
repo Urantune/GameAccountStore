@@ -69,7 +69,6 @@ public class BuyController {
     }
 
 
-
     @GetMapping("/api/voucher/check")
     @ResponseBody
     public Map<String, Object> checkVoucher(@RequestParam String code) {
@@ -102,7 +101,6 @@ public class BuyController {
         rs.put("used", used);
         return rs;
     }
-
 
 
     @PostMapping("/payment")
@@ -210,6 +208,15 @@ public class BuyController {
         detail.setOrder(savedOrder);
         detail.setGame(game);
         detail.setGameAccount(null);
+        if (rentMonth == 1) {
+            detail.setDuration(1);
+        } else if (rentMonth == 2) {
+            detail.setDuration(2);
+        } else if (rentMonth == 3) {
+            detail.setDuration(3);
+        }else{
+            detail.setDuration(0);
+        }
         detail.setDuration(isRent ? rentMonth : 0);
         detail.setPrice(basePrice.setScale(0, RoundingMode.HALF_UP).intValue());
         detail.setLovel(gameAccount.getLovel());
@@ -231,8 +238,6 @@ public class BuyController {
                 )
         );
     }
-
-
 
 
     private void deleteCartItemsOfCustomer(Customer customer, List<UUID> gameIds) {
