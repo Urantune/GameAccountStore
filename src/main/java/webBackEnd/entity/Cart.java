@@ -24,15 +24,28 @@ public class Cart {
     private LocalDateTime createdAt;
     private BigDecimal price;
     private Integer duration;
-
+    @Column(name = "rank")
+    private String rank;
+    @Column(name = "skins")
+    private int skin;
+    @Column(name = "level")
+    private int lovel;
+    @Column(name = "vip")
+    private int vip;
     public Cart() {
     }
 
-    public Cart(UUID cartId, Customer customer, Game gAme, LocalDateTime createdAt,Integer duration) {
+    public Cart(UUID cartId, Customer customer, Game game, LocalDateTime createdAt, BigDecimal price, Integer duration, String rank, int skin, int lovel, int vip) {
         this.cartId = cartId;
         this.customer = customer;
         this.game = game;
         this.createdAt = createdAt;
+        this.price = price;
+        this.duration = duration;
+        this.rank = rank;
+        this.skin = skin;
+        this.lovel = lovel;
+        this.vip = vip;
     }
 
     public UUID getCartId() {
@@ -81,5 +94,37 @@ public class Cart {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public int getSkin() {
+        return skin;
+    }
+
+    public void setSkin(int skin) {
+        this.skin = skin;
+    }
+
+    public int getLovel() {
+        return lovel;
+    }
+
+    public void setLovel(int lovel) {
+        this.lovel = lovel;
+    }
+
+    public int getVip() {
+        return vip;
+    }
+
+    public void setVip(int vip) {
+        this.vip = vip;
     }
 }

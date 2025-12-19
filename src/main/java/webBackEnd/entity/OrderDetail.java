@@ -24,20 +24,29 @@ public class OrderDetail {
     @Column(name = "duration", nullable = false)
     private Integer duration;
     private Integer price;
-
+    @Column(name = "rank")
+    private String rank;
+    @Column(name = "skins")
+    private int skin;
+    @Column(name = "level")
+    private int lovel;
+    @Column(name = "vip")
+    private int vip;
     public OrderDetail() {
     }
 
-    public OrderDetail(UUID id, Orders order, Game game,GameAccount gameAccount, Integer duration, Integer price) {
-        this.id = id;
+    public OrderDetail(Orders order, UUID id, Game game, GameAccount gameAccount, Integer duration, Integer price, String rank, int skin, int lovel, int vip) {
         this.order = order;
+        this.id = id;
         this.game = game;
         this.gameAccount = gameAccount;
         this.duration = duration;
         this.price = price;
+        this.rank = rank;
+        this.skin = skin;
+        this.lovel = lovel;
+        this.vip = vip;
     }
-
-
 
     public UUID getId() {
         return id;
@@ -85,6 +94,38 @@ public class OrderDetail {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public int getLovel() {
+        return lovel;
+    }
+
+    public void setLovel(int lovel) {
+        this.lovel = lovel;
+    }
+
+    public int getSkin() {
+        return skin;
+    }
+
+    public void setSkin(int skin) {
+        this.skin = skin;
+    }
+
+    public int getVip() {
+        return vip;
+    }
+
+    public void setVip(int vip) {
+        this.vip = vip;
     }
 }
 
