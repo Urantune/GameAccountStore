@@ -245,8 +245,11 @@ public class ApproveController {
 
     private boolean isRentAccount(GameAccount ga) {
         if (ga == null) return false;
-        String c = ga.getClassify();
-        return c != null && c.trim().equalsIgnoreCase("RENT");
+        String d = ga.getDuration();
+        if (d == null) return false;
+        d = d.trim();
+        if (d.isEmpty() || d.equals("0")) return false;
+        return d.equalsIgnoreCase("RENT");
     }
 
     private List<GameAccount> findCandidatesForOrderDetail(OrderDetail od) {
@@ -282,6 +285,8 @@ public class ApproveController {
         StringBuilder html = new StringBuilder();
         Customer customer = order.getCustomer();
 
+        LocalDateTime baseTime = (order != null && order.getCreatedDate() != null) ? order.getCreatedDate() : LocalDateTime.now();
+
         for (OrderDetail od : orderDetails) {
             UUID gaId = selected.get(od.getId());
             if (gaId == null) continue;
@@ -295,20 +300,15 @@ public class ApproveController {
             boolean odRent = od.getDuration() != null && od.getDuration() > 0;
 
             if (!odRent) {
-                GameOwned owned = new GameOwned();
-                owned.setCustomer(customer);
-                owned.setGameAccount(ga);
-                owned.setDateOwned(LocalDateTime.now());
-                gameOwnedService.save(owned);
-
+                gameOwnedService.createOwnedIfNotExists(customer, ga);
                 ga.setStatus("SOLD");
                 gameAccountService.save(ga);
             } else {
                 RentAccountGame rent = new RentAccountGame();
                 rent.setCustomer(customer);
                 rent.setGameAccount(ga);
-                rent.setDateStart(LocalDateTime.now());
-                rent.setDateEnd(LocalDateTime.now().plusMonths(od.getDuration()));
+                rent.setDateStart(baseTime);
+                rent.setDateEnd(baseTime.plusMonths(od.getDuration()));
                 rent.setStatus("STILL VALID");
                 rentAccountGameService.save(rent);
 

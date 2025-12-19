@@ -34,7 +34,9 @@ public class RentAccountGame {
     public RentAccountGame() {
     }
 
-    public RentAccountGame(UUID id, Customer customer, GameAccount gameAccount, LocalDateTime LocalDateTimeStart, LocalDateTime dateEnd, String deception, String status) {
+    public RentAccountGame(UUID id, Customer customer, GameAccount gameAccount,
+                           LocalDateTime dateStart, LocalDateTime dateEnd,
+                           String deception, String status) {
         this.id = id;
         this.customer = customer;
         this.gameAccount = gameAccount;
