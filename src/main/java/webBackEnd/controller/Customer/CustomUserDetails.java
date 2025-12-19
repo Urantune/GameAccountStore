@@ -3,7 +3,6 @@ package webBackEnd.controller.Customer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import webBackEnd.entity.Customer;
 
 import java.util.Collection;
@@ -17,22 +16,44 @@ public class CustomUserDetails implements UserDetails {
         this.customer = customer;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return !"BAN".equalsIgnoreCase(customer.getStatus());
+    public Customer getCustomer() {
+        return customer;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(customer.getRole()));
+        String role = customer.getRole();
+        if (role == null || role.isBlank()) role = "CUSTOMER";
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
     }
 
-    @Override public String getPassword() { return customer.getPassword(); }
-    @Override public String getUsername() { return customer.getUsername(); }
-    @Override public boolean isAccountNonExpired() { return true; }
-    @Override public boolean isAccountNonLocked() { return true; }
-    @Override public boolean isCredentialsNonExpired() { return true; }
+    @Override
+    public String getPassword() {
+        return customer.getPassword();
+    }
 
+    @Override
+    public String getUsername() {
+        return customer.getUsername();
+    }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return customer.getStatus() == null || !customer.getStatus().equalsIgnoreCase("LOCKED");
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return customer.getStatus() == null || !customer.getStatus().equalsIgnoreCase("LOCKED");
+    }
 }
-

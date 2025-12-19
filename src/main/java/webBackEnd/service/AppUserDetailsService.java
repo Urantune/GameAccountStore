@@ -25,19 +25,20 @@ public class AppUserDetailsService implements UserDetailsService {
 
         Staff staff = staffRepository.findByUsername(username).orElse(null);
         if (staff != null) {
-
             if (staff.getStatus() != null && staff.getStatus().equalsIgnoreCase("LOCK")) {
                 throw new DisabledException("Staff locked");
             }
 
-            String role = staff.getRole(); // "ADMIN" hoặc "STAFF"
+            String role = staff.getRole();
+            if (role == null || role.isBlank()) role = "STAFF";
+
             return new org.springframework.security.core.userdetails.User(
                     staff.getUsername(),
                     staff.getPassword(),
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
             );
         }
 
-        return customerService.loadUserByUsername(username);
+        return customerService.loadCustomerByUsername(username);
     }
 }

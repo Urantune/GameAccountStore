@@ -17,25 +17,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Service()
-public class CustomerService implements UserDetailsService {
+@Service
+public class CustomerService {
 
+    private final CustomerRepositories customerRepositories;
 
-    @Autowired
-    private CustomerRepositories customerRepositories;
+    public CustomerService(CustomerRepositories customerRepositories) {
+        this.customerRepositories = customerRepositories;
+    }
 
-
-
-    @Override           
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
-
+    public UserDetails loadCustomerByUsername(String username) {
         Customer customer = customerRepositories
                 .findByUsernameIgnoreCase(username)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if ("LOCKED".equalsIgnoreCase(customer.getStatus())) {
+        if (customer.getStatus() != null && customer.getStatus().equalsIgnoreCase("LOCKED")) {
             throw new DisabledException("Account is locked");
         }
 
