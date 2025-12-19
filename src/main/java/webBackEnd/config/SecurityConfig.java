@@ -50,8 +50,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/**").permitAll()
                 // Public pages
                 .requestMatchers("/register", "/register/**").permitAll()
-                .requestMatchers("/home", "/home/"
-                       ).permitAll()
+                .requestMatchers("/home", "/home/", "/home/accDetail/**",
+                        "/home/GameDetails/**","/home/game/**").permitAll()
                 // Static
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
