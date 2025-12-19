@@ -46,34 +46,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(auth -> auth
+                // API
                 .requestMatchers("/api/**").permitAll()
-
+                // Static
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
-                        "/bestseller/**", "/assets/**", "/lib/**",
-                        "/scss/**", "/images/**","/home/**"
+                        "/assets/**", "/lib/**", "/scss/**", "/images/**"
                 ).permitAll()
-
+                // Public pages
                 .requestMatchers("/register", "/register/**").permitAll()
-
-                .requestMatchers("/veryAccount/**","/home/game/**","/home/game").permitAll()
-
-                .requestMatchers(HttpMethod.GET, "/home", "/home/").permitAll()
-                .requestMatchers(HttpMethod.GET, "/home/gameDetail/**").permitAll()
-
-                .requestMatchers(HttpMethod.GET, "/adminHome", "/adminHome/").permitAll()
-                .requestMatchers(HttpMethod.GET, "/staffHome", "/staffHome/").permitAll()
-
+                .requestMatchers("/home", "/home/", "/home/gameAccount",
+                        "/home/accDetail/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/home/forgot-password").permitAll()
+                // Role pages
                 .requestMatchers("/adminHome/**").hasRole("ADMIN")
                 .requestMatchers("/staffHome/**").hasRole("STAFF")
-
-                .requestMatchers(HttpMethod.POST, "/home/forgot-password").permitAll()
-
-                .requestMatchers("/home/**").authenticated()
-
+                // Others
                 .anyRequest().authenticated()
         );
-
         http.exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
 
             if (request.getRequestURI().startsWith("/api/")) {
@@ -82,7 +72,6 @@ public class SecurityConfig {
                 response.getWriter().write("{\"error\":\"Unauthorized\"}");
                 return;
             }
-
             String uri = request.getRequestURI();
             if (uri.startsWith("/adminHome")) {
                 response.sendRedirect("/adminHome?login=true");
@@ -92,7 +81,6 @@ public class SecurityConfig {
                 response.sendRedirect("/home?login=true");
             }
         }));
-
         http.formLogin(form -> form
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
@@ -102,14 +90,12 @@ public class SecurityConfig {
                 .successHandler((req, res, auth) -> {
                     boolean isAjax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"))
                             || (req.getHeader("Accept") != null && req.getHeader("Accept").contains("application/json"));
-
                     String redirect =
                             auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
                                     ? "/adminHome"
                                     : auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_STAFF"))
                                     ? "/staffHome"
                                     : "/home";
-
                     if (isAjax) {
                         res.setContentType("application/json; charset=UTF-8");
                         res.getWriter().write("{\"redirect\":\"" + redirect + "\"}");
@@ -117,14 +103,12 @@ public class SecurityConfig {
                         res.sendRedirect(redirect);
                     }
                 })
-
                 .failureHandler((req, res, exx) -> {
                     boolean isAjax = "XMLHttpRequest".equals(req.getHeader("X-Requested-With"))
                             || (req.getHeader("Accept") != null && req.getHeader("Accept").contains("application/json"));
 
                     Throwable cause = exx;
                     while (cause.getCause() != null) cause = cause.getCause();
-
                     String msg;
                     if (cause instanceof DisabledException) msg = "Tài khoản đã bị khóa";
                     else if (cause instanceof AccountExpiredException) msg = "Tài khoản hết hạn";
@@ -145,7 +129,6 @@ public class SecurityConfig {
 
                 .permitAll()
         );
-
         http.logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessHandler((req, res, auth) -> {
@@ -164,7 +147,6 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .permitAll()
         );
-
         return http.build();
     }
 }

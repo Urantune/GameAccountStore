@@ -272,11 +272,11 @@
     <div class="container px-4 px-lg-5 my-5">
         <div class="row g-4">
             <div class="col-md-5">
-                <img th:src="@{${gameName == 'AOV' ? '/img/aov.jpg' : '/img/ff.jpg'}}" class="img-fluid rounded shadow"/>
+                <h3 class="fw-bold mb-3" th:text="'Game ' + ${gameName}"></h3>
+                <img th:src="@{${gameName == 'AOV' ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
+                     class="img-fluid rounded shadow"/>
             </div>
             <div class="col-md-7">
-                <h3 class="fw-bold mb-3" th:text="'Game ' + ${gameName}"></h3>
-
                 <div class="border rounded p-4 mb-4">
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Loại tài khoản:</div>
@@ -302,62 +302,68 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Số lượng Skin:</div>
                         <div class="col-7">
-                            <input id="skinRangeInput" class="form-control" readonly th:value="${skinMin} + ' - ' + ${skinMax} + ' skin'">
+                            <input id="skinRangeInput" class="form-control" readonly th:value="${p.skin}">
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Rank :</div>
                         <div class="col-7">
-                            <input class="form-control" readonly value="Random">
+                            <input id="rank" class="form-control" readonly th:value="${p.rank}">
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Vip :</div>
                         <div class="col-7">
-                            <input class="form-control" readonly value="Random">
+                            <input class="form-control" readonly th:value="${p.vip}">
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Level :</div>
                         <div class="col-7">
-                            <input class="form-control" readonly value="Random">
+                            <input class="form-control" readonly th:value="${p.lovel}">
                         </div>
                     </div>
-
+                    <div class="row mb-3">
+                        <div class="col-5 fw-bold">Giá:</div>
+                        <div class="col-7">
+                            <input class="form-control" readonly th:value="${p.price} + ' đ'">
+                            <!-- GIÁ GỐC ĐỂ JS TÍNH -->
+                            <input type="hidden" id="basePriceHidden" th:value="${p.price}">
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-5 fw-bold">Voucher:</div>
                         <div class="col-7 d-flex gap-2">
                             <input type="text" id="voucherInput" class="form-control" placeholder="Nhập mã giảm giá">
                             <button type="button" class="btn btn-outline-dark" onclick="applyVoucher()">Áp dụng</button>
+                            <input type="hidden" id="voucherPercent" value="0">
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-5 fw-bold">Giá:</div>
+                    <!-- THÔNG BÁO VOUCHER -->
+                    <div class="row mb-3">
+                        <div class="col-5"></div>
                         <div class="col-7">
-                            <input id="priceInput" disabled class="form-control text-danger fw-bold"
-                                   th:value="${#numbers.formatDecimal(price,0,'COMMA',0,'POINT')} + ' đ'"
-                                   th:data-price="${price}">
+                            <small id="voucherMsg" class="text-success d-none"></small>
                         </div>
                     </div>
-
-                    <input type="hidden" id="voucherPercent" value="0">
-                    <input type="hidden" id="basePrice" th:value="${price}">
+                    <div class="row">
+                        <div class="col-5 fw-bold">Tổng thanh toán:</div>
+                        <div class="col-7">
+                            <input class="form-control"
+                                   id="priceInput"
+                                   readonly
+                                   th:value="${price} + ' đ'">
+                        </div>
+                    </div>
                 </div>
-
                 <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/home/payment}" method="post" onsubmit="syncBeforeSubmit()">
                     <input type="hidden" name="accountType" id="accountTypeHidden">
                     <input type="hidden" name="gameId" th:value="${gameId}">
                     <input type="hidden" name="rentMonth" id="rentMonthHidden">
                     <input type="hidden" name="skinRange" id="skinRangeHidden">
-                    <input type="hidden" name="basePrice" id="basePriceHidden" th:value="${price}">
                     <input type="hidden" name="finalPrice" id="finalPriceHidden">
                     <input type="hidden" name="voucherCode" id="voucherHidden">
                 </form>
@@ -398,7 +404,134 @@
         </div>
     </div>
 </section>
+<script>
+    /* ================== GIÁ GỐC ================== */
+    function getBasePrice() {
+        return parseInt(document.getElementById('basePriceHidden').value || 0, 10);
+    }
 
+    /* ================== TÍNH GIÁ ================== */
+    function getCurrentPrice() {
+        const base = getBasePrice();
+        let price = base;
+
+        const accType = document.querySelector('input[name="accountType"]:checked')?.value || 'permanent';
+
+        if (accType === 'rent') {
+            const month = parseInt(document.getElementById('rentMonth')?.value || 1, 10);
+
+            let rate = 1;
+            if (month === 2) rate = 0.9;
+            if (month === 3) rate = 0.85;
+
+            price = base * month * rate;
+        }
+
+        const percent = parseInt(document.getElementById('voucherPercent').value || 0, 10);
+        if (percent > 0) {
+            price -= price * (percent / 100);
+        }
+
+        return Math.round(price);
+    }
+
+    /* ================== CẬP NHẬT GIÁ ================== */
+    function updatePriceDisplay() {
+        const price = getCurrentPrice();
+        const input = document.getElementById('priceInput');
+        input.value = price.toLocaleString('vi-VN') + ' đ';
+        document.getElementById('finalPriceHidden').value = price;
+    }
+
+    /* ================== THUÊ / VĨNH VIỄN ================== */
+    function toggleRent(isRent) {
+        document.getElementById('rentPackage').classList.toggle('d-none', !isRent);
+        updatePriceDisplay();
+    }
+
+    /* ================== ĐỔI GÓI THUÊ ================== */
+    function updatePriceByRent() {
+        updatePriceDisplay();
+    }
+
+    /* ================== ÁP DỤNG VOUCHER ================== */
+    function applyVoucher() {
+        const code = document.getElementById('voucherInput').value.trim();
+        const msgEl = document.getElementById('voucherMsg');
+
+        msgEl.classList.add("d-none");
+        msgEl.innerText = "";
+
+        if (!code) return;
+
+        fetch(`/api/voucher/check?code=${encodeURIComponent(code)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.valid) {
+                    msgEl.innerText = "Voucher không hợp lệ hoặc đã hết hạn";
+                    msgEl.className = "text-danger";
+                    msgEl.classList.remove("d-none");
+
+                    document.getElementById('voucherPercent').value = 0;
+                    document.getElementById('voucherHidden').value = "";
+                } else {
+                    const percent = parseInt(data.value, 10);
+
+                    document.getElementById('voucherPercent').value = percent;
+                    document.getElementById('voucherHidden').value = code;
+
+                    msgEl.innerText = `🎉 Voucher giảm ${percent}%`;
+                    msgEl.className = "text-success";
+                    msgEl.classList.remove("d-none");
+                }
+
+                updatePriceDisplay();
+            })
+            .catch(() => {
+                msgEl.innerText = "Lỗi khi kiểm tra voucher";
+                msgEl.className = "text-danger";
+                msgEl.classList.remove("d-none");
+            });
+    }
+
+
+    /* ================== SUBMIT MUA ================== */
+    function submitBuy() {
+        const accType = document.querySelector('input[name="accountType"]:checked')?.value;
+        if (!accType) {
+            alert("Vui lòng chọn loại tài khoản");
+            return;
+        }
+
+        if (accType === 'rent') {
+            const month = document.getElementById('rentMonth').value;
+            if (!month || month <= 0) {
+                alert("Vui lòng chọn gói thuê");
+                return;
+            }
+        }
+
+        syncBeforeSubmit();
+        document.querySelector("form[action='/home/payment']").submit();
+    }
+
+    /* ================== ĐỒNG BỘ FORM ================== */
+    function syncBeforeSubmit() {
+        document.getElementById('accountTypeHidden').value =
+            document.querySelector('input[name="accountType"]:checked')?.value || 'permanent';
+
+        document.getElementById('rentMonthHidden').value =
+            document.getElementById('rentMonth')?.value || 0;
+
+        document.getElementById('skinRangeHidden').value =
+            document.getElementById('skinRangeInput')?.value || "";
+
+        document.getElementById('finalPriceHidden').value = getCurrentPrice();
+    }
+
+    /* ================== KHỞI TẠO ================== */
+    document.addEventListener("DOMContentLoaded", updatePriceDisplay);
+</script>
 <div th:if="${error}" class="d-none" id="serverError" th:text="${error}"></div>
 
 <script th:inline="javascript">
@@ -512,163 +645,6 @@
         showMailToast(mailSentMsg, true);
     }
 </script>
-
-<script>
-    function submitBuy() {
-        const errorBox = document.getElementById("buyError");
-        const successBox = document.getElementById("buySuccess");
-
-        errorBox.classList.add("d-none");
-        successBox.classList.add("d-none");
-
-        const accountTypeEl = document.querySelector("input[name='accountType']:checked");
-        if (!accountTypeEl) {
-            errorBox.textContent = "Vui lòng chọn loại tài khoản";
-            errorBox.classList.remove("d-none");
-            setTimeout(() => errorBox.classList.add("d-none"), 3000);
-            return false;
-        }
-
-        const accountType = accountTypeEl.value;
-
-        if (accountType === "rent") {
-            const rentMonth = document.getElementById("rentMonth")?.value;
-            if (!rentMonth || rentMonth <= 0) {
-                errorBox.textContent = "Vui lòng chọn gói thuê";
-                errorBox.classList.remove("d-none");
-                setTimeout(() => errorBox.classList.add("d-none"), 3000);
-                return false;
-            }
-        }
-
-        const formData = new FormData();
-        formData.append("gameId", document.querySelector("[name='gameId']").value);
-        formData.append("accountType", accountType);
-        formData.append("rentMonth", document.getElementById("rentMonth")?.value || 0);
-        formData.append("basePrice", document.getElementById("basePriceHidden").value);
-        formData.append("finalPrice", getCurrentPrice());
-        formData.append("voucherCode", document.getElementById("voucherHidden")?.value || "");
-
-        fetch("/home/payment", { method: "POST", body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success) {
-                    errorBox.textContent = data.message;
-                    errorBox.classList.remove("d-none");
-                    setTimeout(() => errorBox.classList.add("d-none"), 3000);
-                } else {
-                    successBox.textContent = data.message;
-                    successBox.classList.remove("d-none");
-                    setTimeout(() => successBox.classList.add("d-none"), 3000);
-                }
-            })
-            .catch(() => {
-                errorBox.textContent = "Có lỗi hệ thống, vui lòng thử lại";
-                errorBox.classList.remove("d-none");
-                setTimeout(() => errorBox.classList.add("d-none"), 3000);
-            });
-
-        return false;
-    }
-
-    function getBasePrice() {
-        return parseInt(document.getElementById('basePrice').value);
-    }
-
-    function getCurrentPrice() {
-        const accTypeRadio = document.querySelector('input[name="accountType"]:checked');
-        const accType = accTypeRadio ? accTypeRadio.value : 'permanent';
-
-        const base = getBasePrice();
-        let price = base;
-
-        if (accType === 'rent') {
-            const month = parseInt(document.getElementById('rentMonth')?.value || '1', 10);
-
-            let rate = 1;
-            if (month === 2) rate = 0.90;
-            if (month === 3) rate = 0.85;
-
-            price = (base * month) * rate;
-        }
-
-        const percent = parseInt(document.getElementById('voucherPercent').value || 0, 10);
-        if (percent > 0) {
-            price = price - (price * (percent / 100));
-        }
-
-        return Math.round(price);
-    }
-
-    function updatePriceDisplay() {
-        const price = getCurrentPrice();
-        const input = document.getElementById('priceInput');
-        input.value = price.toLocaleString('vi-VN') + ' đ';
-        input.dataset.price = price;
-    }
-
-    function toggleRent(isRent) {
-        const rentDiv = document.getElementById('rentPackage');
-        rentDiv.classList.toggle('d-none', !isRent);
-        updatePriceDisplay();
-    }
-
-    function updatePriceByRent() {
-        updatePriceDisplay();
-    }
-
-    function applyVoucher() {
-        const code = document.getElementById('voucherInput').value.trim();
-        if (!code) return;
-
-        fetch(`/home/api/voucher/check?code=${encodeURIComponent(code)}`)
-            .then(res => res.json())
-            .then(data => {
-                if (!data.valid) {
-                    alert("Voucher không hợp lệ hoặc hết hạn");
-                    document.getElementById('voucherPercent').value = 0;
-                    document.getElementById('voucherHidden').value = "";
-                } else if (data.used) {
-                    alert("Voucher đã được sử dụng");
-                    document.getElementById('voucherPercent').value = 0;
-                    document.getElementById('voucherHidden').value = "";
-                } else {
-                    document.getElementById('voucherPercent').value = data.percent;
-                    document.getElementById('voucherHidden').value = code;
-                }
-                updatePriceDisplay();
-            })
-            .catch(() => alert("Lỗi khi kiểm tra voucher"));
-    }
-
-    function syncBeforeSubmit() {
-        const accType = (document.querySelector('input[name="accountType"]:checked') || { value: 'permanent' }).value;
-        const rentMonth = document.getElementById('rentMonth')?.value || 0;
-        const skinRange = document.getElementById('skinRangeInput')?.value || "";
-        const finalPrice = getCurrentPrice();
-        const voucherCode = (document.getElementById('voucherHidden')?.value || "").trim();
-
-        const at = document.getElementById('accountTypeHidden');
-        if (at) at.value = accType;
-
-        const rm = document.getElementById('rentMonthHidden');
-        if (rm) rm.value = rentMonth;
-
-        const sr = document.getElementById('skinRangeHidden');
-        if (sr) sr.value = skinRange;
-
-        const fp = document.getElementById('finalPriceHidden');
-        if (fp) fp.value = finalPrice;
-
-        const vc = document.getElementById('voucherHidden');
-        if (vc) vc.value = voucherCode;
-
-        const basePrice = parseInt(document.getElementById('basePrice')?.value || 0, 10);
-        const bp = document.getElementById('basePriceHidden');
-        if (bp) bp.value = basePrice;
-    }
-</script>
-
 <script>
     function addToCart(btn) {
         const gameId = btn.dataset.gameId;

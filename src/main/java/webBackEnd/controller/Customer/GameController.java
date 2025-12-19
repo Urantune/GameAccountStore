@@ -57,15 +57,6 @@ public class GameController {
         return "customer/GameAccount";
     }
 
-
-
-
-    @GetMapping("/GameDetail/{id}")
-    public String gameDetail(@PathVariable UUID id, Model model) {
-        GameAccount p = gameAccountService.findGameAccountById(id);
-        model.addAttribute("p", p);
-        return "customer/GameDetail";
-    }
     @ModelAttribute("currentUser")
     public Customer currentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -132,6 +123,32 @@ public class GameController {
         return "customer/GameDetail";
     }
 
+
+
+    @GetMapping("/GameDetails")
+    public String gameByPrice(
+            @RequestParam BigDecimal price,
+            @RequestParam String game,
+            Model model
+    ) {
+        List<GameAccount> accounts =
+                gameAccountService.getByPriceAndGame(game, price);
+
+        model.addAttribute("accounts", accounts);
+        model.addAttribute("price", price);
+        model.addAttribute("gameName", game);
+
+        return "customer/AccountByPrice";
+    }
+
+
+    @GetMapping("/accDetail/{id}")
+    public String gameDetail(@PathVariable UUID id, Model model, @RequestParam String game) {
+        GameAccount p = gameAccountService.findGameAccountById(id);
+        model.addAttribute("p", p);
+        model.addAttribute("gameName", game);
+        return "customer/GameDetail";
+    }
 
 
 }

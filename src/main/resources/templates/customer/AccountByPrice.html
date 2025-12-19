@@ -236,80 +236,80 @@
 
                 <!-- Navbar styles -->
                 <style>
-                    .game-nav {
-                        background: pink;
-                        border-top: 2px solid #e6d8c8;
-                        height: 86px;
-                        display: flex;
-                        align-items: center;
+                    .game-nav{
+                        background:pink;
+                        border-top:2px solid #e6d8c8;
+                        height:86px;
+                        display:flex;
+                        align-items:center;
                     }
 
-                    .game-nav .container-fluid {
-                        display: flex;
-                        align-items: center;
+                    .game-nav .container-fluid{
+                        display:flex;
+                        align-items:center;
                     }
 
-                    .nav-logo {
-                        height: 180px;
-                        width: auto;
+                    .nav-logo{
+                        height:180px;
+                        width:auto;
                     }
 
-                    .nav-center {
-                        gap: 26px;
+                    .nav-center{
+                        gap:26px;
                     }
 
-                    .game-nav .navbar-nav .nav-link {
+                    .game-nav .navbar-nav .nav-link{
                         color: #111 !important;
                         font-weight: 500;
                     }
 
-                    .nav-pill {
+                    .nav-pill{
                         background: transparent;
                         color: #000 !important;
                         border: 1px solid transparent;
                         transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
                     }
 
-                    .nav-pill:hover {
+                    .nav-pill:hover{
                         color: #f7931e !important;
                         background: #F8F8FF;
                         box-shadow: none !important;
                         transform: none !important;
                     }
 
-                    .nav-pill {
+                    .nav-pill{
                         color: #111 !important;
                         font-weight: 500;
                         background: transparent;
                     }
 
                     .nav-pill:focus,
-                    .nav-pill:active {
+                    .nav-pill:active{
                         background: #f5e6d7 !important;
                         color: #000 !important;
                         box-shadow: none !important;
                     }
 
                     /* DROPDOWN */
-                    .dropdown-soft {
-                        border-radius: 14px;
-                        padding: 6px;
+                    .dropdown-soft{
+                        border-radius:14px;
+                        padding:6px;
                     }
 
-                    .nav-pill {
+                    .nav-pill{
                         border-radius: 18px !important;
                         padding: 10px 18px !important;
                     }
 
-                    .nav-pill:hover {
+                    .nav-pill:hover{
                         border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
                     }
 
                     .nav-pill:focus,
-                    .nav-pill:active {
+                    .nav-pill:active{
                         border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
                     }
 
                 </style>
@@ -319,16 +319,13 @@
 
                     <!-- Anonymous -->
                     <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
-                           data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
                             <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
                             <span class="fw-semibold">Khách</span>
                         </a>
                         <ul class="dropdown-menu dropdown-fix">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng
-                                nhập</a></li>
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                   data-bs-target="#registerModal">Đăng ký</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
                         </ul>
                     </li>
 
@@ -363,7 +360,6 @@
             }
         });
     });
-
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
 
@@ -438,41 +434,33 @@
     <div class="container py-5">
         <div class="tab-class">
             <div class="row g-4">
-                <h2 class="text-center my-4" th:text="${pageTitle}"></h2>
-
                 <div class="container">
                     <div class="row g-4">
                         <div class="col-md-6 col-lg-4 col-xl-3"
-                             th:each="price : ${prices}">
-                            <div class="card game-card h-100 border-0 shadow-sm rounded-4">
-
-                                <!-- IMAGE -->
-                                <div class="position-relative overflow-hidden rounded-top-4">
-                                    <img th:src="@{${gameName == 'AOV' ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
-                                         class="card-img-top game-img">
-
-                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-3 py-2 rounded-pill">
-                        Acc Giá <span th:text="${#numbers.formatDecimal(price,0,'COMMA',0,'POINT')}"></span> đ
-                    </span>
-                                </div>
-                                <!-- BODY -->
+                             th:each="acc : ${accounts}">
+                            <div class="card h-100 shadow-sm rounded-4">
+                                <img th:src="@{'/img/' + ${gameName == 'AOV' ? 'lqdemo1.jpg' : 'ffdemo1.jpg'}}"
+                                     class="card-img-top">
                                 <div class="card-body text-center">
-                                    <h5 class="fw-bold mb-2"
-                                        th:text="${gameName}"></h5>
-                                    <div class="text-danger fw-bold fs-5 mb-3"
-                                         th:text="${#numbers.formatDecimal(price,0,'COMMA',0,'POINT')} + ' đ'">
-                                    </div>
-                                </div>
-                                <!-- FOOTER -->
-                                <div class="card-footer border-0 pb-4 text-center">
-                                    <a th:href="@{/home/GameDetails(
-        price=${price},
-        game=${gameName}
-    )}"
-                                       class="btn btn-outline-primary btn-sm rounded-pill px-4">
-                                        Xem
-                                    </a>
+                                    <h5 class="fw-bold" th:text="${gameName}"></h5>
 
+                                    <p class="text-danger fw-bold"
+                                       th:text="${#numbers.formatDecimal(acc.price,0,'COMMA',0,'POINT')} + ' đ'">
+                                    </p>
+
+                                    <p class="text-muted">
+                                        Level: <span th:text="${acc.lovel}"></span>
+                                    </p>
+                                    <p class="text-muted">
+                                        Skin: <span th:text="${acc.skin}"></span>
+                                    </p>
+                                </div>
+
+                                <div class="card-footer text-center">
+                                    <a th:href="@{/home/accDetail/{id}(id=${acc.id}, game=${gameName})}"
+                                       class="btn btn-primary btn-sm rounded-pill">
+                                        Xem chi tiết
+                                    </a>
                                 </div>
                             </div>
                         </div>

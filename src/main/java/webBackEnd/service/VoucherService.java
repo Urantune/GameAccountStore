@@ -7,6 +7,7 @@ import webBackEnd.repository.VoucherRepositories;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 @Service
 public class VoucherService {
@@ -52,5 +53,8 @@ public class VoucherService {
     }
 
 
+     public Optional<Voucher> findByVoucherName(String voucherName) {
+        return voucherRepositories.findByVoucherName(voucherName);
+    }
 
 }

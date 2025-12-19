@@ -78,5 +78,8 @@ public class GameAccountService {
     }
 
 
-
+    public List<GameAccount> getByPriceAndGame(String gameName, BigDecimal price) {
+        return gameAccountRepositories
+                .findByGame_GameNameAndPrice(gameName, price);
+    }
 }
