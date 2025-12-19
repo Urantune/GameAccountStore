@@ -125,14 +125,7 @@
 </head>
 <body>
 
-<div class="sidebar">
-    <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
-    <a th:href="@{/staffHome}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a th:href="@{/staffHome/approveList}"><i class="bi bi-bag-check-fill"></i> Manage Orders</a>
-    <a th:href="@{/staffHome/rentApproveList}"><i class="bi bi-clock-history"></i> Rental Orders</a>
-    <a th:href="@{/staffHome/revenue}"><i class="bi bi-graph-up-arrow"></i> Revenue</a>
-    <a th:href="@{/staffHome/manageExpired}"><i class="bi bi-exclamation-triangle-fill"></i> Manage Expired</a>
-</div>
+<div th:replace="fragments/staff-sidebar :: staffSidebar"></div>
 
 <div class="content container">
     <div class="d-flex justify-content-between align-items-center mb-3">
