@@ -10,7 +10,6 @@ import webBackEnd.controller.Customer.CustomUserDetails;
 import webBackEnd.entity.*;
 import webBackEnd.service.*;
 import webBackEnd.successfullyDat.GetQuantity;
-import webBackEnd.successfullyDat.SendMailTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,14 +26,17 @@ public class ApproveController {
     @Autowired private AdministratorService administratorService;
     @Autowired private RentAccountGameService rentAccountGameService;
     @Autowired private GameAccountService gameAccountService;
-    @Autowired private SendMailTest sendMailTest;
-    @Autowired private GameService gameService;
     @Autowired private TransactionService transactionService;
+
+    @Autowired private GameOwnedService gameOwnedService;
+    @Autowired private VoucherCustomerService voucherCustomerService;
+
+    @Autowired private MailAsyncService mailAsyncService;
 
     @GetMapping("/approveList")
     public String approveList(Model model) {
         List<Orders> list = ordersService.findAllByStatus("WAIT");
-        list.sort(Comparator.comparing(Orders::getCreatedDate));
+        list.sort(Comparator.comparing(Orders::getCreatedDate, Comparator.nullsLast(Comparator.naturalOrder())));
 
         Map<UUID, List<OrderDetail>> orderDetailsMap = new HashMap<>();
         for (Orders o : list) {
@@ -53,10 +55,10 @@ public class ApproveController {
         Orders order = ordersService.findById(orderId);
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
 
-        Map<UUID, List<GameAccount>> candidatesMap = new LinkedHashMap<>();
+        Map<OrderDetail, List<GameAccount>> candidatesMap = new LinkedHashMap<>();
         if (orderDetails != null) {
             for (OrderDetail od : orderDetails) {
-                candidatesMap.put(od.getId(), findCandidatesForOrderDetail(od));
+                candidatesMap.put(od, findCandidatesForOrderDetail(od));
             }
         }
 
@@ -71,6 +73,7 @@ public class ApproveController {
     @Transactional
     public String decision(@RequestParam UUID orderId,
                            @RequestParam String decision,
+                           @RequestParam Map<String, String> params,
                            @AuthenticationPrincipal CustomUserDetails user) {
 
         Orders order = ordersService.findById(orderId);
@@ -82,11 +85,10 @@ public class ApproveController {
             staff = administratorService.getStaffByID(DEFAULT_STAFF_ID);
         } catch (Exception ignored) {}
 
-        if ("REJECT".equalsIgnoreCase(decision)) {
+        Customer customer = order.getCustomer();
+        if (customer == null && user != null) customer = customerService.findCustomerByUsername(user.getUsername());
 
-            Customer customer = (user != null)
-                    ? customerService.findCustomerByUsername(user.getUsername())
-                    : order.getCustomer();
+        if ("REJECT".equalsIgnoreCase(decision)) {
 
             if (customer != null && order.getTotalPrice() != null) {
                 if (customer.getBalance() == null) customer.setBalance(BigDecimal.ZERO);
@@ -96,18 +98,24 @@ public class ApproveController {
                 Transaction tx = new Transaction();
                 tx.setCustomer(customer);
                 tx.setAmount(order.getTotalPrice());
-                tx.setDescription("REJECT");
+                tx.setDescription("REJECT_ORDER_" + order.getId());
                 tx.setDateCreated(LocalDateTime.now());
                 transactionService.save(tx);
             }
 
-            List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
-            for (OrderDetail od : orderDetails) {
-                orderDetailService.delete(od);
+            if (order.getVoucher() != null && customer != null) {
+                try {
+                    voucherCustomerService.rollbackUsed(customer, order.getVoucher());
+                } catch (Exception ignored) {}
             }
 
-            ordersService.delete(order);
-            sendRejectEmail(order.getCustomer(), order);
+            order.setStatus("REJECTED");
+            if (staff != null) order.setStaff(staff);
+            ordersService.save(order);
+
+            if (customer != null && customer.getEmail() != null) {
+                mailAsyncService.sendRejectEmail(customer.getEmail(), order.getId().toString(), order.getTotalPrice());
+            }
 
             return "redirect:/staffHome/approveList";
         }
@@ -115,16 +123,22 @@ public class ApproveController {
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
         if (orderDetails == null || orderDetails.isEmpty()) return "redirect:/staffHome/approve/" + orderId;
 
-        Map<UUID, UUID> selected = autoPickAccounts(orderDetails);
-        if (selected == null || selected.size() != orderDetails.size()) return "redirect:/staffHome/approve/" + orderId;
+        Map<UUID, UUID> selected = parseSelectedMap(params);
 
-        String accountHtml = handleAcceptAndBuildMail(order, orderDetails, selected);
+        if (selected.size() != orderDetails.size()) {
+            Map<UUID, UUID> auto = autoPickAccounts(orderDetails);
+            if (auto == null || auto.size() != orderDetails.size()) return "redirect:/staffHome/approve/" + orderId;
+            selected = auto;
+        } else {
+            if (!validateSelectedMatchesOrderDetails(orderDetails, selected)) return "redirect:/staffHome/approve/" + orderId;
+        }
+
+        String accountHtml = handleAcceptAndPersist(order, orderDetails, selected);
 
         order.setStatus("COMPLETED");
         if (staff != null) order.setStaff(staff);
         ordersService.save(order);
 
-        Customer customer = order.getCustomer();
         if (customer != null && order.getTotalPrice() != null) {
             Transaction tx = new Transaction();
             tx.setCustomer(customer);
@@ -134,9 +148,52 @@ public class ApproveController {
             transactionService.save(tx);
         }
 
-        sendAcceptEmail(order.getCustomer(), accountHtml);
+        if (customer != null && customer.getEmail() != null) {
+            mailAsyncService.sendAcceptEmail(customer.getEmail(), accountHtml);
+        }
 
         return "redirect:/staffHome/approveList";
+    }
+
+    private Map<UUID, UUID> parseSelectedMap(Map<String, String> params) {
+        Map<UUID, UUID> out = new LinkedHashMap<>();
+        if (params == null || params.isEmpty()) return out;
+
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            String k = e.getKey();
+            String v = e.getValue();
+            if (k == null || v == null) continue;
+            if (!k.startsWith("selected[")) continue;
+            if (!k.endsWith("]")) continue;
+
+            String odIdStr = k.substring("selected[".length(), k.length() - 1).trim();
+            String gaIdStr = v.trim();
+            if (odIdStr.isEmpty() || gaIdStr.isEmpty()) continue;
+
+            try {
+                UUID odId = UUID.fromString(odIdStr);
+                UUID gaId = UUID.fromString(gaIdStr);
+                out.put(odId, gaId);
+            } catch (Exception ignored) {}
+        }
+
+        return out;
+    }
+
+    private boolean validateSelectedMatchesOrderDetails(List<OrderDetail> orderDetails, Map<UUID, UUID> selected) {
+        Set<UUID> used = new HashSet<>();
+        for (OrderDetail od : orderDetails) {
+            UUID gaId = selected.get(od.getId());
+            if (gaId == null) return false;
+            if (!used.add(gaId)) return false;
+
+            GameAccount ga = gameAccountService.getGameById(gaId);
+            if (ga == null) return false;
+
+            if (ga.getStatus() == null || !ga.getStatus().equalsIgnoreCase("ACTIVE")) return false;
+            if (!isMatch(od, ga)) return false;
+        }
+        return true;
     }
 
     private Map<UUID, UUID> autoPickAccounts(List<OrderDetail> orderDetails) {
@@ -161,34 +218,56 @@ public class ApproveController {
         return selected;
     }
 
+    private boolean isMatch(OrderDetail od, GameAccount ga) {
+        if (od == null || ga == null) return false;
+        if (od.getGame() == null || ga.getGame() == null) return false;
+        if (!Objects.equals(od.getGame().getGameId(), ga.getGame().getGameId())) return false;
+
+        if (od.getPrice() == null || ga.getPrice() == null) return false;
+        BigDecimal odPrice = BigDecimal.valueOf(od.getPrice().longValue());
+        if (ga.getPrice().compareTo(odPrice) != 0) return false;
+
+        if (ga.getVip() != od.getVip()) return false;
+        if (ga.getLovel() != od.getLovel()) return false;
+        if (ga.getSkin() != od.getSkin()) return false;
+
+        String odRank = od.getRank();
+        if (odRank != null && !odRank.isBlank()) {
+            if (ga.getRank() == null) return false;
+            if (!ga.getRank().equalsIgnoreCase(odRank.trim())) return false;
+        }
+
+        boolean odRent = (od.getDuration() != null && od.getDuration() > 0);
+        boolean gaRent = isRentAccount(ga);
+
+        return odRent == gaRent;
+    }
+
+    private boolean isRentAccount(GameAccount ga) {
+        if (ga == null) return false;
+        String c = ga.getClassify();
+        return c != null && c.trim().equalsIgnoreCase("RENT");
+    }
+
     private List<GameAccount> findCandidatesForOrderDetail(OrderDetail od) {
         if (od == null || od.getGame() == null || od.getPrice() == null) return List.of();
 
-        Game game = od.getGame();
-        List<GameAccount> all = gameAccountService.findGameAccountByGame(game);
+        List<GameAccount> all = gameAccountService.findGameAccountByGame(od.getGame());
         if (all == null || all.isEmpty()) return List.of();
 
-        String odRank = od.getRank();
-        Integer odPriceInt = od.getPrice();
-
-        BigDecimal odPrice = BigDecimal.valueOf(odPriceInt.longValue());
+        BigDecimal odPrice = BigDecimal.valueOf(od.getPrice().longValue());
+        boolean odRent = od.getDuration() != null && od.getDuration() > 0;
 
         List<GameAccount> out = new ArrayList<>();
         for (GameAccount ga : all) {
             if (ga == null) continue;
-
             if (ga.getStatus() == null || !ga.getStatus().equalsIgnoreCase("ACTIVE")) continue;
-
             if (ga.getPrice() == null || ga.getPrice().compareTo(odPrice) != 0) continue;
-            if (ga.getVip() != od.getVip()) continue;
-            if (ga.getLovel() != od.getLovel()) continue;
-            if (ga.getSkin() != od.getSkin()) continue;
 
-            if (odRank != null && !odRank.isBlank()) {
-                if (ga.getRank() == null) continue;
-                if (!ga.getRank().equalsIgnoreCase(odRank)) continue;
-            }
+            boolean gaRent = isRentAccount(ga);
+            if (odRent != gaRent) continue;
 
+            if (!isMatch(od, ga)) continue;
             out.add(ga);
         }
 
@@ -196,76 +275,56 @@ public class ApproveController {
         return out;
     }
 
-    private String handleAcceptAndBuildMail(Orders order,
-                                            List<OrderDetail> orderDetails,
-                                            Map<UUID, UUID> selected) {
+    private String handleAcceptAndPersist(Orders order,
+                                          List<OrderDetail> orderDetails,
+                                          Map<UUID, UUID> selected) {
 
         StringBuilder html = new StringBuilder();
+        Customer customer = order.getCustomer();
 
         for (OrderDetail od : orderDetails) {
-            GameAccount ga = gameAccountService.getGameById(selected.get(od.getId()));
+            UUID gaId = selected.get(od.getId());
+            if (gaId == null) continue;
+
+            GameAccount ga = gameAccountService.getGameById(gaId);
             if (ga == null) continue;
 
             od.setGameAccount(ga);
             orderDetailService.save(od);
 
-            if (od.getDuration() != null && od.getDuration() > 0) {
+            boolean odRent = od.getDuration() != null && od.getDuration() > 0;
+
+            if (!odRent) {
+                GameOwned owned = new GameOwned();
+                owned.setCustomer(customer);
+                owned.setGameAccount(ga);
+                owned.setDateOwned(LocalDateTime.now());
+                gameOwnedService.save(owned);
+
+                ga.setStatus("SOLD");
+                gameAccountService.save(ga);
+            } else {
                 RentAccountGame rent = new RentAccountGame();
-                rent.setCustomer(order.getCustomer());
+                rent.setCustomer(customer);
                 rent.setGameAccount(ga);
-                rent.setDateStart(order.getCreatedDate());
-                rent.setDateEnd(order.getCreatedDate().plusMonths(od.getDuration()));
+                rent.setDateStart(LocalDateTime.now());
+                rent.setDateEnd(LocalDateTime.now().plusMonths(od.getDuration()));
                 rent.setStatus("STILL VALID");
                 rentAccountGameService.save(rent);
-            }
 
-            ga.setStatus("IN USE");
-            gameAccountService.save(ga);
+                ga.setStatus("IN USE");
+                gameAccountService.save(ga);
+            }
 
             html.append("<b>TRÒ CHƠI:</b> ").append(ga.getGame().getGameName()).append("<br>")
                     .append("<b>TÀI KHOẢN:</b> ").append(ga.getGameAccount()).append("<br>")
                     .append("<b>MẬT KHẨU:</b> ").append(ga.getGamePassword()).append("<br>")
                     .append("<b>HÌNH THỨC:</b> ")
-                    .append(od.getDuration() != null && od.getDuration() > 0
-                            ? "THUÊ " + od.getDuration() + " THÁNG"
-                            : "MUA VĨNH VIỄN")
+                    .append(odRent ? ("THUÊ " + od.getDuration() + " THÁNG") : "MUA VĨNH VIỄN")
                     .append("<br>")
                     .append("<b>GIÁ:</b> ").append(ga.getPrice().toPlainString()).append(" đ<br><br>");
         }
 
         return html.toString();
-    }
-
-    private void sendRejectEmail(Customer customer, Orders order) {
-        if (customer == null || customer.getEmail() == null) return;
-
-        String body =
-                "<b>Kính chào quý khách,</b><br><br>" +
-                        "Đơn hàng của bạn đã bị <b>TỪ CHỐI</b> do hiện tại cửa hàng đã <b>HẾT TÀI KHOẢN PHÙ HỢP</b>.<br><br>" +
-                        "<b>MÃ ĐƠN HÀNG:</b> " + order.getId() + "<br><br>" +
-                        "Số tiền đã được hoàn lại vào ví của bạn.<br>" +
-                        "Vui lòng quay lại sau hoặc liên hệ hỗ trợ để được tư vấn thêm.<br><br>" +
-                        "Xin cảm ơn.";
-
-        sendMailTest.testSend(customer.getEmail(), "ĐƠN HÀNG BỊ TỪ CHỐI", body);
-    }
-
-    private void sendAcceptEmail(Customer customer, String accountHtml) {
-        if (customer == null || customer.getEmail() == null) return;
-
-        String body =
-                "<b>Kính chào quý khách,</b><br><br>" +
-                        "Đơn hàng của bạn đã được <b>XÁC NHẬN THÀNH CÔNG</b>.<br>" +
-                        "Dưới đây là thông tin tài khoản game bạn đã mua / thuê:<br><br>" +
-                        accountHtml +
-                        "<hr>" +
-                        "<b>LƯU Ý QUAN TRỌNG:</b><br>" +
-                        "- Vui lòng <b>ĐỔI MẬT KHẨU NGAY</b> sau khi đăng nhập.<br>" +
-                        "- Không chia sẻ thông tin tài khoản cho người khác.<br>" +
-                        "- Với tài khoản thuê, hệ thống sẽ <b>TỰ ĐỘNG THU HỒI</b> khi hết hạn.<br>" +
-                        "- Mọi khiếu nại vui lòng liên hệ trong vòng <b>24 GIỜ</b> kể từ khi nhận tài khoản.<br><br>" +
-                        "Xin cảm ơn và chúc bạn chơi game vui vẻ.";
-
-        sendMailTest.testSend(customer.getEmail(), "THÔNG TIN TÀI KHOẢN GAME", body);
     }
 }

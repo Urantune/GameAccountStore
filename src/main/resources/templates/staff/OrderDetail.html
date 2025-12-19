@@ -30,12 +30,13 @@
             font-size: 12px;
         }
 
-        .offcanvas.offcanvas-end{ width: 520px; }
+        .offcanvas.offcanvas-end{ width: 560px; }
         .ga-card{
             border:1px solid #e9ecef;
             border-radius:14px;
             padding:12px;
             background:#fff;
+            position:relative;
         }
         .ga-row{
             display:flex;
@@ -58,7 +59,15 @@
             gap:10px;
             flex-shrink:0;
         }
-        .ga-price-title{ font-weight:800; margin: 6px 0 12px; }
+        .ga-img{
+            width:100%;
+            height:220px;
+            object-fit:cover;
+            border-radius:12px;
+            border:1px solid #eef1f5;
+            background:#f3f5f8;
+        }
+
         .mark-ok{ color:#198754; font-size:18px; }
         .mark-wait{ color:#adb5bd; font-size:18px; }
 
@@ -75,44 +84,10 @@
             min-width:180px;
         }
 
-        .ga-kv{
-            display:flex;
-            justify-content:space-between;
-            gap:10px;
-            padding-top:8px;
-            margin-top:8px;
-            border-top:1px dashed #eee;
-            font-size:0.92rem;
-        }
-        .ga-kv .k{ color:#6c757d; }
-        .ga-kv .v{ font-weight:700; text-align:right; word-break:break-word; }
-        .ga-img{
-            width:100%;
-            height:220px;
-            object-fit:cover;
-            border-radius:12px;
-            border:1px solid #eef1f5;
-            background:#f3f5f8;
-        }
-        .pill{
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            padding:6px 10px;
-            border-radius:999px;
-            background:#f3f5f8;
-            font-size:.9rem;
-            font-weight:700;
-            color:#495057;
-        }
-
         .ga-card.is-taken{
             opacity:.55;
             filter:grayscale(1);
             pointer-events:none;
-        }
-        .ga-card.is-taken .badge{
-            opacity:.9;
         }
         .ga-card.is-taken::after{
             content:"TAKEN";
@@ -127,7 +102,25 @@
             background:#adb5bd;
             color:#fff;
         }
-        .ga-card{ position:relative; }
+        .ga-card.is-taken .badge{ opacity:.9; }
+
+        .kv{
+            display:flex;
+            justify-content:space-between;
+            gap:10px;
+            padding-top:8px;
+            margin-top:8px;
+            border-top:1px dashed #eee;
+            font-size:0.92rem;
+        }
+        .kv .k{ color:#6c757d; }
+        .kv .v{ font-weight:700; text-align:right; word-break:break-word; }
+
+        .badge-soft{
+            background:#f3f5f8;
+            color:#495057;
+            border:1px solid #e9ecef;
+        }
     </style>
 </head>
 <body>
@@ -168,7 +161,8 @@
                     <th style="min-width:220px;">Order Detail ID</th>
                     <th style="min-width:210px;">Game</th>
                     <th style="min-width:160px;">Price</th>
-                    <th style="min-width:160px;">Duration</th>
+                    <th style="min-width:180px;">Type</th>
+                    <th style="min-width:130px;">Requirements</th>
                     <th style="min-width:110px;" class="text-center">Selected</th>
                     <th style="min-width:120px;" class="text-end">Action</th>
                 </tr>
@@ -176,18 +170,13 @@
 
                 <tbody>
                 <tr th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
-                    <td colspan="6" class="text-center text-muted py-4">No details.</td>
+                    <td colspan="7" class="text-center text-muted py-4">No details.</td>
                 </tr>
 
                 <tr th:each="od : ${orderDetails}">
-                    <td class="mono">
-                        <div class="value" th:text="${od.id}"></div>
-                    </td>
+                    <td class="mono"><div class="value" th:text="${od.id}"></div></td>
 
-                    <td>
-                        <span class="value"
-                              th:text="${od.game != null ? od.game.gameName : 'N/A'}"></span>
-                    </td>
+                    <td><span class="value" th:text="${od.game != null ? od.game.gameName : 'N/A'}"></span></td>
 
                     <td>
                         <span class="value"
@@ -195,13 +184,13 @@
                     </td>
 
                     <td>
-                        <span class="pill" th:if="${od.duration == 0}">
-                            <i class="bi bi-bag"></i> BUY
-                        </span>
-                        <span class="pill" th:if="${od.duration != 0}">
-                            <i class="bi bi-clock-history"></i>
-                            <span th:text="${od.duration}"></span> month(s)
-                        </span>
+                        <span class="badge badge-soft"
+                              th:text="${od.duration != null && od.duration > 0 ? ('RENT ' + od.duration + ' month(s)') : 'BUY (FOREVER)'}"></span>
+                    </td>
+
+                    <td class="mono">
+                        <div>rank: <b th:text="${od.rank != null ? od.rank : '-'}"></b></div>
+                        <div>skin: <b th:text="${od.skin}"></b> | level: <b th:text="${od.lovel}"></b> | vip: <b th:text="${od.vip}"></b></div>
                     </td>
 
                     <td class="text-center">
@@ -216,11 +205,7 @@
                                 data-bs-toggle="offcanvas"
                                 data-bs-target="#gaOffcanvas"
                                 aria-controls="gaOffcanvas"
-                                th:attr="
-          data-odid=${od.id},
-          data-odduration=${od.duration},
-          data-price=${od.price != null ? od.price : ''},
-          data-odgame=${od.game != null ? od.game.gameName : ''}">
+                                th:attr="data-odid=${od.id}">
                             <i class="bi bi-plus"></i>
                         </button>
                     </td>
@@ -253,11 +238,14 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="gaOffcanvas" aria-labelledby="gaOffcanvasLabel">
     <div class="offcanvas-header">
-        <div>
+        <div style="width:100%;">
             <h5 class="offcanvas-title" id="gaOffcanvasLabel">
-                <i class="bi bi-card-list me-2"></i>Pick Account By Price
+                <i class="bi bi-card-list me-2"></i>Pick Account (Matched by Backend)
             </h5>
-            <div class="meta">BUY uses duration NULL. RENT uses duration RENT.</div>
+            <div class="kv">
+                <div class="k">OrderDetail</div>
+                <div class="v mono" id="curOdId">-</div>
+            </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
@@ -267,120 +255,68 @@
             Click <b>+</b> on an order detail to open list.
         </div>
 
-        <div id="gaPanelHeader" class="d-none mb-3">
-            <div class="ga-card">
-                <div class="ga-kv">
-                    <div class="k">OrderDetail</div>
-                    <div class="v mono" id="curOdId">-</div>
-                </div>
-                <div class="ga-kv">
-                    <div class="k">Game</div>
-                    <div class="v mono" id="gaGameText">-</div>
-                </div>
-                <div class="ga-kv">
-                    <div class="k">Bucket</div>
-                    <div class="v mono" id="gaBucketText">-</div>
-                </div>
-                <div class="ga-kv">
-                    <div class="k">Mode</div>
-                    <div class="v mono" id="gaModeText">-</div>
-                </div>
-            </div>
-
-            <div class="ga-price-title">Choose 1 account in this bucket</div>
-        </div>
-
         <div id="gaMatchWrap">
 
-            <div th:each="p : ${priceBuckets}" class="mb-2">
+            <div th:each="entry : ${candidatesMap}" class="d-none ga-od-list"
+                 th:attr="data-odid=${entry.key.id}">
 
-                <div class="ga-price-list d-none" th:attr="data-game='AOV',data-bucket=${p}">
-                    <div class="d-grid gap-2">
-                        <div class="ga-card ga-basic"
-                             th:each="ga : ${aovByPrice != null && aovByPrice.get(p) != null ? aovByPrice.get(p) : #lists.emptyList()}"
-                             th:attr="
-                        data-gaid=${ga.gameAccountId},
-                        data-game=${ga.game != null ? ga.game.gameName : ''},
-                        data-username=${ga.gameAccount},
-                        data-password=${ga.gamePassword},
-                        data-price=${ga.price},
-                        data-rank=${ga.rank},
-                        data-skin=${ga.skin},
-                        data-level=${ga.lovel},
-                        data-vip=${ga.vip},
-                        data-status=${ga.status},
-                        data-classify=${ga.classify},
-                        data-gaduration=${ga.duration},
-                        data-email=${ga.email},
-                        data-desc=${ga.description},
-                        data-img=${ga.imageMain}">
-                            <div class="ga-row">
-                                <div class="ga-left">
-                                    <div class="ga-title"
-                                         th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                    <div class="ga-sub mono">
-                                        <span th:text="${ga.gameAccountId}"></span>
-                                        <span class="mx-1">|</span>
-                                        <span th:text="${ga.gameAccount}"></span>
-                                    </div>
-                                    <div class="ga-sub">
-                                        <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                        <span class="badge bg-light text-dark ms-1"
-                                              th:text="${(ga.duration==null || #strings.isEmpty(#strings.trim(ga.duration))) ? 'BUY' : ga.duration}"></span>
-                                    </div>
-                                </div>
-                                <div class="ga-actions">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                        <i class="bi bi-info-circle"></i>
-                                    </button>
-                                    <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="mb-2 text-muted">
+                    Candidates found:
+                    <b th:text="${entry.value != null ? entry.value.size() : 0}"></b>
                 </div>
 
-                <div class="ga-price-list d-none" th:attr="data-game='FREE FIRE',data-bucket=${p}">
-                    <div class="d-grid gap-2">
-                        <div class="ga-card ga-basic"
-                             th:each="ga : ${ffByPrice != null && ffByPrice.get(p) != null ? ffByPrice.get(p) : #lists.emptyList()}"
-                             th:attr="
-                        data-gaid=${ga.gameAccountId},
-                        data-game=${ga.game != null ? ga.game.gameName : ''},
-                        data-username=${ga.gameAccount},
-                        data-password=${ga.gamePassword},
-                        data-price=${ga.price},
-                        data-rank=${ga.rank},
-                        data-skin=${ga.skin},
-                        data-level=${ga.lovel},
-                        data-vip=${ga.vip},
-                        data-status=${ga.status},
-                        data-classify=${ga.classify},
-                        data-gaduration=${ga.duration},
-                        data-email=${ga.email},
-                        data-desc=${ga.description},
-                        data-img=${ga.imageMain}">
-                            <div class="ga-row">
-                                <div class="ga-left">
-                                    <div class="ga-title"
-                                         th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                    <div class="ga-sub mono">
-                                        <span th:text="${ga.gameAccountId}"></span>
-                                        <span class="mx-1">|</span>
-                                        <span th:text="${ga.gameAccount}"></span>
-                                    </div>
-                                    <div class="ga-sub">
-                                        <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                        <span class="badge bg-light text-dark ms-1"
-                                              th:text="${(ga.duration==null || #strings.isEmpty(#strings.trim(ga.duration))) ? 'BUY' : ga.duration}"></span>
-                                    </div>
+                <div th:if="${entry.value == null || #lists.isEmpty(entry.value)}" class="text-muted">
+                    No matched accounts for this OrderDetail.
+                </div>
+
+                <div class="d-grid gap-2" th:if="${entry.value != null && !#lists.isEmpty(entry.value)}">
+                    <div class="ga-card ga-basic"
+                         th:each="ga : ${entry.value}"
+                         th:attr="
+                            data-gaid=${ga.gameAccountId},
+                            data-game=${ga.game != null ? ga.game.gameName : ''},
+                            data-username=${ga.gameAccount},
+                            data-password=${ga.gamePassword},
+                            data-price=${ga.price},
+                            data-rank=${ga.rank},
+                            data-skin=${ga.skin},
+                            data-level=${ga.lovel},
+                            data-vip=${ga.vip},
+                            data-status=${ga.status},
+                            data-classify=${ga.classify},
+                            data-gaduration=${ga.duration},
+                            data-email=${ga.email},
+                            data-desc=${ga.description},
+                            data-img=${ga.imageMain}">
+                        <div class="ga-row">
+                            <div class="ga-left">
+                                <div class="ga-title"
+                                     th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
+                                <div class="ga-sub mono">
+                                    <span th:text="${ga.gameAccountId}"></span>
+                                    <span class="mx-1">|</span>
+                                    <span th:text="${ga.gameAccount}"></span>
                                 </div>
-                                <div class="ga-actions">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                        <i class="bi bi-info-circle"></i>
-                                    </button>
-                                    <input type="radio" class="form-check-input ga-pick" name="gaPickRadio" th:value="${ga.gameAccountId}">
+                                <div class="ga-sub">
+                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
+                                    <span class="badge bg-light text-dark ms-1"
+                                          th:text="${(ga.classify != null && #strings.equalsIgnoreCase(ga.classify,'RENT')) ? 'RENT' : 'BUY'}"></span>
+                                    <span class="badge bg-success ms-1"
+                                          th:text="${ga.price != null ? (ga.price.toPlainString() + ' đ') : 'N/A'}"></span>
                                 </div>
+                                <div class="ga-sub">
+                                    <span class="badge bg-info text-dark">skin <span th:text="${ga.skin}"></span></span>
+                                    <span class="badge bg-info text-dark ms-1">level <span th:text="${ga.lovel}"></span></span>
+                                    <span class="badge bg-info text-dark ms-1">vip <span th:text="${ga.vip}"></span></span>
+                                </div>
+                            </div>
+
+                            <div class="ga-actions">
+                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
+                                    <i class="bi bi-info-circle"></i>
+                                </button>
+                                <input type="radio" class="form-check-input ga-pick" th:attr="name=${'gaPickRadio-' + entry.key.id}"
+                                       th:value="${ga.gameAccountId}">
                             </div>
                         </div>
                     </div>
@@ -388,7 +324,7 @@
 
             </div>
 
-            <div id="gaNoBucket" class="text-muted d-none">No accounts in this bucket.</div>
+            <div id="gaNoList" class="text-muted d-none">No list found for this OrderDetail.</div>
         </div>
 
     </div>
@@ -404,20 +340,19 @@
 
             <div class="modal-body">
                 <div class="ga-card">
-                    <div class="ga-kv"><div class="k">GA ID</div><div class="v mono" id="mGaid">-</div></div>
-                    <div class="ga-kv"><div class="k">Game</div><div class="v" id="mGame">-</div></div>
-                    <div class="ga-kv"><div class="k">Username</div><div class="v mono" id="mUser">-</div></div>
-                    <div class="ga-kv"><div class="k">Password</div><div class="v mono" id="mPass">-</div></div>
-                    <div class="ga-kv"><div class="k">Price</div><div class="v" id="mPrice">-</div></div>
-                    <div class="ga-kv"><div class="k">Rank</div><div class="v" id="mRank">-</div></div>
-                    <div class="ga-kv"><div class="k">Skins</div><div class="v" id="mSkin">-</div></div>
-                    <div class="ga-kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
-                    <div class="ga-kv"><div class="k">VIP</div><div class="v" id="mVip">-</div></div>
-                    <div class="ga-kv"><div class="k">GA Duration</div><div class="v" id="mDuration">-</div></div>
-                    <div class="ga-kv"><div class="k">Classify</div><div class="v" id="mClassify">-</div></div>
-                    <div class="ga-kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
-                    <div class="ga-kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
-                    <div class="ga-kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
+                    <div class="kv"><div class="k">GA ID</div><div class="v mono" id="mGaid">-</div></div>
+                    <div class="kv"><div class="k">Game</div><div class="v" id="mGame">-</div></div>
+                    <div class="kv"><div class="k">Username</div><div class="v mono" id="mUser">-</div></div>
+                    <div class="kv"><div class="k">Password</div><div class="v mono" id="mPass">-</div></div>
+                    <div class="kv"><div class="k">Price</div><div class="v" id="mPrice">-</div></div>
+                    <div class="kv"><div class="k">Rank</div><div class="v" id="mRank">-</div></div>
+                    <div class="kv"><div class="k">Skins</div><div class="v" id="mSkin">-</div></div>
+                    <div class="kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
+                    <div class="kv"><div class="k">VIP</div><div class="v" id="mVip">-</div></div>
+                    <div class="kv"><div class="k">Type</div><div class="v" id="mType">-</div></div>
+                    <div class="kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
+                    <div class="kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
+                    <div class="kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
 
                     <div class="mt-3" id="mImgWrap" style="display:none;">
                         <img id="mImg" class="ga-img" alt="Image">
@@ -443,47 +378,9 @@
         return num.toLocaleString('vi-VN') + ' đ';
     };
 
-    const bucketFromPrice = (priceStr) => {
-        const s = String(priceStr || '').trim();
-        const n = Number(s.replace(/,/g,''));
-        if (!isFinite(n)) return '';
-        if (n === 50000)  return '50000';
-        if (n === 100000) return '100000';
-        if (n === 150000) return '150000';
-        if (n === 200000) return '200000';
-        return '';
-    };
-
-    const normalizeGame = (g) => {
-        const s = String(g || '').trim().toUpperCase();
-        if (s === 'AOV') return 'AOV';
-        if (s === 'FREE FIRE' || s === 'FREEFIRE') return 'FREE FIRE';
-        return '';
-    };
-
-    const odMode = (odDurationStr) => {
-        const n = Number(String(odDurationStr ?? '').trim());
-        if (!isFinite(n)) return 'BUY';
-        return (n === 0) ? 'BUY' : 'RENT';
-    };
-
-    const gaMode = (gaDurationStr) => {
-        if (gaDurationStr === null || gaDurationStr === undefined) return 'BUY';
-        const s = String(gaDurationStr).trim();
-        if (s === '' || s === '0') return 'BUY';
-        if (s.toUpperCase() === 'RENT') return 'RENT';
-        return 'BUY';
-    };
-
-    const hideAllBuckets = () => {
-        document.querySelectorAll('.ga-price-list').forEach(el => el.classList.add('d-none'));
-        document.getElementById('gaNoBucket')?.classList.add('d-none');
-    };
-
     const setMarkSelected = (odId, ok) => {
         const el = document.getElementById('selMark-' + odId);
         if (!el) return;
-
         if (ok) {
             el.classList.remove('mark-wait');
             el.classList.add('mark-ok');
@@ -527,115 +424,38 @@
         document.querySelectorAll('.ga-card.ga-basic').forEach(card => {
             const id = (card.dataset.gaid || '').trim();
             if (!id) return;
-            card.classList.toggle('is-taken', picked.has(id));
+            const taken = picked.has(id);
+            card.classList.toggle('is-taken', taken);
             const r = card.querySelector('input.ga-pick[type="radio"]');
-            if (r) r.disabled = picked.has(id);
+            if (r) r.disabled = taken;
         });
     };
 
-    const markRelatedPlusButtons = (pickedGaId) => {
-        if (!pickedGaId) return;
-        const pickedCard = document.querySelector('.ga-card.ga-basic[data-gaid="' + CSS.escape(pickedGaId) + '"]');
-        if (!pickedCard) return;
-
-        const key = [
-            normalizeGame(pickedCard.dataset.game),
-            bucketFromPrice(pickedCard.dataset.price),
-            String(pickedCard.dataset.rank || '').trim().toUpperCase(),
-            String(pickedCard.dataset.skin ?? '').trim(),
-            String(pickedCard.dataset.level ?? '').trim(),
-            String(pickedCard.dataset.vip ?? '').trim(),
-            gaMode(pickedCard.dataset.gaduration)
-        ].join('|');
-
-        document.querySelectorAll('.ga-plus').forEach(btn => {
-            const d = btn.dataset;
-            const odKey = [
-                normalizeGame(d.odgame),
-                bucketFromPrice(d.price),
-                String(d.odrank || '').trim().toUpperCase(),
-                String(d.odskin ?? '').trim(),
-                String(d.odlevel ?? '').trim(),
-                String(d.odvip ?? '').trim(),
-                odMode(d.odduration)
-            ].join('|');
-
-            if (odKey === key) {
-                btn.classList.remove('btn-outline-secondary');
-                btn.classList.add('btn-secondary');
-            }
-        });
+    const hideAllOdLists = () => {
+        document.querySelectorAll('.ga-od-list').forEach(el => el.classList.add('d-none'));
+        document.getElementById('gaNoList')?.classList.add('d-none');
     };
 
     let currentOdId = '';
-    let currentOdMode = 'BUY';
 
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.ga-plus');
         if (!btn) return;
 
-        const d = btn.dataset;
-
-        const rawGame  = (d.odgame || '').trim();
-        const rawPrice = (d.price || '').trim();
-
-        currentOdId = d.odid || '';
-        currentOdMode = odMode(d.odduration);
-
-        const empty  = document.getElementById('gaPanelEmpty');
-        const header = document.getElementById('gaPanelHeader');
-        if (empty) empty.style.display = 'none';
-        if (header) header.classList.remove('d-none');
-
+        currentOdId = (btn.dataset.odid || '').trim();
         document.getElementById('curOdId') && (document.getElementById('curOdId').textContent = currentOdId || '-');
 
-        const bucket  = bucketFromPrice(rawPrice);
-        const gameKey = normalizeGame(rawGame);
+        document.getElementById('gaPanelEmpty') && (document.getElementById('gaPanelEmpty').style.display = 'none');
 
-        document.getElementById('gaBucketText') && (document.getElementById('gaBucketText').textContent = bucket ? (bucket + ' đ') : 'N/A');
-        document.getElementById('gaModeText') && (document.getElementById('gaModeText').textContent = currentOdMode);
-        document.getElementById('gaGameText') && (document.getElementById('gaGameText').textContent = gameKey ? gameKey : 'N/A');
+        hideAllOdLists();
 
-        hideAllBuckets();
-
-        if (!bucket) {
-            document.getElementById('gaNoBucket')?.classList.remove('d-none');
-            return;
-        }
-        if (!gameKey) {
-            alert('OrderDetail chưa có Game (od.game). Không lọc được theo game.');
-            document.getElementById('gaNoBucket')?.classList.remove('d-none');
-            return;
-        }
-
-        const selector = '.ga-price-list[data-game="' + gameKey + '"][data-bucket="' + bucket + '"]';
-        const el = document.querySelector(selector);
-
+        const el = document.querySelector('.ga-od-list[data-odid="' + CSS.escape(currentOdId) + '"]');
         if (!el) {
-            document.getElementById('gaNoBucket')?.classList.remove('d-none');
+            document.getElementById('gaNoList')?.classList.remove('d-none');
             return;
         }
 
-        const cards = Array.from(el.querySelectorAll('.ga-card'));
-        let shown = 0;
-
-        cards.forEach(card => {
-            const m = gaMode(card.dataset.gaduration);
-            if (m === currentOdMode) {
-                card.style.display = '';
-                shown++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        if (shown === 0) {
-            document.getElementById('gaNoBucket')?.classList.remove('d-none');
-            return;
-        }
-
-        const selectedName = 'gaPickRadio-' + currentOdId;
-        el.querySelectorAll('input.ga-pick[type="radio"]').forEach(r => r.name = selectedName);
+        el.classList.remove('d-none');
 
         const existed = document.querySelector('#selectedInputs input[name="' + CSS.escape('selected[' + currentOdId + ']') + '"]');
         if (existed && existed.value) {
@@ -643,7 +463,6 @@
             if (r) r.checked = true;
         }
 
-        el.classList.remove('d-none');
         refreshTakenUI();
     });
 
@@ -661,7 +480,6 @@
         setMarkSelected(currentOdId, true);
 
         refreshTakenUI();
-        markRelatedPlusButtons(gaId);
     });
 
     document.addEventListener('click', (e) => {
@@ -689,12 +507,9 @@
         setTxt('mLevel', (card.dataset.level ?? '0'));
         setTxt('mVip', (card.dataset.vip ?? '0'));
 
-        const dur = (card.dataset.gaduration && String(card.dataset.gaduration).trim())
-            ? card.dataset.gaduration
-            : 'NULL';
-        setTxt('mDuration', dur);
+        const type = (card.dataset.classify && String(card.dataset.classify).trim().toUpperCase() === 'RENT') ? 'RENT' : 'BUY';
+        setTxt('mType', type);
 
-        setTxt('mClassify', card.dataset.classify || '-');
         setTxt('mStatus', card.dataset.status || '-');
         setTxt('mEmail', card.dataset.email || '-');
         setTxt('mDesc', card.dataset.desc || '-');
@@ -718,16 +533,6 @@
     });
 
     document.getElementById('btnAccept')?.addEventListener('click', () => {
-        const rows = document.querySelectorAll('[id^="selMark-"]');
-        let okCount = 0;
-        rows.forEach(el => { if (el.classList.contains('mark-ok')) okCount++; });
-
-        const total = rows.length;
-        if (total > 0 && okCount < total) {
-            alert('Not selected enough accounts. (' + okCount + '/' + total + ')');
-            return;
-        }
-
         const decisionInput = document.getElementById('decisionInput');
         const form = document.getElementById('decisionForm');
         if (decisionInput) decisionInput.value = 'ACCEPT';
