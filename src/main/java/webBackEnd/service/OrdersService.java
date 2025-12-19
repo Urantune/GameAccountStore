@@ -7,6 +7,7 @@ import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
 import webBackEnd.repository.OrdersRepositories;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +42,15 @@ public class OrdersService {
 
     public List<Orders> findByCusOrdersId(String status,  Customer customer) {
         return ordersRepositories.findAllByStatusAndCustomer(status,customer);
+    }
+
+
+    public List<Orders> findHistoryOrders(String status) {
+        return ordersRepositories.findAllByStatus(status);
+    }
+
+    public Orders findOrderById(UUID id) {
+        return ordersRepositories.findById(id).orElse(null);
     }
 
 

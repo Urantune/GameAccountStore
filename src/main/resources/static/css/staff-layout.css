@@ -1,0 +1,38 @@
+/* ===== STAFF SIDEBAR ONLY ===== */
+.sidebar{
+    width:260px;
+    min-height:100vh;
+    background:#2a3f54;
+    position:fixed;
+    left:0;
+    top:0;
+    color:#ecf0f1;
+}
+
+.sidebar h5{
+    padding:20px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar a{
+    display:block;
+    padding:14px 24px;
+    color:#ecf0f1;
+    text-decoration:none;
+    transition:0.2s;
+}
+
+.sidebar a i{
+    width:22px;
+}
+
+.sidebar a:hover{
+    background:#1abb9c;
+}
+
+
+.sidebar a.active{
+    background:#1abb9c;
+    font-weight:700;
+}

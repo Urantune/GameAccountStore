@@ -1,25 +1,51 @@
-<div th:fragment="staffSidebar">
-    <div class="sidebar">
-        <h5><i class="bi bi-gear-fill me-2"></i>Staff Panel</h5>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
 
-        <a th:href="@{/staffHome}">
+<th:block th:fragment="staffSidebar">
+    <style>
+        .sidebar{ width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0; color:#ecf0f1; z-index:1000; }
+        .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,.1); margin:0; }
+        .sidebar a{ display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:.2s; }
+        .sidebar a i{ width:22px; }
+        .sidebar a:hover{ background:#1abb9c; }
+        .sidebar a.active{ background:#1abb9c; font-weight:600; }
+    </style>
+
+    <div class="sidebar">
+        <h5><i class="bi bi-person-badge me-2"></i>Staff Panel</h5>
+
+        <a th:href="@{/staffHome}"
+           th:classappend="${activePage == 'DASHBOARD'} ? ' active' : ''">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
 
-        <a th:href="@{/staffHome/approveList}">
+        <a th:href="@{/staffHome/approveList}"
+           th:classappend="${activePage == 'ORDERS'} ? ' active' : ''">
             <i class="bi bi-bag-check-fill"></i> Manage Orders
         </a>
 
-        <a th:href="@{/staffHome/rentApproveList}">
+        <a th:href="@{/staffHome/rentApproveList}"
+           th:classappend="${activePage == 'RENT'} ? ' active' : ''">
             <i class="bi bi-clock-history"></i> Rental Orders
         </a>
 
-        <a th:href="@{/staffHome/revenue}">
+        <a th:href="@{/staffHome/revenue}"
+           th:classappend="${activePage == 'REVENUE'} ? ' active' : ''">
             <i class="bi bi-graph-up-arrow"></i> Revenue
         </a>
 
-        <a th:href="@{/staffHome/manageExpired}">
+        <a th:href="@{/staffHome/manageExpired}"
+           th:classappend="${activePage == 'EXPIRED'} ? ' active' : ''">
             <i class="bi bi-exclamation-triangle-fill"></i> Manage Expired
         </a>
+
+        <a th:href="@{/staffHome/historyOrders}"
+           th:classappend="${activePage == 'HISTORY'} ? ' active' : ''">
+            <i class="bi bi-clock-history"></i> History Orders
+        </a>
     </div>
-</div>
+</th:block>
+
+</body>
+</html>

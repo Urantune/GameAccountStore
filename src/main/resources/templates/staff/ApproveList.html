@@ -23,6 +23,7 @@
         #orderTable thead th i { font-size:12px; }
         th.sortable { cursor:pointer; user-select:none; }
         .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+        .badge-soft{ background:#f3f5f8; color:#495057; border:1px solid #e9ecef; }
     </style>
 </head>
 
@@ -40,6 +41,7 @@
                 <option value="orderId">Order ID</option>
                 <option value="username">Username</option>
                 <option value="date">Created Date</option>
+                <option value="type">Type</option>
             </select>
 
             <input type="text" id="searchInput" class="form-control form-control-sm"
@@ -66,22 +68,26 @@
                 </th>
 
                 <th class="sortable" onclick="sortTable(3)">
-                    Voucher <i class="bi bi-arrow-down-up"></i>
+                    Type <i class="bi bi-arrow-down-up"></i>
                 </th>
 
                 <th class="sortable" onclick="sortTable(4)">
+                    Voucher <i class="bi bi-arrow-down-up"></i>
+                </th>
+
+                <th class="sortable" onclick="sortTable(5)">
                     Created Date <i class="bi bi-arrow-down-up"></i>
                 </th>
 
-                <th class="sortable text-end" onclick="sortTable(5)" style="width: 120px;">
+                <th class="sortable text-end" onclick="sortTable(6)" style="width: 120px;">
                     Quantity <i class="bi bi-arrow-down-up"></i>
                 </th>
 
-                <th class="sortable text-end" onclick="sortTable(6)" style="width: 160px;">
+                <th class="sortable text-end" onclick="sortTable(7)" style="width: 160px;">
                     Avg Price <i class="bi bi-arrow-down-up"></i>
                 </th>
 
-                <th class="sortable text-end" onclick="sortTable(7)" style="width: 160px;">
+                <th class="sortable text-end" onclick="sortTable(8)" style="width: 160px;">
                     Total Price <i class="bi bi-arrow-down-up"></i>
                 </th>
 
@@ -97,12 +103,16 @@
 
                 <td th:text="${o.customer != null ? o.customer.username : 'N/A'}"></td>
 
+                <td>
+                    <span class="badge badge-soft"
+                          th:text="${orderTypeMap != null && orderTypeMap.get(o.id) != null ? orderTypeMap.get(o.id) : 'N/A'}"></span>
+                </td>
+
                 <td th:text="${o.voucher != null ? o.voucher.voucherName : 'Not Voucher'}"></td>
 
                 <td th:text="${o.createdDate != null ? #temporals.format(o.createdDate, 'HH:mm dd/MM/yyyy') : 'N/A'}"></td>
 
-                <td class="text-end"
-                    th:text="${getQuantity.findAllByOrderId(o.id)}"></td>
+                <td class="text-end" th:text="${getQuantity.findAllByOrderId(o.id)}"></td>
 
                 <td class="text-end"
                     th:text="${(getQuantity.findAllByOrderId(o.id) != null and getQuantity.findAllByOrderId(o.id) > 0 and o.totalPrice != null)
@@ -121,7 +131,7 @@
             </tr>
 
             <tr class="no-data" th:if="${#lists.isEmpty(orderList)}">
-                <td colspan="9" class="text-center text-muted py-4">No orders found.</td>
+                <td colspan="10" class="text-center text-muted py-4">No orders found.</td>
             </tr>
             </tbody>
         </table>
@@ -178,7 +188,8 @@
             let cellValue = "";
             if (type === "orderId") cellValue = row.children[1].innerText.toLowerCase();
             if (type === "username") cellValue = row.children[2].innerText.toLowerCase();
-            if (type === "date") cellValue = row.children[4].innerText.toLowerCase();
+            if (type === "type") cellValue = row.children[3].innerText.toLowerCase();
+            if (type === "date") cellValue = row.children[5].innerText.toLowerCase();
             row.style.display = cellValue.includes(value) ? "" : "none";
         });
 

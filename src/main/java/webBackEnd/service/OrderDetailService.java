@@ -43,6 +43,12 @@ public class OrderDetailService {
         return orderDetailRepositories.findAllByGameAccount(ga);
     }
 
+
+    public List<OrderDetail> findByOrder(Orders order) {
+        if (order == null) return Collections.emptyList();
+        return orderDetailRepositories.findByOrder(order);
+    }
+
     public long countByOrder(Orders order) {
         return orderDetailRepositories.countByOrder(order);
     }

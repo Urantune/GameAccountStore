@@ -27,10 +27,8 @@ public class ApproveController {
     @Autowired private RentAccountGameService rentAccountGameService;
     @Autowired private GameAccountService gameAccountService;
     @Autowired private TransactionService transactionService;
-
     @Autowired private GameOwnedService gameOwnedService;
     @Autowired private VoucherCustomerService voucherCustomerService;
-
     @Autowired private MailAsyncService mailAsyncService;
 
     @GetMapping("/approveList")
@@ -39,15 +37,38 @@ public class ApproveController {
         list.sort(Comparator.comparing(Orders::getCreatedDate, Comparator.nullsLast(Comparator.naturalOrder())));
 
         Map<UUID, List<OrderDetail>> orderDetailsMap = new HashMap<>();
+        Map<UUID, String> orderTypeMap = new HashMap<>();
+
         for (Orders o : list) {
-            orderDetailsMap.put(o.getId(), orderDetailService.findAllByOrderId(o.getId()));
+            List<OrderDetail> ods = orderDetailService.findAllByOrderId(o.getId());
+            orderDetailsMap.put(o.getId(), ods);
+            orderTypeMap.put(o.getId(), buildOrderTypeLabel(ods));
         }
 
         model.addAttribute("orderList", list);
         model.addAttribute("orderDetailsMap", orderDetailsMap);
+        model.addAttribute("orderTypeMap", orderTypeMap);
         model.addAttribute("getQuantity", getQuantity);
 
         return "staff/ApproveList";
+    }
+
+    private String buildOrderTypeLabel(List<OrderDetail> ods) {
+        if (ods == null || ods.isEmpty()) return "N/A";
+        int rentCount = 0;
+        Integer maxMonths = null;
+
+        for (OrderDetail od : ods) {
+            Integer d = (od != null ? od.getDuration() : null);
+            if (d != null && d > 0) {
+                rentCount++;
+                if (maxMonths == null || d > maxMonths) maxMonths = d;
+            }
+        }
+
+        if (rentCount == 0) return "BUY (FOREVER)";
+        if (rentCount == ods.size()) return "RENT (max " + (maxMonths == null ? 0 : maxMonths) + " month(s))";
+        return "MIXED";
     }
 
     @GetMapping("/approve/{orderId}")
@@ -81,9 +102,7 @@ public class ApproveController {
 
         final UUID DEFAULT_STAFF_ID = UUID.fromString("88A7A905-CB27-431C-BFED-1D16BEA9B91C");
         Staff staff = null;
-        try {
-            staff = administratorService.getStaffByID(DEFAULT_STAFF_ID);
-        } catch (Exception ignored) {}
+        try { staff = administratorService.getStaffByID(DEFAULT_STAFF_ID); } catch (Exception ignored) {}
 
         Customer customer = order.getCustomer();
         if (customer == null && user != null) customer = customerService.findCustomerByUsername(user.getUsername());
@@ -104,9 +123,7 @@ public class ApproveController {
             }
 
             if (order.getVoucher() != null && customer != null) {
-                try {
-                    voucherCustomerService.rollbackUsed(customer, order.getVoucher());
-                } catch (Exception ignored) {}
+                try { voucherCustomerService.rollbackUsed(customer, order.getVoucher()); } catch (Exception ignored) {}
             }
 
             order.setStatus("REJECTED");
@@ -245,11 +262,9 @@ public class ApproveController {
 
     private boolean isRentAccount(GameAccount ga) {
         if (ga == null) return false;
-        String d = ga.getDuration();
-        if (d == null) return false;
-        d = d.trim();
-        if (d.isEmpty() || d.equals("0")) return false;
-        return d.equalsIgnoreCase("RENT");
+        String classify = ga.getClassify();
+        if (classify == null) return false;
+        return classify.trim().equalsIgnoreCase("RENT");
     }
 
     private List<GameAccount> findCandidatesForOrderDetail(OrderDetail od) {
@@ -319,8 +334,7 @@ public class ApproveController {
             html.append("<b>TRÒ CHƠI:</b> ").append(ga.getGame().getGameName()).append("<br>")
                     .append("<b>TÀI KHOẢN:</b> ").append(ga.getGameAccount()).append("<br>")
                     .append("<b>MẬT KHẨU:</b> ").append(ga.getGamePassword()).append("<br>")
-                    .append("<b>HÌNH THỨC:</b> ")
-                    .append(odRent ? ("THUÊ " + od.getDuration() + " THÁNG") : "MUA VĨNH VIỄN")
+                    .append("<b>HÌNH THỨC:</b> ").append(odRent ? ("THUÊ " + od.getDuration() + " THÁNG") : "MUA VĨNH VIỄN")
                     .append("<br>")
                     .append("<b>GIÁ:</b> ").append(ga.getPrice().toPlainString()).append(" đ<br><br>");
         }
