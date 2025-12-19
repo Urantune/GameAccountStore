@@ -356,102 +356,104 @@
     <div class="container py-5">
 
         <form id="checkoutForm" onsubmit="return submitCheckout(event)">
-        <div class="table-responsive">
-                <table class="table">
+            <div class="table-responsive">
+                <table class="table align-middle">
                     <thead>
                     <tr>
-                        <th scope="col" style="width:60px;">
+                        <th style="width:60px;">
                             <input class="form-check-input" type="checkbox" id="checkAll">
                         </th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Model</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Duration</th>
-                        <th scope="col">Handle</th>
+                        <th>Game</th>
+                        <th>Model</th>
+                        <th>Rank</th>
+                        <th>Skin</th>
+                        <th>Level</th>
+                        <th>Vip</th>
+                        <th>Tài khoản</th>
+                        <th>Giá</th>
+                        <th>Tổng giá</th>
+                        <th>Handle</th>
                     </tr>
                     </thead>
 
                     <tbody>
+                    <!-- GIỎ TRỐNG -->
                     <tr th:if="${list == null || #lists.isEmpty(list)}">
-                        <td colspan="7" class="text-center py-4">Giỏ hàng đang trống</td>
+                        <td colspan="11" class="text-center py-4">
+                            Giỏ hàng đang trống
+                        </td>
                     </tr>
 
+                    <!-- ITEM -->
                     <tr th:each="c : ${list}">
                         <!-- Checkbox -->
-                        <td class="py-4">
+                        <td>
                             <input class="form-check-input item-check"
                                    type="checkbox"
                                    name="selectedCartIds"
                                    th:value="${c.cartId}"
                                    th:data-price="${c.price != null ? c.price : 0}">
                         </td>
+                        <!-- Game -->
+                        <td th:text="${c.game?.gameName ?: 'N/A'}"></td>
 
-                        <!-- Game Name -->
-                        <th scope="row">
-                            <p class="mb-0 py-4"
-                               th:text="${c.game != null ? c.game.gameName : 'N/A'}">
-                            </p>
-                        </th>
+                        <!-- Model -->
+                        <td th:text="${c.game?.gameId ?: 'N/A'}"></td>
 
-                        <!-- Game ID / Model -->
+                        <!-- Rank -->
+                        <td th:text="${c.rank?: 'N/A'}"></td>
+
+                        <!-- Skin -->
+                        <td th:text="${c.skin ?: 'N/A'}"></td>
+
+                        <!-- Level -->
+                        <td th:text="${c.lovel?: 'N/A'}"></td>
+
+                        <!-- Vip -->
                         <td>
-                            <p class="mb-0 py-4"
-                               th:text="${c.game != null ? c.game.gameId : 'N/A'}">
-                            </p>
+                            <span th:if="${c.vip}">VIP</span>
+                        </td>
+                        <!-- Tài khoản (Permanent / Rent) -->
+                        <td>
+                <span th:switch="${c.duration}">
+                    <span th:case="0">Vĩnh viễn</span>
+                    <span th:case="1">Thuê 1 tháng</span>
+                    <span th:case="2">Thuê 2 tháng</span>
+                    <span th:case="3">Thuê 3 tháng</span>
+                    <span th:case="*"
+                          th:text="'Thuê ' + c.duration + ' tháng'"></span>
+                </span>
                         </td>
 
-                        <!-- Price -->
+                        <!-- Giá -->
                         <td>
-                            <p class="mb-0 py-4"
-                               th:text="${c.price != null
-               ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
-               : '0 đ'}">
-                            </p>
+                <span th:text="${c.price != null
+                    ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
+                    : '0 đ'}"></span>
                         </td>
 
-                        <!-- Total (same as price vì chưa quantity) -->
+                        <!-- Tổng giá (chưa quantity → = giá) -->
                         <td>
-                            <p class="mb-0 py-4"
-                               th:text="${c.price != null
-               ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
-               : '0 đ'}">
-                            </p>
+                <span th:text="${c.price != null
+                    ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
+                    : '0 đ'}"></span>
                         </td>
-
-                        <!-- ✅ DURATION (KHÔNG ĐỤNG ENTITY) -->
-                        <td>
-                            <p class="mb-0 py-4 fw-semibold"
-                               th:switch="${c.duration}">
-                                <span th:case="0">Mua vĩnh viễn</span>
-                                <span th:case="1">Thuê 1 tháng</span>
-                                <span th:case="2">Thuê 2 tháng</span>
-                                <span th:case="3">Thuê 3 tháng</span>
-                                <span th:case="*" th:text="'Thuê ' + c.duration + ' tháng'"></span>
-
-                            </p>
-                        </td>
-
 
                         <!-- Handle -->
-                        <td class="py-4">
+                        <td>
                             <form th:action="@{/home/cart/delete/{id}(id=${c.cartId})}"
                                   method="post"
-                                  style="display:inline">
-
+                                  onsubmit="return confirm('Xoá game này khỏi giỏ hàng?')">
                                 <button type="submit"
-                                        class="btn btn-md rounded-circle bg-light border"
-                                        onclick="return confirm('Xoá game này khỏi giỏ hàng?')">
+                                        class="btn btn-sm rounded-circle bg-light border">
                                     <i class="fa fa-times text-danger"></i>
                                 </button>
                             </form>
                         </td>
-
                     </tr>
                     </tbody>
                 </table>
             </div>
-
             <div class="row g-4 justify-content-end">
                 <div class="col-8"></div>
                 <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
