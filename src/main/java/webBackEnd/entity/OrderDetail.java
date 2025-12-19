@@ -26,7 +26,6 @@ public class OrderDetail {
     private Integer price;
     @Column(name = "rank")
     private String rank;
-    @Column(name = "skins")
     private int skin;
     @Column(name = "level")
     private int lovel;

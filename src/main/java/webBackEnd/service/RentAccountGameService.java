@@ -2,9 +2,11 @@ package webBackEnd.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import webBackEnd.entity.GameAccount;
 import webBackEnd.entity.RentAccountGame;
 import webBackEnd.repository.RentAccountGameRepositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,5 +51,13 @@ public class RentAccountGameService {
 
     public void delete(RentAccountGame rentAccountGame){
         rentAccountGameRepositories.delete(rentAccountGame);
+    }
+
+    public boolean isAccountRented(GameAccount account) {
+        return rentAccountGameRepositories.existsByGameAccountAndDateEndAfterAndStatus(
+                account,
+                LocalDateTime.now(),
+                "ACTIVE"   // đổi theo status của bạn
+        );
     }
 }

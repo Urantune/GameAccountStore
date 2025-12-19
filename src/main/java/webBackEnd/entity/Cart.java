@@ -26,7 +26,7 @@ public class Cart {
     private Integer duration;
     @Column(name = "rank")
     private String rank;
-    @Column(name = "skins")
+    @Column(name = "skin")
     private int skin;
     @Column(name = "level")
     private int lovel;

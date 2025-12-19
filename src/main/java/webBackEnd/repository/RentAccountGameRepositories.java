@@ -7,6 +7,7 @@ import webBackEnd.entity.Customer;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.entity.RentAccountGame;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,5 +23,11 @@ public interface RentAccountGameRepositories extends JpaRepository<RentAccountGa
     void deleteByGameAccount_GameAccountId(UUID gameAccountId);
     boolean existsByGameAccount_GameAccountId(UUID gameAccountId);
 
+    // Có bản ghi thuê còn hiệu lực không
+    boolean existsByGameAccountAndDateEndAfterAndStatus(
+            GameAccount gameAccount,
+            LocalDateTime now,
+            String status
+    );
 
 }

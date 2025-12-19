@@ -16,6 +16,7 @@ import webBackEnd.repository.RentAccountGameRepositories;
 import webBackEnd.service.CustomerService;
 import webBackEnd.service.GameAccountService;
 import webBackEnd.service.GameService;
+import webBackEnd.service.RentAccountGameService;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping(value = "/home")
 public class GameController {
+    @Autowired
+    private RentAccountGameService   rentAccountGameService;
     @Autowired
     private GameAccountService gameAccountService;
     @Autowired
@@ -143,12 +146,20 @@ public class GameController {
 
 
     @GetMapping("/accDetail/{id}")
-    public String gameDetail(@PathVariable UUID id, Model model, @RequestParam String game) {
+    public String gameDetail(@PathVariable UUID id,
+                             @RequestParam String game,
+                             Model model) {
+
         GameAccount p = gameAccountService.findGameAccountById(id);
+        boolean isRented = rentAccountGameService.isAccountRented(p);
         model.addAttribute("p", p);
         model.addAttribute("gameName", game);
+        model.addAttribute("isRented", isRented);
+
         return "customer/GameDetail";
     }
+
+
 
 
 }
