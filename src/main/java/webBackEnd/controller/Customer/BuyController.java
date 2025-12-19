@@ -219,7 +219,7 @@ public class BuyController {
         else{
             detail.setDuration(0);
         }
-        detail.setPrice(totalAfterVoucher.intValue());
+        detail.setPrice(basePrice.setScale(0, RoundingMode.HALF_UP).intValue());
         detail.setLovel(gameAccount.getLovel());
         detail.setRank(gameAccount.getRank());
         detail.setSkin(gameAccount.getSkin());
