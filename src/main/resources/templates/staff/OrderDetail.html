@@ -10,14 +10,9 @@
 
     <style>
         body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
-        .sidebar{
-            width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0;
-            color:#ecf0f1;
-        }
+        .sidebar{ width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0; color:#ecf0f1; }
         .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
-        .sidebar a{
-            display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s;
-        }
+        .sidebar a{ display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s; }
         .sidebar a i{ width:22px; }
         .sidebar a:hover{ background:#1abb9c; }
         .content{ margin-left:260px; padding:30px; }
@@ -110,6 +105,29 @@
             font-weight:700;
             color:#495057;
         }
+
+        .ga-card.is-taken{
+            opacity:.55;
+            filter:grayscale(1);
+            pointer-events:none;
+        }
+        .ga-card.is-taken .badge{
+            opacity:.9;
+        }
+        .ga-card.is-taken::after{
+            content:"TAKEN";
+            position:absolute;
+            right:12px;
+            top:12px;
+            font-weight:900;
+            letter-spacing:1px;
+            font-size:12px;
+            padding:4px 8px;
+            border-radius:999px;
+            background:#adb5bd;
+            color:#fff;
+        }
+        .ga-card{ position:relative; }
     </style>
 </head>
 <body>
@@ -205,8 +223,6 @@
           data-odgame=${od.game != null ? od.game.gameName : ''}">
                             <i class="bi bi-plus"></i>
                         </button>
-
-
                     </td>
                 </tr>
                 </tbody>
@@ -278,9 +294,7 @@
 
             <div th:each="p : ${priceBuckets}" class="mb-2">
 
-
-            <div class="ga-price-list d-none"
-                     th:attr="data-game='AOV',data-bucket=${p}">
+                <div class="ga-price-list d-none" th:attr="data-game='AOV',data-bucket=${p}">
                     <div class="d-grid gap-2">
                         <div class="ga-card ga-basic"
                              th:each="ga : ${aovByPrice != null && aovByPrice.get(p) != null ? aovByPrice.get(p) : #lists.emptyList()}"
@@ -326,8 +340,7 @@
                     </div>
                 </div>
 
-                <div class="ga-price-list d-none"
-                     th:attr="data-game='FREE FIRE',data-bucket=${p}">
+                <div class="ga-price-list d-none" th:attr="data-game='FREE FIRE',data-bucket=${p}">
                     <div class="d-grid gap-2">
                         <div class="ga-card ga-basic"
                              th:each="ga : ${ffByPrice != null && ffByPrice.get(p) != null ? ffByPrice.get(p) : #lists.emptyList()}"
@@ -422,7 +435,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // ====== Helpers ======
     const fmtVND = (v) => {
         if (v === null || v === undefined || v === '') return 'N/A';
         const s = String(v).trim();
@@ -449,15 +461,12 @@
         return '';
     };
 
-    // OrderDetail: duration 0 => BUY, >0 => RENT
     const odMode = (odDurationStr) => {
         const n = Number(String(odDurationStr ?? '').trim());
         if (!isFinite(n)) return 'BUY';
         return (n === 0) ? 'BUY' : 'RENT';
     };
 
-    // GameAccount: duration null/"" => BUY, "RENT" => RENT
-    // (nếu DB m dùng kiểu khác, chỉnh ở đây)
     const gaMode = (gaDurationStr) => {
         if (gaDurationStr === null || gaDurationStr === undefined) return 'BUY';
         const s = String(gaDurationStr).trim();
@@ -502,24 +511,77 @@
         input.value = gaId;
     };
 
-    // ====== State ======
+    const getAllPickedGaIds = () => {
+        const wrap = document.getElementById('selectedInputs');
+        if (!wrap) return new Set();
+        const ids = new Set();
+        wrap.querySelectorAll('input[type="hidden"][name^="selected["]').forEach(i => {
+            const v = (i.value || '').trim();
+            if (v) ids.add(v);
+        });
+        return ids;
+    };
+
+    const refreshTakenUI = () => {
+        const picked = getAllPickedGaIds();
+        document.querySelectorAll('.ga-card.ga-basic').forEach(card => {
+            const id = (card.dataset.gaid || '').trim();
+            if (!id) return;
+            card.classList.toggle('is-taken', picked.has(id));
+            const r = card.querySelector('input.ga-pick[type="radio"]');
+            if (r) r.disabled = picked.has(id);
+        });
+    };
+
+    const markRelatedPlusButtons = (pickedGaId) => {
+        if (!pickedGaId) return;
+        const pickedCard = document.querySelector('.ga-card.ga-basic[data-gaid="' + CSS.escape(pickedGaId) + '"]');
+        if (!pickedCard) return;
+
+        const key = [
+            normalizeGame(pickedCard.dataset.game),
+            bucketFromPrice(pickedCard.dataset.price),
+            String(pickedCard.dataset.rank || '').trim().toUpperCase(),
+            String(pickedCard.dataset.skin ?? '').trim(),
+            String(pickedCard.dataset.level ?? '').trim(),
+            String(pickedCard.dataset.vip ?? '').trim(),
+            gaMode(pickedCard.dataset.gaduration)
+        ].join('|');
+
+        document.querySelectorAll('.ga-plus').forEach(btn => {
+            const d = btn.dataset;
+            const odKey = [
+                normalizeGame(d.odgame),
+                bucketFromPrice(d.price),
+                String(d.odrank || '').trim().toUpperCase(),
+                String(d.odskin ?? '').trim(),
+                String(d.odlevel ?? '').trim(),
+                String(d.odvip ?? '').trim(),
+                odMode(d.odduration)
+            ].join('|');
+
+            if (odKey === key) {
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-secondary');
+            }
+        });
+    };
+
     let currentOdId = '';
     let currentOdMode = 'BUY';
 
-    // ====== Click + to open bucket (FILTER BY GAME) ======
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.ga-plus');
         if (!btn) return;
 
         const d = btn.dataset;
 
-        const rawGame  = (d.odgame || '').trim();   // MUST have
+        const rawGame  = (d.odgame || '').trim();
         const rawPrice = (d.price || '').trim();
 
         currentOdId = d.odid || '';
         currentOdMode = odMode(d.odduration);
 
-        // UI header
         const empty  = document.getElementById('gaPanelEmpty');
         const header = document.getElementById('gaPanelHeader');
         if (empty) empty.style.display = 'none';
@@ -546,7 +608,6 @@
             return;
         }
 
-        // ONLY 1 list by game + bucket
         const selector = '.ga-price-list[data-game="' + gameKey + '"][data-bucket="' + bucket + '"]';
         const el = document.querySelector(selector);
 
@@ -555,7 +616,6 @@
             return;
         }
 
-        // filter BUY/RENT
         const cards = Array.from(el.querySelectorAll('.ga-card'));
         let shown = 0;
 
@@ -574,22 +634,19 @@
             return;
         }
 
-        // radio name by OD (choose 1)
         const selectedName = 'gaPickRadio-' + currentOdId;
         el.querySelectorAll('input.ga-pick[type="radio"]').forEach(r => r.name = selectedName);
 
-        // restore selected
         const existed = document.querySelector('#selectedInputs input[name="' + CSS.escape('selected[' + currentOdId + ']') + '"]');
         if (existed && existed.value) {
             const r = el.querySelector('input.ga-pick[type="radio"][value="' + existed.value + '"]');
             if (r) r.checked = true;
         }
 
-        // show list
         el.classList.remove('d-none');
+        refreshTakenUI();
     });
 
-    // ====== Pick radio ======
     document.addEventListener('change', (e) => {
         const r = e.target.closest('input.ga-pick[type="radio"]');
         if (!r) return;
@@ -597,14 +654,16 @@
         const card = r.closest('.ga-card');
         if (!card) return;
 
-        const gaId = card.dataset.gaid || r.value || '';
+        const gaId = (card.dataset.gaid || r.value || '').trim();
         if (!currentOdId || !gaId) return;
 
         upsertHiddenSelection(currentOdId, gaId);
         setMarkSelected(currentOdId, true);
+
+        refreshTakenUI();
+        markRelatedPlusButtons(gaId);
     });
 
-    // ====== Info modal (CLICK i BUTTON) ======
     document.addEventListener('click', (e) => {
         const infoBtn = e.target.closest('.ga-info');
         if (!infoBtn) return;
@@ -658,7 +717,6 @@
         if (modalEl && window.bootstrap) new bootstrap.Modal(modalEl).show();
     });
 
-    // ====== Accept / Reject ======
     document.getElementById('btnAccept')?.addEventListener('click', () => {
         const rows = document.querySelectorAll('[id^="selMark-"]');
         let okCount = 0;
@@ -682,9 +740,11 @@
         if (decisionInput) decisionInput.value = 'REJECT';
         if (form) form.submit();
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        refreshTakenUI();
+    });
 </script>
-
-
 
 </body>
 </html>

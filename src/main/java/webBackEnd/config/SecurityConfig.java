@@ -62,6 +62,9 @@ public class SecurityConfig {
 
                 .requestMatchers(HttpMethod.POST, "/home/forgot-password").permitAll()
 
+                .requestMatchers(HttpMethod.GET, "/adminHome", "/adminHome/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/staffHome", "/staffHome/").permitAll()
+
                 .requestMatchers("/adminHome/**").hasRole("ADMIN")
                 .requestMatchers("/staffHome/**").hasRole("STAFF")
 

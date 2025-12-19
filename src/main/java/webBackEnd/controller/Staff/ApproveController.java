@@ -50,42 +50,19 @@ public class ApproveController {
 
     @GetMapping("/approve/{orderId}")
     public String viewOrderDetail(@PathVariable UUID orderId, Model model) {
-
         Orders order = ordersService.findById(orderId);
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
 
-        List<String> priceBuckets = Arrays.asList("50000", "100000", "150000", "200000");
-
-        Map<String, List<GameAccount>> aovByPrice = new LinkedHashMap<>();
-        Map<String, List<GameAccount>> ffByPrice = new LinkedHashMap<>();
-        for (String p : priceBuckets) {
-            aovByPrice.put(p, new ArrayList<>());
-            ffByPrice.put(p, new ArrayList<>());
-        }
-
-        Game aov = gameService.findGameByGameName("AOV");
-        Game ff = gameService.findGameByGameName("FREE FIRE");
-
-        List<GameAccount> listAOV = gameAccountService.findGameAccountByGame(aov);
-        List<GameAccount> listFF = gameAccountService.findGameAccountByGame(ff);
-
-        for (GameAccount ga : listAOV) {
-            if (ga.getPrice() == null) continue;
-            String key = ga.getPrice().setScale(0).toPlainString();
-            if (aovByPrice.containsKey(key)) aovByPrice.get(key).add(ga);
-        }
-
-        for (GameAccount ga : listFF) {
-            if (ga.getPrice() == null) continue;
-            String key = ga.getPrice().setScale(0).toPlainString();
-            if (ffByPrice.containsKey(key)) ffByPrice.get(key).add(ga);
+        Map<UUID, List<GameAccount>> candidatesMap = new LinkedHashMap<>();
+        if (orderDetails != null) {
+            for (OrderDetail od : orderDetails) {
+                candidatesMap.put(od.getId(), findCandidatesForOrderDetail(od));
+            }
         }
 
         model.addAttribute("order", order);
         model.addAttribute("orderDetails", orderDetails);
-        model.addAttribute("priceBuckets", priceBuckets);
-        model.addAttribute("aovByPrice", aovByPrice);
-        model.addAttribute("ffByPrice", ffByPrice);
+        model.addAttribute("candidatesMap", candidatesMap);
 
         return "staff/OrderDetail";
     }
@@ -94,7 +71,6 @@ public class ApproveController {
     @Transactional
     public String decision(@RequestParam UUID orderId,
                            @RequestParam String decision,
-                           @RequestParam Map<String, String> params,
                            @AuthenticationPrincipal CustomUserDetails user) {
 
         Orders order = ordersService.findById(orderId);
@@ -131,24 +107,16 @@ public class ApproveController {
             }
 
             ordersService.delete(order);
-
             sendRejectEmail(order.getCustomer(), order);
 
             return "redirect:/staffHome/approveList";
         }
 
         List<OrderDetail> orderDetails = orderDetailService.findAllByOrderId(orderId);
-        if (orderDetails == null || orderDetails.isEmpty())
-            return "redirect:/staffHome/approve/" + orderId;
+        if (orderDetails == null || orderDetails.isEmpty()) return "redirect:/staffHome/approve/" + orderId;
 
-        Map<UUID, UUID> selected = extractSelected(params);
-
-        Set<UUID> usedGa = new HashSet<>();
-        for (OrderDetail od : orderDetails) {
-            UUID pick = selected.get(od.getId());
-            if (pick == null || !usedGa.add(pick))
-                return "redirect:/staffHome/approve/" + orderId;
-        }
+        Map<UUID, UUID> selected = autoPickAccounts(orderDetails);
+        if (selected == null || selected.size() != orderDetails.size()) return "redirect:/staffHome/approve/" + orderId;
 
         String accountHtml = handleAcceptAndBuildMail(order, orderDetails, selected);
 
@@ -171,19 +139,61 @@ public class ApproveController {
         return "redirect:/staffHome/approveList";
     }
 
-    private Map<UUID, UUID> extractSelected(Map<String, String> params) {
-        Map<UUID, UUID> selected = new HashMap<>();
-        for (Map.Entry<String, String> e : params.entrySet()) {
-            String k = e.getKey();
-            if (k != null && k.startsWith("selected[") && k.endsWith("]")) {
-                String odId = k.substring(9, k.length() - 1);
-                String gaId = e.getValue();
-                try {
-                    selected.put(UUID.fromString(odId), UUID.fromString(gaId));
-                } catch (Exception ignored) {}
+    private Map<UUID, UUID> autoPickAccounts(List<OrderDetail> orderDetails) {
+        Map<UUID, UUID> selected = new LinkedHashMap<>();
+        Set<UUID> used = new HashSet<>();
+
+        for (OrderDetail od : orderDetails) {
+            List<GameAccount> candidates = findCandidatesForOrderDetail(od);
+            GameAccount pick = null;
+
+            for (GameAccount ga : candidates) {
+                if (ga != null && ga.getGameAccountId() != null && used.add(ga.getGameAccountId())) {
+                    pick = ga;
+                    break;
+                }
             }
+
+            if (pick == null) return null;
+            selected.put(od.getId(), pick.getGameAccountId());
         }
+
         return selected;
+    }
+
+    private List<GameAccount> findCandidatesForOrderDetail(OrderDetail od) {
+        if (od == null || od.getGame() == null || od.getPrice() == null) return List.of();
+
+        Game game = od.getGame();
+        List<GameAccount> all = gameAccountService.findGameAccountByGame(game);
+        if (all == null || all.isEmpty()) return List.of();
+
+        String odRank = od.getRank();
+        Integer odPriceInt = od.getPrice();
+
+        BigDecimal odPrice = BigDecimal.valueOf(odPriceInt.longValue());
+
+        List<GameAccount> out = new ArrayList<>();
+        for (GameAccount ga : all) {
+            if (ga == null) continue;
+
+            if (ga.getStatus() == null || !ga.getStatus().equalsIgnoreCase("ACTIVE")) continue;
+
+            if (ga.getPrice() == null || ga.getPrice().compareTo(odPrice) != 0) continue;
+            if (ga.getVip() != od.getVip()) continue;
+            if (ga.getLovel() != od.getLovel()) continue;
+            if (ga.getSkin() != od.getSkin()) continue;
+
+            if (odRank != null && !odRank.isBlank()) {
+                if (ga.getRank() == null) continue;
+                if (!ga.getRank().equalsIgnoreCase(odRank)) continue;
+            }
+
+            out.add(ga);
+        }
+
+        out.sort(Comparator.comparing(GameAccount::getCreatedDate, Comparator.nullsLast(Comparator.naturalOrder())));
+        return out;
     }
 
     private String handleAcceptAndBuildMail(Orders order,
@@ -194,6 +204,8 @@ public class ApproveController {
 
         for (OrderDetail od : orderDetails) {
             GameAccount ga = gameAccountService.getGameById(selected.get(od.getId()));
+            if (ga == null) continue;
+
             od.setGameAccount(ga);
             orderDetailService.save(od);
 
