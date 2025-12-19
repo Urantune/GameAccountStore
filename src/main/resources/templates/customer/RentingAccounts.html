@@ -52,6 +52,115 @@
             border-radius:16px;
             box-shadow:0 8px 22px rgba(0,0,0,.06);
         }
+
+        /* ===== CARD ===== */
+        .card-soft {
+            border: none;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        }
+
+        /* ===== HEADER ===== */
+        .card-soft h5 {
+            font-weight: 700;
+            letter-spacing: .3px;
+        }
+
+        /* ===== TABLE ===== */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .table thead th {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #6c757d;
+            border-bottom: none;
+        }
+
+        .table tbody tr {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,.04);
+            transition: all .2s ease;
+        }
+
+        .table tbody tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            border-top: none;
+            padding: 14px 12px;
+        }
+
+        /* bo góc cho row */
+        .table tbody tr td:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+        .table tbody tr td:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* ===== ACCOUNT CELL ===== */
+        .table td .fw-semibold {
+            font-size: 14px;
+        }
+        .table td .text-muted {
+            font-size: 12px;
+        }
+
+        /* ===== BADGE ===== */
+        .badge {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 20px;
+        }
+
+        /* ===== INFO BUTTON ===== */
+        .btn-info-account {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .btn-info-account i {
+            font-size: 16px;
+        }
+
+        /* ===== ACTION BUTTON ===== */
+        .btn-warning {
+            background: linear-gradient(135deg,#ffb347,#ffcc33);
+            border: none;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .btn-warning:hover {
+            opacity: .9;
+        }
+
+        /* ===== RENEW FORM ===== */
+        .collapse form {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .table tbody tr td.text-muted {
+            font-size: 14px;
+        }
+
     </style>
 </head>
 
@@ -60,210 +169,141 @@
 <!-- Navbar & Hero Start -->
 <nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+        </a>
 
-        <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center" href="/home">
-                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
-            </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <!-- Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center nav-center">
+                <li class="nav-item">
+                    <a class="nav-link nav-pill" href="/home">
+                        <i class="fa fa-home me-2"></i>Trang Chủ
+                    </a>
+                </li>
 
-            <!-- MENU -->
-            <div class="collapse navbar-collapse" id="mainNavbar">
-
-                <!-- MENU GIỮA -->
-                <ul class="navbar-nav mx-auto align-items-center nav-center">
-
-                    <!-- Trang chủ luôn cho phép -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill" href="/home">
-                            <i class="fa fa-home me-2"></i>Trang Chủ
-                        </a>
-                    </li>
-
-                    <!-- LỊCH SỬ MUA -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-pill dropdown-toggle require-login"
-                           href="#"
-                           data-bs-toggle="dropdown"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-list me-2"></i>Danh sách tài khoản
-                        </a>
-
-                        <ul class="dropdown-menu dropdown-soft">
-                            <li>
-                                <a class="dropdown-item require-login"
-                                   th:href="@{/home/listAcc(game='AOV')}"
-                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                                    AOV
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item require-login"
-                                   th:href="@{/home/listAcc(game='FREE FIRE')}"
-                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                                    Free Fire
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-pill dropdown-toggle require-login"
+                       href="#"
+                       data-bs-toggle="dropdown"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-list me-2"></i>Danh sách tài khoản
+                    </a>
+                    <ul class="dropdown-menu dropdown-soft">
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='AOV')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                AOV
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='FREE FIRE')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                Free Fire
+                            </a>
+                        </li>
 
 
-                    <!-- TÀI KHOẢN ĐANG THUÊ -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/renting}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-pill require-login"
+                               th:href="@{/home/pendingOrders}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                <i class="fa fa-clock me-2"></i>Đơn hàng đang chờ
+                            </a>
+                        </li>
 
+                    </ul>
+                </li>
 
-                    <!-- VÍ -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/transaction}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-credit-card me-2"></i>Ví
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/renting}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
+                    </a>
+                </li>
 
-                    <!-- GIỎ HÀNG -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/cart}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
-                        </a>
-                    </li>
-                </ul>
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/transaction}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-credit-card me-2"></i>Ví
+                    </a>
+                </li>
 
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/cart}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                    </a>
+                </li>
+            </ul>
 
-                <!-- Navbar styles -->
-                <style>
-                    .game-nav{
-                        background:pink;
-                        border-top:2px solid #e6d8c8;
-                        height:86px;
-                        display:flex;
-                        align-items:center;
-                    }
+            <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                    </ul>
+                </li>
 
-                    .game-nav .container-fluid{
-                        display:flex;
-                        align-items:center;
-                    }
-
-                    .nav-logo{
-                        height:180px;
-                        width:auto;
-                    }
-
-                    .nav-center{
-                        gap:26px;
-                    }
-
-                    .game-nav .navbar-nav .nav-link{
-                        color: #111 !important;
-                        font-weight: 500;
-                    }
-
-                    .nav-pill{
-                        background: transparent;
-                        color: #000 !important;
-                        border: 1px solid transparent;
-                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
-                    }
-
-                    .nav-pill:hover{
-                        color: #f7931e !important;
-                        background: #F8F8FF;
-                        box-shadow: none !important;
-                        transform: none !important;
-                    }
-
-                    .nav-pill{
-                        color: #111 !important;
-                        font-weight: 500;
-                        background: transparent;
-                    }
-
-                    .nav-pill:focus,
-                    .nav-pill:active{
-                        background: #f5e6d7 !important;
-                        color: #000 !important;
-                        box-shadow: none !important;
-                    }
-
-                    /* DROPDOWN */
-                    .dropdown-soft{
-                        border-radius:14px;
-                        padding:6px;
-                    }
-
-                    .nav-pill{
-                        border-radius: 18px !important;
-                        padding: 10px 18px !important;
-                    }
-
-                    .nav-pill:hover{
-                        border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                    }
-
-                    .nav-pill:focus,
-                    .nav-pill:active{
-                        border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                    }
-
-                </style>
-
-                <!-- Right: User -->
-                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
-
-                    <!-- Anonymous -->
-                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                            <span class="fw-semibold">Khách</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-fix">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Authenticated -->
-
-                    <li sec:authorize="isAuthenticated()">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
                         <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                        <a class="dropdown-item"
-                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
-                            Thông tin tài khoản
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item"
+                               th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
+
+    <style>
+        .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center}
+        .game-nav .container-fluid{display:flex;align-items:center}
+        .nav-logo{height:180px;width:auto}
+        .nav-center{gap:26px}
+        .game-nav .navbar-nav .nav-link{color:#111!important;font-weight:500}
+        .nav-pill{background:transparent;color:#000!important;border:1px solid transparent;transition:background .15s ease,box-shadow .15s ease,transform .15s ease}
+        .nav-pill:hover{color:#f7931e!important;background:#F8F8FF;box-shadow:none!important;transform:none!important}
+        .nav-pill:focus,.nav-pill:active{background:#f5e6d7!important;color:#000!important;box-shadow:none!important}
+        .dropdown-soft{border-radius:14px;padding:6px}
+        .nav-pill{border-radius:18px!important;padding:10px 18px!important}
+        .nav-pill:hover{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+        .nav-pill:focus,.nav-pill:active{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+    </style>
 </nav>
-<div id="loginAlert"
-     class="alert alert-warning text-center fw-semibold d-none"
-     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+
+<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
     ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
 </div>
+
 <script>
     document.querySelectorAll('.require-login').forEach(link => {
         link.addEventListener('click', function (e) {
             const isLogged = this.dataset.logged === 'true';
-
             if (!isLogged) {
                 e.preventDefault();
                 showLoginAlert();
@@ -272,11 +312,7 @@
     });
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
-
-        // hiện alert
         alertBox.classList.remove('d-none');
-
-        // tự tắt sau 3 giây
         setTimeout(() => {
             alertBox.classList.add('d-none');
         }, 3000);
@@ -292,23 +328,22 @@
     </div>
 </div>
 
-<div class="container py-4">
+ <div class="container py-4">
 
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
     <div class="card card-soft">
         <div class="card-body">
-
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <h5 class="mb-0">Danh sách</h5>
-                <span class="badge bg-primary"
-                      th:text="${rentList != null ? #lists.size(rentList) : 0} + ' item(s)'"></span>
+                <span class="badge bg-primary rounded-pill px-3"
+                      th:text="${rentList != null ? #lists.size(rentList) : 0} + ' item(s)'">
+</span>
             </div>
-
             <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead class="table-light">
+                <table class="table align-middle rent-table">
+                <thead class="table-light">
                     <tr>
                         <th style="width:70px;">#</th>
                         <th>Account</th>
@@ -316,6 +351,7 @@
                         <th>End</th>
                         <th>Status</th>
                         <th>Note</th>
+                        <th>Info</th>
                         <th style="width:220px;">Action</th>
                     </tr>
                     </thead>
@@ -351,6 +387,23 @@
                         </td>
 
                         <td th:text="${r.deception != null ? r.deception : ''}"></td>
+                        <td class="text-center">
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm rounded-pill btn-info-account"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#gaModal"
+                                    th:data-username="${r.gameAccount != null ? r.gameAccount.gameAccount : ''}"
+                                    th:data-password="${r.gameAccount != null ? r.gameAccount.gamePassword : ''}"
+                                    th:data-game="${r.gameAccount != null && r.gameAccount.game != null ? r.gameAccount.game.gameName : ''}"
+                                    th:data-rank="${r.gameAccount != null ? r.gameAccount.rank : ''}"
+                                    th:data-skin="${r.gameAccount != null ? r.gameAccount.skin : 0}"
+                                    th:data-level="${r.gameAccount != null ? r.gameAccount.lovel : 0}"
+                                    th:data-vip="${r.gameAccount != null ? r.gameAccount.vip : 0}"
+                                    th:data-price="${r.gameAccount != null ? r.gameAccount.price : 0}"
+                                    th:data-description="${r.gameAccount != null ? r.gameAccount.description : ''}">
+                                <i class="bi bi-info-circle"></i>
+                            </button>
+                        </td>
 
                         <td>
                             <button class="btn btn-warning btn-sm rounded-pill"
@@ -368,8 +421,8 @@
                                     <select name="months" class="form-select form-select-sm" style="max-width:120px;" required>
                                         <option value="" disabled selected>Tháng</option>
                                         <option value="1">1 tháng</option>
-                                        <option value="2">2 tháng</option>
-                                        <option value="3">3 tháng</option>
+                                        <option value="2">2 tháng(Giảm 10%)</option>
+                                        <option value="3">3 tháng(Giảm 15%)</option>
                                     </select>
 
                                     <button type="submit" class="btn btn-primary btn-sm rounded-pill">
@@ -385,8 +438,81 @@
 
         </div>
     </div>
+ </div>
+<div class="modal fade" id="gaModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h5 class="modal-title">Thông tin tài khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <td class="fw-bold">Game</td>
+                        <td id="mGame"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Username</td>
+                        <td id="mUsername"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Password</td>
+                        <td id="mPassword"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Rank</td>
+                        <td id="mRank"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Skin</td>
+                        <td id="mSkin"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Level</td>
+                        <td id="mLevel"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">VIP</td>
+                        <td id="mVip"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Price</td>
+                        <td id="mPrice"></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Description</td>
+                        <td id="mDesc"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+
+        </div>
+    </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.btn-info-account').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('mGame').innerText = btn.dataset.game || '—';
+                document.getElementById('mUsername').innerText = btn.dataset.username || '—';
+                document.getElementById('mPassword').innerText = btn.dataset.password || '—';
+                document.getElementById('mRank').innerText = btn.dataset.rank || '—';
+                document.getElementById('mSkin').innerText = btn.dataset.skin || '0';
+                document.getElementById('mLevel').innerText = btn.dataset.level || '0';
+                document.getElementById('mVip').innerText = btn.dataset.vip || '0';
+                document.getElementById('mPrice').innerText = btn.dataset.price || '0';
+                document.getElementById('mDesc').innerText = btn.dataset.description || '—';
+            });
+        });
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
