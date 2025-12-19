@@ -18,12 +18,18 @@ public class CartService {
     @Autowired
     private CartRepositories cartRepositories;
 
-    public void addToCart(Customer customer, Game game, BigDecimal basePrice, Integer duration) {
+    public void addToCart(Customer customer, Game game, BigDecimal price, Integer duration,
+                          String rank, int skin, int level, int vip) {
+        // Tạo Cart mới
         Cart cart = new Cart();
         cart.setCustomer(customer);
         cart.setGame(game);
-        cart.setPrice(basePrice);
-        cart.setDuration(duration == null ? 0 : duration);
+        cart.setPrice(price);
+        cart.setDuration(duration);
+        cart.setRank(rank);
+        cart.setSkin(skin);
+        cart.setLovel(level);
+        cart.setVip(vip);
         cart.setCreatedAt(LocalDateTime.now());
         cartRepositories.save(cart);
     }

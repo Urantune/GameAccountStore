@@ -2,20 +2,19 @@ package webBackEnd.controller.Customer;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.*;
 import webBackEnd.repository.*;
-import webBackEnd.service.CartService;
-import webBackEnd.service.CustomerService;
-import webBackEnd.service.GameService;
-import webBackEnd.service.TransactionService;
+import webBackEnd.service.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,8 +29,8 @@ public class CartController {
     @Autowired private CustomerService customerService;
     @Autowired private GameService gameService;
     @Autowired private CartRepositories cartRepositories;
-
-
+@Autowired
+private GameAccountService gameAccountService;
     @Autowired private OrdersRepositories ordersRepositories;
     @Autowired private OrderDetailRepositories orderDetailRepositories;
     @Autowired private CustomerRepositories customerRepositories;
@@ -56,26 +55,53 @@ public class CartController {
         return "customer/cart";
     }
 
-    @PostMapping("/cart/add/{gameId}")
+    @PostMapping("/cart/add/{accountId}")
     public ResponseEntity<String> addToCart(
-            @PathVariable UUID gameId,
+            @PathVariable("accountId") String accountIdStr,
             @RequestParam BigDecimal basePrice,
             @RequestParam(defaultValue = "0") Integer duration,
-            @AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+            @RequestParam int skin,
+            @RequestParam int level,
+            @RequestParam int vip,
+            @RequestParam String rank,
+            @AuthenticationPrincipal UserDetails userDetails) {
 
-        if (userDetails == null) return ResponseEntity.status(401).body("Chưa đăng nhập");
+        if (userDetails == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Chưa đăng nhập");
+
+        if (basePrice == null || basePrice.compareTo(BigDecimal.ZERO) <= 0)
+            return ResponseEntity.badRequest().body("Giá không hợp lệ");
+
+        if (duration < 0 || duration > 3)
+            return ResponseEntity.badRequest().body("Gói thuê không hợp lệ");
+
+        UUID accountId;
+        try {
+            accountId = UUID.fromString(accountIdStr);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Account ID không hợp lệ");
+        }
 
         Customer customer = customerService.findCustomerByUsername(userDetails.getUsername());
-        Game game = gameService.findById(gameId);
+        GameAccount account = gameAccountService.findGameAccountById(accountId);
 
-        if (game == null) return ResponseEntity.status(404).body("Không tìm thấy game");
+        if (account == null)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy account");
+
         List<Cart> carts = cartRepositories.findByCustomer(customer);
-        if(carts.size()>=5){
-            return ResponseEntity.ok("Số lượng đơn hàng trong cart đã đạt tối đa");
-        }
-        cartService.addToCart(customer, game, basePrice, duration);
+        if (carts.size() >= 5)
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Số lượng đơn hàng trong cart đã đạt tối đa");
+
+        // Lấy game từ account
+        Game game = account.getGame();
+
+        cartService.addToCart(customer, game, basePrice, duration, rank, skin, level, vip);
         return ResponseEntity.ok("Đã thêm vào giỏ hàng");
     }
+
+
+
+
 
     @PostMapping("/cart/delete/{id}")
     public String deleteCart(@PathVariable("id") UUID cartId, RedirectAttributes ra) {
