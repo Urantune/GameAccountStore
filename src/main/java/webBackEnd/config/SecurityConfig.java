@@ -48,15 +48,16 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 // API
                 .requestMatchers("/api/**").permitAll()
+                // Public pages
+                .requestMatchers("/register", "/register/**").permitAll()
+                .requestMatchers("/home", "/home/"
+                       ).permitAll()
                 // Static
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
                         "/assets/**", "/lib/**", "/scss/**", "/images/**"
                 ).permitAll()
-                // Public pages
-                .requestMatchers("/register", "/register/**").permitAll()
-                .requestMatchers("/home", "/home/", "/home/gameAccount",
-                        "/home/accDetail/**").permitAll()
+
                 .requestMatchers(HttpMethod.POST, "/home/forgot-password").permitAll()
                 // Role pages
                 .requestMatchers("/adminHome/**").hasRole("ADMIN")
