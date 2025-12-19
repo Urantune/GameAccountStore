@@ -207,23 +207,26 @@ public class BuyController {
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGame(game);
-        detail.setGameAccount(null);
-        if (rentMonth == 1) {
+        detail.setGameAccount(gameAccount);
+        // duration: 0 = vĩnh viễn, 1–3 thuê
+        if(rentMonth ==1){
             detail.setDuration(1);
-        } else if (rentMonth == 2) {
+        }else if(rentMonth ==2){
             detail.setDuration(2);
-        } else if (rentMonth == 3) {
+        }else if(rentMonth ==3){
             detail.setDuration(3);
-        }else{
+        }
+        else{
             detail.setDuration(0);
         }
-        detail.setDuration(isRent ? rentMonth : 0);
-        detail.setPrice(basePrice.setScale(0, RoundingMode.HALF_UP).intValue());
+        detail.setPrice(totalAfterVoucher.intValue());
         detail.setLovel(gameAccount.getLovel());
         detail.setRank(gameAccount.getRank());
         detail.setSkin(gameAccount.getSkin());
         detail.setVip(gameAccount.getVip());
+
         orderDetailRepositories.save(detail);
+
         if (usedVoucher != null) {
             VoucherCustomer vc = new VoucherCustomer();
             vc.setCustomer(customer);
