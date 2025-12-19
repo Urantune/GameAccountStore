@@ -58,7 +58,7 @@ public class SecurityConfig {
 
                 .requestMatchers("/register", "/register/**").permitAll()
 
-                .requestMatchers("/veryAccount/**").permitAll()
+                .requestMatchers("/veryAccount/**","/home/game/**","/home/game").permitAll()
 
                 .requestMatchers(HttpMethod.GET, "/home", "/home/").permitAll()
                 .requestMatchers(HttpMethod.GET, "/home/gameDetail/**").permitAll()

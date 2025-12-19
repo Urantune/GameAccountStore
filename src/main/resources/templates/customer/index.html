@@ -118,20 +118,31 @@
                 <form id="registerForm">
                     <div class="mb-3">
                         <label for="registerUsername" class="form-label">Tên người dùng:</label>
-                        <input name="username" type="text" class="form-control" id="registerUsername" placeholder="Nhập tên người dùng" th:value="${username}" required>
+                        <input name="username" type="text" class="form-control"
+                               id="registerUsername" placeholder="Nhập tên người dùng" required>
+                        <div class="invalid-feedback" id="errRegisterUsername"></div>
                     </div>
+
                     <div class="mb-3">
                         <label for="registerEmail" class="form-label">Email:</label>
-                        <input name="email" type="email" class="form-control" id="registerEmail" placeholder="Nhập email" th:value="${email}" required>
+                        <input name="email" type="email" class="form-control"
+                               id="registerEmail" placeholder="Nhập email" required>
+                        <div class="invalid-feedback" id="errRegisterEmail"></div>
                     </div>
+
                     <div class="mb-3">
                         <label for="registerPassword" class="form-label">Mật khẩu:</label>
-                        <input name="password" type="password" class="form-control" id="registerPassword" placeholder="Tạo mật khẩu" th:value="${password}" required>
+                        <input name="password" type="password" class="form-control"
+                               id="registerPassword" placeholder="Tạo mật khẩu" required>
+                        <div class="invalid-feedback" id="errRegisterPassword"></div>
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
-                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                        <input name="confirmPassword" type="password" class="form-control"
+                               id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                        <div class="invalid-feedback" id="errConfirmPassword"></div>
                     </div>
+
                     <div class="d-grid gap-2">
                         <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
                     </div>
@@ -756,89 +767,134 @@
         return { token, header };
     }
 
-    function showForgotMsg(type, text) {
-        const box = document.getElementById("forgotMsg");
-        box.classList.remove("d-none", "alert-danger", "alert-success", "alert-warning");
-        box.classList.add(type === "success" ? "alert-success" : "alert-danger");
-        box.textContent = text;
-        setTimeout(() => box.classList.add("d-none"), 3500);
+    function clearStates() {
+        const u = document.getElementById("registerUsername");
+        const e = document.getElementById("registerEmail");
+        const p = document.getElementById("registerPassword");
+        const c = document.getElementById("confirmPassword");
+
+        [u, e, p, c].forEach(x => x.classList.remove("is-invalid", "is-valid"));
+
+        const eu = document.getElementById("errRegisterUsername");
+        const ee = document.getElementById("errRegisterEmail");
+        const ep = document.getElementById("errRegisterPassword");
+        const ec = document.getElementById("errConfirmPassword");
+        if (eu) eu.textContent = "";
+        if (ee) ee.textContent = "";
+        if (ep) ep.textContent = "";
+        if (ec) ec.textContent = "";
+    }
+
+    function markInvalid(fieldId, msgId, msg) {
+        const field = document.getElementById(fieldId);
+        const msgEl = document.getElementById(msgId);
+        if (field) field.classList.add("is-invalid");
+        if (msgEl) msgEl.textContent = msg || "";
+    }
+
+    // map message backend -> field (nếu không match thì show global)
+    function mapBackendErrorToField(errorMsg) {
+        const msg = (errorMsg || "").toLowerCase();
+
+        // reset trước
+        clearStates();
+
+        if (msg.includes("username")) {
+            markInvalid("registerUsername", "errRegisterUsername", errorMsg);
+            return true;
+        }
+        if (msg.includes("email")) {
+            markInvalid("registerEmail", "errRegisterEmail", errorMsg);
+            return true;
+        }
+        if (msg.includes("password")) {
+            // nếu backend báo mismatch thì highlight confirm trước
+            if (msg.includes("match") || msg.includes("confirm")) {
+                markInvalid("confirmPassword", "errConfirmPassword", errorMsg);
+            } else {
+                markInvalid("registerPassword", "errRegisterPassword", errorMsg);
+            }
+            return true;
+        }
+        if (msg.includes("fill all") || msg.includes("please fill")) {
+            // global thôi
+            return false;
+        }
+        return false;
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        const openForgot = document.getElementById("openForgotModal");
-        const backToLogin = document.getElementById("backToLogin");
+        const form = document.getElementById("registerForm");
+        const btn = document.getElementById("registerBtn");
+        const errorDiv = document.getElementById("registerError");
+        const successDiv = document.getElementById("registerSuccess");
 
-        const loginEl = document.getElementById("loginModal");
-        const forgotEl = document.getElementById("forgotModal");
+        btn.addEventListener("click", function () {
+            // dùng HTML5 required
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
 
-        if (openForgot) {
-            openForgot.addEventListener("click", function (e) {
-                e.preventDefault();
+            btn.disabled = true;
+            errorDiv.innerText = "";
+            successDiv.innerText = "";
+            clearStates();
 
-                const loginModal = bootstrap.Modal.getInstance(loginEl);
-                loginEl.addEventListener("hidden.bs.modal", function handler() {
-                    loginEl.removeEventListener("hidden.bs.modal", handler);
-                    const forgotModal = new bootstrap.Modal(forgotEl);
-                    forgotModal.show();
-                });
+            const formData = new FormData(form);
+            const { token, header } = getCsrf();
 
-                if (loginModal) loginModal.hide();
-                else new bootstrap.Modal(loginEl).hide();
-            });
-        }
+            const headers = {
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/x-www-form-urlencoded"
+            };
+            if (token && header) headers[header] = token;
 
-        if (backToLogin) {
-            backToLogin.addEventListener("click", function (e) {
-                e.preventDefault();
+            fetch("/register", {
+                method: "POST",
+                headers,
+                body: new URLSearchParams(formData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        const mapped = mapBackendErrorToField(data.error);
+                        if (!mapped) errorDiv.innerText = data.error;
 
-                const forgotModal = bootstrap.Modal.getInstance(forgotEl);
-                forgotEl.addEventListener("hidden.bs.modal", function handler() {
-                    forgotEl.removeEventListener("hidden.bs.modal", handler);
-                    const loginModal = new bootstrap.Modal(loginEl);
-                    loginModal.show();
-                });
-
-                if (forgotModal) forgotModal.hide();
-                else new bootstrap.Modal(forgotEl).hide();
-            });
-        }
-
-        const forgotForm = document.getElementById("forgotForm");
-        if (forgotForm) {
-            forgotForm.addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                const email = document.getElementById("forgotEmail").value.trim();
-                if (!email) return;
-
-                const { token, header } = getCsrf();
-                const headers = {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "X-Requested-With": "XMLHttpRequest"
-                };
-                if (token && header) headers[header] = token;
-
-                fetch("/home/forgot-password", {
-                    method: "POST",
-                    headers,
-                    body: `email=${encodeURIComponent(email)}`
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.error) {
-                            showForgotMsg("error", data.error);
-                        } else if (data.success) {
-                            showForgotMsg("success", data.success);
-                            forgotForm.reset();
-                        } else {
-                            showForgotMsg("error", "Có lỗi xảy ra. Vui lòng thử lại.");
+                        // optional: clear password fields nếu lỗi liên quan password
+                        if ((data.error || "").toLowerCase().includes("password")) {
+                            document.getElementById("registerPassword").value = "";
+                            document.getElementById("confirmPassword").value = "";
                         }
-                    })
-                    .catch(() => showForgotMsg("error", "Không thể kết nối server. Vui lòng thử lại."));
-            });
-        }
+
+                        setTimeout(() => { errorDiv.innerText = ""; }, 3000);
+                        return;
+                    }
+
+                    if (data.success) {
+                        successDiv.innerText = data.success;
+                        form.reset();
+                        clearStates();
+                        setTimeout(() => { successDiv.innerText = ""; }, 3000);
+                    }
+                })
+                .catch(() => {
+                    errorDiv.innerText = "Có lỗi xảy ra. Vui lòng thử lại.";
+                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                });
+        });
+
+        // enter submit
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            btn.click();
+        });
     });
 </script>
+
 
 </body>
 </html>
