@@ -536,17 +536,18 @@
             }
         }
 
-        // 🔒 lock
+        // 🔥 CHỈ SYNC SAU KHI VALIDATE
+        syncBeforeSubmit();
+
+        const form = document.querySelector("form[action='/home/payment']");
+        const formData = new FormData(form);
+
+        // 🔒 lock double submit
         isSubmitting = true;
         const btn = document.getElementById("buyBtn");
         btn.disabled = true;
         btn.innerText = "⏳ Đang xử lý...";
 
-        // đồng bộ form
-        const form = document.querySelector("form[action='/home/payment']");
-        const formData = new FormData(form);
-
-        // fetch AJAX
         fetch("/home/payment", {
             method: "POST",
             body: formData
@@ -568,6 +569,7 @@
                 btn.innerText = "🛒 Mua ngay";
             });
     }
+
 
     function showPopup(type, message) {
         const el = document.getElementById(
