@@ -7,6 +7,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,6 +58,8 @@
     </div>
 </div>
 
+
+
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -72,7 +77,11 @@
                     <div class="mb-3">
                         <label for="loginPassword" class="form-label">Mật khẩu:</label>
                         <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
-                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                        <a th:href="@{/veryAccount/forgot-password}"
+                           class="form-text text-muted text-decoration-none float-end">
+                            Quên mật khẩu?
+                        </a>
+
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -89,6 +98,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -108,20 +118,31 @@
                 <form id="registerForm">
                     <div class="mb-3">
                         <label for="registerUsername" class="form-label">Tên người dùng:</label>
-                        <input name="username" type="text" class="form-control" id="registerUsername" placeholder="Nhập tên người dùng" th:value="${username}" required>
+                        <input name="username" type="text" class="form-control"
+                               id="registerUsername" placeholder="Nhập tên người dùng" required>
+                        <div class="invalid-feedback" id="errRegisterUsername"></div>
                     </div>
+
                     <div class="mb-3">
                         <label for="registerEmail" class="form-label">Email:</label>
-                        <input name="email" type="email" class="form-control" id="registerEmail" placeholder="Nhập email" th:value="${email}" required>
+                        <input name="email" type="email" class="form-control"
+                               id="registerEmail" placeholder="Nhập email" required>
+                        <div class="invalid-feedback" id="errRegisterEmail"></div>
                     </div>
+
                     <div class="mb-3">
                         <label for="registerPassword" class="form-label">Mật khẩu:</label>
-                        <input name="password" type="password" class="form-control" id="registerPassword" placeholder="Tạo mật khẩu" th:value="${password}" required>
+                        <input name="password" type="password" class="form-control"
+                               id="registerPassword" placeholder="Tạo mật khẩu" required>
+                        <div class="invalid-feedback" id="errRegisterPassword"></div>
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
-                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                        <input name="confirmPassword" type="password" class="form-control"
+                               id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                        <div class="invalid-feedback" id="errConfirmPassword"></div>
                     </div>
+
                     <div class="d-grid gap-2">
                         <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
                     </div>
@@ -136,6 +157,41 @@
         </div>
     </div>
 </div>
+
+
+
+<div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="forgotModalLabel">Quên mật khẩu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="forgotMsg" class="alert d-none"></div>
+
+                <form id="forgotForm">
+                    <div class="mb-3">
+                        <label for="forgotEmail" class="form-label">Nhập email đã đăng ký:</label>
+                        <input type="email" class="form-control" id="forgotEmail" name="email" placeholder="example@gmail.com" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Gửi email đổi mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none" id="backToLogin">Quay lại đăng nhập</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
     <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
@@ -183,6 +239,16 @@
                                 Free Fire
                             </a>
                         </li>
+
+
+                        <li class="nav-item">
+                            <a class="nav-link nav-pill require-login"
+                               th:href="@{/home/pendingOrders}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                <i class="fa fa-clock me-2"></i>Đơn hàng đang chờ
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
 
@@ -690,5 +756,145 @@
 </script>
 
 <script th:src="@{/js/product.js}"></script>
+
+
+<script>
+    function getCsrf() {
+        const tokenEl = document.querySelector('meta[name="_csrf"]');
+        const headerEl = document.querySelector('meta[name="_csrf_header"]');
+        const token = tokenEl ? tokenEl.getAttribute('content') : null;
+        const header = headerEl ? headerEl.getAttribute('content') : null;
+        return { token, header };
+    }
+
+    function clearStates() {
+        const u = document.getElementById("registerUsername");
+        const e = document.getElementById("registerEmail");
+        const p = document.getElementById("registerPassword");
+        const c = document.getElementById("confirmPassword");
+
+        [u, e, p, c].forEach(x => x.classList.remove("is-invalid", "is-valid"));
+
+        const eu = document.getElementById("errRegisterUsername");
+        const ee = document.getElementById("errRegisterEmail");
+        const ep = document.getElementById("errRegisterPassword");
+        const ec = document.getElementById("errConfirmPassword");
+        if (eu) eu.textContent = "";
+        if (ee) ee.textContent = "";
+        if (ep) ep.textContent = "";
+        if (ec) ec.textContent = "";
+    }
+
+    function markInvalid(fieldId, msgId, msg) {
+        const field = document.getElementById(fieldId);
+        const msgEl = document.getElementById(msgId);
+        if (field) field.classList.add("is-invalid");
+        if (msgEl) msgEl.textContent = msg || "";
+    }
+
+    // map message backend -> field (nếu không match thì show global)
+    function mapBackendErrorToField(errorMsg) {
+        const msg = (errorMsg || "").toLowerCase();
+
+        // reset trước
+        clearStates();
+
+        if (msg.includes("username")) {
+            markInvalid("registerUsername", "errRegisterUsername", errorMsg);
+            return true;
+        }
+        if (msg.includes("email")) {
+            markInvalid("registerEmail", "errRegisterEmail", errorMsg);
+            return true;
+        }
+        if (msg.includes("password")) {
+            // nếu backend báo mismatch thì highlight confirm trước
+            if (msg.includes("match") || msg.includes("confirm")) {
+                markInvalid("confirmPassword", "errConfirmPassword", errorMsg);
+            } else {
+                markInvalid("registerPassword", "errRegisterPassword", errorMsg);
+            }
+            return true;
+        }
+        if (msg.includes("fill all") || msg.includes("please fill")) {
+            // global thôi
+            return false;
+        }
+        return false;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("registerForm");
+        const btn = document.getElementById("registerBtn");
+        const errorDiv = document.getElementById("registerError");
+        const successDiv = document.getElementById("registerSuccess");
+
+        btn.addEventListener("click", function () {
+            // dùng HTML5 required
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            btn.disabled = true;
+            errorDiv.innerText = "";
+            successDiv.innerText = "";
+            clearStates();
+
+            const formData = new FormData(form);
+            const { token, header } = getCsrf();
+
+            const headers = {
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/x-www-form-urlencoded"
+            };
+            if (token && header) headers[header] = token;
+
+            fetch("/register", {
+                method: "POST",
+                headers,
+                body: new URLSearchParams(formData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        const mapped = mapBackendErrorToField(data.error);
+                        if (!mapped) errorDiv.innerText = data.error;
+
+                        // optional: clear password fields nếu lỗi liên quan password
+                        if ((data.error || "").toLowerCase().includes("password")) {
+                            document.getElementById("registerPassword").value = "";
+                            document.getElementById("confirmPassword").value = "";
+                        }
+
+                        setTimeout(() => { errorDiv.innerText = ""; }, 3000);
+                        return;
+                    }
+
+                    if (data.success) {
+                        successDiv.innerText = data.success;
+                        form.reset();
+                        clearStates();
+                        setTimeout(() => { successDiv.innerText = ""; }, 3000);
+                    }
+                })
+                .catch(() => {
+                    errorDiv.innerText = "Có lỗi xảy ra. Vui lòng thử lại.";
+                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                });
+        });
+
+        // enter submit
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            btn.click();
+        });
+    });
+</script>
+
+
 </body>
 </html>

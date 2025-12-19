@@ -47,6 +47,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/**").permitAll()
+
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
                         "/bestseller/**", "/assets/**", "/lib/**",
@@ -54,6 +55,8 @@ public class SecurityConfig {
                 ).permitAll()
 
                 .requestMatchers("/register", "/register/**").permitAll()
+
+                .requestMatchers("/veryAccount/**","/home/game/**","/home/game").permitAll()
 
                 .requestMatchers(HttpMethod.GET, "/home", "/home/").permitAll()
                 .requestMatchers(HttpMethod.GET, "/home/gameDetail/**").permitAll()
@@ -63,6 +66,8 @@ public class SecurityConfig {
 
                 .requestMatchers("/adminHome/**").hasRole("ADMIN")
                 .requestMatchers("/staffHome/**").hasRole("STAFF")
+
+                .requestMatchers(HttpMethod.POST, "/home/forgot-password").permitAll()
 
                 .requestMatchers("/home/**").authenticated()
 
@@ -159,7 +164,6 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .permitAll()
         );
-
 
         return http.build();
     }
