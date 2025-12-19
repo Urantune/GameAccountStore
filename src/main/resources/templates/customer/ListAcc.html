@@ -22,423 +22,151 @@
     <link th:href="@{/css/style.css}" rel="stylesheet">
 
     <style>
-        body{ background:#f5f7fa; font-family: "Open Sans", sans-serif; }
-
-        .game-nav{
-            background:pink;
-            border-top:2px solid #e6d8c8;
-            height:86px;
-            display:flex;
-            align-items:center;
-        }
+        body{ background:#f5f7fa; font-family:"Open Sans",sans-serif; }
+        .game-nav{ background:pink; border-top:2px solid #e6d8c8; height:86px; display:flex; align-items:center; }
         .game-nav .container-fluid{ display:flex; align-items:center; }
         .nav-logo{ height:180px; width:auto; }
         .nav-center{ gap:26px; }
-        .game-nav .navbar-nav .nav-link{ color: #111 !important; font-weight: 500; }
-
-        .nav-pill{
-            background: transparent;
-            color: #000 !important;
-            border: 1px solid transparent;
-            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
-            border-radius: 18px !important;
-            padding: 10px 18px !important;
-        }
-
-        .nav-pill:hover{
-            color: #f7931e !important;
-            background: #F8F8FF;
-            box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-            transform: none !important;
-        }
-
-        .nav-pill:focus,
-        .nav-pill:active{
-            background: #f5e6d7 !important;
-            color: #000 !important;
-            box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-        }
-
+        .game-nav .navbar-nav .nav-link{ color:#111!important; font-weight:500; }
+        .nav-pill{ background:transparent; color:#000!important; border:1px solid transparent; transition:background .15s ease, box-shadow .15s ease, transform .15s ease; border-radius:18px!important; padding:10px 18px!important; }
+        .nav-pill:hover{ color:#f7931e!important; background:#F8F8FF; box-shadow:0 6px 18px rgba(0,0,0,.08)!important; transform:none!important; }
+        .nav-pill:focus,.nav-pill:active{ background:#f5e6d7!important; color:#000!important; box-shadow:0 6px 18px rgba(0,0,0,.08)!important; }
         .dropdown-soft{ border-radius:14px; padding:6px; }
 
-        .page-header{
-            background:#2a3f54;
-            color:#fff;
-            padding:26px 0;
-        }
-
-        .card-soft{
-            border:0;
-            border-radius:16px;
-            box-shadow:0 8px 22px rgba(0,0,0,.06);
-        }
-
-        .mono{
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-
-        .badge-soft{
-            border-radius: 999px;
-            padding: .5rem .8rem;
-        }
-
-        .table thead th{
-            white-space: nowrap;
-        }
-
-        .pw-box{
-            display:none;
-            margin-top:6px;
-            background:#fff;
-            border:1px solid #eee;
-            border-radius:12px;
-            padding:10px 12px;
-        }
-
-        .pw-box.show{
-            display:block;
-        }
+        .page-header{ background:#2a3f54; color:#fff; padding:26px 0; }
+        .card-soft{ border:0; border-radius:16px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
+        .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+        .badge-soft{ border-radius:999px; padding:.5rem .8rem; }
+        .auto-hide-alert{ max-width:820px; margin-left:auto; margin-right:auto; font-weight:500; }
+        .ga-img{ width:100%; height:320px; object-fit:cover; border-radius:14px; border:1px solid #eef1f5; background:#f3f5f8; }
+        .kv{ display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px dashed #eee; }
+        .kv:last-child{ border-bottom:0; }
+        .kv .k{ color:#6c757d; }
+        .kv .v{ font-weight:700; text-align:right; word-break:break-word; }
+        .pill{ display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border-radius:999px; background:#fff; border:1px solid #eee; }
+        .table thead th{ white-space:nowrap; }
     </style>
 </head>
 
 <body>
 
-<!-- Navbar & Hero Start -->
 <nav class="navbar navbar-expand-lg game-nav shadow-sm">
     <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+            <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
+        </a>
 
-        <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center" href="/home">
-                <img src="/img/logoFinal.png" alt="Logo" class="nav-logo">
-            </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <!-- Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav mx-auto align-items-center nav-center">
+                <li class="nav-item">
+                    <a class="nav-link nav-pill" href="/home">
+                        <i class="fa fa-home me-2"></i>Trang Chủ
+                    </a>
+                </li>
 
-            <!-- MENU -->
-            <div class="collapse navbar-collapse" id="mainNavbar">
+                <li class="nav-item dropdown">
+                    <a class="nav-link nav-pill dropdown-toggle require-login"
+                       href="#"
+                       data-bs-toggle="dropdown"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-list me-2"></i>Danh sách tài khoản
+                    </a>
 
-                <!-- MENU GIỮA -->
-                <ul class="navbar-nav mx-auto align-items-center nav-center">
+                    <ul class="dropdown-menu dropdown-soft">
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='AOV')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                AOV
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item require-login"
+                               th:href="@{/home/listAcc(game='FREE FIRE')}"
+                               th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                                Free Fire
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
-                    <!-- Trang chủ luôn cho phép -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill" href="/home">
-                            <i class="fa fa-home me-2"></i>Trang Chủ
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/renting}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
+                    </a>
+                </li>
 
-                    <!-- LỊCH SỬ MUA -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-pill dropdown-toggle require-login"
-                           href="#"
-                           data-bs-toggle="dropdown"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-list me-2"></i>Danh sách tài khoản
-                        </a>
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/transaction}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-credit-card me-2"></i>Ví
+                    </a>
+                </li>
 
-                        <ul class="dropdown-menu dropdown-soft">
-                            <li>
-                                <a class="dropdown-item require-login"
-                                   th:href="@{/home/listAcc(game='AOV')}"
-                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                                    AOV
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item require-login"
-                                   th:href="@{/home/listAcc(game='FREE FIRE')}"
-                                   th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                                    Free Fire
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/cart}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-coins me-2"></i>Giỏ Hàng
+                    </a>
+                </li>
 
+                <li class="nav-item">
+                    <a class="nav-link nav-pill require-login"
+                       th:href="@{/home/pendingOrders}"
+                       th:data-logged="${#authorization.expression('isAuthenticated()')}">
+                        <i class="fa fa-clock me-2"></i>Đơn chờ xử lý
+                    </a>
+                </li>
+            </ul>
 
-                    <!-- TÀI KHOẢN ĐANG THUÊ -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/renting}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-user-circle me-2"></i>Tài khoản đang thuê
-                        </a>
-                    </li>
+            <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
+                <li class="nav-item dropdown" sec:authorize="isAnonymous()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
+                        <span class="fw-semibold">Khách</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li><a class="dropdown-item" href="/login">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" href="/register">Đăng ký</a></li>
+                    </ul>
+                </li>
 
-
-                    <!-- VÍ -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/transaction}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-credit-card me-2"></i>Ví
-                        </a>
-                    </li>
-
-                    <!-- GIỎ HÀNG -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-pill require-login"
-                           th:href="@{/home/cart}"
-                           th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                            <i class="fa fa-coins me-2"></i>Giỏ Hàng
-                        </a>
-                    </li>
-                </ul>
-
-
-                <!-- Navbar styles -->
-                <style>
-                    .game-nav{
-                        background:pink;
-                        border-top:2px solid #e6d8c8;
-                        height:86px;
-                        display:flex;
-                        align-items:center;
-                    }
-
-                    .game-nav .container-fluid{
-                        display:flex;
-                        align-items:center;
-                    }
-
-                    .nav-logo{
-                        height:180px;
-                        width:auto;
-                    }
-
-                    .nav-center{
-                        gap:26px;
-                    }
-
-                    .game-nav .navbar-nav .nav-link{
-                        color: #111 !important;
-                        font-weight: 500;
-                    }
-
-                    .nav-pill{
-                        background: transparent;
-                        color: #000 !important;
-                        border: 1px solid transparent;
-                        transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
-                    }
-
-                    .nav-pill:hover{
-                        color: #f7931e !important;
-                        background: #F8F8FF;
-                        box-shadow: none !important;
-                        transform: none !important;
-                    }
-
-                    .nav-pill{
-                        color: #111 !important;
-                        font-weight: 500;
-                        background: transparent;
-                    }
-
-                    .nav-pill:focus,
-                    .nav-pill:active{
-                        background: #f5e6d7 !important;
-                        color: #000 !important;
-                        box-shadow: none !important;
-                    }
-
-                    /* DROPDOWN */
-                    .dropdown-soft{
-                        border-radius:14px;
-                        padding:6px;
-                    }
-
-                    .nav-pill{
-                        border-radius: 18px !important;
-                        padding: 10px 18px !important;
-                    }
-
-                    .nav-pill:hover{
-                        border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                    }
-
-                    .nav-pill:focus,
-                    .nav-pill:active{
-                        border-radius: 18px !important;
-                        box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
-                    }
-
-                </style>
-
-                <!-- Right: User -->
-                <ul class="navbar-nav ms-lg-3 align-items-center nav-user">
-
-                    <!-- Anonymous -->
-                    <li class="nav-item dropdown" sec:authorize="isAnonymous()">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                            <img src="/img/guest.png" class="rounded-circle me-2" style="width:35px;">
-                            <span class="fw-semibold">Khách</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-fix">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- Authenticated -->
-
-                    <li sec:authorize="isAuthenticated()">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
                         <img src="/img/customer.png" class="rounded-circle me-2" style="width:35px;">
                         <span class="fw-semibold" th:text="${#authentication.name}"></span>
-                        <a class="dropdown-item"
-                           th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
-                            Thông tin tài khoản
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-fix">
+                        <li>
+                            <a class="dropdown-item"
+                               th:href="@{/home/profile/{id}(id=${currentUser != null ? currentUser.customerId : ''})}">
+                                Thông tin tài khoản
+                            </a>
+                        </li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item" type="submit">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
         </div>
     </div>
 </nav>
-<div id="loginAlert"
-     class="alert alert-warning text-center fw-semibold d-none"
-     style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+
+<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
     ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
 </div>
-<script>
-    document.querySelectorAll('.require-login').forEach(link => {
-        link.addEventListener('click', function (e) {
-            const isLogged = this.dataset.logged === 'true';
-
-            if (!isLogged) {
-                e.preventDefault();
-                showLoginAlert();
-            }
-        });
-    });
-    function showLoginAlert() {
-        const alertBox = document.getElementById('loginAlert');
-
-        // hiện alert
-        alertBox.classList.remove('d-none');
-
-        // tự tắt sau 3 giây
-        setTimeout(() => {
-            alertBox.classList.add('d-none');
-        }, 3000);
-    }
-</script>
-
-<!-- Navbar & Hero End -->
-
-<div th:if="${successMessage}"
-     class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert"
-     role="alert">
-    <i class="bi bi-check-circle-fill me-2"></i>
-    <span th:text="${successMessage}"></span>
-    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
-</div>
-
-<div th:if="${errorMessage}"
-     class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert"
-     role="alert">
-    <i class="bi bi-x-circle-fill me-2"></i>
-    <span th:text="${errorMessage}"></span>
-    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
-</div>
-
-<div class="page-header mt-3">
-    <div class="container">
-        <h3 class="mb-0 text-white">Danh sách tài khoản đã mua</h3>
-        <small class="opacity-75">
-            <span th:text="${gameName != null && !#strings.isEmpty(gameName) ? gameName : 'Tất cả'}"></span>
-        </small>
-    </div>
-</div>
-
-<div class="container py-4">
-
-    <div class="card card-soft">
-        <div class="card-body">
-
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <h5 class="mb-0">Danh sách</h5>
-                <span class="badge bg-primary badge-soft"
-                      th:text="${listAcc != null ? #lists.size(listAcc) : 0} + ' item(s)'"></span>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead class="table-light">
-                    <tr>
-                        <th style="width:70px;">#</th>
-                        <th>Game</th>
-                        <th>Account</th>
-                        <th style="width:220px;">Password</th>
-                        <th>Price</th>
-                        <th>Order Date</th>
-                        <th>Status</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    <tr th:if="${listAcc == null || #lists.isEmpty(listAcc)}">
-                        <td colspan="7" class="text-center py-4 text-muted">
-                            Chưa có tài khoản nào.
-                        </td>
-                    </tr>
-
-                    <tr th:each="od, i : ${listAcc}">
-                        <td th:text="${i.index + 1}"></td>
-
-                        <td class="fw-semibold"
-                            th:text="${od.game != null ? od.game.gameName : 'N/A'}"></td>
-
-                        <td>
-                            <div class="fw-semibold mono"
-                                 th:text="${od.gameAccount != null ? od.gameAccount.gameAccount : 'N/A'}"></div>
-                            <div class="text-muted small"
-                                 th:text="${od.gameAccount != null ? ('ID: ' + od.gameAccount.gameAccountId) : ''}"></div>
-                        </td>
-
-                        <td>
-                            <button type="button"
-                                    class="btn btn-outline-secondary btn-sm rounded-pill"
-                                    th:attr="data-pw='#pw'+${od.id}">
-                                Xem
-                            </button>
-
-                            <div class="pw-box mono"
-                                 th:id="'pw'+${od.id}"
-                                 th:text="${od.gameAccount != null ? od.gameAccount.gamePassword : ''}">
-                            </div>
-                        </td>
-
-                        <td th:text="${od.price != null ? #numbers.formatDecimal(od.price,0,'COMMA',0,'POINT') + ' đ' : '—'}"></td>
-
-                        <td th:text="${(od.order != null && od.order.createdDate != null) ? #temporals.format(od.order.createdDate,'dd/MM/yyyy HH:mm') : '—'}"></td>
-
-                        <td>
-                            <span class="badge bg-success badge-soft"
-                                  th:if="${od.order != null && od.order.status != null && (od.order.status == 'DONE' || od.order.status == 'SUCCESS')}"
-                                  th:text="${od.order.status}"></span>
-                            <span class="badge bg-secondary badge-soft"
-                                  th:if="${od.order == null || od.order.status == null || !(od.order.status == 'DONE' || od.order.status == 'SUCCESS')}"
-                                  th:text="${od.order != null && od.order.status != null ? od.order.status : 'UNKNOWN'}"></span>
-                        </td>
-                    </tr>
-                    </tbody>
-
-                </table>
-            </div>
-
-        </div>
-    </div>
-
-</div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     document.querySelectorAll('.require-login').forEach(link => {
@@ -452,6 +180,211 @@
             }
         });
     });
+</script>
+
+<div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span th:text="${successMessage}"></span>
+    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
+</div>
+
+<div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center mx-3 mt-3 auto-hide-alert" role="alert">
+    <i class="bi bi-x-circle-fill me-2"></i>
+    <span th:text="${errorMessage}"></span>
+    <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
+</div>
+
+<div class="page-header mt-3">
+    <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+            <h3 class="mb-0 text-white">Danh sách tài khoản đã mua / đang thuê</h3>
+            <small class="opacity-75">
+                <span th:text="${gameName != null && !#strings.isEmpty(gameName) ? gameName : 'Tất cả'}"></span>
+            </small>
+        </div>
+        <div class="pill">
+            <i class="fa fa-layer-group"></i>
+            <span class="fw-semibold" th:text="${listAcc != null ? #lists.size(listAcc) : 0} + ' item(s)'"></span>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="card card-soft">
+        <div class="card-body">
+
+            <div th:if="${listAcc == null || #lists.isEmpty(listAcc)}" class="text-center py-5 text-muted">
+                Chưa có tài khoản nào.
+            </div>
+
+            <div th:if="${listAcc != null && !#lists.isEmpty(listAcc)}" class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width:70px;">#</th>
+                        <th>Game</th>
+                        <th>Account</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th style="width:90px;" class="text-center">Info</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="row, i : ${listAcc}"
+                        th:with="ga=${row['O'] != null ? row['O'] : row['R']}, isOwned=${row['O'] != null}">
+                        <td th:text="${i.index + 1}"></td>
+
+                        <td class="fw-semibold"
+                            th:text="${ga != null && ga.game != null && ga.game.gameName != null ? ga.game.gameName : 'N/A'}"></td>
+
+                        <td>
+                            <div class="fw-semibold mono" th:text="${ga != null ? ga.gameAccount : 'N/A'}"></div>
+                            <div class="text-muted small mono" th:text="${ga != null ? ('ID: ' + ga.gameAccountId) : ''}"></div>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-success badge-soft" th:if="${isOwned}">BUY (FOREVER)</span>
+                            <span class="badge bg-warning text-dark badge-soft" th:if="${!isOwned}">RENT</span>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-secondary badge-soft"
+                                  th:text="${ga != null && ga.status != null ? ga.status : (isOwned ? 'OWNED' : 'RENTING')}"></span>
+                        </td>
+
+                        <td class="text-center">
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm rounded-pill"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#gaModal"
+                                    th:attr="
+                                      data-type=${isOwned ? 'BUY' : 'RENT'},
+                                      data-gid=${ga != null ? ga.gameAccountId : ''},
+                                      data-game=${ga != null && ga.game != null ? ga.game.gameName : ''},
+                                      data-user=${ga != null ? ga.gameAccount : ''},
+                                      data-pass=${ga != null ? ga.gamePassword : ''},
+                                      data-price=${ga != null && ga.price != null ? ga.price.toPlainString() : ''},
+                                      data-rank=${ga != null ? ga.rank : ''},
+                                      data-skin=${ga != null ? ga.skin : 0},
+                                      data-level=${ga != null ? ga.lovel : 0},
+                                      data-vip=${ga != null ? ga.vip : 0},
+                                      data-email=${ga != null ? ga.email : ''},
+                                      data-status=${ga != null ? ga.status : ''},
+                                      data-classify=${ga != null ? ga.classify : ''},
+                                      data-duration=${ga != null ? ga.duration : ''},
+                                      data-desc=${ga != null ? ga.description : ''},
+                                      data-img=${ga != null ? ga.imageMain : ''}">
+                                <i class="bi bi-info-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="gaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius:18px;">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Chi tiết tài khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-lg-5">
+                        <img id="mImg" class="ga-img" alt="Image">
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="kv"><div class="k">Type</div><div class="v" id="mType">-</div></div>
+                        <div class="kv"><div class="k">GameAccount ID</div><div class="v mono" id="mGid">-</div></div>
+                        <div class="kv"><div class="k">Game</div><div class="v" id="mGame">-</div></div>
+                        <div class="kv"><div class="k">Username</div><div class="v mono" id="mUser">-</div></div>
+                        <div class="kv"><div class="k">Password</div><div class="v mono" id="mPass">-</div></div>
+                        <div class="kv"><div class="k">Price</div><div class="v" id="mPrice">-</div></div>
+
+                        <div class="kv"><div class="k">Rank</div><div class="v" id="mRank">-</div></div>
+                        <div class="kv"><div class="k">Skin</div><div class="v" id="mSkin">-</div></div>
+                        <div class="kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
+                        <div class="kv"><div class="k">VIP</div><div class="v" id="mVip">-</div></div>
+
+                        <div class="kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
+                        <div class="kv"><div class="k">Classify</div><div class="v" id="mClassify">-</div></div>
+                        <div class="kv"><div class="k">DurationAccount</div><div class="v" id="mDuration">-</div></div>
+
+                        <div class="kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
+                        <div class="kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary rounded-pill" type="button" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const fmtVND = (v) => {
+        if (v === null || v === undefined || v === '') return '—';
+        const s = String(v).trim();
+        const n = Number(s.replace(/,/g,''));
+        if (!isFinite(n)) return s + ' đ';
+        return n.toLocaleString('vi-VN') + ' đ';
+    };
+
+    const setTxt = (id, val) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = (val === null || val === undefined || String(val).trim() === '') ? '—' : String(val);
+    };
+
+    document.getElementById('gaModal')?.addEventListener('show.bs.modal', (ev) => {
+        const btn = ev.relatedTarget;
+        if (!btn) return;
+
+        setTxt('mType', btn.dataset.type || '-');
+        setTxt('mGid', btn.dataset.gid || '-');
+        setTxt('mGame', btn.dataset.game || '-');
+        setTxt('mUser', btn.dataset.user || '-');
+        setTxt('mPass', btn.dataset.pass || '-');
+        setTxt('mPrice', fmtVND(btn.dataset.price));
+
+        setTxt('mRank', btn.dataset.rank || '-');
+        setTxt('mSkin', btn.dataset.skin || '0');
+        setTxt('mLevel', btn.dataset.level || '0');
+        setTxt('mVip', btn.dataset.vip || '0');
+
+        setTxt('mStatus', btn.dataset.status || '-');
+        setTxt('mClassify', btn.dataset.classify || '-');
+        setTxt('mDuration', btn.dataset.duration || '-');
+
+        setTxt('mEmail', btn.dataset.email || '-');
+        setTxt('mDesc', btn.dataset.desc || '-');
+
+        const img = document.getElementById('mImg');
+        const src = (btn.dataset.img || '').trim();
+        if (img) {
+            img.src = src ? src : 'data:image/svg+xml;utf8,' + encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500">
+                   <rect width="100%" height="100%" fill="#f3f5f8"/>
+                   <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6c757d" font-size="22">
+                     No Image
+                   </text>
+                 </svg>`
+            );
+        }
+    });
 
     setTimeout(() => {
         document.querySelectorAll(".auto-hide-alert").forEach(alert => {
@@ -459,16 +392,6 @@
             bsAlert.close();
         });
     }, 5000);
-
-    document.addEventListener("click", function (event) {
-        const btn = event.target.closest("button[data-pw]");
-        if (!btn) return;
-        const sel = btn.getAttribute("data-pw");
-        const box = document.querySelector(sel);
-        if (!box) return;
-        box.classList.toggle("show");
-        btn.textContent = box.classList.contains("show") ? "Ẩn" : "Xem";
-    });
 </script>
 
 </body>

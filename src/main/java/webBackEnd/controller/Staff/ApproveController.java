@@ -241,8 +241,8 @@ public class ApproveController {
         if (!Objects.equals(od.getGame().getGameId(), ga.getGame().getGameId())) return false;
 
         if (od.getPrice() == null || ga.getPrice() == null) return false;
-        BigDecimal odPrice = BigDecimal.valueOf(od.getPrice().longValue());
-        if (ga.getPrice().compareTo(odPrice) != 0) return false;
+        if (ga.getPrice().compareTo(BigDecimal.valueOf(od.getPrice())) != 0) return false;
+
 
         if (ga.getVip() != od.getVip()) return false;
         if (ga.getLovel() != od.getLovel()) return false;
@@ -262,9 +262,16 @@ public class ApproveController {
 
     private boolean isRentAccount(GameAccount ga) {
         if (ga == null) return false;
+
         String classify = ga.getClassify();
-        if (classify == null) return false;
-        return classify.trim().equalsIgnoreCase("RENT");
+        String status = ga.getStatus();
+        String durationAcc = ga.getDuration();
+
+        boolean byClassify = (classify != null && classify.trim().equalsIgnoreCase("RENT"));
+        boolean byStatus = (status != null && status.trim().equalsIgnoreCase("RENT"));
+        boolean byDuration = (durationAcc != null && !durationAcc.trim().isEmpty() && !durationAcc.trim().equalsIgnoreCase("0"));
+
+        return byClassify || byStatus || byDuration;
     }
 
     private List<GameAccount> findCandidatesForOrderDetail(OrderDetail od) {
@@ -274,6 +281,7 @@ public class ApproveController {
         if (all == null || all.isEmpty()) return List.of();
 
         BigDecimal odPrice = BigDecimal.valueOf(od.getPrice().longValue());
+
         boolean odRent = od.getDuration() != null && od.getDuration() > 0;
 
         List<GameAccount> out = new ArrayList<>();

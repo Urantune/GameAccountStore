@@ -2,6 +2,7 @@ package webBackEnd.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import webBackEnd.entity.Customer;
 import webBackEnd.entity.GameAccount;
 import webBackEnd.entity.RentAccountGame;
 import webBackEnd.repository.RentAccountGameRepositories;
@@ -59,5 +60,9 @@ public class RentAccountGameService {
                 LocalDateTime.now(),
                 "ACTIVE"   // đổi theo status của bạn
         );
+    }
+
+    public List<RentAccountGame> findAllByCustomer(Customer customer){
+        return rentAccountGameRepositories.findAllByCustomer(customer);
     }
 }
