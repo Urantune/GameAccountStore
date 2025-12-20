@@ -58,22 +58,19 @@ private GameAccountService gameAccountService;
     @PostMapping("/cart/add/{accountId}")
     public ResponseEntity<String> addToCart(
             @PathVariable("accountId") String accountIdStr,
-            @RequestParam BigDecimal basePrice,
             @RequestParam(defaultValue = "0") Integer duration,
             @RequestParam int skin,
             @RequestParam int level,
             @RequestParam int vip,
             @RequestParam String rank,
+            @RequestParam(defaultValue = "0") int voucherPercent, // voucher đã bị chặn ở JS
             @AuthenticationPrincipal UserDetails userDetails) {
 
         if (userDetails == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Chưa đăng nhập");
 
-        if (basePrice == null || basePrice.compareTo(BigDecimal.ZERO) <= 0)
-            return ResponseEntity.badRequest().body("Giá không hợp lệ");
-
-        if (duration < 0 || duration > 3)
-            return ResponseEntity.badRequest().body("Gói thuê không hợp lệ");
+        if (voucherPercent > 0)
+            return ResponseEntity.badRequest().body("Không thể thêm vào giỏ hàng khi áp voucher");
 
         UUID accountId;
         try {
@@ -92,17 +89,10 @@ private GameAccountService gameAccountService;
         if (carts.size() >= 5)
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Số lượng đơn hàng trong cart đã đạt tối đa");
 
-        // Lấy game từ account
-        Game game = account.getGame();
+        cartService.addToCart(customer, account, duration, rank, skin, level, vip);
 
-        cartService.addToCart(customer, game, basePrice, duration, rank, skin, level, vip);
         return ResponseEntity.ok("Đã thêm vào giỏ hàng");
     }
-
-
-
-
-
     @PostMapping("/cart/delete/{id}")
     public String deleteCart(@PathVariable("id") UUID cartId, RedirectAttributes ra) {
         cartService.delete(cartService.getCartById(cartId));

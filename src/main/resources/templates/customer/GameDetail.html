@@ -475,18 +475,29 @@
 </section>
 <script>
     function addToCart(button) {
-        const accountId = button.getAttribute('data-account-id'); // Lấy đúng accountId
-        const basePrice = button.getAttribute('data-base-price');
+        const accountId = button.getAttribute('data-account-id');
+        const basePrice = parseFloat(button.getAttribute('data-base-price')) || 0;
 
-        const duration = document.querySelector('input[name="accountType"]:checked')?.value === 'rent'
-            ? parseInt(document.getElementById('rentMonth').value)
+        const durationInput = document.querySelector('input[name="accountType"]:checked');
+        const duration = durationInput && durationInput.value === 'rent'
+            ? parseInt(document.getElementById('rentMonth').value) || 0
             : 0;
 
-        // Lấy các thông số account
-        const rank = document.getElementById('rank').value;
-        const skin = parseInt(document.getElementById('skinRangeInput').value);
-        const level = parseInt(document.getElementById('level').value);
-        const vip = parseInt(document.getElementById('vip').value);
+        const voucherInput = document.getElementById('voucherPercent');
+        const voucherPercent = voucherInput ? parseInt(voucherInput.value) : 0;
+        if (voucherPercent > 0) {
+            const errorDiv = document.getElementById('buyError');
+            errorDiv.innerText = 'Không thể thêm vào giỏ hàng khi áp dụng voucher!';
+            errorDiv.classList.remove('d-none');
+            setTimeout(() => errorDiv.classList.add('d-none'), 3000);
+            return;
+        }
+
+        // Thông số account
+        const rank = document.getElementById('rank')?.value || '';
+        const skin = parseInt(document.getElementById('skinRangeInput')?.value) || 0;
+        const level = parseInt(document.getElementById('level')?.value) || 0;
+        const vip = parseInt(document.getElementById('vip')?.value) || 0;
 
         const formData = new FormData();
         formData.append('basePrice', basePrice);
@@ -496,7 +507,7 @@
         formData.append('level', level);
         formData.append('vip', vip);
 
-        fetch(`/home/cart/add/${accountId}`, { // gửi accountId lên server
+        fetch(`/home/cart/add/${accountId}`, {
             method: 'POST',
             body: formData,
             credentials: 'same-origin',
@@ -505,14 +516,17 @@
             .then(data => {
                 const successDiv = document.getElementById('buySuccess');
                 const errorDiv = document.getElementById('buyError');
+
                 if (data.includes("Đã thêm vào giỏ hàng")) {
                     successDiv.innerText = data;
                     successDiv.classList.remove('d-none');
                     errorDiv.classList.add('d-none');
+                    setTimeout(() => successDiv.classList.add('d-none'), 3000);
                 } else {
                     errorDiv.innerText = data;
                     errorDiv.classList.remove('d-none');
                     successDiv.classList.add('d-none');
+                    setTimeout(() => errorDiv.classList.add('d-none'), 3000);
                 }
             })
             .catch(err => {
@@ -522,6 +536,7 @@
                 errorDiv.innerText = 'Có lỗi xảy ra, vui lòng thử lại.';
                 errorDiv.classList.remove('d-none');
                 successDiv.classList.add('d-none');
+                setTimeout(() => errorDiv.classList.add('d-none'), 3000);
             });
     }
 

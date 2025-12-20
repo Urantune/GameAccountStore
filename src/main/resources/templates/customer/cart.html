@@ -336,9 +336,7 @@
                         <td th:text="${c.lovel?: 'N/A'}"></td>
 
                         <!-- Vip -->
-                        <td>
-                            <span th:if="${c.vip}">VIP</span>
-                        </td>
+                        <td th:text="${c.vip ?: 'N/A'}"></td>
                         <!-- Tài khoản (Permanent / Rent) -->
                         <td>
                 <span th:switch="${c.duration}">
@@ -351,20 +349,17 @@
                 </span>
                         </td>
 
-                        <!-- Giá -->
-                        <td>
-                <span th:text="${c.price != null
-                    ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
-                    : '0 đ'}"></span>
-                        </td>
-
-                        <!-- Tổng giá (chưa quantity → = giá) -->
-                        <td>
-                <span th:text="${c.price != null
-                    ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
-                    : '0 đ'}"></span>
-                        </td>
-
+                        <!-- Giá gốc -->
+                        <td th:text="${c.price != null
+    ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
+    : '0 đ'}"></td>
+                        <!-- Tổng giá -->
+                        <td th:text="${
+    c.duration > 0
+        ? #numbers.formatDecimal(c.price * c.duration *
+            (c.duration == 2 ? 0.9 : (c.duration == 3 ? 0.85 : 1)), 0, 'COMMA', 0, 'POINT') + ' đ'
+        : #numbers.formatDecimal(c.price, 0, 'COMMA', 0, 'POINT') + ' đ'
+}"></td>
                         <!-- Handle -->
                         <td>
                             <form th:action="@{/home/cart/delete/{id}(id=${c.cartId})}"
