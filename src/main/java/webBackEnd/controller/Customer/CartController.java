@@ -175,7 +175,7 @@ private GameAccountService gameAccountService;
                     .body(Map.of("success", false, "message", "Giỏ hàng trống"));
         }
 
-        // ❌ Voucher chỉ áp cho 1 account
+        //  Voucher chỉ áp cho 1 account
         if (voucherCode != null && !voucherCode.isBlank() && carts.size() > 1) {
             return ResponseEntity.badRequest()
                     .body(Map.of(
@@ -186,7 +186,7 @@ private GameAccountService gameAccountService;
 
         BigDecimal totalBeforeVoucher = BigDecimal.ZERO;
 
-        // 🔁 TÍNH TỔNG GIÁ
+        //  TÍNH TỔNG GIÁ
         for (Cart c : carts) {
             GameAccount acc = c.getGameAccount();
 
@@ -224,7 +224,7 @@ private GameAccountService gameAccountService;
         totalBeforeVoucher =
                 totalBeforeVoucher.setScale(0, RoundingMode.HALF_UP);
 
-        // 🎟️ VOUCHER
+        // 🎟VOUCHER
         Voucher usedVoucher = null;
         BigDecimal totalAfterVoucher = totalBeforeVoucher;
 
@@ -258,12 +258,12 @@ private GameAccountService gameAccountService;
                     .body(Map.of("success", false, "message", "Số dư không đủ"));
         }
 
-        // 💸 TRỪ TIỀN
+        // TRỪ TIỀN
         customer.setBalance(
                 customer.getBalance().subtract(totalAfterVoucher));
         customerRepositories.save(customer);
 
-        // 🧾 ORDER
+        // ORDER
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(totalAfterVoucher);
@@ -274,7 +274,7 @@ private GameAccountService gameAccountService;
 
         Orders savedOrder = ordersRepositories.save(order);
 
-        // 📦 ORDER DETAIL
+        //  ORDER DETAIL
         for (Cart c : carts) {
             OrderDetail d = new OrderDetail();
             d.setOrder(savedOrder);
@@ -296,7 +296,7 @@ private GameAccountService gameAccountService;
             vc.setDateUsed(LocalDateTime.now());
             voucherCustomerRepository.save(vc);
         }
-        // 🧹 XOÁ CART
+        // XOÁ CART
         cartRepositories.deleteAll(carts);
         return ResponseEntity.ok(
                 Map.of("success", true, "message", "Thanh toán giỏ hàng thành công")
