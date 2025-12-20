@@ -339,14 +339,21 @@
                         <td th:text="${c.vip ?: 'N/A'}"></td>
                         <!-- Tài khoản (Permanent / Rent) -->
                         <td>
-                <span th:switch="${c.duration}">
-                    <span th:case="0">Vĩnh viễn</span>
-                    <span th:case="1">Thuê 1 tháng</span>
-                    <span th:case="2">Thuê 2 tháng</span>
-                    <span th:case="3">Thuê 3 tháng</span>
-                    <span th:case="*"
-                          th:text="'Thuê ' + c.duration + ' tháng'"></span>
-                </span>
+                            <!-- VĨNH VIỄN -->
+                            <span th:if="${c.duration == 0}">
+        Vĩnh viễn
+    </span>
+
+                            <!-- THUÊ -->
+                            <select th:if="${c.duration > 0}"
+                                    class="form-select form-select-sm rent-select"
+                                    th:data-cart-id="${c.cartId}"
+                                    th:data-base-price="${c.price}"
+                                    onchange="changeRentDuration(this)">
+                                <option value="1" th:selected="${c.duration == 1}">Thuê 1 tháng</option>
+                                <option value="2" th:selected="${c.duration == 2}">Thuê 2 tháng (-10%)</option>
+                                <option value="3" th:selected="${c.duration == 3}">Thuê 3 tháng (-15%)</option>
+                            </select>
                         </td>
 
                         <!-- Giá gốc -->
@@ -354,12 +361,22 @@
     ? #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
     : '0 đ'}"></td>
                         <!-- Tổng giá -->
-                        <td th:text="${
-    c.duration > 0
-        ? #numbers.formatDecimal(c.price * c.duration *
-            (c.duration == 2 ? 0.9 : (c.duration == 3 ? 0.85 : 1)), 0, 'COMMA', 0, 'POINT') + ' đ'
-        : #numbers.formatDecimal(c.price, 0, 'COMMA', 0, 'POINT') + ' đ'
-}"></td>
+                        <td>
+    <span th:id="'cart-total-' + ${c.cartId}"
+          th:data-base-price="${c.price}"
+          th:data-duration="${c.duration}">
+        <span th:text="${
+            c.duration > 0
+                ? #numbers.formatDecimal(
+                    c.price * c.duration *
+                    (c.duration == 2 ? 0.9 : (c.duration == 3 ? 0.85 : 1)),
+                    0,'COMMA',0,'POINT'
+                  ) + ' đ'
+                : #numbers.formatDecimal(c.price,0,'COMMA',0,'POINT') + ' đ'
+        }"></span>
+    </span>
+                        </td>
+
                         <!-- Handle -->
                         <td>
                             <button type="button"
@@ -381,30 +398,50 @@
                 <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
                     <div class="bg-light rounded">
                         <div class="p-4">
-                            <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                            <h1 class="display-6 mb-4">
+                                Cart <span class="fw-normal">Total</span>
+                            </h1>
 
                             <div class="d-flex justify-content-between mb-4">
                                 <h5 class="mb-0 me-4">Selected:</h5>
                                 <p class="mb-0 fw-semibold" id="selectedTotal">0 đ</p>
                             </div>
 
-                            <div class="d-flex justify-content-between">
-                                <h5 class="mb-0 me-4">Shipping</h5>
-                                <div>
-                                    <p class="mb-0">Flat rate: 0</p>
+                            <!-- VOUCHER -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="mb-0 me-4">Voucher:</h5>
+
+                                <div class="d-flex gap-2 flex-column" style="flex:1">
+
+                                    <div class="d-flex gap-2">
+                                        <input type="text"
+                                               id="voucherInput"
+                                               class="form-control form-control-sm"
+                                               placeholder="Nhập mã">
+
+                                        <input type="hidden" id="voucherPercent" value="0">
+                                        <input type="hidden" id="voucherHidden">
+
+                                        <button type="button"
+                                                class="btn btn-outline-dark btn-sm"
+                                                onclick="applyVoucher()">
+                                            Áp dụng
+                                        </button>
+                                    </div>
+
+                                    <small id="voucherMsg" class="d-none"></small>
                                 </div>
                             </div>
                         </div>
-
                         <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                             <h5 class="mb-0 ps-4 me-4">Total</h5>
                             <p class="mb-0 pe-4 fw-semibold" id="finalTotal">0 đ</p>
                         </div>
                         <div id="checkoutError" class="alert alert-danger d-none"></div>
                         <div id="checkoutSuccess" class="alert alert-success d-none"></div>
-
-                        <button class="btn btn-primary rounded-pill px-4 py-3 text-uppercase mb-4 ms-4"
-                                type="submit">
+                        <button id="checkoutBtn"
+                                type="button"
+                                class="btn btn-primary rounded-pill px-4 py-3 text-uppercase mb-4 ms-4">
                             Proceed Checkout
                         </button>
                     </div>
@@ -413,6 +450,231 @@
         </form>
     </div>
 </div>
+
+<script>
+    /* ======================
+       FORMAT TIỀN
+    ====================== */
+    function formatVND(num) {
+        return num.toLocaleString("vi-VN") + " đ";
+    }
+
+    /* ======================
+       LẤY CÁC ITEM ĐƯỢC CHỌN
+    ====================== */
+    function getSelectedItems() {
+        return document.querySelectorAll(".item-check:checked");
+    }
+
+    /* ======================
+       TÍNH TOTAL CART
+    ====================== */
+    function calculateCartTotal() {
+        let total = 0;
+
+        getSelectedItems().forEach(cb => {
+            const cartId = cb.value;
+            const totalSpan = document.getElementById(`cart-total-${cartId}`);
+            if (!totalSpan) return;
+
+            const price = parseInt(totalSpan.innerText.replace(/[^\d]/g, ""));
+            total += price || 0;
+        });
+
+        document.getElementById("selectedTotal").innerText = formatVND(total);
+
+        // Áp voucher nếu hợp lệ
+        const percent = parseInt(document.getElementById("voucherPercent").value || "0");
+        let finalTotal = total;
+
+        if (percent > 0 && getSelectedItems().length === 1) {
+            finalTotal = Math.round(total * (100 - percent) / 100);
+        }
+
+        document.getElementById("finalTotal").innerText = formatVND(finalTotal);
+    }
+
+    /* ======================
+       APPLY VOUCHER
+    ====================== */
+    function applyVoucher() {
+        const selectedItems = getSelectedItems();
+        const msgEl = document.getElementById("voucherMsg");
+
+        msgEl.classList.add("d-none");
+        msgEl.innerText = "";
+
+        // ❌ Chọn > 1 sản phẩm
+        if (selectedItems.length > 1) {
+            msgEl.innerText = "❌ Voucher chỉ áp dụng thanh toán 1 đơn hàng";
+            msgEl.className = "text-danger";
+            msgEl.classList.remove("d-none");
+
+            resetVoucher();
+            calculateCartTotal();
+
+            // ⏱️ ẨN SAU 3 GIÂY
+            setTimeout(() => {
+                msgEl.classList.add("d-none");
+                msgEl.innerText = "";
+            }, 3000);
+
+            return;
+        }
+        const code = document.getElementById("voucherInput").value.trim();
+        if (!code) return;
+
+        fetch(`/api/voucher/check?code=${encodeURIComponent(code)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.valid) {
+                    msgEl.innerText = "Voucher không hợp lệ hoặc đã hết hạn";
+                    msgEl.className = "text-danger";
+                    resetVoucher();
+                } else {
+                    document.getElementById("voucherPercent").value = data.value;
+                    document.getElementById("voucherHidden").value = code;
+
+                    msgEl.innerText = `🎉 Voucher giảm ${data.value}%`;
+                    msgEl.className = "text-success";
+                }
+
+                msgEl.classList.remove("d-none");
+                calculateCartTotal();
+            })
+            .catch(() => {
+                msgEl.innerText = "Vui lòng đăng nhập";
+                msgEl.className = "text-danger";
+                msgEl.classList.remove("d-none");
+            });
+    }
+    function resetVoucher() {
+        document.getElementById("voucherPercent").value = 0;
+        document.getElementById("voucherHidden").value = "";
+        document.getElementById("voucherInput").value = "";
+    }
+
+    /* ======================
+       ĐỔI GÓI THUÊ (AJAX)
+    ====================== */
+    function changeRentDuration(select) {
+        const cartId = select.dataset.cartId;
+        const duration = parseInt(select.value);
+        const basePrice = parseFloat(select.dataset.basePrice);
+
+        select.disabled = true;
+
+        fetch("/home/cart/update-duration", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `cartId=${cartId}&duration=${duration}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "Không thể cập nhật");
+                    return;
+                }
+
+                let discount = 1;
+                if (duration === 2) discount = 0.9;
+                if (duration === 3) discount = 0.85;
+
+                let total;
+                if (duration === 0) {
+                    total = Math.round(basePrice);
+                } else {
+                    total = Math.round(basePrice * duration * discount);
+                }
+
+                const totalSpan = document.getElementById(`cart-total-${cartId}`);
+                totalSpan.innerText = formatVND(total);
+
+                // đổi duration => reset voucher
+                resetVoucher();
+                calculateCartTotal();
+            })
+            .catch(() => alert("Lỗi kết nối server"))
+            .finally(() => select.disabled = false);
+    }
+
+    /* ======================
+       DOM READY
+    ====================== */
+    document.addEventListener("DOMContentLoaded", () => {
+
+        document.querySelectorAll(".item-check").forEach(cb => {
+            cb.addEventListener("change", () => {
+                resetVoucher();
+                calculateCartTotal();
+            });
+        });
+
+        // Check all
+        const checkAll = document.getElementById("checkAll");
+        if (checkAll) {
+            checkAll.addEventListener("change", () => {
+                document.querySelectorAll(".item-check").forEach(cb => {
+                    cb.checked = checkAll.checked;
+                });
+                resetVoucher();
+                calculateCartTotal();
+            });
+        }
+    });
+    /* ======================
+   SUBMIT CHECKOUT
+====================== */
+    document.getElementById("checkoutBtn")?.addEventListener("click", submitCheckout);
+
+    function submitCheckout() {
+        const selectedItems = getSelectedItems();
+
+        if (selectedItems.length === 0) {
+            alert("Vui lòng chọn ít nhất 1 account để thanh toán");
+            return;
+        }
+        const voucherCode =
+            document.getElementById("voucherHidden").value || "";
+
+        fetch("/home/cart/checkout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `voucherCode=${encodeURIComponent(voucherCode)}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert(data.message || "Thanh toán thất bại");
+                    return;
+                }
+
+                alert("🎉 Thanh toán thành công");
+
+                // reload lại cart
+                window.location.reload();
+            })
+            .catch(() => {
+                alert("Vui lòng đăng nhập");
+            });
+    }
+</script>
+<script>
+    document.getElementById("voucherInput")?.addEventListener("input", () => {
+        const input = document.getElementById("voucherInput").value.trim();
+
+        // ❗ nếu user xoá voucher → reset state
+        if (input === "") {
+            resetVoucher();
+            calculateCartTotal();
+        }
+    });
+</script>
+
 <script>
     function deleteCart(btn) {
         const cartId = btn.getAttribute("data-cart-id");
@@ -432,54 +694,13 @@
             });
     }
 </script>
-
 <script>
-    function submitCheckout(e) {
-        e.preventDefault(); // ❌ chặn submit thường
+    function showCheckoutError(msg) {
+        const box = document.getElementById("checkoutError");
+        box.innerText = msg;
+        box.classList.remove("d-none");
 
-        const errorBox = document.getElementById("checkoutError");
-        const successBox = document.getElementById("checkoutSuccess");
-
-        errorBox.classList.add("d-none");
-        successBox.classList.add("d-none");
-
-        const form = document.getElementById("checkoutForm");
-        const formData = new FormData(form);
-
-        fetch("/home/cart/checkout", {
-            method: "POST",
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success) {
-                    errorBox.textContent = data.message;
-                    errorBox.classList.remove("d-none");
-
-                    // ⏱ auto hide sau 3s
-                    setTimeout(() => {
-                        errorBox.classList.add("d-none");
-                    }, 3000);
-                } else {
-                    successBox.textContent = data.message;
-                    successBox.classList.remove("d-none");
-
-                    setTimeout(() => {
-                        // 👉 nếu muốn reload hoặc redirect khi thành công
-                        window.location.href = "/home";
-                    }, 2000);
-                }
-            })
-            .catch(() => {
-                errorBox.textContent = "Lỗi hệ thống, vui lòng thử lại";
-                errorBox.classList.remove("d-none");
-
-                setTimeout(() => {
-                    errorBox.classList.add("d-none");
-                }, 3000);
-            });
-
-        return false;
+        setTimeout(() => box.classList.add("d-none"), 4000);
     }
 </script>
 
@@ -548,42 +769,6 @@
             }
         });
     });
-</script>
-
-<script>
-    function formatVND(n) {
-        return Number(n).toLocaleString("vi-VN") + " đ";
-    }
-
-    function recalcSelected() {
-        let sum = 0;
-        document.querySelectorAll(".item-check").forEach(chk => {
-            if (chk.checked && !chk.disabled) sum += Number(chk.dataset.price || 0);
-        });
-        document.getElementById("selectedTotal").innerText = formatVND(sum);
-        document.getElementById("finalTotal").innerText = formatVND(sum);
-    }
-
-    const checkAll = document.getElementById("checkAll");
-    if (checkAll) {
-        checkAll.addEventListener("change", function () {
-            document.querySelectorAll(".item-check").forEach(chk => {
-                if (!chk.disabled) chk.checked = checkAll.checked;
-            });
-            recalcSelected();
-        });
-    }
-
-    document.querySelectorAll(".item-check").forEach(chk => {
-        chk.addEventListener("change", () => {
-            const all = [...document.querySelectorAll(".item-check")].filter(x => !x.disabled);
-            const checked = all.filter(x => x.checked);
-            if (checkAll) checkAll.checked = all.length > 0 && checked.length === all.length;
-            recalcSelected();
-        });
-    });
-
-    recalcSelected();
 </script>
 
 <script>

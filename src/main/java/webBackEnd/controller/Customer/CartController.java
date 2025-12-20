@@ -17,6 +17,7 @@ import webBackEnd.repository.*;
 import webBackEnd.service.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +25,12 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/home")
 public class CartController {
-
+    @Autowired
+    private VoucherCustomerRepository  voucherCustomerRepository ;
+@Autowired
+    private VoucherService voucherService;
+    @Autowired
+    private RentAccountGameService  rentAccountGameService;
     @Autowired private CartService cartService;
     @Autowired private CustomerService customerService;
     @Autowired private GameService gameService;
@@ -99,7 +105,7 @@ private GameAccountService gameAccountService;
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Số lượng đơn hàng trong cart đã đạt tối đa");
 
-        // ✅ ADD
+        // ADD
         cartService.addToCart(customer, account, duration, rank, skin, level, vip);
 
         return ResponseEntity.ok("Đã thêm vào giỏ hàng");
@@ -114,129 +120,190 @@ private GameAccountService gameAccountService;
     }
 
 
+    @PostMapping("/cart/update-duration")
+    @ResponseBody
+    @Transactional
+    public Map<String, Object> updateCartDuration(
+            @RequestParam UUID cartId,
+            @RequestParam int duration,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails == null) {
+            return Map.of("success", false, "message", "Chưa đăng nhập");
+        }
+
+        if (duration < 1 || duration > 3) {
+            return Map.of("success", false, "message", "Gói thuê không hợp lệ");
+        }
+
+        Cart cart = cartRepositories.findById(cartId).orElse(null);
+        if (cart == null) {
+            return Map.of("success", false, "message", "Không tìm thấy cart");
+        }
+
+        // chỉ cho đổi nếu là thuê
+        if (cart.getDuration() == 0) {
+            return Map.of("success", false, "message", "Không thể đổi gói vĩnh viễn");
+        }
+
+        cart.setDuration(duration);
+        cartRepositories.save(cart);
+
+        return Map.of("success", true);
+    }
+
 
     @PostMapping("/cart/checkout")
     @ResponseBody
     @Transactional
-    public Map<String, Object> checkoutFromCart(
-            @RequestParam(value = "selectedCartIds", required = false) List<UUID> selectedCartIds
+    public ResponseEntity<Map<String, Object>> checkoutCart(
+            @RequestParam(required = false) String voucherCode,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Map<String, Object> res = new HashMap<>();
-
-        if (selectedCartIds == null || selectedCartIds.isEmpty()) {
-            res.put("success", false);
-            res.put("message", "Vui lòng tick ít nhất 1 món để thanh toán");
-            return res;
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "Bạn chưa đăng nhập"));
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()
-                || "anonymousUser".equals(auth.getPrincipal())) {
-            res.put("success", false);
-            res.put("message", "Bạn chưa đăng nhập");
-            return res;
-        }
+        Customer customer =
+                customerService.findCustomerByUsername(userDetails.getUsername());
 
-        Customer customer = customerService.findCustomerByUsername(auth.getName());
-        if (customer == null) {
-            res.put("success", false);
-            res.put("message", "Không tìm thấy khách hàng");
-            return res;
-        }
-
-        List<Cart> carts = selectedCartIds.stream()
-                .map(cartService::getCartById)
-                .filter(Objects::nonNull)
-                .filter(c -> c.getCustomer() != null
-                        && c.getCustomer().getCustomerId().equals(customer.getCustomerId()))
-                .toList();
+        List<Cart> carts = cartRepositories.findByCustomer(customer);
 
         if (carts.isEmpty()) {
-            res.put("success", false);
-            res.put("message", "Giỏ hàng không hợp lệ");
-            return res;
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Giỏ hàng trống"));
         }
 
+        // ❌ Voucher chỉ áp cho 1 account
+        if (voucherCode != null && !voucherCode.isBlank() && carts.size() > 1) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Voucher chỉ áp dụng khi thanh toán 1 account"
+                    ));
+        }
 
-        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal totalBeforeVoucher = BigDecimal.ZERO;
 
+        // 🔁 TÍNH TỔNG GIÁ
         for (Cart c : carts) {
-            BigDecimal basePrice = (c.getPrice() != null) ? c.getPrice() : BigDecimal.ZERO;
-            if (basePrice.compareTo(BigDecimal.ZERO) <= 0) {
-                res.put("success", false);
-                res.put("message", "Có sản phẩm trong giỏ có giá không hợp lệ");
-                return res;
+            GameAccount acc = c.getGameAccount();
+
+            // acc đang thuê mà mua vĩnh viễn
+            if (c.getDuration() == 0 &&
+                    rentAccountGameService.isAccountRented(acc)) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message",
+                                "Có account đang được thuê, không thể mua vĩnh viễn"
+                        ));
             }
 
-            int duration = (c.getDuration() == null) ? 0 : c.getDuration();
-            if (duration < 0 || duration > 3) {
-                res.put("success", false);
-                res.put("message", "Có sản phẩm có duration không hợp lệ (chỉ 0-3)");
-                return res;
-            }
-
+            BigDecimal price = c.getPrice();
             BigDecimal itemTotal;
 
-            if (duration == 0) {
-
-                itemTotal = basePrice;
+            if (c.getDuration() == 0) {
+                itemTotal = price;
             } else {
+                BigDecimal months = BigDecimal.valueOf(c.getDuration());
+                BigDecimal raw = price.multiply(months);
+                BigDecimal rate = BigDecimal.ONE;
 
-                BigDecimal months = BigDecimal.valueOf(duration);
-                BigDecimal raw = basePrice.multiply(months);
-
-                BigDecimal rate = BigDecimal.ONE;       // 1.00
-                if (duration == 2) rate = new BigDecimal("0.90");
-                if (duration == 3) rate = new BigDecimal("0.85");
+                if (c.getDuration() == 2) rate = new BigDecimal("0.90");
+                if (c.getDuration() == 3) rate = new BigDecimal("0.85");
 
                 itemTotal = raw.multiply(rate);
             }
 
-            itemTotal = itemTotal.setScale(0, java.math.RoundingMode.HALF_UP);
-            total = total.add(itemTotal);
+            totalBeforeVoucher =
+                    totalBeforeVoucher.add(itemTotal);
         }
 
-        if (total.compareTo(BigDecimal.ZERO) <= 0) {
-            res.put("success", false);
-            res.put("message", "Tổng tiền không hợp lệ");
-            return res;
+        totalBeforeVoucher =
+                totalBeforeVoucher.setScale(0, RoundingMode.HALF_UP);
+
+        // 🎟️ VOUCHER
+        Voucher usedVoucher = null;
+        BigDecimal totalAfterVoucher = totalBeforeVoucher;
+
+        if (voucherCode != null && !voucherCode.isBlank()) {
+            usedVoucher = voucherService.getValidVoucher(voucherCode.trim());
+
+            if (usedVoucher == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("success", false, "message", "Voucher không hợp lệ"));
+            }
+
+            if (voucherCustomerRepository
+                    .existsByCustomerAndVoucher(customer, usedVoucher)) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("success", false, "message", "Voucher đã được sử dụng"));
+            }
+
+            BigDecimal percent =
+                    BigDecimal.valueOf(usedVoucher.getValue());
+
+            BigDecimal discount =
+                    totalBeforeVoucher.multiply(percent)
+                            .divide(new BigDecimal("100"), 0, RoundingMode.HALF_UP);
+
+            totalAfterVoucher = totalBeforeVoucher.subtract(discount);
         }
 
-        if (customer.getBalance() == null || customer.getBalance().compareTo(total) < 0) {
-            res.put("success", false);
-            res.put("message", "Số dư không đủ");
-            return res;
+        // 💰 CHECK SỐ DƯ
+        if (customer.getBalance().compareTo(totalAfterVoucher) < 0) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Số dư không đủ"));
         }
 
-
-        customer.setBalance(customer.getBalance().subtract(total));
+        // 💸 TRỪ TIỀN
+        customer.setBalance(
+                customer.getBalance().subtract(totalAfterVoucher));
         customerRepositories.save(customer);
 
+        // 🧾 ORDER
         Orders order = new Orders();
         order.setCustomer(customer);
-        order.setTotalPrice(total);
+        order.setTotalPrice(totalAfterVoucher);
         order.setStatus("WAIT");
+
+        if (usedVoucher != null)
+            order.setVoucher(usedVoucher);
+
         Orders savedOrder = ordersRepositories.save(order);
 
-
+        // 📦 ORDER DETAIL
         for (Cart c : carts) {
-            BigDecimal basePrice = (c.getPrice() != null) ? c.getPrice() : BigDecimal.ZERO;
-            int duration = (c.getDuration() == null) ? 0 : c.getDuration();
-
             OrderDetail d = new OrderDetail();
             d.setOrder(savedOrder);
             d.setGame(c.getGame());
-            d.setDuration(duration);
-            d.setPrice(basePrice.setScale(0, java.math.RoundingMode.HALF_UP).intValue());
+            d.setGameAccount(c.getGameAccount());
+            d.setDuration(c.getDuration());
+            d.setPrice(c.getPrice().intValue());
+            d.setRank(c.getRank());
+            d.setSkin(c.getSkin());
+            d.setLovel(c.getLovel());
+            d.setVip(c.getVip());
+
             orderDetailRepositories.save(d);
         }
-
-        carts.forEach(cartService::delete);
-
-        res.put("success", true);
-        res.put("message", "Thanh toán giỏ hàng thành công! Vui lòng chờ admin xử lý.");
-        return res;
+        if (usedVoucher != null) {
+            VoucherCustomer vc = new VoucherCustomer();
+            vc.setCustomer(customer);
+            vc.setVoucher(usedVoucher);
+            vc.setDateUsed(LocalDateTime.now());
+            voucherCustomerRepository.save(vc);
+        }
+        // 🧹 XOÁ CART
+        cartRepositories.deleteAll(carts);
+        return ResponseEntity.ok(
+                Map.of("success", true, "message", "Thanh toán giỏ hàng thành công")
+        );
     }
+
+
 
 
 }
