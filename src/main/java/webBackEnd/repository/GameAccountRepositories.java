@@ -96,6 +96,9 @@ LIMIT 1
     List<GameAccount> findByStatus(String status);
 
 
-    // nếu có gameName
-    List<GameAccount> findByGame_GameNameAndPrice(String gameName, BigDecimal price);
+    List<GameAccount> findByGameAndPriceAndStatus(
+            Game game,
+            BigDecimal price,
+            String status
+    );
 }

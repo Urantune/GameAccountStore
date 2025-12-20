@@ -7,10 +7,7 @@ import webBackEnd.entity.GameAccount;
 import webBackEnd.repository.GameAccountRepositories;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class GameAccountService {
@@ -78,8 +75,26 @@ public class GameAccountService {
     }
 
 
-    public List<GameAccount> getByPriceAndGame(String gameName, BigDecimal price) {
-        return gameAccountRepositories
-                .findByGame_GameNameAndPrice(gameName, price);
+    public List<GameAccount> getActiveAccountsByGameAndPrice(Game game, BigDecimal price) {
+        return gameAccountRepositories.findByGameAndPriceAndStatus(game, price, "ACTIVE");
     }
+    public List<GameAccount> removeDuplicateAccounts(List<GameAccount> accounts) {
+
+        Map<String, GameAccount> uniqueMap = new LinkedHashMap<>();
+
+        for (GameAccount acc : accounts) {
+
+            String key =
+                    acc.getPrice() + "_" +
+                            acc.getRank() + "_" +
+                            acc.getSkin() + "_" +
+                            acc.getLovel() + "_" +
+                            acc.getVip();
+            uniqueMap.putIfAbsent(key, acc);
+        }
+
+        return new ArrayList<>(uniqueMap.values());
+    }
+
+
 }

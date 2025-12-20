@@ -355,7 +355,7 @@
 </div>
 <!-- Carousel End -->
 <!-- Our Products Start -->
-<div class="container-fluid product py-5">
+ <div class="container-fluid product py-5">
     <div class="container py-5">
         <div class="tab-class">
             <div class="row g-4">
@@ -364,21 +364,20 @@
                         <div class="col-md-6 col-lg-4 col-xl-3"
                              th:each="acc : ${accounts}">
                             <div class="card h-100 shadow-sm rounded-4 position-relative">
-
                                 <!-- BADGE TRẠNG THÁI -->
                                 <span class="badge position-absolute top-0 start-0 m-2 px-3 py-2"
-                                      th:if="${acc.duration != null and acc.duration == 'RENT'}"
+                                      th:if="${acc.duration == 'RENT'}"
                                       style="background:#ffc107;color:#000;font-size:13px;">
             THUÊ
         </span>
-
                                 <span class="badge position-absolute top-0 start-0 m-2 px-3 py-2"
                                       th:if="${acc.duration == null}"
                                       style="background:#198754;color:#fff;font-size:13px;">
             VĨNH VIỄN
         </span>
+
                                 <!-- ẢNH -->
-                                <img th:src="@{'/img/' + ${gameName == 'AOV' ? 'lqdemo1.jpg' : 'ffdemo1.jpg'}}"
+                                <img th:src="@{${gameName == 'AOV' ? '/img/lqdemo1.jpg' : '/img/ffdemo1.jpg'}}"
                                      class="card-img-top rounded-top-4">
 
                                 <div class="card-body text-center">
@@ -397,14 +396,13 @@
                                 </div>
 
                                 <div class="card-footer text-center bg-white border-0 pb-3">
-                                    <a th:href="@{/home/accDetail/{id}(id=${acc.id}, game=${gameName})}"
+                                    <a th:href="@{/home/accDetail/{id}(id=${acc.gameAccountId}, game=${gameName})}"
                                        class="btn btn-primary btn-sm rounded-pill px-4">
                                         Xem chi tiết
                                     </a>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

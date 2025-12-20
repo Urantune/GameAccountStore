@@ -9,7 +9,8 @@
 
     <link rel="preconnect" th:href="@{https://fonts.googleapis.com}">
     <link rel="preconnect" th:href="@{https://fonts.gstatic.com}" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{https://use.fontawesome.com/releases/v5.15.4/css/all.css}"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link th:href="@{/lib/animate/animate.min.css}" rel="stylesheet">
@@ -28,19 +29,26 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="loginError" class="alert alert-danger d-none"></div>
                 <form id="loginForm">
                     <div class="mb-3">
                         <label for="loginUsername" class="form-label">Username:</label>
-                        <input name="username" class="form-control" id="loginUsername" placeholder="Nhập username của bạn" required>
+                        <input name="username" class="form-control" id="loginUsername"
+                               placeholder="Nhập username của bạn" required>
                     </div>
                     <div class="mb-3">
                         <label for="loginPassword" class="form-label">Mật khẩu:</label>
-                        <input type="password" name="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
-                        <a href="#" class="form-text text-muted text-decoration-none float-end">Quên mật khẩu?</a>
+                        <input type="password" name="password" class="form-control" id="loginPassword"
+                               placeholder="Nhập mật khẩu" required>
+                        <a th:href="@{/veryAccount/forgot-password}"
+                           class="form-text text-muted text-decoration-none float-end">
+                            Quên mật khẩu?
+                        </a>
+
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -52,18 +60,21 @@
                 </form>
             </div>
             <div class="modal-footer justify-content-center">
-                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký ngay</a></p>
+                <p class="mb-0">Chưa có tài khoản? <a href="#" class="text-decoration-none open-register">Đăng ký
+                    ngay</a></p>
             </div>
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div th:if="${error}" class="alert alert-danger">
@@ -76,21 +87,31 @@
                 <form id="registerForm">
                     <div class="mb-3">
                         <label for="registerUsername" class="form-label">Tên người dùng:</label>
-                        <input name="username" type="text" class="form-control" id="registerUsername" placeholder="Nhập tên người dùng" th:value="${username}" required>
+                        <input name="username" type="text" class="form-control"
+                               id="registerUsername" placeholder="Nhập tên người dùng" required>
+                        <div class="invalid-feedback" id="errRegisterUsername"></div>
                     </div>
+
                     <div class="mb-3">
                         <label for="registerEmail" class="form-label">Email:</label>
-                        <input name="email" type="email" class="form-control" id="registerEmail" placeholder="Nhập email" th:value="${email}" required>
+                        <input name="email" type="email" class="form-control"
+                               id="registerEmail" placeholder="Nhập email" required>
+                        <div class="invalid-feedback" id="errRegisterEmail"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="registerPassword" class="form-label">Mật khẩu:</label>
-                        <input name="password" type="password" class="form-control" id="registerPassword" placeholder="Tạo mật khẩu" th:value="${password}" required>
+                        <input name="password" type="password" class="form-control"
+                               id="registerPassword" placeholder="Tạo mật khẩu" required>
+                        <div class="invalid-feedback" id="errRegisterPassword"></div>
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Xác nhận mật khẩu:</label>
-                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu" th:value="${confirmPassword}" required>
+                        <input name="confirmPassword" type="password" class="form-control"
+                               id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+                        <div class="invalid-feedback" id="errConfirmPassword"></div>
                     </div>
+
                     <div class="d-grid gap-2">
                         <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
                     </div>
@@ -106,8 +127,43 @@
     </div>
 </div>
 
-<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+
+<div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="forgotModalLabel">Quên mật khẩu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="forgotMsg" class="alert d-none"></div>
+
+                <form id="forgotForm">
+                    <div class="mb-3">
+                        <label for="forgotEmail" class="form-label">Nhập email đã đăng ký:</label>
+                        <input type="email" class="form-control" id="forgotEmail" name="email"
+                               placeholder="example@gmail.com" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Gửi email đổi mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <a href="#" class="text-decoration-none" id="backToLogin">Quay lại đăng nhập</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="spinner"
+     class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
         <span class="sr-only">Loading...</span>
     </div>
 </div>
@@ -197,8 +253,10 @@
                         <span class="fw-semibold">Khách</span>
                     </a>
                     <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng
+                            nhập</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng
+                            ký</a></li>
                     </ul>
                 </li>
 
@@ -226,22 +284,77 @@
     </div>
 
     <style>
-        .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center}
-        .game-nav .container-fluid{display:flex;align-items:center}
-        .nav-logo{height:180px;width:auto}
-        .nav-center{gap:26px}
-        .game-nav .navbar-nav .nav-link{color:#111!important;font-weight:500}
-        .nav-pill{background:transparent;color:#000!important;border:1px solid transparent;transition:background .15s ease,box-shadow .15s ease,transform .15s ease}
-        .nav-pill:hover{color:#f7931e!important;background:#F8F8FF;box-shadow:none!important;transform:none!important}
-        .nav-pill:focus,.nav-pill:active{background:#f5e6d7!important;color:#000!important;box-shadow:none!important}
-        .dropdown-soft{border-radius:14px;padding:6px}
-        .nav-pill{border-radius:18px!important;padding:10px 18px!important}
-        .nav-pill:hover{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
-        .nav-pill:focus,.nav-pill:active{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+        .game-nav {
+            background: pink;
+            border-top: 2px solid #e6d8c8;
+            height: 86px;
+            display: flex;
+            align-items: center
+        }
+
+        .game-nav .container-fluid {
+            display: flex;
+            align-items: center
+        }
+
+        .nav-logo {
+            height: 180px;
+            width: auto
+        }
+
+        .nav-center {
+            gap: 26px
+        }
+
+        .game-nav .navbar-nav .nav-link {
+            color: #111 !important;
+            font-weight: 500
+        }
+
+        .nav-pill {
+            background: transparent;
+            color: #000 !important;
+            border: 1px solid transparent;
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease
+        }
+
+        .nav-pill:hover {
+            color: #f7931e !important;
+            background: #F8F8FF;
+            box-shadow: none !important;
+            transform: none !important
+        }
+
+        .nav-pill:focus, .nav-pill:active {
+            background: #f5e6d7 !important;
+            color: #000 !important;
+            box-shadow: none !important
+        }
+
+        .dropdown-soft {
+            border-radius: 14px;
+            padding: 6px
+        }
+
+        .nav-pill {
+            border-radius: 18px !important;
+            padding: 10px 18px !important
+        }
+
+        .nav-pill:hover {
+            border-radius: 18px !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important
+        }
+
+        .nav-pill:focus, .nav-pill:active {
+            border-radius: 18px !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important
+        }
     </style>
 </nav>
 
-<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
+<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none"
+     style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
     ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
 </div>
 
@@ -255,6 +368,7 @@
             }
         });
     });
+
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
         alertBox.classList.remove('d-none');
@@ -273,9 +387,12 @@
                         <img src="/img/lqdemo1.jpg" class="img-fluid w-100" alt="Image">
                     </div>
                     <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s" style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân</h4>
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện giao dịch qua thẻ ngân hàng</h1>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" th:href="@{/home/gameDetail/{id}(id=E3FBB1AF-8AE9-48E2-9DE1-061219893D01)}">Mua ngay</a>
+                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                            style="letter-spacing: 3px;">Chiết khấu lên tới 15% cho tài khoản Liên Quân</h4>
+                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
+                            giao dịch qua thẻ ngân hàng</h1>
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                           th:href="@{/home/gameDetail/{id}(id=E3FBB1AF-8AE9-48E2-9DE1-061219893D01)}">Mua ngay</a>
                     </div>
                 </div>
                 <div class="row g-0 header-carousel-item align-items-center">
@@ -283,9 +400,12 @@
                         <img src="/img/ffdemo1.jpg" class="img-fluid w-100" alt="Image">
                     </div>
                     <div class="col-xl-6 carousel-content p-4">
-                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s" style="letter-spacing: 3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
-                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện giao dịch qua thẻ ngân hàng</h1>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s" th:href="@{/home/gameDetail/{id}(id=A0731F64-961E-42F8-A3E0-129721B7BF3C)}">Mua ngay</a>
+                        <h4 class="text-uppercase fw-bold mb-4 wow fadeInRight" data-wow-delay="0.1s"
+                            style="letter-spacing: 3px;">Chiết khấu lên tới 13% cho tài khoản Free Fire</h4>
+                        <h1 class="display-3 text-capitalize mb-4 wow fadeInRight" data-wow-delay="0.3s">Khi thực hiện
+                            giao dịch qua thẻ ngân hàng</h1>
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInRight" data-wow-delay="0.7s"
+                           th:href="@{/home/gameDetail/{id}(id=A0731F64-961E-42F8-A3E0-129721B7BF3C)}">Mua ngay</a>
                     </div>
                 </div>
             </div>
@@ -301,7 +421,8 @@
                         <a href="#" class="d-block mb-2">Loại trang phục</a>
                         <a href="#" class="d-block text-white fs-3">Nakroth Thứ Nguyên Vệ Thần</a>
                     </div>
-                    <a th:href="@{/home/gameDetail/{id}(id=91B4A36C-27C3-4B20-8D99-3C95F70233E0)}" class="btn btn-primary rounded-pill py-2 px-4">
+                    <a th:href="@{/home/gameDetail/{id}(id=91B4A36C-27C3-4B20-8D99-3C95F70233E0)}"
+                       class="btn btn-primary rounded-pill py-2 px-4">
                         <i class="fas fa-shopping-cart me-2"></i> Mua
                     </a>
                 </div>
@@ -328,34 +449,40 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-5 fw-bold">Loại tài khoản:</div>
-                            <div class="col-7 d-flex gap-3">
-                                <!-- VĨNH VIỄN -->
-                                <label>
+                            <div class="col-7">
+
+                                <!-- ====== CHỈ VĨNH VIỄN ====== -->
+                                <label th:if="${p.duration == null}">
                                     <input type="radio"
                                            name="accountType"
                                            value="permanent"
-                                           th:disabled="${isRented}"
-                                           th:checked="${!isRented}"
+                                           checked
                                            onclick="toggleRent(false)">
                                     Vĩnh viễn
                                 </label>
-                                <!-- THUÊ -->
-                                <label>
+
+                                <!-- ====== CHỈ THUÊ ====== -->
+                                <label th:if="${p.duration == 'RENT'}">
                                     <input type="radio"
                                            name="accountType"
                                            value="rent"
-                                           th:checked="${isRented}"
+                                           checked
                                            onclick="toggleRent(true)">
                                     Thuê
                                 </label>
+
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row mb-3 d-none" id="rentPackage">
+                    </div>
+                    <div class="row mb-3"
+                         id="rentPackage"
+                         th:if="${p.duration == 'RENT'}">
                         <div class="col-5 fw-bold">Gói thuê:</div>
                         <div class="col-7">
-                            <select id="rentMonth" class="form-select" onchange="updatePriceByRent()">
+                            <select id="rentMonth"
+                                    class="form-select"
+                                    onchange="updatePriceByRent()">
                                 <option value="1">1 tháng</option>
                                 <option value="2">2 tháng (Giảm 10%)</option>
                                 <option value="3">3 tháng (Giảm 15%)</option>
@@ -418,8 +545,12 @@
                         </div>
                     </div>
                 </div>
-                <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/home/payment}" method="post" onsubmit="syncBeforeSubmit()">
-                    <input type="hidden" name="accountType" id="accountTypeHidden">
+                <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/home/payment}"
+                      method="post" onsubmit="syncBeforeSubmit()">
+                    <input type="hidden"
+                           id="accountTypeHidden"
+                           name="accountType"
+                           th:value="${p.duration == 'RENT' ? 'rent' : 'permanent'}">
                     <input type="hidden" name="gameId" th:value="${p.game.gameId}">
                     <input type="hidden" name="rentMonth" id="rentMonthHidden">
                     <input type="hidden" name="basePrice" id="basePriceHidden" th:value="${p.price}">
@@ -441,7 +572,8 @@
                      class="alert alert-warning mt-2">
                     ⚠️ Tài khoản đang được thuê, không thể mua vĩnh viễn
                 </div>
-                <button th:if="${#authorization.expression('!isAuthenticated()')}" type="button" class="btn btn-dark px-4" onclick="alert('Bạn cần đăng nhập!')">
+                <button th:if="${#authorization.expression('!isAuthenticated()')}" type="button"
+                        class="btn btn-dark px-4" onclick="alert('Bạn cần đăng nhập!')">
                     🛒 Mua ngay
                 </button>
                 <button th:if="${#authorization.expression('isAuthenticated()')}"
@@ -451,7 +583,8 @@
                         onclick="submitBuyAjax()">
                     🛒 Mua ngay
                 </button>
-                <button th:if="${#authorization.expression('!isAuthenticated()')}" class="btn btn-outline-dark px-4 ms-2" onclick="alert('Bạn cần đăng nhập!')">
+                <button th:if="${#authorization.expression('!isAuthenticated()')}"
+                        class="btn btn-outline-dark px-4 ms-2" onclick="alert('Bạn cần đăng nhập!')">
                     🛒 Thêm vào giỏ hàng
                 </button>
 
@@ -546,6 +679,7 @@
     function getBasePrice() {
         return parseInt(document.getElementById('basePriceHidden').value || 0, 10);
     }
+
     /* ================== TÍNH GIÁ ================== */
     function getCurrentPrice() {
         const base = getBasePrice();
@@ -566,6 +700,7 @@
         }
         return Math.round(price);
     }
+
     /* ================== CẬP NHẬT GIÁ ================== */
     function updatePriceDisplay() {
         const price = getCurrentPrice();
@@ -573,15 +708,18 @@
         input.value = price.toLocaleString('vi-VN') + ' đ';
         document.getElementById('finalPriceHidden').value = price;
     }
+
     /* ================== THUÊ / VĨNH VIỄN ================== */
     function toggleRent(isRent) {
         document.getElementById('rentPackage').classList.toggle('d-none', !isRent);
         updatePriceDisplay();
     }
+
     /* ================== ĐỔI GÓI THUÊ ================== */
     function updatePriceByRent() {
         updatePriceDisplay();
     }
+
     /* ================== ÁP DỤNG VOUCHER ================== */
     function applyVoucher() {
         const code = document.getElementById('voucherInput').value.trim();
@@ -604,8 +742,7 @@
 
                     updatePriceDisplay();
                     return;
-                }
-                else {
+                } else {
                     const percent = parseInt(data.value, 10);
 
                     document.getElementById('voucherPercent').value = percent;
@@ -707,6 +844,7 @@
         document.getElementById('voucherHidden').value =
             document.getElementById('voucherInput').value.trim();
     }
+
     /* ================== KHỞI TẠO ================== */
     document.addEventListener("DOMContentLoaded", updatePriceDisplay);
 </script>
@@ -737,19 +875,23 @@
 </script>
 
 <div id="cartToast" class="position-fixed top-0 end-0 p-3" style="z-index: 99999;">
-    <div id="cartToastBox" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+    <div id="cartToastBox" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
+         aria-atomic="true" data-bs-delay="3000">
         <div class="d-flex">
             <div class="toast-body" id="cartToastMsg">Đã thêm vào giỏ hàng</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
         </div>
     </div>
 </div>
 
 <div id="mailToast" class="position-fixed top-0 end-0 p-3" style="z-index: 100000; margin-top: 70px;">
-    <div id="mailToastBox" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3500">
+    <div id="mailToastBox" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
+         aria-atomic="true" data-bs-delay="3500">
         <div class="d-flex">
             <div class="toast-body" id="mailToastMsg">✅ Đã gửi email đổi mật khẩu</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -799,10 +941,25 @@
 </div>
 
 <style>
-    .footer-links{list-style:none;padding:0;}
-    .footer-links li{margin-bottom:8px;}
-    .footer-links a{color:#444;text-decoration:none;transition:0.2s;}
-    .footer-links a:hover{color:#ff8800;padding-left:4px;}
+    .footer-links {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+
+    .footer-links a {
+        color: #444;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .footer-links a:hover {
+        color: #ff8800;
+        padding-left: 4px;
+    }
 </style>
 
 <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js}"></script>

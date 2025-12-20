@@ -134,8 +134,19 @@ public class GameController {
             @RequestParam String game,
             Model model
     ) {
+        Game gameEntity = gameService.findGameByGameName(game);
+        if (gameEntity == null) {
+            return "redirect:/home";
+        }
+
+        List<GameAccount> activeAccounts =
+                gameAccountService.getActiveAccountsByGameAndPrice(
+                        gameEntity,
+                        price
+                );
+
         List<GameAccount> accounts =
-                gameAccountService.getByPriceAndGame(game, price);
+                gameAccountService.removeDuplicateAccounts(activeAccounts);
 
         model.addAttribute("accounts", accounts);
         model.addAttribute("price", price);
@@ -143,7 +154,6 @@ public class GameController {
 
         return "customer/AccountByPrice";
     }
-
 
     @GetMapping("/accDetail/{id}")
     public String gameDetail(@PathVariable UUID id,
@@ -158,8 +168,5 @@ public class GameController {
 
         return "customer/GameDetail";
     }
-
-
-
 
 }
