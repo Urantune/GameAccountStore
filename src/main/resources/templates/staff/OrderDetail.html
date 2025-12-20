@@ -1,543 +1,557 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Order Detail</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Order Detail</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
-        .sidebar{ width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0; color:#ecf0f1; }
-        .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
-        .sidebar a{ display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s; }
-        .sidebar a i{ width:22px; }
-        .sidebar a:hover{ background:#1abb9c; }
-        .content{ margin-left:260px; padding:30px; }
+        <style>
+            body { background:#f5f7fa; font-family:"Roboto",sans-serif; }
+            .sidebar{ width:260px; min-height:100vh; background:#2a3f54; position:fixed; left:0; top:0; color:#ecf0f1; }
+            .sidebar h5{ padding:20px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.1); }
+            .sidebar a{ display:block; padding:14px 24px; color:#ecf0f1; text-decoration:none; transition:0.2s; }
+            .sidebar a i{ width:22px; }
+            .sidebar a:hover{ background:#1abb9c; }
+            .content{ margin-left:260px; padding:30px; }
 
-        .card-box{
-            background:#fff; border-radius:14px; box-shadow:0 6px 15px rgba(0,0,0,0.10);
-            padding:16px 18px; border-left:6px solid #ff7a2f;
-        }
-        .value{ color:#222; word-break:break-word; }
-        .meta{ font-size:0.9rem; color:#666; }
-        .table thead th{ background:#f3f5f8; }
-        .table td, .table th { vertical-align: middle; }
-        .mono{
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 12px;
-        }
+            .card-box{
+                background:#fff; border-radius:14px; box-shadow:0 6px 15px rgba(0,0,0,0.10);
+                padding:16px 18px; border-left:6px solid #ff7a2f;
+            }
+            .value{ color:#222; word-break:break-word; }
+            .meta{ font-size:0.9rem; color:#666; }
+            .table thead th{ background:#f3f5f8; }
+            .table td, .table th { vertical-align: middle; }
+            .mono{
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                font-size: 12px;
+            }
 
-        .offcanvas.offcanvas-end{ width: 560px; }
-        .ga-card{
-            border:1px solid #e9ecef;
-            border-radius:14px;
-            padding:12px;
-            background:#fff;
-            position:relative;
-        }
-        .ga-row{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:10px;
-        }
-        .ga-left{ min-width:0; }
-        .ga-title{
-            font-weight:800;
-            line-height:1.2;
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
-        }
-        .ga-sub{ font-size:0.88rem; color:#6c757d; }
-        .ga-actions{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            flex-shrink:0;
-        }
-        .ga-img{
-            width:100%;
-            height:220px;
-            object-fit:cover;
-            border-radius:12px;
-            border:1px solid #eef1f5;
-            background:#f3f5f8;
-        }
+            .offcanvas.offcanvas-end{ width: 560px; }
+            .ga-card{
+                border:1px solid #e9ecef;
+                border-radius:14px;
+                padding:12px;
+                background:#fff;
+                position:relative;
+            }
+            .ga-row{
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:10px;
+            }
+            .ga-left{ min-width:0; }
+            .ga-title{
+                font-weight:800;
+                line-height:1.2;
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+            }
+            .ga-sub{ font-size:0.88rem; color:#6c757d; }
+            .ga-actions{
+                display:flex;
+                align-items:center;
+                gap:10px;
+                flex-shrink:0;
+            }
+            .ga-img{
+                width:100%;
+                height:220px;
+                object-fit:cover;
+                border-radius:12px;
+                border:1px solid #eef1f5;
+                background:#f3f5f8;
+            }
 
-        .mark-ok{ color:#198754; font-size:18px; }
-        .mark-wait{ color:#adb5bd; font-size:18px; }
+            .mark-ok{ color:#198754; font-size:18px; }
+            .mark-wait{ color:#adb5bd; font-size:18px; }
 
-        .big-actions{
-            margin-top:18px;
-            display:flex;
-            gap:14px;
-            justify-content:flex-end;
-        }
-        .btn-big{
-            padding:14px 22px;
-            font-weight:800;
-            border-radius:14px;
-            min-width:180px;
-        }
+            .big-actions{
+                margin-top:18px;
+                display:flex;
+                gap:14px;
+                justify-content:flex-end;
+            }
+            .btn-big{
+                padding:14px 22px;
+                font-weight:800;
+                border-radius:14px;
+                min-width:180px;
+            }
 
-        .ga-card.is-taken{
-            opacity:.55;
-            filter:grayscale(1);
-            pointer-events:none;
-        }
-        .ga-card.is-taken::after{
-            content:"TAKEN";
-            position:absolute;
-            right:12px;
-            top:12px;
-            font-weight:900;
-            letter-spacing:1px;
-            font-size:12px;
-            padding:4px 8px;
-            border-radius:999px;
-            background:#adb5bd;
-            color:#fff;
-        }
-        .ga-card.is-taken .badge{ opacity:.9; }
+            .ga-card.is-taken{
+                opacity:.55;
+                filter:grayscale(1);
+                pointer-events:none;
+            }
+            .ga-card.is-taken::after{
+                content:"TAKEN";
+                position:absolute;
+                right:12px;
+                top:12px;
+                font-weight:900;
+                letter-spacing:1px;
+                font-size:12px;
+                padding:4px 8px;
+                border-radius:999px;
+                background:#adb5bd;
+                color:#fff;
+            }
+            .ga-card.is-taken .badge{ opacity:.9; }
 
-        .kv{
-            display:flex;
-            justify-content:space-between;
-            gap:10px;
-            padding-top:8px;
-            margin-top:8px;
-            border-top:1px dashed #eee;
-            font-size:0.92rem;
-        }
-        .kv .k{ color:#6c757d; }
-        .kv .v{ font-weight:700; text-align:right; word-break:break-word; }
+            .kv{
+                display:flex;
+                justify-content:space-between;
+                gap:10px;
+                padding-top:8px;
+                margin-top:8px;
+                border-top:1px dashed #eee;
+                font-size:0.92rem;
+            }
+            .kv .k{ color:#6c757d; }
+            .kv .v{ font-weight:700; text-align:right; word-break:break-word; }
 
-        .badge-soft{
-            background:#f3f5f8;
-            color:#495057;
-            border:1px solid #e9ecef;
-        }
-    </style>
-</head>
-<body>
+            .badge-soft{
+                background:#f3f5f8;
+                color:#495057;
+                border:1px solid #e9ecef;
+            }
+        </style>
+    </head>
+    <body>
 
-<div th:replace="fragments/staff-sidebar :: staffSidebar"></div>
+    <div th:replace="fragments/staff-sidebar :: staffSidebar"></div>
 
-<div class="content container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h4 class="mb-1"><i class="bi bi-receipt me-2"></i>Order Detail</h4>
-            <div class="meta">
-                Order ID:
-                <span class="mono" th:text="${order != null ? order.id : ''}"></span>
-                <span class="ms-2">|</span>
-                Customer:
-                <b th:text="${order != null && order.customer != null ? order.customer.username : 'N/A'}"></b>
-            </div>
-        </div>
-
-        <div class="text-end">
-            <div class="meta">Created</div>
-            <div class="value" th:text="${order != null && order.createdDate != null ? #temporals.format(order.createdDate,'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></div>
-        </div>
-    </div>
-
-    <div class="card-box">
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead>
-                <tr>
-                    <th style="min-width:220px;">Order Detail ID</th>
-                    <th style="min-width:210px;">Game</th>
-                    <th style="min-width:160px;">Price</th>
-                    <th style="min-width:180px;">Type</th>
-                    <th style="min-width:130px;">Requirements</th>
-                    <th style="min-width:110px;" class="text-center">Selected</th>
-                    <th style="min-width:120px;" class="text-end">Action</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
-                    <td colspan="7" class="text-center text-muted py-4">No details.</td>
-                </tr>
-
-                <tr th:each="od : ${orderDetails}">
-                    <td class="mono"><div class="value" th:text="${od.id}"></div></td>
-
-                    <td><span class="value" th:text="${od.game != null ? od.game.gameName : 'N/A'}"></span></td>
-
-                    <td>
-                        <span class="value"
-                              th:text="${od.price != null ? (#numbers.formatDecimal(od.price,0,'COMMA',0,'POINT') + ' đ') : 'N/A'}"></span>
-                    </td>
-
-                    <td>
-                        <span class="badge badge-soft"
-                              th:text="${od.duration != null && od.duration > 0 ? ('RENT ' + od.duration + ' month(s)') : 'BUY (FOREVER)'}"></span>
-                    </td>
-
-                    <td class="mono">
-                        <div>rank: <b th:text="${od.rank != null ? od.rank : '-'}"></b></div>
-                        <div>skin: <b th:text="${od.skin}"></b> | level: <b th:text="${od.lovel}"></b> | vip: <b th:text="${od.vip}"></b></div>
-                    </td>
-
-                    <td class="text-center">
-                        <span class="mark-wait" th:attr="id=${'selMark-' + od.id}">
-                            <i class="bi bi-circle"></i>
-                        </span>
-                    </td>
-
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-outline-secondary px-2 py-0 ga-plus"
-                                type="button"
-                                data-bs-toggle="offcanvas"
-                                data-bs-target="#gaOffcanvas"
-                                aria-controls="gaOffcanvas"
-                                th:attr="data-odid=${od.id}">
-                            <i class="bi bi-plus"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <form id="decisionForm" method="post" th:action="@{/staffHome/approve/decision}">
-            <input type="hidden" name="orderId" th:value="${order != null ? order.id : ''}">
-            <input type="hidden" name="decision" id="decisionInput" value="">
-
-            <input type="hidden" th:if="${_csrf != null}"
-                   th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}">
-
-            <div id="selectedInputs"></div>
-
-            <div class="big-actions">
-                <button type="button" class="btn btn-success btn-big" id="btnAccept">
-                    <i class="bi bi-check2-circle me-2"></i>ACCEPT
-                </button>
-                <button type="button" class="btn btn-danger btn-big" id="btnReject">
-                    <i class="bi bi-x-circle me-2"></i>REJECT
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="gaOffcanvas" aria-labelledby="gaOffcanvasLabel">
-    <div class="offcanvas-header">
-        <div style="width:100%;">
-            <h5 class="offcanvas-title" id="gaOffcanvasLabel">
-                <i class="bi bi-card-list me-2"></i>Pick Account (Matched by Backend)
-            </h5>
-            <div class="kv">
-                <div class="k">OrderDetail</div>
-                <div class="v mono" id="curOdId">-</div>
-            </div>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-
-    <div class="offcanvas-body">
-        <div id="gaPanelEmpty" class="text-muted">
-            Click <b>+</b> on an order detail to open list.
-        </div>
-
-        <div id="gaMatchWrap">
-
-            <div th:each="entry : ${candidatesMap}" class="d-none ga-od-list"
-                 th:attr="data-odid=${entry.key.id}">
-
-                <div class="mb-2 text-muted">
-                    Candidates found:
-                    <b th:text="${entry.value != null ? entry.value.size() : 0}"></b>
+    <div class="content container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h4 class="mb-1"><i class="bi bi-receipt me-2"></i>Order Detail</h4>
+                <div class="meta">
+                    Order ID:
+                    <span class="mono" th:text="${order != null ? order.id : ''}"></span>
+                    <span class="ms-2">|</span>
+                    Customer:
+                    <b th:text="${order != null && order.customer != null ? order.customer.username : 'N/A'}"></b>
                 </div>
+            </div>
 
-                <div th:if="${entry.value == null || #lists.isEmpty(entry.value)}" class="text-muted">
-                    No matched accounts for this OrderDetail.
+            <div class="text-end">
+                <div class="meta">Created</div>
+                <div class="value" th:text="${order != null && order.createdDate != null ? #temporals.format(order.createdDate,'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></div>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th style="min-width:220px;">Order Detail ID</th>
+                        <th style="min-width:210px;">Game</th>
+                        <th style="min-width:160px;">Price</th>
+                        <th style="min-width:180px;">Type</th>
+                        <th style="min-width:130px;">Requirements</th>
+                        <th style="min-width:110px;" class="text-center">Selected</th>
+                        <th style="min-width:120px;" class="text-end">Action</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:if="${orderDetails == null || #lists.isEmpty(orderDetails)}">
+                        <td colspan="7" class="text-center text-muted py-4">No details.</td>
+                    </tr>
+
+                    <tr th:each="od : ${orderDetails}">
+                        <td class="mono"><div class="value" th:text="${od.id}"></div></td>
+
+                        <td><span class="value" th:text="${od.game != null ? od.game.gameName : 'N/A'}"></span></td>
+
+                        <td>
+                            <span class="value"
+                                  th:text="${od.price != null ? (#numbers.formatDecimal(od.price,0,'COMMA',0,'POINT') + ' đ') : 'N/A'}"></span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-soft"
+                                  th:text="${od.duration != null && od.duration > 0 ? ('RENT ' + od.duration + ' month(s)') : 'BUY (FOREVER)'}"></span>
+                        </td>
+
+                        <td class="mono">
+                            <div>rank: <b th:text="${od.rank != null ? od.rank : '-'}"></b></div>
+                            <div>skin: <b th:text="${od.skin}"></b> | level: <b th:text="${od.lovel}"></b> | vip: <b th:text="${od.vip}"></b></div>
+                        </td>
+
+                        <td class="text-center">
+                            <span class="mark-wait" th:attr="id=${'selMark-' + od.id}">
+                                <i class="bi bi-circle"></i>
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-secondary px-2 py-0 ga-plus"
+                                    type="button"
+                                    data-bs-toggle="offcanvas"
+                                    data-bs-target="#gaOffcanvas"
+                                    aria-controls="gaOffcanvas"
+                                    th:attr="data-odid=${od.id}">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <form id="decisionForm" method="post" th:action="@{/staffHome/approve/decision}">
+                <input type="hidden" name="orderId" th:value="${order != null ? order.id : ''}">
+                <input type="hidden" name="decision" id="decisionInput" value="">
+
+                <input type="hidden" th:if="${_csrf != null}"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}">
+
+                <div id="selectedInputs"></div>
+
+                <div class="big-actions">
+                    <button type="button" class="btn btn-success btn-big" id="btnAccept">
+                        <i class="bi bi-check2-circle me-2"></i>ACCEPT
+                    </button>
+                    <button type="button" class="btn btn-danger btn-big" id="btnReject">
+                        <i class="bi bi-x-circle me-2"></i>REJECT
+                    </button>
                 </div>
+            </form>
+        </div>
+    </div>
 
-                <div class="d-grid gap-2" th:if="${entry.value != null && !#lists.isEmpty(entry.value)}">
-                    <div class="ga-card ga-basic"
-                         th:each="ga : ${entry.value}"
-                         th:attr="
-                            data-gaid=${ga.gameAccountId},
-                            data-game=${ga.game != null ? ga.game.gameName : ''},
-                            data-username=${ga.gameAccount},
-                            data-password=${ga.gamePassword},
-                            data-price=${ga.price},
-                            data-rank=${ga.rank},
-                            data-skin=${ga.skin},
-                            data-level=${ga.lovel},
-                            data-vip=${ga.vip},
-                            data-status=${ga.status},
-                            data-classify=${ga.classify},
-                            data-gaduration=${ga.duration},
-                            data-email=${ga.email},
-                            data-desc=${ga.description},
-                            data-img=${ga.imageMain}">
-                        <div class="ga-row">
-                            <div class="ga-left">
-                                <div class="ga-title"
-                                     th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
-                                <div class="ga-sub mono">
-                                    <span th:text="${ga.gameAccountId}"></span>
-                                    <span class="mx-1">|</span>
-                                    <span th:text="${ga.gameAccount}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
-                                    <span class="badge bg-light text-dark ms-1"
-                                          th:text="${(ga.classify != null && #strings.equalsIgnoreCase(ga.classify,'RENT')) ? 'RENT' : 'BUY'}"></span>
-                                    <span class="badge bg-success ms-1"
-                                          th:text="${ga.price != null ? (ga.price.toPlainString() + ' đ') : 'N/A'}"></span>
-                                </div>
-                                <div class="ga-sub">
-                                    <span class="badge bg-info text-dark">skin <span th:text="${ga.skin}"></span></span>
-                                    <span class="badge bg-info text-dark ms-1">level <span th:text="${ga.lovel}"></span></span>
-                                    <span class="badge bg-info text-dark ms-1">vip <span th:text="${ga.vip}"></span></span>
-                                </div>
-                            </div>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="gaOffcanvas" aria-labelledby="gaOffcanvasLabel">
+        <div class="offcanvas-header">
+            <div style="width:100%;">
+                <h5 class="offcanvas-title" id="gaOffcanvasLabel">
+                    <i class="bi bi-card-list me-2"></i>Pick Account (Matched by Backend)
+                </h5>
+                <div class="kv">
+                    <div class="k">OrderDetail</div>
+                    <div class="v mono" id="curOdId">-</div>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
 
-                            <div class="ga-actions">
-                                <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
-                                    <i class="bi bi-info-circle"></i>
-                                </button>
-                                <input type="radio" class="form-check-input ga-pick" th:attr="name=${'gaPickRadio-' + entry.key.id}"
-                                       th:value="${ga.gameAccountId}">
+        <div class="offcanvas-body">
+            <div id="gaPanelEmpty" class="text-muted">
+                Click <b>+</b> on an order detail to open list.
+            </div>
+
+            <div id="gaMatchWrap">
+
+                <div th:each="entry : ${candidatesMap}" class="d-none ga-od-list"
+                     th:attr="data-odid=${entry.key.id}">
+
+                    <div class="mb-2 text-muted">
+                        Candidates found:
+                        <b th:text="${entry.value != null ? entry.value.size() : 0}"></b>
+                    </div>
+
+                    <div th:if="${entry.value == null || #lists.isEmpty(entry.value)}" class="text-muted">
+                        No matched accounts for this OrderDetail.
+                    </div>
+
+                    <div class="d-grid gap-2" th:if="${entry.value != null && !#lists.isEmpty(entry.value)}">
+                        <div class="ga-card ga-basic"
+                             th:each="ga : ${entry.value}"
+                             th:attr="
+                                data-gaid=${ga.gameAccountId},
+                                data-game=${ga.game != null ? ga.game.gameName : ''},
+                                data-username=${ga.gameAccount},
+                                data-password=${ga.gamePassword},
+                                data-price=${ga.price},
+                                data-rank=${ga.rank},
+                                data-skin=${ga.skin},
+                                data-level=${ga.lovel},
+                                data-vip=${ga.vip},
+                                data-status=${ga.status},
+                                data-classify=${ga.classify},
+                                data-gaduration=${ga.duration},
+                                data-email=${ga.email},
+                                data-desc=${ga.description},
+                                data-img=${ga.imageMain}">
+                            <div class="ga-row">
+                                <div class="ga-left">
+                                    <div class="ga-title"
+                                         th:text="${(ga.game!=null?ga.game.gameName:'N/A') + ' • ' + (ga.rank!=null?ga.rank:'')}"></div>
+                                    <div class="ga-sub mono">
+                                        <span th:text="${ga.gameAccountId}"></span>
+                                        <span class="mx-1">|</span>
+                                        <span th:text="${ga.gameAccount}"></span>
+                                    </div>
+                                    <div class="ga-sub">
+                                        <span class="badge bg-secondary" th:text="${ga.status != null ? ga.status : 'N/A'}"></span>
+                                        <span class="badge bg-light text-dark ms-1"
+                                              th:text="${(ga.classify != null && #strings.equalsIgnoreCase(ga.classify,'RENT')) ? 'RENT' : 'BUY'}"></span>
+                                        <span class="badge bg-success ms-1"
+                                              th:text="${ga.price != null ? (ga.price.toPlainString() + ' đ') : 'N/A'}"></span>
+                                    </div>
+                                    <div class="ga-sub">
+                                        <span class="badge bg-info text-dark">skin <span th:text="${ga.skin}"></span></span>
+                                        <span class="badge bg-info text-dark ms-1">level <span th:text="${ga.lovel}"></span></span>
+                                        <span class="badge bg-info text-dark ms-1">vip <span th:text="${ga.vip}"></span></span>
+                                    </div>
+                                </div>
+
+                                <div class="ga-actions">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary ga-info" title="Detail">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
+                                    <input type="radio" class="form-check-input ga-pick" th:attr="name=${'gaPickRadio-' + entry.key.id}"
+                                           th:value="${ga.gameAccountId}">
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
+                <div id="gaNoList" class="text-muted d-none">No list found for this OrderDetail.</div>
             </div>
 
-            <div id="gaNoList" class="text-muted d-none">No list found for this OrderDetail.</div>
         </div>
-
     </div>
-</div>
 
-<div class="modal fade" id="gaDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content" style="border-radius:16px;">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>GameAccount Detail</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+    <div class="modal fade" id="gaDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius:16px;">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>GameAccount Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-            <div class="modal-body">
-                <div class="ga-card">
-                    <div class="kv"><div class="k">GA ID</div><div class="v mono" id="mGaid">-</div></div>
-                    <div class="kv"><div class="k">Game</div><div class="v" id="mGame">-</div></div>
-                    <div class="kv"><div class="k">Username</div><div class="v mono" id="mUser">-</div></div>
-                    <div class="kv"><div class="k">Password</div><div class="v mono" id="mPass">-</div></div>
-                    <div class="kv"><div class="k">Price</div><div class="v" id="mPrice">-</div></div>
-                    <div class="kv"><div class="k">Rank</div><div class="v" id="mRank">-</div></div>
-                    <div class="kv"><div class="k">Skins</div><div class="v" id="mSkin">-</div></div>
-                    <div class="kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
-                    <div class="kv"><div class="k">VIP</div><div class="v" id="mVip">-</div></div>
-                    <div class="kv"><div class="k">Type</div><div class="v" id="mType">-</div></div>
-                    <div class="kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
-                    <div class="kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
-                    <div class="kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
+                <div class="modal-body">
+                    <div class="ga-card">
+                        <div class="kv"><div class="k">GA ID</div><div class="v mono" id="mGaid">-</div></div>
+                        <div class="kv"><div class="k">Game</div><div class="v" id="mGame">-</div></div>
+                        <div class="kv"><div class="k">Username</div><div class="v mono" id="mUser">-</div></div>
+                        <div class="kv"><div class="k">Password</div><div class="v mono" id="mPass">-</div></div>
+                        <div class="kv"><div class="k">Price</div><div class="v" id="mPrice">-</div></div>
+                        <div class="kv"><div class="k">Rank</div><div class="v" id="mRank">-</div></div>
+                        <div class="kv"><div class="k">Skins</div><div class="v" id="mSkin">-</div></div>
+                        <div class="kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
+                        <div class="kv"><div class="k">VIP</div><div class="v" id="mVip">-</div></div>
+                        <div class="kv"><div class="k">Type</div><div class="v" id="mType">-</div></div>
+                        <div class="kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
+                        <div class="kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
+                        <div class="kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    const fmtVND = (v) => {
-        if (v === null || v === undefined || v === '') return 'N/A';
-        const s = String(v).trim();
-        const num = Number(s.replace(/,/g,''));
-        if (!isFinite(num)) return s + ' đ';
-        return num.toLocaleString('vi-VN') + ' đ';
-    };
-
-    const setMarkSelected = (odId, ok) => {
-        const el = document.getElementById('selMark-' + odId);
-        if (!el) return;
-        if (ok) {
-            el.classList.remove('mark-wait');
-            el.classList.add('mark-ok');
-            el.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
-        } else {
-            el.classList.remove('mark-ok');
-            el.classList.add('mark-wait');
-            el.innerHTML = '<i class="bi bi-circle"></i>';
-        }
-    };
-
-    const upsertHiddenSelection = (odId, gaId) => {
-        const wrap = document.getElementById('selectedInputs');
-        if (!wrap) return;
-
-        const name = 'selected[' + odId + ']';
-        let input = wrap.querySelector('input[name="' + CSS.escape(name) + '"]');
-
-        if (!input) {
-            input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = name;
-            wrap.appendChild(input);
-        }
-        input.value = gaId;
-    };
-
-    const getAllPickedGaIds = () => {
-        const wrap = document.getElementById('selectedInputs');
-        if (!wrap) return new Set();
-        const ids = new Set();
-        wrap.querySelectorAll('input[type="hidden"][name^="selected["]').forEach(i => {
-            const v = (i.value || '').trim();
-            if (v) ids.add(v);
-        });
-        return ids;
-    };
-
-    const refreshTakenUI = () => {
-        const picked = getAllPickedGaIds();
-        document.querySelectorAll('.ga-card.ga-basic').forEach(card => {
-            const id = (card.dataset.gaid || '').trim();
-            if (!id) return;
-            const taken = picked.has(id);
-            card.classList.toggle('is-taken', taken);
-            const r = card.querySelector('input.ga-pick[type="radio"]');
-            if (r) r.disabled = taken;
-        });
-    };
-
-    const hideAllOdLists = () => {
-        document.querySelectorAll('.ga-od-list').forEach(el => el.classList.add('d-none'));
-        document.getElementById('gaNoList')?.classList.add('d-none');
-    };
-
-    let currentOdId = '';
-
-    document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.ga-plus');
-        if (!btn) return;
-
-        currentOdId = (btn.dataset.odid || '').trim();
-        document.getElementById('curOdId') && (document.getElementById('curOdId').textContent = currentOdId || '-');
-
-        document.getElementById('gaPanelEmpty') && (document.getElementById('gaPanelEmpty').style.display = 'none');
-
-        hideAllOdLists();
-
-        const el = document.querySelector('.ga-od-list[data-odid="' + CSS.escape(currentOdId) + '"]');
-        if (!el) {
-            document.getElementById('gaNoList')?.classList.remove('d-none');
-            return;
-        }
-
-        el.classList.remove('d-none');
-
-        const existed = document.querySelector('#selectedInputs input[name="' + CSS.escape('selected[' + currentOdId + ']') + '"]');
-        if (existed && existed.value) {
-            const r = el.querySelector('input.ga-pick[type="radio"][value="' + existed.value + '"]');
-            if (r) r.checked = true;
-        }
-
-        refreshTakenUI();
-    });
-
-    document.addEventListener('change', (e) => {
-        const r = e.target.closest('input.ga-pick[type="radio"]');
-        if (!r) return;
-
-        const card = r.closest('.ga-card');
-        if (!card) return;
-
-        const gaId = (card.dataset.gaid || r.value || '').trim();
-        if (!currentOdId || !gaId) return;
-
-        upsertHiddenSelection(currentOdId, gaId);
-        setMarkSelected(currentOdId, true);
-
-        refreshTakenUI();
-    });
-
-    document.addEventListener('click', (e) => {
-        const infoBtn = e.target.closest('.ga-info');
-        if (!infoBtn) return;
-
-        const card = infoBtn.closest('.ga-card');
-        if (!card) return;
-
-        const setTxt = (id, val) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = (val === null || val === undefined || val === '') ? '-' : String(val);
+    <script>
+        const fmtVND = (v) => {
+            if (v === null || v === undefined || v === '') return 'N/A';
+            const s = String(v).trim();
+            const num = Number(s.replace(/,/g,''));
+            if (!isFinite(num)) return s + ' đ';
+            return num.toLocaleString('vi-VN') + ' đ';
         };
 
-        setTxt('mGaid', card.dataset.gaid || '-');
-        setTxt('mGame', card.dataset.game || '-');
-        setTxt('mUser', card.dataset.username || '-');
-        setTxt('mPass', '****');
-        const priceEl = document.getElementById('mPrice');
-        if (priceEl) priceEl.textContent = fmtVND(card.dataset.price);
-
-        setTxt('mRank', card.dataset.rank || '-');
-        setTxt('mSkin', (card.dataset.skin ?? '0'));
-        setTxt('mLevel', (card.dataset.level ?? '0'));
-        setTxt('mVip', (card.dataset.vip ?? '0'));
-
-        const type = (card.dataset.classify && String(card.dataset.classify).trim().toUpperCase() === 'RENT') ? 'RENT' : 'BUY';
-        setTxt('mType', type);
-
-        setTxt('mStatus', card.dataset.status || '-');
-        setTxt('mEmail','****');
-        setTxt('mDesc', card.dataset.desc || '-');
-
-        const imgWrap = document.getElementById('mImgWrap');
-        const img = document.getElementById('mImg');
-        const src = (card.dataset.img || '').trim();
-
-        if (imgWrap && img) {
-            if (src) {
-                img.src = src;
-                imgWrap.style.display = 'block';
+        const setMarkSelected = (odId, ok) => {
+            const el = document.getElementById('selMark-' + odId);
+            if (!el) return;
+            if (ok) {
+                el.classList.remove('mark-wait');
+                el.classList.add('mark-ok');
+                el.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
             } else {
-                img.removeAttribute('src');
-                imgWrap.style.display = 'none';
+                el.classList.remove('mark-ok');
+                el.classList.add('mark-wait');
+                el.innerHTML = '<i class="bi bi-circle"></i>';
             }
-        }
+        };
 
-        const modalEl = document.getElementById('gaDetailModal');
-        if (modalEl && window.bootstrap) new bootstrap.Modal(modalEl).show();
-    });
+        const upsertHiddenSelection = (odId, gaId) => {
+            const wrap = document.getElementById('selectedInputs');
+            if (!wrap) return;
+            const name = 'selected[' + odId + ']';
+            let input = wrap.querySelector('input[name="' + CSS.escape(name) + '"]');
+            if (!input) {
+                input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                wrap.appendChild(input);
+            }
+            input.value = gaId;
+        };
 
-    document.getElementById('btnAccept')?.addEventListener('click', () => {
-        const decisionInput = document.getElementById('decisionInput');
-        const form = document.getElementById('decisionForm');
-        if (decisionInput) decisionInput.value = 'ACCEPT';
-        if (form) form.submit();
-    });
+        const getAllPickedGaIds = () => {
+            const wrap = document.getElementById('selectedInputs');
+            const ids = new Set();
+            if (!wrap) return ids;
+            wrap.querySelectorAll('input[type="hidden"][name^="selected["]').forEach(i => {
+                const v = (i.value || '').trim();
+                if (v) ids.add(v);
+            });
+            return ids;
+        };
 
-    document.getElementById('btnReject')?.addEventListener('click', () => {
-        const decisionInput = document.getElementById('decisionInput');
-        const form = document.getElementById('decisionForm');
-        if (decisionInput) decisionInput.value = 'REJECT';
-        if (form) form.submit();
-    });
+        const refreshTakenUI = () => {
+            const picked = getAllPickedGaIds();
+            document.querySelectorAll('.ga-card.ga-basic').forEach(card => {
+                const id = (card.dataset.gaid || '').trim();
+                if (!id) return;
+                const taken = picked.has(id);
+                card.classList.toggle('is-taken', taken);
+                const r = card.querySelector('input.ga-pick[type="radio"]');
+                if (r) r.disabled = taken;
+            });
+        };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        refreshTakenUI();
-    });
-</script>
+        const hideAllOdLists = () => {
+            document.querySelectorAll('.ga-od-list').forEach(el => el.classList.add('d-none'));
+            document.getElementById('gaNoList')?.classList.add('d-none');
+        };
 
-</body>
-</html>
+        let currentOdId = '';
+
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.ga-plus');
+            if (!btn) return;
+
+            currentOdId = (btn.dataset.odid || '').trim();
+            document.getElementById('curOdId').textContent = currentOdId || '-';
+            document.getElementById('gaPanelEmpty').style.display = 'none';
+
+            hideAllOdLists();
+
+            const el = document.querySelector('.ga-od-list[data-odid="' + CSS.escape(currentOdId) + '"]');
+            if (!el) {
+                document.getElementById('gaNoList').classList.remove('d-none');
+                return;
+            }
+
+            el.classList.remove('d-none');
+
+            const existed = document.querySelector('#selectedInputs input[name="' + CSS.escape('selected[' + currentOdId + ']') + '"]');
+            if (existed && existed.value) {
+                const r = el.querySelector('input.ga-pick[type="radio"][value="' + existed.value + '"]');
+                if (r) r.checked = true;
+            }
+
+            refreshTakenUI();
+        });
+
+        document.addEventListener('change', (e) => {
+            const r = e.target.closest('input.ga-pick[type="radio"]');
+            if (!r) return;
+
+            const card = r.closest('.ga-card');
+            if (!card) return;
+
+            const gaId = (card.dataset.gaid || r.value || '').trim();
+            if (!currentOdId || !gaId) return;
+
+            upsertHiddenSelection(currentOdId, gaId);
+            setMarkSelected(currentOdId, true);
+            refreshTakenUI();
+        });
+
+        document.addEventListener('click', (e) => {
+            const infoBtn = e.target.closest('.ga-info');
+            if (!infoBtn) return;
+
+            const card = infoBtn.closest('.ga-card');
+            if (!card) return;
+
+            const setTxt = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = (val === null || val === undefined || val === '') ? '-' : String(val);
+            };
+
+            setTxt('mGaid', card.dataset.gaid);
+            setTxt('mGame', card.dataset.game);
+            setTxt('mUser', card.dataset.username);
+            setTxt('mPass', '****');
+            document.getElementById('mPrice').textContent = fmtVND(card.dataset.price);
+            setTxt('mRank', card.dataset.rank);
+            setTxt('mSkin', card.dataset.skin);
+            setTxt('mLevel', card.dataset.level);
+            setTxt('mVip', card.dataset.vip);
+            setTxt('mType', (card.dataset.classify || '').toUpperCase() === 'RENT' ? 'RENT' : 'BUY');
+            setTxt('mStatus', card.dataset.status);
+            setTxt('mEmail', '****');
+            setTxt('mDesc', card.dataset.desc);
+
+            new bootstrap.Modal(document.getElementById('gaDetailModal')).show();
+        });
+
+        const getOrderDetailIdsOnPage = () =>
+            Array.from(document.querySelectorAll('[id^="selMark-"]'))
+                .map(el => el.id.replace('selMark-', '').trim())
+                .filter(Boolean);
+
+        const getSelectedMap = () => {
+            const wrap = document.getElementById('selectedInputs');
+            const map = new Map();
+            if (!wrap) return map;
+            wrap.querySelectorAll('input[name^="selected["]').forEach(i => {
+                const m = i.name.match(/^selected\[(.+)\]$/);
+                if (m && i.value) map.set(m[1], i.value);
+            });
+            return map;
+        };
+
+        const ensureAllSelectedBeforeAccept = () => {
+            document.querySelectorAll('tr').forEach(tr => tr.classList.remove('table-warning'));
+
+            const odIds = getOrderDetailIdsOnPage();
+            const selMap = getSelectedMap();
+            const missing = odIds.filter(id => !selMap.has(id));
+
+            if (missing.length === 0) return true;
+
+            let first = null;
+            missing.forEach(id => {
+                setMarkSelected(id, false);
+                const el = document.getElementById('selMark-' + id)?.closest('tr');
+                if (el) {
+                    el.classList.add('table-warning');
+                    if (!first) first = el;
+                }
+            });
+
+            if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            alert('Chọn đủ account trước khi Accept');
+
+            return false;
+        };
+
+        document.getElementById('btnAccept').addEventListener('click', () => {
+            if (!ensureAllSelectedBeforeAccept()) return;
+            document.getElementById('decisionInput').value = 'ACCEPT';
+            document.getElementById('decisionForm').submit();
+        });
+
+        document.getElementById('btnReject').addEventListener('click', () => {
+            document.getElementById('decisionInput').value = 'REJECT';
+            document.getElementById('decisionForm').submit();
+        });
+
+        document.addEventListener('DOMContentLoaded', refreshTakenUI);
+    </script>
+
+
+    </body>
+    </html>
