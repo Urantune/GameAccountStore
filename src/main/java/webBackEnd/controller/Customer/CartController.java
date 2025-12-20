@@ -63,7 +63,7 @@ private GameAccountService gameAccountService;
             @RequestParam int level,
             @RequestParam int vip,
             @RequestParam String rank,
-            @RequestParam(defaultValue = "0") int voucherPercent, // voucher đã bị chặn ở JS
+            @RequestParam(defaultValue = "0") int voucherPercent,
             @AuthenticationPrincipal UserDetails userDetails) {
 
         if (userDetails == null)
@@ -85,20 +85,34 @@ private GameAccountService gameAccountService;
         if (account == null)
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy account");
 
+        boolean exists =
+                cartRepositories.existsByCustomerAndGameAccount(customer, account);
+
+        if (exists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Tài khoản này đã có trong giỏ hàng");
+        }
+
+
         List<Cart> carts = cartRepositories.findByCustomer(customer);
         if (carts.size() >= 5)
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Số lượng đơn hàng trong cart đã đạt tối đa");
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Số lượng đơn hàng trong cart đã đạt tối đa");
 
+        // ✅ ADD
         cartService.addToCart(customer, account, duration, rank, skin, level, vip);
 
         return ResponseEntity.ok("Đã thêm vào giỏ hàng");
     }
     @PostMapping("/cart/delete/{id}")
-    public String deleteCart(@PathVariable("id") UUID cartId, RedirectAttributes ra) {
-        cartService.delete(cartService.getCartById(cartId));
+    public String deleteCart(@PathVariable UUID id,
+                             RedirectAttributes ra) {
+        cartService.deleteById(id);
         ra.addFlashAttribute("successPopup", "Đã xoá khỏi giỏ hàng");
+
         return "redirect:/home/cart";
     }
+
 
 
     @PostMapping("/cart/checkout")

@@ -279,7 +279,7 @@
     </ol>
 </div>
 
-<div class="container-fluid py-5">
+ <div class="container-fluid py-5">
     <div class="container py-5">
         <form id="checkoutForm" onsubmit="return submitCheckout(event)">
             <div class="table-responsive">
@@ -362,19 +362,20 @@
 }"></td>
                         <!-- Handle -->
                         <td>
-                            <form th:action="@{/home/cart/delete/{id}(id=${c.cartId})}"
-                                  method="post"
-                                  onsubmit="return confirm('Xoá game này khỏi giỏ hàng?')">
-                                <button type="submit"
-                                        class="btn btn-sm rounded-circle bg-light border">
-                                    <i class="fa fa-times text-danger"></i>
-                                </button>
-                            </form>
+                            <button type="button"
+                                    class="btn btn-sm rounded-circle bg-light border"
+                                    th:attr="data-cart-id=${c.cartId}"
+                                    onclick="deleteCart(this)">
+                                <i class="fa fa-times text-danger"></i>
+                            </button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+            <h5 class="fw-semibold">
+                Tổng giá mỗi sản phẩm thuê = Giá gốc × Số tháng × (1 − % giảm)
+            </h5>
             <div class="row g-4 justify-content-end">
                 <div class="col-8"></div>
                 <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
@@ -410,9 +411,28 @@
                 </div>
             </div>
         </form>
-
     </div>
 </div>
+<script>
+    function deleteCart(btn) {
+        const cartId = btn.getAttribute("data-cart-id");
+        if (!cartId) return;
+
+        if (!confirm("Xoá game này khỏi giỏ hàng?")) return;
+
+        fetch(`/home/cart/delete/${cartId}`, {
+            method: "POST"
+        })
+            .then(res => {
+                if (!res.ok) throw new Error();
+                location.reload();
+            })
+            .catch(() => {
+                alert("Không thể xoá sản phẩm, vui lòng thử lại");
+            });
+    }
+</script>
+
 <script>
     function submitCheckout(e) {
         e.preventDefault(); // ❌ chặn submit thường
