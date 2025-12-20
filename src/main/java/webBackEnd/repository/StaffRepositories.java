@@ -15,4 +15,6 @@ public interface StaffRepositories extends JpaRepository<Staff, UUID> {
     Optional<Staff> findByUsername(String username);
 
     List<Staff> findByUsernameContainingIgnoreCase(String username);
+
+    List<Staff> findByRole(String role);
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Staff;
 import webBackEnd.service.AdministratorService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -18,8 +19,9 @@ public class StaffController {
 
     @GetMapping("/staffList")
     public String staffList(@RequestParam(value = "q", required = false) String q, Model model) {
+
         model.addAttribute("q", q == null ? "" : q);
-        model.addAttribute("listStaff", staffService.search(q));
+        model.addAttribute("listStaff", staffService.getByRole("STAFF"));
         return "admin/StaffList";
     }
 

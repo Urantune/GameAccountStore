@@ -89,6 +89,7 @@ public class AdminGameAccountController {
         if (game == null) {
             throw new IllegalArgumentException("Game not found with id: " + gameId);
         }
+
         Type type;
         if ("AOV".equalsIgnoreCase(game.getGameName())) {
             type = typeService.findByTypeName("MOBA");
@@ -98,7 +99,6 @@ public class AdminGameAccountController {
         if (type != null) {
             game.setTypeId(type);
         }
-
 
         GameAccount ga = new GameAccount();
         ga.setGame(game);
@@ -113,13 +113,23 @@ public class AdminGameAccountController {
 
         ga.setSkin(skin);
         ga.setLovel(lovel);
-        ga.setItems(vip);
+        ga.setVip(vip);
         ga.setCreatedDate(LocalDateTime.now());
 
         gameAccountService.save(ga);
 
         String folder = game.getGameName().equalsIgnoreCase("AOV") ? "aov/" : "ff/";
-        String fileName = ga.getId().toString().toUpperCase() + ".jpg";
+
+        String originalName = imageFile.getOriginalFilename();
+        String ext = "jpg";
+        if (originalName != null) {
+            String lower = originalName.trim().toLowerCase();
+            if (lower.endsWith(".png")) ext = "png";
+            else if (lower.endsWith(".jpeg")) ext = "jpeg";
+            else if (lower.endsWith(".jpg")) ext = "jpg";
+        }
+
+        String fileName = ga.getId().toString().toUpperCase() + "." + ext;
 
         String baseDir = pathCheck.getBaseDir();
         if (baseDir == null) {
@@ -133,7 +143,6 @@ public class AdminGameAccountController {
         Files.createDirectories(dir);
 
         Path outFile = dir.resolve(fileName);
-
         Files.write(outFile, imageFile.getBytes());
 
         ga.setImageMain(folder + fileName);
@@ -141,6 +150,7 @@ public class AdminGameAccountController {
 
         return "redirect:/adminHome/gameList?nameGame=" + game.getGameName();
     }
+
 
     private void validateCreateGameAccountInput(
             String gameAccountName,
