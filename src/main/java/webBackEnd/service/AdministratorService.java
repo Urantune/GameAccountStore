@@ -68,4 +68,8 @@ public class AdministratorService {
 
         return staffRepositories.save(s);
     }
+
+    public List<Staff> getByRole(String role) {
+        return staffRepositories.findByRole(role);
+    }
 }

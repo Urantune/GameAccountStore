@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="adminSidebar">
+    <style>
+        :root{
+            --primary:#1abb9c;
+            --dark:#2a3f54;
+            --bg:#f5f7fa;
+        }
+
+        .sidebar{
+            width:260px;
+            min-height:100vh;
+            background:var(--dark);
+            position:fixed;
+            left:0; top:0;
+            color:#ecf0f1;
+            z-index:1000;
+        }
+        .sidebar h5{
+            padding:20px;
+            text-align:center;
+            border-bottom:1px solid rgba(255,255,255,.1);
+            margin:0;
+        }
+        .sidebar a{
+            display:block;
+            padding:14px 24px;
+            color:#ecf0f1;
+            text-decoration:none;
+            transition:.2s;
+        }
+        .sidebar a i{ width:22px; }
+        .sidebar a:hover{ background:var(--primary); }
+        .sidebar a.active{ background:var(--primary); font-weight:600; }
+    </style>
+
+    <div class="sidebar">
+        <h5><i class="bi bi-gear-fill me-2"></i>Admin Panel</h5>
+
+        <a th:href="@{/adminHome}"
+           th:classappend="${activePage == 'DASHBOARD'} ? ' active' : ''">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        <a th:href="@{/adminHome/userList}"
+           th:classappend="${activePage == 'USERS'} ? ' active' : ''">
+            <i class="bi bi-people-fill"></i> Users
+        </a>
+
+        <a th:href="@{/adminHome/gameSelect}"
+           th:classappend="${activePage == 'GAME_ACCOUNTS'} ? ' active' : ''">
+            <i class="bi bi-controller"></i> Game Accounts
+        </a>
+
+        <a th:href="@{/adminHome/listVoucher}"
+           th:classappend="${activePage == 'VOUCHERS'} ? ' active' : ''">
+            <i class="bi bi-ticket-perforated"></i> Vouchers
+        </a>
+
+        <a th:href="@{/adminHome/revenue}"
+           th:classappend="${activePage == 'REVENUE'} ? ' active' : ''">
+            <i class="bi bi-graph-up-arrow"></i> Revenue
+        </a>
+
+        <a th:href="@{/adminHome/staffList}"
+           th:classappend="${activePage == 'STAFF'} ? ' active' : ''">
+            <i class="bi bi-calendar2-week-fill"></i> Staff Management
+        </a>
+    </div>
+</th:block>
+
+</body>
+</html>

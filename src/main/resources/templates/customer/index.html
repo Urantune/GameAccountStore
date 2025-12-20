@@ -10,7 +10,6 @@
     <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
     <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -58,8 +57,6 @@
     </div>
 </div>
 
-
-
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -81,7 +78,6 @@
                            class="form-text text-muted text-decoration-none float-end">
                             Quên mật khẩu?
                         </a>
-
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="rememberMe">
@@ -98,7 +94,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -158,8 +153,6 @@
     </div>
 </div>
 
-
-
 <div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -189,9 +182,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
     <div class="spinner-border text-primary" style="width:3rem;height:3rem;" role="status">
@@ -239,7 +229,6 @@
                                 Free Fire
                             </a>
                         </li>
-
 
                         <li class="nav-item">
                             <a class="nav-link nav-pill require-login"
@@ -676,36 +665,6 @@
 </script>
 
 <script>
-    document.getElementById("registerBtn").addEventListener("click", function () {
-        const formData = new FormData(document.getElementById("registerForm"));
-        fetch("/register", {
-            method: "POST",
-            body: new URLSearchParams(formData),
-            headers: {"X-Requested-With": "XMLHttpRequest"}
-        })
-            .then(response => response.json())
-            .then(data => {
-                const errorDiv = document.getElementById("registerError");
-                const successDiv = document.getElementById("registerSuccess");
-
-                if (data.error) {
-                    errorDiv.innerText = data.error;
-                    successDiv.innerText = "";
-                    document.getElementById("registerPassword").value = "";
-                    document.getElementById("confirmPassword").value = "";
-                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);
-                } else if (data.success) {
-                    successDiv.innerText = data.success;
-                    errorDiv.innerText = "";
-                    document.getElementById("registerForm").reset();
-                    setTimeout(() => { successDiv.innerText = ""; }, 3000);
-                }
-            })
-            .catch(err => console.error(err));
-    });
-</script>
-
-<script>
     setTimeout(() => {
         const spinner = document.getElementById("spinner");
         if (spinner) spinner.classList.remove("show");
@@ -757,7 +716,6 @@
 
 <script th:src="@{/js/product.js}"></script>
 
-
 <script>
     function getCsrf() {
         const tokenEl = document.querySelector('meta[name="_csrf"]');
@@ -792,11 +750,8 @@
         if (msgEl) msgEl.textContent = msg || "";
     }
 
-    // map message backend -> field (nếu không match thì show global)
     function mapBackendErrorToField(errorMsg) {
         const msg = (errorMsg || "").toLowerCase();
-
-        // reset trước
         clearStates();
 
         if (msg.includes("username")) {
@@ -808,17 +763,12 @@
             return true;
         }
         if (msg.includes("password")) {
-            // nếu backend báo mismatch thì highlight confirm trước
             if (msg.includes("match") || msg.includes("confirm")) {
                 markInvalid("confirmPassword", "errConfirmPassword", errorMsg);
             } else {
                 markInvalid("registerPassword", "errRegisterPassword", errorMsg);
             }
             return true;
-        }
-        if (msg.includes("fill all") || msg.includes("please fill")) {
-            // global thôi
-            return false;
         }
         return false;
     }
@@ -830,7 +780,6 @@
         const successDiv = document.getElementById("registerSuccess");
 
         btn.addEventListener("click", function () {
-            // dùng HTML5 required
             if (!form.checkValidity()) {
                 form.reportValidity();
                 return;
@@ -861,7 +810,6 @@
                         const mapped = mapBackendErrorToField(data.error);
                         if (!mapped) errorDiv.innerText = data.error;
 
-                        // optional: clear password fields nếu lỗi liên quan password
                         if ((data.error || "").toLowerCase().includes("password")) {
                             document.getElementById("registerPassword").value = "";
                             document.getElementById("confirmPassword").value = "";
@@ -887,14 +835,12 @@
                 });
         });
 
-        // enter submit
         form.addEventListener("submit", function (e) {
             e.preventDefault();
             btn.click();
         });
     });
 </script>
-
 
 </body>
 </html>

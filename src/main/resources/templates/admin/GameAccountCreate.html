@@ -14,6 +14,7 @@
             --primary-dark: #169f82;
             --dark: #2a3f54;
             --bg: #f5f7fa;
+            --sidebar-w: 260px;
         }
 
         body {
@@ -22,6 +23,8 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding-left: var(--sidebar-w);
+            overflow-x: hidden;
         }
 
         .bar-top {
@@ -49,6 +52,7 @@
         .content-wrapper {
             flex: 1;
             padding: 30px 40px 20px 40px;
+            width: 100%;
         }
 
         .card-detail {
@@ -97,10 +101,21 @@
         textarea.form-control {
             resize: vertical;
         }
+
+
+        @media (max-width: 992px){
+            body{
+                padding-left: 0;
+            }
+        }
     </style>
+
 </head>
 
 <body>
+
+<div th:replace="fragments/adminSidebar :: adminSidebar"></div>
+
 
 <div class="bar-top">
     <h4 class="text-white m-0">
@@ -168,7 +183,7 @@
                 <div class="col-md-6">
                     <label class="form-label">Rank</label>
 
-                    <select class="form-select d-none" id="rankAovSelect" name="rank">
+                    <select class="form-select d-none" id="rankAovSelect" name="rank" disabled>
                         <option value="" disabled selected>Select rank</option>
                         <option th:each="r : ${rankAOV}"
                                 th:value="${r}"
@@ -176,7 +191,7 @@
                         </option>
                     </select>
 
-                    <select class="form-select d-none" id="rankFfSelect" name="rank">
+                    <select class="form-select d-none" id="rankFfSelect" name="rank" disabled>
                         <option value="" disabled selected>Select rank</option>
                         <option th:each="r : ${rankFF}"
                                 th:value="${r}"
@@ -256,15 +271,20 @@
             ffSel.classList.add("d-none");
             fallback.classList.remove("d-none");
 
+            aovSel.disabled = true;
+            ffSel.disabled = true;
+
             aovSel.selectedIndex = 0;
             ffSel.selectedIndex = 0;
 
             if (gameName === "AOV") {
                 fallback.classList.add("d-none");
                 aovSel.classList.remove("d-none");
+                aovSel.disabled = false;
             } else if (gameName === "FREE FIRE" || gameName === "FREEFIRE") {
                 fallback.classList.add("d-none");
                 ffSel.classList.remove("d-none");
+                ffSel.disabled = false;
             }
         }
 
