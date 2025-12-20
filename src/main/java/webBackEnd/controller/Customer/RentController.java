@@ -1,5 +1,6 @@
 package webBackEnd.controller.Customer;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.*;
 import webBackEnd.repository.*;
+import webBackEnd.service.TransactionService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,13 +19,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-@RequestMapping(value = "/home")
+@RequestMapping("/home")
 public class RentController {
 
     @Autowired private CustomerRepositories customerRepositories;
     @Autowired private RentAccountGameRepositories rentAccountGameRepositories;
     @Autowired private OrdersRepositories ordersRepositories;
     @Autowired private OrderDetailRepositories orderDetailRepositories;
+    @Autowired private TransactionService transactionService;
 
     @GetMapping("/renting")
     public String rentingAccounts(Model model) {
@@ -85,7 +88,8 @@ public class RentController {
 
         RentAccountGame rent = optRent.get();
 
-        if (rent.getCustomer() == null || !rent.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+        if (rent.getCustomer() == null || rent.getCustomer().getCustomerId() == null ||
+                !rent.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
             ra.addFlashAttribute("errorMessage", "Không có quyền gia hạn gói thuê này.");
             return "redirect:/home/renting";
         }
@@ -97,8 +101,7 @@ public class RentController {
         }
 
         BigDecimal base = (ga.getPrice() != null) ? ga.getPrice() : BigDecimal.ZERO;
-        BigDecimal monthsBD = BigDecimal.valueOf(months);
-        BigDecimal subtotal = base.multiply(monthsBD);
+        BigDecimal subtotal = base.multiply(BigDecimal.valueOf(months));
 
         BigDecimal discountRate = BigDecimal.ONE;
         if (months == 2) discountRate = new BigDecimal("0.90");
@@ -109,8 +112,7 @@ public class RentController {
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(total);
-        order.setStatus("WAITRENT");
-
+        order.setStatus("PENDINGPAY_RENT");
         Orders savedOrder = ordersRepositories.save(order);
 
         OrderDetail od = new OrderDetail();
@@ -119,19 +121,76 @@ public class RentController {
         od.setGame(null);
         od.setDuration(months);
         od.setPrice(total.intValue());
-
         orderDetailRepositories.save(od);
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime end = rent.getDateEnd();
-        if (end == null || end.isBefore(now)) end = now;
-
-        rent.setDateEnd(end.plusMonths(months));
-        rentAccountGameRepositories.save(rent);
-
-        ra.addFlashAttribute("successMessage", "Gia hạn +" + months + " tháng. Đã tạo đơn WAITRENT.");
+        ra.addFlashAttribute("successMessage", "Đã tạo đơn gia hạn. Vui lòng thanh toán để staff duyệt.");
         return "redirect:/home/renting";
     }
 
+    @PostMapping("/renting/pay")
+    @Transactional
+    public String payRent(@RequestParam("orderId") UUID orderId,
+                          RedirectAttributes ra) {
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (auth != null ? auth.getName() : null);
+
+        if (username == null || "anonymousUser".equals(username)) {
+            ra.addFlashAttribute("errorMessage", "Vui lòng đăng nhập.");
+            return "redirect:/home/renting";
+        }
+
+        Customer customer = null;
+        try { customer = customerRepositories.findByUsername(username); } catch (Exception ignored) {}
+
+        if (customer == null) {
+            ra.addFlashAttribute("errorMessage", "Không tìm thấy thông tin khách hàng.");
+            return "redirect:/home/renting";
+        }
+
+        Orders order = ordersRepositories.findById(orderId).orElse(null);
+        if (order == null) {
+            ra.addFlashAttribute("errorMessage", "Không tìm thấy đơn.");
+            return "redirect:/home/renting";
+        }
+
+        if (order.getCustomer() == null || order.getCustomer().getCustomerId() == null ||
+                !order.getCustomer().getCustomerId().equals(customer.getCustomerId())) {
+            ra.addFlashAttribute("errorMessage", "Không có quyền thanh toán đơn này.");
+            return "redirect:/home/renting";
+        }
+
+        if (!"PENDINGPAY_RENT".equalsIgnoreCase(order.getStatus())) {
+            ra.addFlashAttribute("errorMessage", "Đơn không ở trạng thái chờ thanh toán.");
+            return "redirect:/home/renting";
+        }
+
+        if (order.getTotalPrice() == null) {
+            ra.addFlashAttribute("errorMessage", "Đơn thiếu tổng tiền.");
+            return "redirect:/home/renting";
+        }
+
+        if (customer.getBalance() == null) customer.setBalance(BigDecimal.ZERO);
+
+        if (customer.getBalance().compareTo(order.getTotalPrice()) < 0) {
+            ra.addFlashAttribute("errorMessage", "Số dư không đủ.");
+            return "redirect:/home/renting";
+        }
+
+        customer.setBalance(customer.getBalance().subtract(order.getTotalPrice()));
+        customerRepositories.save(customer);
+
+        Transaction tx = new Transaction();
+        tx.setCustomer(customer);
+        tx.setAmount(order.getTotalPrice().negate());
+        tx.setDescription("PAYMENT_COMPLETED_RENT_ORDER_" + order.getId());
+        tx.setDateCreated(LocalDateTime.now());
+        transactionService.save(tx);
+
+        order.setStatus("WAITRENT");
+        ordersRepositories.save(order);
+
+        ra.addFlashAttribute("successMessage", "Thanh toán thành công. Chờ staff duyệt.");
+        return "redirect:/home/renting";
+    }
 }

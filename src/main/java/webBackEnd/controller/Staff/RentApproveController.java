@@ -9,9 +9,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
 import webBackEnd.entity.RentAccountGame;
+import webBackEnd.entity.Transaction;
+import webBackEnd.entity.Customer;
 import webBackEnd.service.OrderDetailService;
 import webBackEnd.service.OrdersService;
 import webBackEnd.service.RentAccountGameService;
+import webBackEnd.service.TransactionService;
+import webBackEnd.repository.CustomerRepositories;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -23,6 +27,8 @@ public class RentApproveController {
     @Autowired private OrdersService ordersService;
     @Autowired private OrderDetailService orderDetailService;
     @Autowired private RentAccountGameService rentAccountGameService;
+    @Autowired private CustomerRepositories customerRepositories;
+    @Autowired private TransactionService transactionService;
 
     @GetMapping("/rentApproveList")
     public String rentApproveList(Model model) {
@@ -74,6 +80,23 @@ public class RentApproveController {
         }
 
         if ("REJECT".equalsIgnoreCase(decision)) {
+
+            if (order.getCustomer() != null && order.getCustomer().getCustomerId() != null && order.getTotalPrice() != null) {
+                Customer customer = customerRepositories.findById(order.getCustomer().getCustomerId()).orElse(null);
+                if (customer != null) {
+                    if (customer.getBalance() == null) customer.setBalance(java.math.BigDecimal.ZERO);
+                    customer.setBalance(customer.getBalance().add(order.getTotalPrice()));
+                    customerRepositories.save(customer);
+
+                    Transaction tx = new Transaction();
+                    tx.setCustomer(customer);
+                    tx.setAmount(order.getTotalPrice());
+                    tx.setDescription("REFUND_RENT_ORDER_" + order.getId());
+                    tx.setDateCreated(LocalDateTime.now());
+                    transactionService.save(tx);
+                }
+            }
+
             order.setStatus("REJECT");
             ordersService.save(order);
             ra.addFlashAttribute("successMessage", "Rejected rent order.");
