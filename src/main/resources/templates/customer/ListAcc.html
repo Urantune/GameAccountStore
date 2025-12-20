@@ -73,7 +73,7 @@
                        href="#"
                        data-bs-toggle="dropdown"
                        th:data-logged="${#authorization.expression('isAuthenticated()')}">
-                        <i class="fa fa-list me-2"></i>Danh sách tài khoản
+                        <i class="fa fa-list me-2"></i>Tài khoản vĩnh viễn
                     </a>
                     <ul class="dropdown-menu dropdown-soft">
                         <li>
@@ -217,7 +217,7 @@
 <div class="page-header mt-3">
     <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div>
-            <h3 class="mb-0 text-white">Danh sách tài khoản đã mua / đang thuê</h3>
+            <h3 class="mb-0 text-white">Danh sách tài khoản vĩnh viễn</h3>
             <small class="opacity-75">
                 <span th:text="${gameName != null && !#strings.isEmpty(gameName) ? gameName : 'Tất cả'}"></span>
             </small>
@@ -229,7 +229,7 @@
     </div>
 </div>
 
-<div class="container py-4">
+ <div class="container py-4">
     <div class="card card-soft">
         <div class="card-body">
 
@@ -252,25 +252,27 @@
 
                     <tbody>
                     <tr th:each="row, i : ${listAcc}"
-                        th:with="ga=${row['O'] != null ? row['O'] : row['R']}, isOwned=${row['O'] != null}">
+                        th:if="${row.containsKey('O')}"
+                        th:with="ga=${row['O']}">
+
                         <td th:text="${i.index + 1}"></td>
 
                         <td class="fw-semibold"
-                            th:text="${ga != null && ga.game != null && ga.game.gameName != null ? ga.game.gameName : 'N/A'}"></td>
+                            th:text="${ga.game != null ? ga.game.gameName : 'N/A'}"></td>
 
                         <td>
-                            <div class="fw-semibold mono" th:text="${ga != null ? ga.gameAccount : 'N/A'}"></div>
-                            <div class="text-muted small mono" th:text="${ga != null ? ('ID: ' + ga.gameAccountId) : ''}"></div>
+                            <div class="fw-semibold mono" th:text="${ga.gameAccount}"></div>
+                            <div class="text-muted small mono"
+                                 th:text="${'ID: ' + ga.gameAccountId}"></div>
                         </td>
 
                         <td>
-                            <span class="badge bg-success badge-soft" th:if="${isOwned}">BUY (FOREVER)</span>
-                            <span class="badge bg-warning text-dark badge-soft" th:if="${!isOwned}">RENT</span>
+                            <span class="badge bg-success badge-soft">BUY (FOREVER)</span>
                         </td>
 
                         <td>
-                            <span class="badge bg-secondary badge-soft"
-                                  th:text="${ga != null && ga.status != null ? ga.status : (isOwned ? 'OWNED' : 'RENTING')}"></span>
+        <span class="badge bg-secondary badge-soft"
+              th:text="${ga.status != null ? ga.status : 'OWNED'}"></span>
                         </td>
 
                         <td class="text-center">
@@ -279,28 +281,22 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#gaModal"
                                     th:attr="
-                                      data-type=${isOwned ? 'BUY' : 'RENT'},
-                                      data-gid=${ga != null ? ga.gameAccountId : ''},
-                                      data-game=${ga != null && ga.game != null ? ga.game.gameName : ''},
-                                      data-user=${ga != null ? ga.gameAccount : ''},
-                                      data-pass=${ga != null ? ga.gamePassword : ''},
-                                      data-price=${ga != null && ga.price != null ? ga.price.toPlainString() : ''},
-                                      data-rank=${ga != null ? ga.rank : ''},
-                                      data-skin=${ga != null ? ga.skin : 0},
-                                      data-level=${ga != null ? ga.lovel : 0},
-                                      data-vip=${ga != null ? ga.vip : 0},
-                                      data-email=${ga != null ? ga.email : ''},
-                                      data-status=${ga != null ? ga.status : ''},
-                                      data-classify=${ga != null ? ga.classify : ''},
-                                      data-duration=${ga != null ? ga.duration : ''},
-                                      data-desc=${ga != null ? ga.description : ''},
-                                      data-img=${ga != null ? ga.imageMain : ''}">
+                  data-game=${ga.game != null ? ga.game.gameName : ''},
+                  data-user=${ga.gameAccount},
+                  data-pass=${ga.gamePassword},
+                  data-price=${ga.price != null ? ga.price.toPlainString() : ''},
+                  data-rank=${ga.rank},
+                  data-skin=${ga.skin},
+                  data-level=${ga.lovel},
+                  data-vip=${ga.vip},
+                  data-desc=${ga.description},
+                  data-img=${ga.imageMain}">
                                 <i class="bi bi-info-circle"></i>
                             </button>
                         </td>
                     </tr>
-                    </tbody>
 
+                    </tbody>
                 </table>
             </div>
 
@@ -312,33 +308,21 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content" style="border-radius:18px;">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Chi tiết tài khoản</h5>
+                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Thông tin tài khoản</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
                 <div class="row g-3">
-                    <div class="col-lg-5">
-                        <img id="mImg" class="ga-img" alt="Image">
-                    </div>
                     <div class="col-lg-7">
-                        <div class="kv"><div class="k">Type</div><div class="v" id="mType">-</div></div>
-                        <div class="kv"><div class="k">GameAccount ID</div><div class="v mono" id="mGid">-</div></div>
                         <div class="kv"><div class="k">Game</div><div class="v" id="mGame">-</div></div>
                         <div class="kv"><div class="k">Username</div><div class="v mono" id="mUser">-</div></div>
                         <div class="kv"><div class="k">Password</div><div class="v mono" id="mPass">-</div></div>
                         <div class="kv"><div class="k">Price</div><div class="v" id="mPrice">-</div></div>
-
                         <div class="kv"><div class="k">Rank</div><div class="v" id="mRank">-</div></div>
                         <div class="kv"><div class="k">Skin</div><div class="v" id="mSkin">-</div></div>
                         <div class="kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
-                        <div class="kv"><div class="k">VIP</div><div class="v" id="mVip">-</div></div>
-
-                        <div class="kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
-                        <div class="kv"><div class="k">Classify</div><div class="v" id="mClassify">-</div></div>
-                        <div class="kv"><div class="k">DurationAccount</div><div class="v" id="mDuration">-</div></div>
-
-                        <div class="kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
+                        <div class="kv"><div class="k">Vip</div><div class="v" id="mVip">-</div></div>
                         <div class="kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
                     </div>
                 </div>
@@ -350,7 +334,89 @@
         </div>
     </div>
 </div>
+<style>
+    /* ===== INFO KEY-VALUE ===== */
+    .kv {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px dashed #e5e7eb;
+    }
 
+    .kv:last-child {
+        border-bottom: none;
+    }
+
+    /* key */
+    .kv .k {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #6b7280; /* gray-500 */
+    }
+
+    /* value */
+    .kv .v {
+        font-size: 15px;
+        font-weight: 500;
+        color: #111827; /* gray-900 */
+        word-break: break-word;
+    }
+
+    /* mono fields */
+    .kv .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        background: #f8fafc;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+    }
+
+    /* price highlight */
+    #mPrice {
+        font-weight: 700;
+    }
+
+    /* email */
+    #mEmail {
+        color: #2563eb; /* blue-600 */
+    }
+
+    /* description */
+    #mDesc {
+        line-height: 1.6;
+        color: #374151;
+    }
+
+    /* modal polish */
+    .modal-content {
+        box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #e5e7eb;
+    }
+
+    /* responsive */
+    @media (max-width: 768px) {
+        .kv {
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+
+        .kv .k {
+            font-size: 12px;
+        }
+    }
+
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -372,24 +438,14 @@
     document.getElementById('gaModal')?.addEventListener('show.bs.modal', (ev) => {
         const btn = ev.relatedTarget;
         if (!btn) return;
-
-        setTxt('mType', btn.dataset.type || '-');
-        setTxt('mGid', btn.dataset.gid || '-');
         setTxt('mGame', btn.dataset.game || '-');
         setTxt('mUser', btn.dataset.user || '-');
         setTxt('mPass', btn.dataset.pass || '-');
         setTxt('mPrice', fmtVND(btn.dataset.price));
-
         setTxt('mRank', btn.dataset.rank || '-');
         setTxt('mSkin', btn.dataset.skin || '0');
         setTxt('mLevel', btn.dataset.level || '0');
         setTxt('mVip', btn.dataset.vip || '0');
-
-        setTxt('mStatus', btn.dataset.status || '-');
-        setTxt('mClassify', btn.dataset.classify || '-');
-        setTxt('mDuration', btn.dataset.duration || '-');
-
-        setTxt('mEmail', btn.dataset.email || '-');
         setTxt('mDesc', btn.dataset.desc || '-');
 
         const img = document.getElementById('mImg');

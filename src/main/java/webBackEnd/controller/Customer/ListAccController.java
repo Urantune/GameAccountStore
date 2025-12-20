@@ -27,7 +27,6 @@ public class ListAccController {
 
     @GetMapping("/listAcc")
     public String listAcc(@RequestParam(value = "game", required = false) String game, Model model) {
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = (auth != null ? auth.getName() : null);
 
@@ -37,7 +36,6 @@ public class ListAccController {
             model.addAttribute("gameName", game);
             return "customer/ListAcc";
         }
-
         Customer customer = null;
         try { customer = customerService.findCustomerByUsername(username); } catch (Exception ignored) {}
 
@@ -47,11 +45,8 @@ public class ListAccController {
             model.addAttribute("gameName", game);
             return "customer/ListAcc";
         }
-
         String gameFilter = (game == null ? null : game.trim());
-
         List<Map<String, Object>> tmp = new ArrayList<>();
-
         List<GameOwned> ownedList = null;
         try { ownedList = gameOwnedService.findAllByCustomer(customer); } catch (Exception ignored) {}
         if (ownedList != null) {
@@ -71,7 +66,6 @@ public class ListAccController {
                 tmp.add(m);
             }
         }
-
         List<RentAccountGame> rentList = null;
         try { rentList = rentAccountGameService.findAllByCustomer(customer); } catch (Exception ignored) {}
         if (rentList != null) {
@@ -91,7 +85,6 @@ public class ListAccController {
                 tmp.add(m);
             }
         }
-
         tmp.sort((a, b) -> {
             LocalDateTime da = (LocalDateTime) a.get("date");
             LocalDateTime db = (LocalDateTime) b.get("date");
@@ -100,7 +93,6 @@ public class ListAccController {
             if (db == null) return -1;
             return db.compareTo(da);
         });
-
         List<Map<String, GameAccount>> rows = new ArrayList<>();
         for (Map<String, Object> t : tmp) {
             String type = (String) t.get("type");
@@ -110,7 +102,6 @@ public class ListAccController {
             item.put(type, ga);
             rows.add(item);
         }
-
         model.addAttribute("currentUser", customer);
         model.addAttribute("gameName", game);
         model.addAttribute("listAcc", rows);
