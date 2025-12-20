@@ -112,7 +112,7 @@ public class RentController {
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(total);
-        order.setStatus("PENDINGPAY_RENT");
+        order.setStatus("WAITRENT");
         Orders savedOrder = ordersRepositories.save(order);
 
         OrderDetail od = new OrderDetail();
@@ -122,6 +122,16 @@ public class RentController {
         od.setDuration(months);
         od.setPrice(total.intValue());
         orderDetailRepositories.save(od);
+
+        customer.setBalance(customer.getBalance().subtract(order.getTotalPrice()));
+        customerRepositories.save(customer);
+
+        Transaction tx = new Transaction();
+        tx.setCustomer(customer);
+        tx.setAmount(order.getTotalPrice().negate());
+        tx.setDescription("PAYMENT_COMPLETED_RENT_ORDER_" + order.getId());
+        tx.setDateCreated(LocalDateTime.now());
+        transactionService.save(tx);
 
         ra.addFlashAttribute("successMessage", "Đã tạo đơn gia hạn. Vui lòng thanh toán để staff duyệt.");
         return "redirect:/home/renting";
