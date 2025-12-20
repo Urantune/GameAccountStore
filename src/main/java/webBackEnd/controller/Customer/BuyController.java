@@ -227,6 +227,15 @@ public class BuyController {
 
         orderDetailRepositories.save(detail);
 
+        if(customer!=null && order.getTotalPrice()!=null){
+            Transaction transaction = new Transaction();
+            transaction.setCustomer(customer);
+            transaction.setAmount(totalAfterVoucher);
+            transaction.setDescription("PAYMENT_COMLETED_ORDER"+ order.getId());
+            transaction.setDateCreated(LocalDateTime.now());
+            transactionService.save(transaction);
+        }
+
         if (usedVoucher != null) {
             VoucherCustomer vc = new VoucherCustomer();
             vc.setCustomer(customer);

@@ -157,6 +157,7 @@ private GameAccountService gameAccountService;
     @ResponseBody
     @Transactional
     public ResponseEntity<Map<String, Object>> checkoutCart(
+            @RequestParam String cartIds,
             @RequestParam(required = false) String voucherCode,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
@@ -168,7 +169,13 @@ private GameAccountService gameAccountService;
         Customer customer =
                 customerService.findCustomerByUsername(userDetails.getUsername());
 
-        List<Cart> carts = cartRepositories.findByCustomer(customer);
+        List<UUID> cartIdList = Arrays.stream(cartIds.split(","))
+                .map(UUID::fromString)
+                .toList();
+
+        List<Cart> carts =
+                cartRepositories.findByCartIdInAndCustomer(cartIdList, customer);
+
 
         if (carts.isEmpty()) {
             return ResponseEntity.badRequest()
@@ -273,6 +280,15 @@ private GameAccountService gameAccountService;
             order.setVoucher(usedVoucher);
 
         Orders savedOrder = ordersRepositories.save(order);
+
+        if(customer!=null && order.getTotalPrice()!=null){
+            Transaction transaction = new Transaction();
+            transaction.setCustomer(customer);
+            transaction.setAmount(totalAfterVoucher);
+            transaction.setDescription("PAYMENT_COMLETED_ORDER"+ order.getId());
+            transaction.setDateCreated(LocalDateTime.now());
+            transactionService.save(transaction);
+        }
 
         //  ORDER DETAIL
         for (Cart c : carts) {
