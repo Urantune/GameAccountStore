@@ -32,20 +32,25 @@ public class Cart {
     private int lovel;
     @Column(name = "vip")
     private int vip;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gameAccountId", nullable = false)
+    private GameAccount gameAccount;
     public Cart() {
     }
 
-    public Cart(UUID cartId, Customer customer, Game game, LocalDateTime createdAt, BigDecimal price, Integer duration, String rank, int skin, int lovel, int vip) {
+
+    public Cart(UUID cartId, GameAccount gameAccount, int vip, int lovel, int skin, String rank, BigDecimal price, Integer duration, LocalDateTime createdAt, Game game, Customer customer) {
         this.cartId = cartId;
-        this.customer = customer;
-        this.game = game;
-        this.createdAt = createdAt;
+        this.gameAccount = gameAccount;
+        this.vip = vip;
+        this.lovel = lovel;
+        this.skin = skin;
+        this.rank = rank;
         this.price = price;
         this.duration = duration;
-        this.rank = rank;
-        this.skin = skin;
-        this.lovel = lovel;
-        this.vip = vip;
+        this.createdAt = createdAt;
+        this.game = game;
+        this.customer = customer;
     }
 
     public UUID getCartId() {
@@ -126,5 +131,13 @@ public class Cart {
 
     public void setVip(int vip) {
         this.vip = vip;
+    }
+
+    public GameAccount getGameAccount() {
+        return gameAccount;
+    }
+
+    public void setGameAccount(GameAccount gameAccount) {
+        this.gameAccount = gameAccount;
     }
 }

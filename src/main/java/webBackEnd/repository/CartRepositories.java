@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import webBackEnd.entity.Cart;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.Game;
+import webBackEnd.entity.GameAccount;
 
 
 import java.util.List;
@@ -31,13 +32,11 @@ public interface CartRepositories extends JpaRepository<Cart, UUID> {
 //    boolean existsActiveOrderByGameAccount(UUID gameAccountId);
 
 
-    boolean existsByCustomerAndGame(Customer customer, Game game);
 
 
 
     Optional<Cart> findTopByCustomerAndGameOrderByCreatedAtDesc(Customer customer, Game game);
 
-
-
+    boolean existsByCustomerAndGameAccount(Customer customer, GameAccount gameAccount);
 
 }
