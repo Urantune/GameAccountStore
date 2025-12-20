@@ -636,15 +636,30 @@
             alert("Vui lòng chọn ít nhất 1 account để thanh toán");
             return;
         }
-        const voucherCode =
-            document.getElementById("voucherHidden").value || "";
+
+        //  LẤY DANH SÁCH CART ID ĐƯỢC CHỌN
+        const cartIds = Array.from(selectedItems)
+            .map(cb => cb.value)
+            .join(",");
+
+        //  CHỈ GỬI VOUCHER KHI CÒN ÁP DỤNG
+        let voucherCode = document.getElementById("voucherHidden").value || "";
+        const percent = parseInt(
+            document.getElementById("voucherPercent").value || "0"
+        );
+
+        if (percent === 0) {
+            voucherCode = "";
+        }
 
         fetch("/home/cart/checkout", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: `voucherCode=${encodeURIComponent(voucherCode)}`
+            body:
+                `cartIds=${encodeURIComponent(cartIds)}&` +
+                `voucherCode=${encodeURIComponent(voucherCode)}`
         })
             .then(res => res.json())
             .then(data => {
@@ -662,6 +677,7 @@
                 alert("Vui lòng đăng nhập");
             });
     }
+
 </script>
 <script>
     document.getElementById("voucherInput")?.addEventListener("input", () => {

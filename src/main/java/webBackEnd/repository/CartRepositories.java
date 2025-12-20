@@ -36,7 +36,6 @@ public interface CartRepositories extends JpaRepository<Cart, UUID> {
 
 
     Optional<Cart> findTopByCustomerAndGameOrderByCreatedAtDesc(Customer customer, Game game);
-
     boolean existsByCustomerAndGameAccount(Customer customer, GameAccount gameAccount);
 
 }
