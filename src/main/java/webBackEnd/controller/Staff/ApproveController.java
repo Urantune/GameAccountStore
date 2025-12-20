@@ -156,14 +156,14 @@ public class ApproveController {
         if (staff != null) order.setStaff(staff);
         ordersService.save(order);
 
-        if (customer != null && order.getTotalPrice() != null) {
-            Transaction tx = new Transaction();
-            tx.setCustomer(customer);
-            tx.setAmount(order.getTotalPrice().negate());
-            tx.setDescription("PAYMENT_COMPLETED_ORDER_" + order.getId());
-            tx.setDateCreated(LocalDateTime.now());
-            transactionService.save(tx);
-        }
+//        if (customer != null && order.getTotalPrice() != null) {
+//            Transaction tx = new Transaction();
+//            tx.setCustomer(customer);
+//            tx.setAmount(order.getTotalPrice().negate());
+//            tx.setDescription("PAYMENT_COMPLETED_ORDER_" + order.getId());
+//            tx.setDateCreated(LocalDateTime.now());
+//            transactionService.save(tx);
+//        }
 
         if (customer != null && customer.getEmail() != null) {
             mailAsyncService.sendAcceptEmail(customer.getEmail(), accountHtml);

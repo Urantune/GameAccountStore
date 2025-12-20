@@ -98,13 +98,14 @@
                 <td th:text="${o.customer != null ? o.customer.username : 'N/A'}"></td>
 
                 <td>
-<span class="badge"
-      th:classappend="${
-        o.status != null && #strings.equalsIgnoreCase(o.status,'COMPLETE') ? 'bg-success'
-        : (o.status != null && #strings.equalsIgnoreCase(o.status,'REJECT') ? 'bg-secondary' : 'bg-danger')
-      }"
-      th:text="${o.status != null ? o.status : 'N/A'}"></span>
-
+    <span class="badge"
+          th:classappend="${
+            o.status != null && #strings.equalsIgnoreCase(o.status,'COMPLETED') ? 'bg-success'
+            : (o.status != null && #strings.equalsIgnoreCase(o.status,'REJECT') ? 'bg-danger'
+            : 'bg-secondary')
+          }"
+          th:text="${o.status != null ? o.status : 'N/A'}">
+    </span>
                 </td>
 
                 <td>

@@ -39,7 +39,7 @@ public class SweepService {
     @Autowired
     private SendMailTest sendMailTest;
 
-    @Scheduled(fixedDelay = 60_000)
+    @Scheduled(fixedDelay = 10_000)
     @Transactional
     public void checkBancle() {
         List<Customer> customers = customerService.findAllCustomers();
