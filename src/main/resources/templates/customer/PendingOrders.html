@@ -260,10 +260,6 @@
                                         <span class="label">Date</span>
                                         <span class="val" th:text="${entry.key != null && entry.key.createdDate != null ? #temporals.format(entry.key.createdDate,'dd/MM/yyyy HH:mm') : '—'}"></span>
                                     </div>
-                                    <div class="meta-chip">
-                                        <span class="label">Total</span>
-                                        <span class="val" th:text="${entry.key != null && entry.key.totalPrice != null ? #numbers.formatDecimal(entry.key.totalPrice,0,'COMMA',0,'POINT') + ' đ' : '—'}"></span>
-                                    </div>
                                 </div>
 
                                 <div th:if="${entry.key != null && entry.key.id != null}">
@@ -289,43 +285,47 @@
                                     <th>Model</th>
                                     <th>Duration</th>
                                     <th>Price</th>
+                                    <th>Total Price</th>
                                 </tr>
                                 </thead>
 
                                 <tbody>
                                 <tr th:if="${entry.value == null || #lists.isEmpty(entry.value)}">
-                                    <td colspan="5" class="text-center py-3 text-muted">Không có chi tiết đơn.</td>
+                                    <td colspan="6" class="text-center py-3 text-muted">Không có chi tiết đơn.</td>
                                 </tr>
 
                                 <tr th:each="od, i : ${entry.value}">
                                     <td th:text="${i.index + 1}"></td>
-
-                                    <td class="fw-semibold"
-                                        th:text="${od.game != null ? od.game.gameName : 'N/A'}"></td>
-
-                                    <td class="mono"
-                                        th:text="${od.game != null ? od.game.gameId : 'N/A'}"></td>
-
+                                    <td class="fw-semibold" th:text="${od.game != null ? od.game.gameName : 'N/A'}"></td>
+                                    <td class="mono" th:text="${od.game != null ? od.game.gameId : 'N/A'}"></td>
                                     <td>
-                                        <span th:switch="${od.duration}">
-                                            <span th:case="0">Mua vĩnh viễn</span>
-                                            <span th:case="1">Thuê 1 tháng</span>
-                                            <span th:case="2">Thuê 2 tháng</span>
-                                            <span th:case="3">Thuê 3 tháng</span>
-                                            <span th:case="*" th:text="${od.duration != null ? ('Thuê ' + od.duration + ' tháng') : '—'}"></span>
-                                        </span>
+                <span th:switch="${od.duration}">
+                    <span th:case="0">Mua vĩnh viễn</span>
+                    <span th:case="1">Thuê 1 tháng</span>
+                    <span th:case="*">Thuê [[${od.duration}]] tháng</span>
+                </span>
                                     </td>
-
                                     <td th:text="${od.price != null ? #numbers.formatDecimal(od.price,0,'COMMA',0,'POINT') + ' đ' : '—'}"></td>
-                                </tr>
+                                    <td class="text-dark">
+                                        <span th:text="${entry.key != null && entry.key.totalPrice != null ? #numbers.formatDecimal(entry.key.totalPrice,0,'COMMA',0,'POINT') + ' đ' : '—'}"></span>
+                                    </td> </tr>
                                 </tbody>
+
+                                <tfoot>
+                                <tr class="fw-bold">
+                                    <td colspan="5" class="text-end">Thành tiền:</td>
+                                    <td class="text-danger">
+                                        <span th:text="${entry.key != null && entry.key.totalPrice != null ? #numbers.formatDecimal(entry.key.totalPrice,0,'COMMA',0,'POINT') + ' đ' : '—'}"></span>
+                                    </td>
+                                </tr>
+                                </tfoot>
                             </table>
                         </div>
-
                     </div>
-
+                    <h1 style="margin-top: 25px; font-size: 16px;color: red">
+                        *Lưu ý: Đối với sản phẩm thuê Total price = Giá gốc × Số tháng × (1 − % giảm)
+                    </h1>
                 </div>
-
             </div>
         </div>
     </div>

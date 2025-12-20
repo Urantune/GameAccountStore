@@ -484,8 +484,8 @@
                                     class="form-select"
                                     onchange="updatePriceByRent()">
                                 <option value="1">1 tháng</option>
-                                <option value="2">2 tháng (Giảm 10%)</option>
-                                <option value="3">3 tháng (Giảm 15%)</option>
+                                <option value="2">2 tháng (-10%)</option>
+                                <option value="3">3 tháng (-15%)</option>
                             </select>
                         </div>
                     </div>
@@ -536,7 +536,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-5 fw-bold">Tổng thanh toán:</div>
+                        <div class="col-5 fw-bold">Total price:</div>
                         <div class="col-7">
                             <input class="form-control"
                                    id="priceInput"
@@ -544,6 +544,9 @@
                                    th:value="${price} + ' đ'">
                         </div>
                     </div>
+                    <h1 style="margin-top: 20px; font-size: 16px;color: red">
+                        Total price = Giá gốc × Số tháng × (1 − % giảm)
+                    </h1>
                 </div>
                 <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/home/payment}"
                       method="post" onsubmit="syncBeforeSubmit()">

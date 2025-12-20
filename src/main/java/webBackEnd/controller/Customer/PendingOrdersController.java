@@ -11,10 +11,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.Customer;
 import webBackEnd.entity.OrderDetail;
 import webBackEnd.entity.Orders;
+import webBackEnd.entity.Transaction;
 import webBackEnd.repository.OrderDetailRepositories;
 import webBackEnd.repository.OrdersRepositories;
+import webBackEnd.repository.TransactionRepositories;
 import webBackEnd.service.CustomerService;
+import webBackEnd.service.TransactionService;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -24,6 +28,7 @@ public class PendingOrdersController {
     @Autowired private CustomerService customerService;
     @Autowired private OrdersRepositories ordersRepositories;
     @Autowired private OrderDetailRepositories orderDetailRepositories;
+    @Autowired private TransactionService transactionService;
 
     @GetMapping("/pendingOrders")
     public String pendingOrders(Model model) {
@@ -110,6 +115,14 @@ public class PendingOrdersController {
         }
 
         order.setStatus("CANCEL");
+
+          Transaction transaction = new Transaction();
+          transaction.setCustomer(customer);
+          transaction.setAmount(order.getTotalPrice());
+          transaction.setDescription("CANCLE_COMLETED_ORDER" + order.getId());
+          transaction.setDateCreated(LocalDateTime.now());
+          transactionService.save(transaction);
+
         ordersRepositories.save(order);
 
         ra.addFlashAttribute("successMessage", "Đã hủy đơn hàng thành công.");

@@ -346,10 +346,6 @@
                     <div class="kv"><div class="k">Status</div><div class="v" id="mStatus">-</div></div>
                     <div class="kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
                     <div class="kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
-
-                    <div class="mt-3" id="mImgWrap" style="display:none;">
-                        <img id="mImg" class="ga-img" alt="Image">
-                    </div>
                 </div>
             </div>
 
@@ -490,8 +486,7 @@
         setTxt('mGaid', card.dataset.gaid || '-');
         setTxt('mGame', card.dataset.game || '-');
         setTxt('mUser', card.dataset.username || '-');
-        setTxt('mPass', card.dataset.password || '-');
-
+        setTxt('mPass', '****');
         const priceEl = document.getElementById('mPrice');
         if (priceEl) priceEl.textContent = fmtVND(card.dataset.price);
 
@@ -504,7 +499,7 @@
         setTxt('mType', type);
 
         setTxt('mStatus', card.dataset.status || '-');
-        setTxt('mEmail', card.dataset.email || '-');
+        setTxt('mEmail','****');
         setTxt('mDesc', card.dataset.desc || '-');
 
         const imgWrap = document.getElementById('mImgWrap');
