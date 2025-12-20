@@ -230,7 +230,7 @@ public class BuyController {
         if(customer!=null && order.getTotalPrice()!=null){
             Transaction transaction = new Transaction();
             transaction.setCustomer(customer);
-            transaction.setAmount(totalAfterVoucher);
+            transaction.setAmount(totalAfterVoucher.negate());
             transaction.setDescription("PAYMENT_COMLETED_ORDER"+ order.getId());
             transaction.setDateCreated(LocalDateTime.now());
             transactionService.save(transaction);
