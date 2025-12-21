@@ -21,4 +21,5 @@ public interface OrdersRepositories extends JpaRepository<Orders, UUID> {
     boolean existsByCustomerAndStatusIn(Customer customer, List<String> statuses);
 
 
+
 }
