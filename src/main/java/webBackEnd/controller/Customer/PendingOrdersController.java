@@ -29,7 +29,11 @@ public class PendingOrdersController {
     @Autowired private OrdersRepositories ordersRepositories;
     @Autowired private OrderDetailRepositories orderDetailRepositories;
     @Autowired private TransactionService transactionService;
-
+    @ModelAttribute("currentUser")
+    public Customer currentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerService.findCustomerByUsername(username);
+    }
     @GetMapping("/pendingOrders")
     public String pendingOrders(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -40,6 +40,7 @@ public class GameController {
     private GameAccountRepositories gameAccountRepositories;
     @Autowired
     private RentAccountGameRepositories  rentAccountGameRepositories;
+
     @GetMapping("/game/{gameId}")
     public String gameAccount(Model model, @PathVariable UUID gameId) {
 

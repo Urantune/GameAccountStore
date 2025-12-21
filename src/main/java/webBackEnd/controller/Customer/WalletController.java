@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import webBackEnd.entity.Customer;
 import webBackEnd.entity.Transaction;
 import webBackEnd.repository.CustomerRepositories;
 import webBackEnd.repository.TransactionRepositories;
+import webBackEnd.service.CustomerService;
 import webBackEnd.service.WalletService;
 import webBackEnd.service.very.QrService;
 
@@ -27,10 +29,16 @@ public class WalletController {
     @Autowired private CustomerRepositories customerRepo;
     @Autowired private TransactionRepositories transactionRepo;
     @Autowired private WalletService walletService;
+    @Autowired
+    private CustomerService customerService;
 
     @Autowired private QrService qrService;
 
-
+    @ModelAttribute("currentUser")
+    public Customer currentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerService.findCustomerByUsername(username);
+    }
     @GetMapping("/wallet")
     public String wallet(Model model, Principal principal,
                          @RequestParam(required = false) String search) {

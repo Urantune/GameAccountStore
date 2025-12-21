@@ -24,7 +24,11 @@ public class ListAccController {
     @Autowired private CustomerService customerService;
     @Autowired private GameOwnedService gameOwnedService;
     @Autowired private RentAccountGameService rentAccountGameService;
-
+    @ModelAttribute("currentUser")
+    public Customer currentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerService.findCustomerByUsername(username);
+    }
     @GetMapping("/listAcc")
     public String listAcc(@RequestParam(value = "game", required = false) String game, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
