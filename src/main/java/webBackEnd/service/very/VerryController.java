@@ -3,6 +3,7 @@ package webBackEnd.service.very;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import webBackEnd.entity.Customer;
@@ -112,4 +113,49 @@ public class VerryController {
 
         return "passchane/ForgetPassword";
     }
+
+
+
+
+
+
+
+
+    @GetMapping("/active/{id}/{code}")
+    public String activeAccount(@PathVariable UUID id,
+                                @PathVariable String code,
+                                Model model) {
+
+        Customer customer = customerService.findCustomerById(id);
+        if (customer == null || customer.getStatus() == null)
+            return "redirect:/home";
+
+        if (!"WAITACTIVE".equals(customer.getStatus()))
+            return "redirect:/home";
+
+        String input = "WAITACTIVE" + customer.getCustomerId();
+        String fi;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(input.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) sb.append(String.format("%02x", b));
+            fi = sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if (!code.equals(fi))
+            return "redirect:/home";
+
+        // ===== ACTIVE =====
+        customer.setStatus("ACTIVE");
+        customer.setDateUpdated(LocalDateTime.now());
+        customerService.save(customer);
+
+        model.addAttribute("customer", customer);
+        return "passchane/VerySuccess";
+    }
+
+
 }

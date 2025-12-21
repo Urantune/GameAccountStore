@@ -4,29 +4,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import webBackEnd.entity.Customer;
-import webBackEnd.entity.EmailVerifyToken;
 import webBackEnd.repository.CustomerRepositories;
-import webBackEnd.repository.EmailVerifyTokenRepository;
 import webBackEnd.service.very.MailService;
 
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-@RequestMapping(value = "/register")
+@RequestMapping("/register")
 public class RegisterController {
+
     @Autowired
     private MailService mailService;
+
     @Autowired
     private CustomerRepositories customerRepositories;
-    @Autowired
-    private EmailVerifyTokenRepository emailVerifyTokenRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -89,32 +87,38 @@ public class RegisterController {
         }
 
         try {
-            // ===== TẠO USER (INACTIVE) =====
+            // ===== TẠO USER (WAITACTIVE) =====
             Customer user = new Customer();
             user.setUsername(username);
             user.setEmail(email);
             user.setRole("Customer");
-            user.setStatus("INACTIVE");
+            user.setStatus("WAITACTIVE");
             user.setPassword(passwordEncoder.encode(password));
+            user.setDateCreated(LocalDateTime.now());
+            user.setDateUpdated(LocalDateTime.now());
             customerRepositories.save(user);
 
-            // ===== TOKEN =====
-            String token = UUID.randomUUID().toString();
+            // ===== TẠO CODE MD5 (giống flow đổi mật khẩu của bạn) =====
+            String input = "WAITACTIVE" + user.getCustomerId();
+            String code;
+            try {
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                byte[] digest = md.digest(input.getBytes());
+                StringBuilder sb = new StringBuilder();
+                for (byte b : digest) sb.append(String.format("%02x", b));
+                code = sb.toString();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
-            EmailVerifyToken vt = new EmailVerifyToken();
-            vt.setToken(token);
-            vt.setCustomer(user);
-            vt.setExpiredAt(LocalDateTime.now().plusHours(24));
-            vt.setUsed(false);
-            emailVerifyTokenRepository.save(vt);
+            // ===== LINK KÍCH HOẠT =====
+            String verifyLink = "http://localhost:8080/veryAccount/active/" + user.getCustomerId() + "/" + code;
 
             // ===== EMAIL =====
-            String verifyLink = "http://localhost:8080/verify-email?token=" + token;
-
             String html = """
                     <h2>Xác nhận đăng ký tài khoản</h2>
                     <p>Xin chào <b>%s</b>,</p>
-                    <p>Vui lòng nhấn nút bên dưới để xác nhận email:</p>
+                    <p>Vui lòng nhấn nút bên dưới để kích hoạt tài khoản:</p>
                     <p>
                         <a href="%s"
                            style="padding:12px 24px;
@@ -123,15 +127,15 @@ public class RegisterController {
                                   text-decoration:none;
                                   border-radius:6px;
                                   display:inline-block;">
-                            Xác nhận email
+                            Kích hoạt tài khoản
                         </a>
                     </p>
-                    <p>Link có hiệu lực trong 24 giờ.</p>
-                    """.formatted(username, verifyLink);
+                    <p>Nếu không bấm được, copy link sau dán vào trình duyệt:<br>%s</p>
+                    """.formatted(username, verifyLink, verifyLink);
 
             mailService.sendHtml(email, "Xác nhận đăng ký tài khoản", html);
 
-            res.put("success", "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận.");
+            res.put("success", "Đăng ký thành công! Vui lòng kiểm tra email để kích hoạt tài khoản.");
             return res;
 
         } catch (Exception e) {
@@ -139,31 +143,5 @@ public class RegisterController {
             res.put("error", "Register failed. Please try again.");
             return res;
         }
-    }
-
-    @GetMapping("/verify-email")
-    @Transactional
-    public String verifyEmail(@RequestParam String token, Model model) {
-
-        Optional<EmailVerifyToken> opt = emailVerifyTokenRepository.findByToken(token);
-
-        if (opt.isEmpty()) {
-            model.addAttribute("error", "Link không hợp lệ");
-            return "verify-result";
-        }
-
-        EmailVerifyToken vt = opt.get();
-
-        if (vt.isUsed() || vt.getExpiredAt().isBefore(LocalDateTime.now())) {
-            model.addAttribute("error", "Link đã hết hạn hoặc đã sử dụng");
-            return "verify-result";
-        }
-        Customer customer = vt.getCustomer();
-        customer.setStatus("ACTIVE");
-        customerRepositories.save(customer);
-        vt.setUsed(true);
-        emailVerifyTokenRepository.save(vt);
-        model.addAttribute("success", "Xác nhận thành công! Bạn có thể đăng nhập.");
-        return "redirect:/home";
     }
 }
