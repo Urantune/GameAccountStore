@@ -18,6 +18,8 @@ public interface OrdersRepositories extends JpaRepository<Orders, UUID> {
 
     List<Orders> findAllByStatusAndCustomer(String status, Customer customer);
 
-    boolean existsByCustomerAndStatus(Customer customer, String status);
+    boolean existsByCustomerAndStatusIn(Customer customer, List<String> statuses);
+
+
 
 }

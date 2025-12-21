@@ -131,6 +131,23 @@ public class BuyController {
             return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "message", "Giá gốc không hợp lệ"));
         }
+
+        List<Orders> listorderWait = ordersRepositories.findAllByStatusAndCustomer("WAIT", customer);
+
+
+
+        for(Orders a : listorderWait) {
+            List<OrderDetail> listOrderDetail = orderDetailRepositories.findByOrder(a);
+            for(OrderDetail d : listOrderDetail) {
+                if(
+                        gameAccount == d.getGameAccount()
+                ){
+                    return ResponseEntity.badRequest()
+                            .body(Map.of("success", false, "message", "Acc này đã được mua vui lòng chờ staff duyệt, Vui lòng không gửi lại"));
+                }
+            }
+        }
+
         boolean isRent = "rent".equalsIgnoreCase(accountType);
         if (isRent) {
             if (rentMonth < 1 || rentMonth > 3) {
@@ -190,16 +207,7 @@ public class BuyController {
             return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "message", "Số dư không đủ"));
         }
-        boolean hasWaitingOrder =
-                ordersRepositories.existsByCustomerAndStatus(customer, "WAIT");
 
-        if (hasWaitingOrder) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of(
-                            "success", false,
-                            "message", "Đơn hàng đang được xử lý. Vui lòng đợi admin duyệt đơn."
-                    ));
-        }
 
         customer.setBalance(customer.getBalance().subtract(totalAfterVoucher));
         customerRepositories.save(customer);

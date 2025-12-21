@@ -110,7 +110,6 @@ public class VerryController {
 
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {
-
         return "passchane/ForgetPassword";
     }
 
