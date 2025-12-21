@@ -26,7 +26,7 @@ public class AppUserDetailsService implements UserDetailsService {
         Staff staff = staffRepository.findByUsername(username).orElse(null);
         if (staff != null) {
             if (staff.getStatus() != null && staff.getStatus().equalsIgnoreCase("LOCK")) {
-                throw new DisabledException("Staff locked");
+                throw new DisabledException("Tài khoản đã bị khóa");
             }
 
             String role = staff.getRole();

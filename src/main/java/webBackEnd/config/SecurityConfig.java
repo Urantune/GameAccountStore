@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -50,24 +51,18 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/**").permitAll()
-
                 .requestMatchers("/register", "/register/**").permitAll()
                 .requestMatchers("/home", "/home/", "/home/accDetail/**",
                         "/home/GameDetails/**", "/home/game/**").permitAll()
-
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
                         "/assets/**", "/lib/**", "/scss/**", "/images/**"
                 ).permitAll()
-
                 .requestMatchers(HttpMethod.POST, "/home/forgot-password").permitAll()
-
                 .requestMatchers(HttpMethod.GET, "/adminHome", "/adminHome/").permitAll()
                 .requestMatchers(HttpMethod.GET, "/staffHome", "/staffHome/").permitAll()
-
                 .requestMatchers("/adminHome/**").hasRole("ADMIN")
                 .requestMatchers("/staffHome/**").hasRole("STAFF")
-
                 .anyRequest().authenticated()
         );
 
@@ -116,9 +111,14 @@ public class SecurityConfig {
                     while (cause.getCause() != null) cause = cause.getCause();
 
                     String msg;
-                    if (cause instanceof DisabledException) msg = "Tài khoản đã bị khóa";
-                    else if (cause instanceof AccountExpiredException) msg = "Tài khoản hết hạn";
-                    else msg = "Sai username hoặc password";
+                    if (cause instanceof DisabledException || cause instanceof LockedException) {
+                        String m = cause.getMessage();
+                        msg = (m == null || m.isBlank()) ? "Tài khoản không thể đăng nhập" : m;
+                    } else if (cause instanceof AccountExpiredException) {
+                        msg = "Tài khoản hết hạn";
+                    } else {
+                        msg = "Sai username hoặc password";
+                    }
 
                     if (isAjax) {
                         res.setStatus(401);

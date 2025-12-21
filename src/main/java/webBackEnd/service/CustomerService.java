@@ -1,11 +1,8 @@
 package webBackEnd.service;
 
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import webBackEnd.controller.Customer.CustomUserDetails;
@@ -13,7 +10,6 @@ import webBackEnd.entity.Customer;
 import webBackEnd.repository.CustomerRepositories;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +27,17 @@ public class CustomerService {
                 .findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (customer.getStatus() != null && customer.getStatus().equalsIgnoreCase("LOCKED")) {
-            throw new DisabledException("Account is locked");
+        String st = customer.getStatus();
+        if (st != null) {
+            if ("BANED".equalsIgnoreCase(st)) {
+                throw new LockedException("Tài khoản bị cấm");
+            }
+            if ("WAITACTIVE".equalsIgnoreCase(st)) {
+                throw new DisabledException("Vui lòng kích hoạt tài khoản");
+            }
+            if ("LOCKED".equalsIgnoreCase(st) || "LOCK".equalsIgnoreCase(st)) {
+                throw new LockedException("Tài khoản đã bị khóa");
+            }
         }
 
         return new CustomUserDetails(customer);
@@ -42,8 +47,6 @@ public class CustomerService {
         return customerRepositories.findByEmail(email);
     }
 
-
-
     public List<Customer> findAllCustomers() {
         return customerRepositories.findAll();
     }
@@ -51,7 +54,8 @@ public class CustomerService {
     public Customer findCustomerById(UUID customerId) {
         return customerRepositories.findByCustomerId(customerId);
     }
-    public void save(Customer customer){
+
+    public void save(Customer customer) {
         customerRepositories.save(customer);
     }
 
@@ -59,7 +63,7 @@ public class CustomerService {
         return customerRepositories.findByUsername(username);
     }
 
-   public Customer getCurrentCustomer(String username) {
+    public Customer getCurrentCustomer(String username) {
         return customerRepositories.findByUsername(username);
     }
 
@@ -72,8 +76,4 @@ public class CustomerService {
     public void delete(String username) {
         customerRepositories.delete(findCustomerByUsername(username));
     }
-
-
-
-
 }
