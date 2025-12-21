@@ -122,9 +122,7 @@ public class PendingOrdersController {
           transaction.setDescription("CANCLE_COMLETED_ORDER" + order.getId());
           transaction.setDateCreated(LocalDateTime.now());
           transactionService.save(transaction);
-
-        ordersRepositories.save(order);
-
+          ordersRepositories.save(order);
         ra.addFlashAttribute("successMessage", "Đã hủy đơn hàng thành công.");
         return "redirect:/home/pendingOrders";
     }
