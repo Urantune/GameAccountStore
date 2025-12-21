@@ -39,25 +39,28 @@ public class SweepService {
     @Autowired
     private SendMailTest sendMailTest;
 
-    @Scheduled(fixedDelay = 10_000)
-    @Transactional
-    public void checkBancle() {
-        List<Customer> customers = customerService.findAllCustomers();
-
-        for (Customer customer : customers) {
-            List<Transaction> transactions = transactionService.findByCustomer(customer);
-
-            BigDecimal total = BigDecimal.ZERO;
-            for (Transaction t : transactions) {
-                if (t.getAmount() != null) {
-                    total = total.add(t.getAmount());
-                }
-            }
-
-            customer.setBalance(total);
-            customerService.save(customer);
-        }
-    }
+//    @Scheduled(fixedDelay = 10_000)
+//    @Transactional
+//    public void checkBancle() {
+//        List<Customer> customers = customerService.findAllCustomers();
+//
+//        for (Customer customer : customers) {
+//            List<Transaction> transactions = transactionService.findByCustomer(customer);
+//
+//            BigDecimal total = BigDecimal.ZERO;
+//            BigDecimal addBlance = BigDecimal.ZERO;
+//                for(Transaction a : transactions){
+//                    if(a.getDescription().equalsIgnoreCase("TOPUP")){
+//                        addBlance.add(a.getAmount());
+//                    }
+//                }
+//
+//
+//
+//            customer.setBalance(total);
+//            customerService.save(customer);
+//        }
+//    }
 
     @Scheduled(fixedDelay = 120_000)
     @Transactional
