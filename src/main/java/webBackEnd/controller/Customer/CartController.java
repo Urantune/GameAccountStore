@@ -26,23 +26,36 @@ import java.util.stream.Collectors;
 @RequestMapping("/home")
 public class CartController {
     @Autowired
-    private VoucherCustomerRepository  voucherCustomerRepository ;
-@Autowired
+    private VoucherCustomerRepository voucherCustomerRepository;
+    @Autowired
     private VoucherService voucherService;
     @Autowired
-    private RentAccountGameService  rentAccountGameService;
-    @Autowired private CartService cartService;
-    @Autowired private CustomerService customerService;
-    @Autowired private GameService gameService;
-    @Autowired private CartRepositories cartRepositories;
-@Autowired
-private GameAccountService gameAccountService;
-    @Autowired private OrdersRepositories ordersRepositories;
-    @Autowired private OrderDetailRepositories orderDetailRepositories;
-    @Autowired private CustomerRepositories customerRepositories;
+    private RentAccountGameService rentAccountGameService;
+    @Autowired
+    private CartService cartService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private GameService gameService;
+    @Autowired
+    private CartRepositories cartRepositories;
+    @Autowired
+    private GameAccountService gameAccountService;
+    @Autowired
+    private OrdersRepositories ordersRepositories;
+    @Autowired
+    private OrderDetailRepositories orderDetailRepositories;
+    @Autowired
+    private CustomerRepositories customerRepositories;
 
     @Autowired
     private TransactionService transactionService;
+
+    @ModelAttribute("currentUser")
+    public Customer currentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerService.findCustomerByUsername(username);
+    }
 
     @GetMapping("/cart")
     public String showCart(Model model) {
@@ -109,6 +122,7 @@ private GameAccountService gameAccountService;
 
         return ResponseEntity.ok("Đã thêm vào giỏ hàng");
     }
+
     @PostMapping("/cart/delete/{id}")
     public String deleteCart(@PathVariable UUID id,
                              RedirectAttributes ra) {
@@ -271,11 +285,11 @@ private GameAccountService gameAccountService;
 
         Orders savedOrder = ordersRepositories.save(order);
 
-        if(customer!=null && order.getTotalPrice()!=null){
+        if (customer != null && order.getTotalPrice() != null) {
             Transaction transaction = new Transaction();
             transaction.setCustomer(customer);
             transaction.setAmount(totalAfterVoucher.negate());
-            transaction.setDescription("PAYMENT_COMLETED_ORDER"+ savedOrder.getId());
+            transaction.setDescription("PAYMENT_COMLETED_ORDER" + savedOrder.getId());
             transaction.setDateCreated(LocalDateTime.now());
             transactionService.save(transaction);
         }
