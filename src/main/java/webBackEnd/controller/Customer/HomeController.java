@@ -313,7 +313,9 @@ public class HomeController {
 
         for (Transaction t : transactionHistory) {
             if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                totalDeposit = totalDeposit.add(t.getAmount());
+                if(t.getDescription().equalsIgnoreCase("TOPUP")){
+                    totalDeposit = totalDeposit.add(t.getAmount());
+                }
             } else {
                 totalSpent = totalSpent.add(t.getAmount().abs());
             }
