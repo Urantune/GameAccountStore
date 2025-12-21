@@ -9,8 +9,8 @@ import webBackEnd.successfullyDat.SendMailTest;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +34,7 @@ public class SweepService {
     private TransactionService transactionService;
 
     @Autowired
-    private GameAccountService  gameAccountService;
+    private GameAccountService gameAccountService;
 
     @Autowired
     private SendMailTest sendMailTest;
@@ -59,8 +59,6 @@ public class SweepService {
         }
     }
 
-
-
     @Scheduled(fixedDelay = 120_000)
     @Transactional
     public void rent() {
@@ -74,69 +72,40 @@ public class SweepService {
 
             if (rent.getDateEnd() == null) continue;
 
-            if (!now.isBefore(rent.getDateEnd())) {
-
-                if (!"EXPIRED".equalsIgnoreCase(rent.getStatus())) {
-                    rent.setStatus("EXPIRED");
-                    rentAccountGameService.save(rent);
-                }
-
-                GameAccount ga = rent.getGameAccount();
-                if (ga != null && !"EXPIRED".equalsIgnoreCase(ga.getStatus())) {
-                    ga.setStatus("EXPIRED");
-                    gameAccountService.save(ga);
-                }
-
-                if (ga != null) {
-                        List<OrderDetail> details = orderDetailService.findAllByGameAccount(ga);
-                    Set<Orders> affectedOrders = details.stream()
-                            .map(OrderDetail::getOrder)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toSet());
-
-                    if (!details.isEmpty()) {
-                        for (OrderDetail od : details) {
-                            orderDetailService.delete(od);
-                        }
-                    }
-
-                    for (Orders o : affectedOrders) {
-                        long remain = orderDetailService.countByOrder(o);
-                        if (remain == 0) {
-                            ordersService.delete(o);
-                        }
-                    }
-                }
-
+            if (!now.isBefore(rent.getDateEnd().plusDays(3))) {
                 toDelete.add(rent);
                 continue;
             }
 
             if (!now.isBefore(rent.getDateEnd().minusDays(3))) {
 
-                if (!"EXPIRING".equalsIgnoreCase(rent.getStatus())) {
+                if (!"EXPIRED".equalsIgnoreCase(rent.getStatus())) {
 
-                    rent.setStatus("EXPIRING");
+                    rent.setStatus("EXPIRED");
                     rentAccountGameService.save(rent);
 
-                    Customer customer = rent.getCustomer();
                     GameAccount ga = rent.getGameAccount();
+                    if (ga != null && !"EXPIRED".equalsIgnoreCase(ga.getStatus())) {
+                        ga.setStatus("EXPIRED");
+                        gameAccountService.save(ga);
+                    }
 
+                    Customer customer = rent.getCustomer();
                     if (customer != null && customer.getEmail() != null && ga != null) {
 
                         long daysLeft = Math.max(0, Duration.between(now, rent.getDateEnd()).toDays());
 
                         String body =
                                 "<b>Kính chào quý khách,</b><br><br>" +
-                                        "Tài khoản game bạn đang <b>THUÊ</b> sắp <b>HẾT HẠN</b>.<br><br>" +
+                                        "Tài khoản game bạn đang <b>THUÊ</b> đã được chuyển sang trạng thái <b>HẾT HẠN</b>.<br><br>" +
                                         "<b>TRÒ CHƠI:</b> " + (ga.getGame() != null ? ga.getGame().getGameName() : "") + "<br>" +
                                         "<b>TÀI KHOẢN:</b> " + ga.getGameAccount() + "<br>" +
                                         "<b>NGÀY HẾT HẠN:</b> " + rent.getDateEnd() + "<br>" +
                                         "<b>CÒN LẠI:</b> " + daysLeft + " ngày<br><br>" +
-                                        "Nếu bạn muốn tiếp tục thuê, vui lòng gia hạn trước khi hết hạn.<br><br>" +
+                                        "Vui lòng gia hạn nếu bạn muốn tiếp tục thuê.<br><br>" +
                                         "Xin cảm ơn.";
 
-                        sendMailTest.testSend(customer.getEmail(), "TÀI KHOẢN THUÊ SẮP HẾT HẠN", body);
+                        sendMailTest.testSend(customer.getEmail(), "TÀI KHOẢN THUÊ ĐÃ HẾT HẠN", body);
                     }
                 }
             }
@@ -147,6 +116,7 @@ public class SweepService {
         }
     }
 
+
     @Scheduled(fixedDelay = 60_000)
     @Transactional
     public void revertChangePasswordAfter15m() {
@@ -156,13 +126,8 @@ public class SweepService {
         for (Customer c : customers) {
 
             if (c.getStatus() == null) continue;
-
-
             if (!c.getStatus().startsWith("CHANGE")) continue;
-
-
             if (c.getDateUpdated() == null) continue;
-
 
             if (c.getDateUpdated().plusMinutes(15).isBefore(now)) {
                 c.setStatus("ACTIVE");
@@ -172,6 +137,21 @@ public class SweepService {
         }
     }
 
+    @Scheduled(fixedDelay = 60_000)
+    @Transactional
+    public void deleteWaitActiveAfter15m() {
+        LocalDateTime now = LocalDateTime.now();
 
+        List<Customer> customers = customerService.findAllCustomers();
+        for (Customer c : customers) {
 
+            if (c.getStatus() == null) continue;
+            if (!"WAITACTIVE".equalsIgnoreCase(c.getStatus())) continue;
+            if (c.getDateCreated() == null) continue;
+
+            if (c.getDateCreated().plusMinutes(15).isBefore(now)) {
+                customerService.delete(c.getUsername());
+            }
+        }
+    }
 }
