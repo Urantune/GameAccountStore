@@ -309,17 +309,21 @@ public class HomeController {
         }
 
         BigDecimal totalDeposit = BigDecimal.ZERO;
-        BigDecimal totalSpent = BigDecimal.ZERO;
+
 
         for (Transaction t : transactionHistory) {
             if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
                 if(t.getDescription().equalsIgnoreCase("TOPUP")){
                     totalDeposit = totalDeposit.add(t.getAmount());
                 }
-            } else {
-                totalSpent = totalSpent.add(t.getAmount().abs());
             }
         }
+
+
+
+        BigDecimal totalSpent = totalDeposit.subtract(customer.getBalance());
+
+
 
         model.addAttribute("balance", customer.getBalance());
         model.addAttribute("totalDeposit", totalDeposit);

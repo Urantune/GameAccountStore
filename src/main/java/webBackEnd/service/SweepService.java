@@ -48,11 +48,14 @@ public class SweepService {
             List<Transaction> transactions = transactionService.findByCustomer(customer);
 
             BigDecimal total = BigDecimal.ZERO;
-            for (Transaction t : transactions) {
-                if (t.getAmount() != null) {
-                    total = total.add(t.getAmount());
+            BigDecimal addBlance = BigDecimal.ZERO;
+                for(Transaction a : transactions){
+                    if(a.getDescription().equalsIgnoreCase("TOPUP")){
+                        addBlance.add(a.getAmount());
+                    }
                 }
-            }
+
+
 
             customer.setBalance(total);
             customerService.save(customer);
