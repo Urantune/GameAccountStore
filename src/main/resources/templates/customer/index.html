@@ -102,6 +102,7 @@
                 <h5 class="modal-title" id="registerModalLabel">Đăng ký tài khoản</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body">
                 <div th:if="${error}" class="alert alert-danger">
                     <span th:text="${error}"></span>
@@ -110,7 +111,7 @@
                     <p th:text="${success}"></p>
                 </div>
 
-                <form id="registerForm">
+                <form id="registerForm" autocomplete="off">
                     <div class="mb-3">
                         <label for="registerUsername" class="form-label">Tên người dùng:</label>
                         <input name="username" type="text" class="form-control"
@@ -139,7 +140,11 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-primary mt-3" id="registerBtn">Đăng ký</button>
+                        <button type="button"
+                                class="btn btn-primary mt-3"
+                                id="registerBtn">
+                            Đăng ký
+                        </button>
                     </div>
                     <div id="registerError" class="text-danger mt-2"></div>
                     <div id="registerSuccess" class="text-success mt-2"></div>
@@ -713,131 +718,181 @@
 
 <script th:src="@{/js/product.js}"></script>
 
+<!--<script>-->
+<!--    function getCsrf() {-->
+<!--        const tokenEl = document.querySelector('meta[name="_csrf"]');-->
+<!--        const headerEl = document.querySelector('meta[name="_csrf_header"]');-->
+<!--        const token = tokenEl ? tokenEl.getAttribute('content') : null;-->
+<!--        const header = headerEl ? headerEl.getAttribute('content') : null;-->
+<!--        return { token, header };-->
+<!--    }-->
+
+<!--    function clearStates() {-->
+<!--        const u = document.getElementById("registerUsername");-->
+<!--        const e = document.getElementById("registerEmail");-->
+<!--        const p = document.getElementById("registerPassword");-->
+<!--        const c = document.getElementById("confirmPassword");-->
+
+<!--        [u, e, p, c].forEach(x => x.classList.remove("is-invalid", "is-valid"));-->
+
+<!--        const eu = document.getElementById("errRegisterUsername");-->
+<!--        const ee = document.getElementById("errRegisterEmail");-->
+<!--        const ep = document.getElementById("errRegisterPassword");-->
+<!--        const ec = document.getElementById("errConfirmPassword");-->
+<!--        if (eu) eu.textContent = "";-->
+<!--        if (ee) ee.textContent = "";-->
+<!--        if (ep) ep.textContent = "";-->
+<!--        if (ec) ec.textContent = "";-->
+<!--    }-->
+
+<!--    function markInvalid(fieldId, msgId, msg) {-->
+<!--        const field = document.getElementById(fieldId);-->
+<!--        const msgEl = document.getElementById(msgId);-->
+<!--        if (field) field.classList.add("is-invalid");-->
+<!--        if (msgEl) msgEl.textContent = msg || "";-->
+<!--    }-->
+
+<!--    function mapBackendErrorToField(errorMsg) {-->
+<!--        const msg = (errorMsg || "").toLowerCase();-->
+<!--        clearStates();-->
+
+<!--        if (msg.includes("username")) {-->
+<!--            markInvalid("registerUsername", "errRegisterUsername", errorMsg);-->
+<!--            return true;-->
+<!--        }-->
+<!--        if (msg.includes("email")) {-->
+<!--            markInvalid("registerEmail", "errRegisterEmail", errorMsg);-->
+<!--            return true;-->
+<!--        }-->
+<!--        if (msg.includes("password")) {-->
+<!--            if (msg.includes("match") || msg.includes("confirm")) {-->
+<!--                markInvalid("confirmPassword", "errConfirmPassword", errorMsg);-->
+<!--            } else {-->
+<!--                markInvalid("registerPassword", "errRegisterPassword", errorMsg);-->
+<!--            }-->
+<!--            return true;-->
+<!--        }-->
+<!--        return false;-->
+<!--    }-->
+
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        const form = document.getElementById("registerForm");-->
+<!--        const btn = document.getElementById("registerBtn");-->
+<!--        const errorDiv = document.getElementById("registerError");-->
+<!--        const successDiv = document.getElementById("registerSuccess");-->
+
+<!--        btn.addEventListener("click", function () {-->
+<!--            if (!form.checkValidity()) {-->
+<!--                form.reportValidity();-->
+<!--                return;-->
+<!--            }-->
+
+<!--            btn.disabled = true;-->
+<!--            errorDiv.innerText = "";-->
+<!--            successDiv.innerText = "";-->
+<!--            clearStates();-->
+
+<!--            const formData = new FormData(form);-->
+<!--            const { token, header } = getCsrf();-->
+
+<!--            const headers = {-->
+<!--                "X-Requested-With": "XMLHttpRequest",-->
+<!--                "Content-Type": "application/x-www-form-urlencoded"-->
+<!--            };-->
+<!--            if (token && header) headers[header] = token;-->
+
+<!--            fetch("/register", {-->
+<!--                method: "POST",-->
+<!--                headers,-->
+<!--                body: new URLSearchParams(formData)-->
+<!--            })-->
+<!--                .then(res => res.json())-->
+<!--                .then(data => {-->
+<!--                    if (data.error) {-->
+<!--                        const mapped = mapBackendErrorToField(data.error);-->
+<!--                        if (!mapped) errorDiv.innerText = data.error;-->
+
+<!--                        if ((data.error || "").toLowerCase().includes("password")) {-->
+<!--                            document.getElementById("registerPassword").value = "";-->
+<!--                            document.getElementById("confirmPassword").value = "";-->
+<!--                        }-->
+
+<!--                        setTimeout(() => { errorDiv.innerText = ""; }, 3000);-->
+<!--                        return;-->
+<!--                    }-->
+
+<!--                    if (data.success) {-->
+<!--                        successDiv.innerText = data.success;-->
+<!--                        form.reset();-->
+<!--                        clearStates();-->
+<!--                        setTimeout(() => { successDiv.innerText = ""; }, 3000);-->
+<!--                    }-->
+<!--                })-->
+<!--                .catch(() => {-->
+<!--                    errorDiv.innerText = "Có lỗi xảy ra. Vui lòng thử lại.";-->
+<!--                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);-->
+<!--                })-->
+<!--                .finally(() => {-->
+<!--                    btn.disabled = false;-->
+<!--                });-->
+<!--        });-->
+
+<!--        form.addEventListener("submit", function (e) {-->
+<!--            e.preventDefault();-->
+<!--            btn.click();-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+
 <script>
-    function getCsrf() {
-        const tokenEl = document.querySelector('meta[name="_csrf"]');
-        const headerEl = document.querySelector('meta[name="_csrf_header"]');
-        const token = tokenEl ? tokenEl.getAttribute('content') : null;
-        const header = headerEl ? headerEl.getAttribute('content') : null;
-        return { token, header };
-    }
+    document.getElementById("registerBtn").addEventListener("click", async function () {
+        const btn = this;
+        btn.disabled = true;
 
-    function clearStates() {
-        const u = document.getElementById("registerUsername");
-        const e = document.getElementById("registerEmail");
-        const p = document.getElementById("registerPassword");
-        const c = document.getElementById("confirmPassword");
-
-        [u, e, p, c].forEach(x => x.classList.remove("is-invalid", "is-valid"));
-
-        const eu = document.getElementById("errRegisterUsername");
-        const ee = document.getElementById("errRegisterEmail");
-        const ep = document.getElementById("errRegisterPassword");
-        const ec = document.getElementById("errConfirmPassword");
-        if (eu) eu.textContent = "";
-        if (ee) ee.textContent = "";
-        if (ep) ep.textContent = "";
-        if (ec) ec.textContent = "";
-    }
-
-    function markInvalid(fieldId, msgId, msg) {
-        const field = document.getElementById(fieldId);
-        const msgEl = document.getElementById(msgId);
-        if (field) field.classList.add("is-invalid");
-        if (msgEl) msgEl.textContent = msg || "";
-    }
-
-    function mapBackendErrorToField(errorMsg) {
-        const msg = (errorMsg || "").toLowerCase();
-        clearStates();
-
-        if (msg.includes("username")) {
-            markInvalid("registerUsername", "errRegisterUsername", errorMsg);
-            return true;
-        }
-        if (msg.includes("email")) {
-            markInvalid("registerEmail", "errRegisterEmail", errorMsg);
-            return true;
-        }
-        if (msg.includes("password")) {
-            if (msg.includes("match") || msg.includes("confirm")) {
-                markInvalid("confirmPassword", "errConfirmPassword", errorMsg);
-            } else {
-                markInvalid("registerPassword", "errRegisterPassword", errorMsg);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("registerForm");
-        const btn = document.getElementById("registerBtn");
-        const errorDiv = document.getElementById("registerError");
-        const successDiv = document.getElementById("registerSuccess");
+        const data = new URLSearchParams(new FormData(form));
 
-        btn.addEventListener("click", function () {
-            if (!form.checkValidity()) {
-                form.reportValidity();
+        document.getElementById("registerError").innerText = "";
+        document.getElementById("registerSuccess").innerText = "";
+
+        try {
+            const res = await fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: data
+            });
+
+            const json = await res.json();
+
+            if (json.error) {
+                document.getElementById("registerError").innerText = json.error;
+                btn.disabled = false;
                 return;
             }
 
-            btn.disabled = true;
-            errorDiv.innerText = "";
-            successDiv.innerText = "";
-            clearStates();
+            if (json.success) {
+                document.getElementById("registerSuccess").innerText = json.success;
+                form.reset();
 
-            const formData = new FormData(form);
-            const { token, header } = getCsrf();
+                // ⏱️ tự đóng modal sau 3s (optional)
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(
+                        document.getElementById("registerModal")
+                    );
+                    modal?.hide();
+                }, 3000);
+            }
 
-            const headers = {
-                "X-Requested-With": "XMLHttpRequest",
-                "Content-Type": "application/x-www-form-urlencoded"
-            };
-            if (token && header) headers[header] = token;
-
-            fetch("/register", {
-                method: "POST",
-                headers,
-                body: new URLSearchParams(formData)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.error) {
-                        const mapped = mapBackendErrorToField(data.error);
-                        if (!mapped) errorDiv.innerText = data.error;
-
-                        if ((data.error || "").toLowerCase().includes("password")) {
-                            document.getElementById("registerPassword").value = "";
-                            document.getElementById("confirmPassword").value = "";
-                        }
-
-                        setTimeout(() => { errorDiv.innerText = ""; }, 3000);
-                        return;
-                    }
-
-                    if (data.success) {
-                        successDiv.innerText = data.success;
-                        form.reset();
-                        clearStates();
-                        setTimeout(() => { successDiv.innerText = ""; }, 3000);
-                    }
-                })
-                .catch(() => {
-                    errorDiv.innerText = "Có lỗi xảy ra. Vui lòng thử lại.";
-                    setTimeout(() => { errorDiv.innerText = ""; }, 3000);
-                })
-                .finally(() => {
-                    btn.disabled = false;
-                });
-        });
-
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            btn.click();
-        });
+        } catch (e) {
+            document.getElementById("registerError").innerText =
+                "Có lỗi xảy ra. Vui lòng thử lại.";
+            btn.disabled = false;
+        }
     });
 </script>
+
 
 </body>
 </html>
