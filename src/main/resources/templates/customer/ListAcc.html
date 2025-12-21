@@ -289,8 +289,9 @@
                   data-skin=${ga.skin},
                   data-level=${ga.lovel},
                   data-vip=${ga.vip},
-                  data-desc=${ga.description},
-                  data-img=${ga.imageMain}">
+                  data-email=${ga.email},
+                  data-desc=${ga.description}
+                  ">
                                 <i class="bi bi-info-circle"></i>
                             </button>
                         </td>
@@ -326,6 +327,7 @@
                         <div class="kv"><div class="k">Skin</div><div class="v" id="mSkin">-</div></div>
                         <div class="kv"><div class="k">Level</div><div class="v" id="mLevel">-</div></div>
                         <div class="kv"><div class="k">Vip</div><div class="v" id="mVip">-</div></div>
+                        <div class="kv"><div class="k">Email</div><div class="v" id="mEmail">-</div></div>
                         <div class="kv"><div class="k">Description</div><div class="v" id="mDesc">-</div></div>
                     </div>
                 </div>
@@ -385,7 +387,7 @@
 
     /* email */
     #mEmail {
-        color: #2563eb; /* blue-600 */
+        color: black; /* blue-600 */
     }
 
     /* description */
@@ -449,6 +451,7 @@
         setTxt('mSkin', btn.dataset.skin || '0');
         setTxt('mLevel', btn.dataset.level || '0');
         setTxt('mVip', btn.dataset.vip || '0');
+        setTxt('mEmail', btn.dataset.email || '-');
         setTxt('mDesc', btn.dataset.desc || '-');
 
         const img = document.getElementById('mImg');
