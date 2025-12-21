@@ -114,6 +114,11 @@ public class PendingOrdersController {
             return "redirect:/home/pendingOrders";
         }
 
+        customer.setBalance(
+                customer.getBalance().add(order.getTotalPrice())
+        );
+
+
         order.setStatus("CANCEL");
 
           Transaction transaction = new Transaction();
