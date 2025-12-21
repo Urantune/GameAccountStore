@@ -99,16 +99,18 @@ public class RentController {
             ra.addFlashAttribute("errorMessage", "Gói thuê không có game account.");
             return "redirect:/home/renting";
         }
-
         BigDecimal base = (ga.getPrice() != null) ? ga.getPrice() : BigDecimal.ZERO;
         BigDecimal subtotal = base.multiply(BigDecimal.valueOf(months));
 
         BigDecimal discountRate = BigDecimal.ONE;
         if (months == 2) discountRate = new BigDecimal("0.90");
         if (months == 3) discountRate = new BigDecimal("0.85");
-
         BigDecimal total = subtotal.multiply(discountRate).setScale(0, java.math.RoundingMode.HALF_UP);
-
+        BigDecimal balance = (customer.getBalance() != null) ? customer.getBalance() : BigDecimal.ZERO;
+        if (balance.compareTo(total) < 0) {
+            ra.addFlashAttribute("errorMessage", "Số dư không đủ để gia hạn gói thuê.");
+            return "redirect:/home/renting";
+        }
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(total);

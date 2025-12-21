@@ -140,7 +140,6 @@ public class BuyController {
         } else {
             rentMonth = 0;
         }
-        // acc đang thuê mà mua vĩnh viễn
         if ("permanent".equalsIgnoreCase(accountType)
                 && rentAccountGameService.isAccountRented(gameAccount)) {
 
@@ -193,7 +192,6 @@ public class BuyController {
         }
         customer.setBalance(customer.getBalance().subtract(totalAfterVoucher));
         customerRepositories.save(customer);
-        //Lưu Orders
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(totalAfterVoucher);
@@ -203,12 +201,10 @@ public class BuyController {
         }
         Orders savedOrder = ordersRepositories.save(order);
 
-        //Lưu OrderDetail
         OrderDetail detail = new OrderDetail();
         detail.setOrder(savedOrder);
         detail.setGame(game);
         detail.setGameAccount(gameAccount);
-        // duration: 0 = vĩnh viễn, 1–3 thuê
         if(rentMonth ==1){
             detail.setDuration(1);
         }else if(rentMonth ==2){

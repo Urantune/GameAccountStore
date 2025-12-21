@@ -9,19 +9,102 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        .collapse .bg-light {
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        /* Card tổng thể */
+        .card-soft {
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
         }
 
-        .form-select-sm {
-            border-radius: 999px;
-            padding-left: 14px;
+        /* Header danh sách */
+        .card-body .d-flex h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
-        .btn-outline-warning:hover {
-            color: #fff;
+        .card-body .d-flex .badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.8em;
         }
 
+        /* Table */
+        .rent-table {
+            margin-bottom: 0;
+        }
+
+        .rent-table th, .rent-table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .rent-table th {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .rent-table td {
+            font-size: 0.875rem;
+        }
+
+        .rent-table td .fw-semibold {
+            font-weight: 600;
+        }
+
+        .rent-table td .text-muted {
+            font-size: 0.8rem;
+        }
+
+        /* Badge trạng thái */
+        .rent-table .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.6em;
+        }
+
+        /* Nút info và gia hạn */
+        .btn-info-account, .btn-outline-warning {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.8rem;
+        }
+
+        /* Form gia hạn */
+        .collapse .p-3 {
+            background-color: #f8f9fa;
+            border-radius: 0.75rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .collapse form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .collapse form .form-select {
+            min-width: 140px;
+        }
+
+        .collapse form button {
+            white-space: nowrap;
+        }
+
+        /* Responsive: nhỏ hơn 576px */
+        @media (max-width: 575.98px) {
+            .rent-table th, .rent-table td {
+                font-size: 0.8rem;
+            }
+
+            .collapse form {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .collapse form .form-select,
+            .collapse form button {
+                width: 100%;
+            }
+        }
         body{ background:#f5f7fa; }
         .game-nav{
             background:pink;
@@ -60,120 +143,6 @@
             color:#fff;
             padding:26px 0;
         }
-        .card-soft{
-            border:0;
-            border-radius:16px;
-            box-shadow:0 8px 22px rgba(0,0,0,.06);
-        }
-
-        /* ===== CARD ===== */
-        .card-soft {
-            border: none;
-            border-radius: 14px;
-            background: #fff;
-            box-shadow: 0 10px 30px rgba(0,0,0,.06);
-        }
-
-        /* ===== HEADER ===== */
-        .card-soft h5 {
-            font-weight: 700;
-            letter-spacing: .3px;
-        }
-
-        /* ===== TABLE ===== */
-        .table {
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
-
-        .table thead th {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-            color: #6c757d;
-            border-bottom: none;
-        }
-
-        .table tbody tr {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,.04);
-            transition: all .2s ease;
-        }
-
-        .table tbody tr:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,.08);
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            border-top: none;
-            padding: 14px 12px;
-        }
-
-        /* bo góc cho row */
-        .table tbody tr td:first-child {
-            border-radius: 12px 0 0 12px;
-        }
-        .table tbody tr td:last-child {
-            border-radius: 0 12px 12px 0;
-        }
-
-        /* ===== ACCOUNT CELL ===== */
-        .table td .fw-semibold {
-            font-size: 14px;
-        }
-        .table td .text-muted {
-            font-size: 12px;
-        }
-
-        /* ===== BADGE ===== */
-        .badge {
-            padding: 6px 10px;
-            font-size: 12px;
-            border-radius: 20px;
-        }
-
-        /* ===== INFO BUTTON ===== */
-        .btn-info-account {
-            width: 34px;
-            height: 34px;
-            padding: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .btn-info-account i {
-            font-size: 16px;
-        }
-
-        /* ===== ACTION BUTTON ===== */
-        .btn-warning {
-            background: linear-gradient(135deg,#ffb347,#ffcc33);
-            border: none;
-            color: #000;
-            font-weight: 600;
-        }
-
-        .btn-warning:hover {
-            opacity: .9;
-        }
-
-        /* ===== RENEW FORM ===== */
-        .collapse form {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        /* ===== EMPTY STATE ===== */
-        .table tbody tr td.text-muted {
-            font-size: 14px;
-        }
-
     </style>
 </head>
 
@@ -341,9 +310,14 @@
 </div>
 
  <div class="container py-4">
+     <!-- Ví dụ hiển thị thông báo -->
+     <div th:if="${successMessage}" class="alert alert-success" role="alert" id="flashMessage">
+         <span th:text="${successMessage}"></span>
+     </div>
 
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+     <div th:if="${errorMessage}" class="alert alert-danger" role="alert" id="flashMessage">
+         <span th:text="${errorMessage}"></span>
+     </div>
 
     <div class="card card-soft">
         <div class="card-body">
@@ -351,7 +325,7 @@
                 <h5 class="mb-0">Danh sách</h5>
                 <span class="badge bg-primary rounded-pill px-3"
                       th:text="${rentList != null ? #lists.size(rentList) : 0} + ' item(s)'">
-</span>
+                </span>
             </div>
             <div class="table-responsive">
                 <table class="table align-middle rent-table">
@@ -418,7 +392,6 @@
                         </td>
 
                         <td class="text-center">
-
                             <!-- NÚT GIA HẠN -->
                             <button class="btn btn-outline-warning btn-sm rounded-pill px-3"
                                     type="button"
@@ -430,43 +403,28 @@
                             <!-- FORM GIA HẠN -->
                             <div class="collapse mt-3" th:id="'renew'+${r.id}">
                                 <div class="p-3 border rounded-3 bg-light">
-
-                                    <form th:action="@{/home/renting/renew}"
-                                          method="post"
-                                          class="d-flex flex-wrap gap-2 align-items-center justify-content-center">
-
+                                    <form th:action="@{/home/renting/renew}" method="post">
                                         <input type="hidden" name="rentGameId" th:value="${r.id}">
-                                        <input type="hidden"
-                                               th:if="${_csrf != null}"
-                                               th:name="${_csrf.parameterName}"
-                                               th:value="${_csrf.token}"/>
+                                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                                        <select name="months"
-                                                class="form-select form-select-sm"
-                                                style="max-width:140px;"
-                                                required>
+                                        <select name="months" class="form-select form-select-sm" required>
                                             <option value="" disabled selected>⏱ Chọn tháng</option>
                                             <option value="1">1 tháng</option>
                                             <option value="2">2 tháng (-10%)</option>
                                             <option value="3">3 tháng (-15%)</option>
                                         </select>
 
-                                        <button type="submit"
-                                                class="btn btn-primary btn-sm rounded-pill px-3">
+                                        <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3">
                                             <i class="bi bi-credit-card me-1"></i> Thanh toán
                                         </button>
                                     </form>
-
                                 </div>
                             </div>
-
                         </td>
-
                     </tr>
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
      <h1 style="margin-top: 20px; font-size: 16px;color: red">
@@ -547,7 +505,17 @@
         });
     });
 </script>
-
+<script>
+    // Ẩn thông báo sau 3 giây
+    window.addEventListener('DOMContentLoaded', () => {
+        const flash = document.getElementById('flashMessage');
+        if (flash) {
+            setTimeout(() => {
+                flash.style.display = 'none';
+            }, 3000); // 3000ms = 3s
+        }
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>

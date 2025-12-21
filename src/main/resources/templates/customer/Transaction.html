@@ -13,53 +13,50 @@
 
     <style>
         body { background:#f5f9ff; font-family:'Segoe UI',sans-serif; }
-
-        .card {
-            border-radius:12px;
-            color:#fff;
-            padding:25px;
-            height:160px;
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
+        /* Card tổng thể */
+        .card.c1, .card.c2, .card.c3 {
+            border-radius: 1rem;
+            padding: 1.5rem;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .c1 { background:linear-gradient(135deg,#00e0b3,#a8ff3e); } /* Màu cho Số dư hiện tại */
-        .c2 { background:linear-gradient(135deg,#0054ff,#0bb2ff); } /* Màu cho Tổng tiền đã nạp */
-        .c3 { background:linear-gradient(135deg,#ff4d4d,#ff9999); } /* Màu cho Tổng tiền đã chi */
+        .card.c1 { background: linear-gradient(135deg, #4e73df, #224abe); } /* Xanh dương */
+        .card.c2 { background: linear-gradient(135deg, #1cc88a, #17a673); } /* Xanh lá */
+        .card.c3 { background: linear-gradient(135deg, #f6c23e, #dda20a); } /* Vàng cam */
 
-        .label { font-size:18px; opacity:.9; }
-        .money { font-size:36px; font-weight:bold; }
-
-        .wallet-table th,
-        .wallet-table td {
-            text-align:center;
-            vertical-align:middle;
+        /* Hover hiệu ứng */
+        .card.c1:hover, .card.c2:hover, .card.c3:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        .wallet-table tbody tr:nth-child(even) { background:#f4f7fb; }
-        .wallet-table tbody tr:hover { background:#dbe9ff; }
-
-        .balance-container {
-            display:flex;
-            align-items:center;
-            font-size:1.3em;
-            margin-top:20px;
+        /* Nhãn */
+        .card .label {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
         }
 
-        .balance-container i {
-            color:#28a745;
-            margin-right:10px;
-            font-size:1.5em;
+        /* Số tiền */
+        .card .money {
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
-        .balance-container span {
-            font-weight:bold;
-            color:#007bff;
-            font-size:1.5em;
+        /* Responsive nhỏ hơn 768px */
+        @media (max-width: 767.98px) {
+            .card .money {
+                font-size: 1.25rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
         }
 
-        .navbar { background:#FFEED8; }
     </style>
 </head>
 
@@ -310,72 +307,36 @@
 
 <!-- Navbar & Hero End -->
 
-<div class="container py-4">
+ <div class="container py-4">
 
-    <div class="row mb-4">
-        <div class="col-md-4 mb-3">
-            <div class="card c1">
-                <p class="label">Số dư hiện tại</p>
-                <p class="money"
-                   th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
-                    0 đ
-                </p>
-            </div>
-        </div>
+     <div class="row mb-4">
+         <div class="col-md-4 mb-3">
+             <div class="card c1 text-center">
+                 <p class="label">Số dư hiện tại</p>
+                 <p class="money" th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">0 đ</p>
+             </div>
+         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card c2">
-                <p class="label">Tổng tiền đã nạp</p>
-                <p class="money"
-                   th:text="${#numbers.formatDecimal(totalDeposit,0,'COMMA',0,'POINT')} + ' đ'">
-                    0 đ
-                </p>
-            </div>
-        </div>
+         <div class="col-md-4 mb-3">
+             <div class="card c2 text-center">
+                 <p class="label">Tổng tiền đã nạp</p>
+                 <p class="money" th:text="${#numbers.formatDecimal(totalDeposit,0,'COMMA',0,'POINT')} + ' đ'">0 đ</p>
+             </div>
+         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card c3">
-                <p class="label">Tổng tiền đã chi</p>
-                <p class="money"
-                   th:text="${#numbers.formatDecimal(totalSpent,0,'COMMA',0,'POINT')} + ' đ'">
-                    0 đ
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Nap tien -->
+         <div class="col-md-4 mb-3">
+             <div class="card c3 text-center">
+                 <p class="label">Tổng tiền đã chi</p>
+                 <p class="money" th:text="${#numbers.formatDecimal(totalSpent,0,'COMMA',0,'POINT')} + ' đ'">0 đ</p>
+             </div>
+         </div>
+     </div>
+     <!-- Nap tien -->
     <a class="btn btn-success btn-topup"
        th:href="@{/home/wallet/topup}">
         <i class="fa-solid fa-circle-plus me-2"></i>
         Nạp tiền
     </a>
-
-    <style>
-        .btn-topup {
-            background-color: #E75480;
-            color: #fff;
-            font-size: 18px;
-            padding: 16px 40px;
-            font-weight: 700;
-            border-radius: 18px;
-            border: none;
-            box-shadow: 0 8px 20px rgba(231, 84, 128, 0.35);
-            transition:
-                    background-color 0.25s ease,
-                    transform 0.25s ease,
-                    box-shadow 0.25s ease;
-        }
-
-        .btn-topup:hover {
-            background-color: #FC6A8D;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(231, 84, 128, 0.5);
-            color: #fff;
-            text-decoration: none;
-        }
-    </style>
-
 
     <form th:action="@{/home/transaction}"
           method="get"
@@ -422,15 +383,10 @@
         </tr>
         </tbody>
     </table>
-
-    <div class="balance-container">
-        <i class="fa-solid fa-wallet"></i>
-        Số dư hiện tại:
-        <span th:text="${#numbers.formatDecimal(balance,0,'COMMA',0,'POINT')} + ' đ'">
-            0 đ
-        </span>
-    </div>
 </div>
+
+
+
 
 <div class="container-fluid py-5" style="background:pink; color:#444; border-top: 2px solid #f1f1f1;">
     <div class="container">

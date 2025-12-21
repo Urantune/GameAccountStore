@@ -105,7 +105,6 @@ private GameAccountService gameAccountService;
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Số lượng đơn hàng trong cart đã đạt tối đa");
 
-        // ADD
         cartService.addToCart(customer, account, duration, rank, skin, level, vip);
 
         return ResponseEntity.ok("Đã thêm vào giỏ hàng");
@@ -141,7 +140,6 @@ private GameAccountService gameAccountService;
             return Map.of("success", false, "message", "Không tìm thấy cart");
         }
 
-        // chỉ cho đổi nếu là thuê
         if (cart.getDuration() == 0) {
             return Map.of("success", false, "message", "Không thể đổi gói vĩnh viễn");
         }
@@ -182,7 +180,6 @@ private GameAccountService gameAccountService;
                     .body(Map.of("success", false, "message", "Giỏ hàng trống"));
         }
 
-        //  Voucher chỉ áp cho 1 account
         if (voucherCode != null && !voucherCode.isBlank() && carts.size() > 1) {
             return ResponseEntity.badRequest()
                     .body(Map.of(
@@ -193,11 +190,9 @@ private GameAccountService gameAccountService;
 
         BigDecimal totalBeforeVoucher = BigDecimal.ZERO;
 
-        //  TÍNH TỔNG GIÁ
         for (Cart c : carts) {
             GameAccount acc = c.getGameAccount();
 
-            // acc đang thuê mà mua vĩnh viễn
             if (c.getDuration() == 0 &&
                     rentAccountGameService.isAccountRented(acc)) {
                 return ResponseEntity.badRequest()
@@ -231,7 +226,6 @@ private GameAccountService gameAccountService;
         totalBeforeVoucher =
                 totalBeforeVoucher.setScale(0, RoundingMode.HALF_UP);
 
-        // 🎟VOUCHER
         Voucher usedVoucher = null;
         BigDecimal totalAfterVoucher = totalBeforeVoucher;
 
@@ -259,18 +253,14 @@ private GameAccountService gameAccountService;
             totalAfterVoucher = totalBeforeVoucher.subtract(discount);
         }
 
-        // 💰 CHECK SỐ DƯ
         if (customer.getBalance().compareTo(totalAfterVoucher) < 0) {
             return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "message", "Số dư không đủ"));
         }
-
-        // TRỪ TIỀN
         customer.setBalance(
                 customer.getBalance().subtract(totalAfterVoucher));
         customerRepositories.save(customer);
 
-        // ORDER
         Orders order = new Orders();
         order.setCustomer(customer);
         order.setTotalPrice(totalAfterVoucher);
@@ -290,7 +280,7 @@ private GameAccountService gameAccountService;
             transactionService.save(transaction);
         }
 
-        //  ORDER DETAIL
+
         for (Cart c : carts) {
             OrderDetail d = new OrderDetail();
             d.setOrder(savedOrder);
@@ -312,14 +302,9 @@ private GameAccountService gameAccountService;
             vc.setDateUsed(LocalDateTime.now());
             voucherCustomerRepository.save(vc);
         }
-        // XOÁ CART
         cartRepositories.deleteAll(carts);
         return ResponseEntity.ok(
                 Map.of("success", true, "message", "Thanh toán giỏ hàng thành công")
         );
     }
-
-
-
-
 }
