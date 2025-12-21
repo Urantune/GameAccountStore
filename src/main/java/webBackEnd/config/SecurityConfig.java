@@ -52,12 +52,16 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/register", "/register/**").permitAll()
+
+                .requestMatchers("/veryAccount/**").permitAll()
+
                 .requestMatchers("/home", "/home/", "/home/accDetail/**",
                         "/home/GameDetails/**", "/home/game/**").permitAll()
                 .requestMatchers(
                         "/css/**", "/js/**", "/img/**",
                         "/assets/**", "/lib/**", "/scss/**", "/images/**"
                 ).permitAll()
+
                 .requestMatchers(HttpMethod.POST, "/home/forgot-password").permitAll()
                 .requestMatchers(HttpMethod.GET, "/adminHome", "/adminHome/").permitAll()
                 .requestMatchers(HttpMethod.GET, "/staffHome", "/staffHome/").permitAll()
