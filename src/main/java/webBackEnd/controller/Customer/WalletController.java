@@ -51,13 +51,11 @@ public class WalletController {
             if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) totalDeposit = totalDeposit.add(t.getAmount());
             else totalSpent = totalSpent.add(t.getAmount().abs());
         }
-
         model.addAttribute("balance", balance);
         model.addAttribute("walletHistory", history);
         model.addAttribute("totalDeposit", totalDeposit);
         model.addAttribute("totalSpent", totalSpent);
         model.addAttribute("search", search);
-
         return "customer/Transaction";
     }
 
@@ -68,7 +66,6 @@ public class WalletController {
         Customer c = customerRepo.findByUsernameIgnoreCase(principal.getName()).orElseThrow();
         BigDecimal balance = (c.getBalance() == null) ? BigDecimal.ZERO : c.getBalance();
         model.addAttribute("balance", balance);
-
         return "customer/TopUp";
     }
 

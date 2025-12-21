@@ -12,7 +12,7 @@
         /* Card tổng thể */
         .card-soft {
             border-radius: 1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border: 1px solid #e0e0e0;
         }
 
@@ -105,43 +105,69 @@
                 width: 100%;
             }
         }
-        body{ background:#f5f7fa; }
-        .game-nav{
-            background:pink;
-            border-top:2px solid #e6d8c8;
-            height:86px;
-            display:flex;
-            align-items:center;
-        }
-        .game-nav .container-fluid{ display:flex; align-items:center; }
-        .nav-logo{ height:180px; width:auto; }
-        .nav-center{ gap:26px; }
-        .game-nav .navbar-nav .nav-link{ color:#111 !important; font-weight:500; }
-        .nav-pill{
-            background:transparent;
-            color:#000 !important;
-            border:1px solid transparent;
-            transition:background .15s ease, box-shadow .15s ease, transform .15s ease;
-            border-radius:18px !important;
-            padding:10px 18px !important;
-        }
-        .nav-pill:hover{
-            color:#f7931e !important;
-            background:#F8F8FF;
-            box-shadow:0 6px 18px rgba(0,0,0,.08) !important;
-            transform:none !important;
-        }
-        .nav-pill:focus,.nav-pill:active{
-            background:#f5e6d7 !important;
-            color:#000 !important;
-            box-shadow:0 6px 18px rgba(0,0,0,.08) !important;
-        }
-        .dropdown-soft{ border-radius:14px; padding:6px; }
 
-        .page-header{
-            background:#2a3f54;
-            color:#fff;
-            padding:26px 0;
+        body {
+            background: #f5f7fa;
+        }
+
+        .game-nav {
+            background: pink;
+            border-top: 2px solid #e6d8c8;
+            height: 86px;
+            display: flex;
+            align-items: center;
+        }
+
+        .game-nav .container-fluid {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo {
+            height: 180px;
+            width: auto;
+        }
+
+        .nav-center {
+            gap: 26px;
+        }
+
+        .game-nav .navbar-nav .nav-link {
+            color: #111 !important;
+            font-weight: 500;
+        }
+
+        .nav-pill {
+            background: transparent;
+            color: #000 !important;
+            border: 1px solid transparent;
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+            border-radius: 18px !important;
+            padding: 10px 18px !important;
+        }
+
+        .nav-pill:hover {
+            color: #f7931e !important;
+            background: #F8F8FF;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+            transform: none !important;
+        }
+
+        .nav-pill:focus, .nav-pill:active {
+            background: #f5e6d7 !important;
+            color: #000 !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important;
+        }
+
+        .dropdown-soft {
+            border-radius: 14px;
+            padding: 6px;
+        }
+
+        .page-header {
+            background: #2a3f54;
+            color: #fff;
+            padding: 26px 0;
         }
     </style>
 </head>
@@ -234,8 +260,10 @@
                         <span class="fw-semibold">Khách</span>
                     </a>
                     <ul class="dropdown-menu dropdown-fix">
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng
+                            nhập</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng
+                            ký</a></li>
                     </ul>
                 </li>
 
@@ -263,22 +291,77 @@
     </div>
 
     <style>
-        .game-nav{background:pink;border-top:2px solid #e6d8c8;height:86px;display:flex;align-items:center}
-        .game-nav .container-fluid{display:flex;align-items:center}
-        .nav-logo{height:180px;width:auto}
-        .nav-center{gap:26px}
-        .game-nav .navbar-nav .nav-link{color:#111!important;font-weight:500}
-        .nav-pill{background:transparent;color:#000!important;border:1px solid transparent;transition:background .15s ease,box-shadow .15s ease,transform .15s ease}
-        .nav-pill:hover{color:#f7931e!important;background:#F8F8FF;box-shadow:none!important;transform:none!important}
-        .nav-pill:focus,.nav-pill:active{background:#f5e6d7!important;color:#000!important;box-shadow:none!important}
-        .dropdown-soft{border-radius:14px;padding:6px}
-        .nav-pill{border-radius:18px!important;padding:10px 18px!important}
-        .nav-pill:hover{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
-        .nav-pill:focus,.nav-pill:active{border-radius:18px!important;box-shadow:0 6px 18px rgba(0,0,0,.08)!important}
+        .game-nav {
+            background: pink;
+            border-top: 2px solid #e6d8c8;
+            height: 86px;
+            display: flex;
+            align-items: center
+        }
+
+        .game-nav .container-fluid {
+            display: flex;
+            align-items: center
+        }
+
+        .nav-logo {
+            height: 180px;
+            width: auto
+        }
+
+        .nav-center {
+            gap: 26px
+        }
+
+        .game-nav .navbar-nav .nav-link {
+            color: #111 !important;
+            font-weight: 500
+        }
+
+        .nav-pill {
+            background: transparent;
+            color: #000 !important;
+            border: 1px solid transparent;
+            transition: background .15s ease, box-shadow .15s ease, transform .15s ease
+        }
+
+        .nav-pill:hover {
+            color: #f7931e !important;
+            background: #F8F8FF;
+            box-shadow: none !important;
+            transform: none !important
+        }
+
+        .nav-pill:focus, .nav-pill:active {
+            background: #f5e6d7 !important;
+            color: #000 !important;
+            box-shadow: none !important
+        }
+
+        .dropdown-soft {
+            border-radius: 14px;
+            padding: 6px
+        }
+
+        .nav-pill {
+            border-radius: 18px !important;
+            padding: 10px 18px !important
+        }
+
+        .nav-pill:hover {
+            border-radius: 18px !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important
+        }
+
+        .nav-pill:focus, .nav-pill:active {
+            border-radius: 18px !important;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08) !important
+        }
     </style>
 </nav>
 
-<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
+<div id="loginAlert" class="alert alert-warning text-center fw-semibold d-none"
+     style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;">
     ⚠️ Vui lòng đăng nhập để sử dụng chức năng này
 </div>
 
@@ -292,6 +375,7 @@
             }
         });
     });
+
     function showLoginAlert() {
         const alertBox = document.getElementById('loginAlert');
         alertBox.classList.remove('d-none');
@@ -309,15 +393,15 @@
     </div>
 </div>
 
- <div class="container py-4">
-     <!-- Ví dụ hiển thị thông báo -->
-     <div th:if="${successMessage}" class="alert alert-success" role="alert" id="flashMessage">
-         <span th:text="${successMessage}"></span>
-     </div>
+<div class="container py-4">
+    <!-- Ví dụ hiển thị thông báo -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert" id="flashMessage">
+        <span th:text="${successMessage}"></span>
+    </div>
 
-     <div th:if="${errorMessage}" class="alert alert-danger" role="alert" id="flashMessage">
-         <span th:text="${errorMessage}"></span>
-     </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" id="flashMessage">
+        <span th:text="${errorMessage}"></span>
+    </div>
 
     <div class="card card-soft">
         <div class="card-body">
@@ -329,70 +413,88 @@
             </div>
             <div class="table-responsive">
                 <table class="table align-middle rent-table">
-                <thead class="table-light">
+                    <thead class="table-light">
                     <tr>
-                        <th style="width:70px;">#</th>
+                        <th style="width:60px;">#</th>
                         <th>Account</th>
                         <th>Start</th>
                         <th>End</th>
-                        <th>Type</th>
                         <th>Status</th>
-                        <th>Info</th>
-                        <th style="width:220px;">Action</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th class="text-center">Info</th>
+                        <th style="width:220px;" class="text-center">Action</th>
                     </tr>
                     </thead>
 
                     <tbody>
+                    <!-- EMPTY -->
                     <tr th:if="${rentList == null || #lists.isEmpty(rentList)}">
-                        <td colspan="7" class="text-center py-4 text-muted">
+                        <td colspan="10" class="text-center py-4 text-muted">
                             Bạn chưa thuê tài khoản nào.
                         </td>
                     </tr>
 
+                    <!-- DATA -->
                     <tr th:each="r, i : ${rentList}">
+                        <!-- # -->
                         <td th:text="${i.index + 1}"></td>
 
+                        <!-- ACCOUNT -->
                         <td>
                             <div class="fw-semibold"
                                  th:text="${r.gameAccount != null ? r.gameAccount.gameAccount : 'N/A'}"></div>
                             <div class="text-muted small"
-                                 th:text="${(r.gameAccount != null && r.gameAccount.game != null) ? r.gameAccount.game.gameName : ''}">
+                                 th:text="${r.gameAccount?.game?.gameName}">
                             </div>
                         </td>
 
+                        <!-- START -->
                         <td th:text="${r.dateStart != null ? #temporals.format(r.dateStart,'dd/MM/yyyy HH:mm') : '—'}"></td>
+
+                        <!-- END -->
                         <td th:text="${r.dateEnd != null ? #temporals.format(r.dateEnd,'dd/MM/yyyy HH:mm') : '—'}"></td>
 
+                        <!-- STATUS -->
                         <td>
-                            <span class="badge bg-success"
-                                  th:if="${r.status != null && (r.status == 'ACTIVE' || r.status == 'IN USE')}"
-                                  th:text="${r.status}"></span>
+            <span class="badge bg-success"
+                  th:if="${r.status == 'ACTIVE' || r.status == 'IN USE'}"
+                  th:text="${r.status}"></span>
                             <span class="badge bg-secondary"
-                                  th:if="${r.status == null || !(r.status == 'ACTIVE' || r.status == 'IN USE')}"
-                                  th:text="${r.status != null ? r.status : 'UNKNOWN'}"></span>
+                                  th:if="${r.status != 'ACTIVE' && r.status != 'IN USE'}"
+                                  th:text="${r.status ?: 'UNKNOWN'}"></span>
                         </td>
 
-                        <td th:text="${r.deception != null ? r.deception : ''}"></td>
+                        <!-- TYPE -->
+                        <td th:text="${r.deception ?: ''}"></td>
+
+                        <!-- BASE PRICE -->
+                        <td>
+            <span class="badge bg-secondary base-price"
+                  th:data-price="${r.gameAccount.price}"
+                  th:text="${r.gameAccount.price}">
+            </span>
+                        </td>
+                        <!-- INFO -->
                         <td class="text-center">
                             <button type="button"
                                     class="btn btn-outline-secondary btn-sm rounded-pill btn-info-account"
                                     data-bs-toggle="modal"
                                     data-bs-target="#gaModal"
-                                    th:data-username="${r.gameAccount != null ? r.gameAccount.gameAccount : ''}"
-                                    th:data-password="${r.gameAccount != null ? r.gameAccount.gamePassword : ''}"
-                                    th:data-game="${r.gameAccount != null && r.gameAccount.game != null ? r.gameAccount.game.gameName : ''}"
-                                    th:data-rank="${r.gameAccount != null ? r.gameAccount.rank : ''}"
-                                    th:data-skin="${r.gameAccount != null ? r.gameAccount.skin : 0}"
-                                    th:data-level="${r.gameAccount != null ? r.gameAccount.lovel : 0}"
-                                    th:data-vip="${r.gameAccount != null ? r.gameAccount.vip : 0}"
-                                    th:data-price="${r.gameAccount != null ? r.gameAccount.price : 0}"
-                                    th:data-description="${r.gameAccount != null ? r.gameAccount.description : ''}">
+                                    th:data-username="${r.gameAccount.gameAccount}"
+                                    th:data-password="${r.gameAccount.gamePassword}"
+                                    th:data-game="${r.gameAccount.game.gameName}"
+                                    th:data-rank="${r.gameAccount.rank}"
+                                    th:data-skin="${r.gameAccount.skin}"
+                                    th:data-level="${r.gameAccount.lovel}"
+                                    th:data-vip="${r.gameAccount.vip}"
+                                    th:data-price="${r.gameAccount.price}"
+                                    th:data-description="${r.gameAccount.description}">
                                 <i class="bi bi-info-circle"></i>
                             </button>
                         </td>
-
+                        <!-- ACTION -->
                         <td class="text-center">
-                            <!-- NÚT GIA HẠN -->
                             <button class="btn btn-outline-warning btn-sm rounded-pill px-3"
                                     type="button"
                                     data-bs-toggle="collapse"
@@ -400,21 +502,37 @@
                                 <i class="bi bi-arrow-repeat me-1"></i> Gia hạn
                             </button>
 
-                            <!-- FORM GIA HẠN -->
                             <div class="collapse mt-3" th:id="'renew'+${r.id}">
-                                <div class="p-3 border rounded-3 bg-light">
+                                <div class="p-3 border rounded-3 bg-light text-start">
                                     <form th:action="@{/home/renting/renew}" method="post">
                                         <input type="hidden" name="rentGameId" th:value="${r.id}">
-                                        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                        <input type="hidden" th:if="${_csrf != null}"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}"/>
 
-                                        <select name="months" class="form-select form-select-sm" required>
-                                            <option value="" disabled selected>⏱ Chọn tháng</option>
+                                        <!-- CHỌN THÁNG -->
+                                        <label class="small fw-semibold mb-1">⏱ Thời gian thuê</label>
+                                        <select name="months"
+                                                class="form-select form-select-sm rent-month-select mb-2"
+                                                required
+                                                th:data-rent-id="${r.id}"
+                                                th:data-base-price="${r.gameAccount.price}">
+                                            <option value="" disabled selected>Chọn tháng</option>
                                             <option value="1">1 tháng</option>
                                             <option value="2">2 tháng (-10%)</option>
                                             <option value="3">3 tháng (-15%)</option>
                                         </select>
 
-                                        <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3">
+                                        <!-- THÀNH TIỀN -->
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="fw-semibold">Total:</span>
+                                            <span class="fw-bold text-primary fs-5 total-price"
+                                                  th:id="'totalPrice'+${r.id}"
+                                                  th:text="${r.gameAccount.price}">
+                    </span>
+                                        </div>
+                                        <button type="submit"
+                                                class="btn btn-primary btn-sm rounded-pill w-100">
                                             <i class="bi bi-credit-card me-1"></i> Thanh toán
                                         </button>
                                     </form>
@@ -427,10 +545,10 @@
             </div>
         </div>
     </div>
-     <h1 style="margin-top: 20px; font-size: 16px;color: red">
-         *Lưu ý: Giá gói gia hạn mỗi sản phẩm thuê = Giá gốc × Số tháng × (1 − % giảm)
-     </h1>
- </div>
+    <h1 style="margin-top: 20px; font-size: 16px;color: red">
+        *Lưu ý: Giá gói gia hạn mỗi sản phẩm thuê = Giá gốc × Số tháng × (1 − % giảm)
+    </h1>
+</div>
 <div class="modal fade" id="gaModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -488,6 +606,35 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        document.querySelectorAll(".rent-month-select").forEach(select => {
+
+            select.addEventListener("change", function () {
+                const months = parseInt(this.value);
+                const basePrice = parseFloat(this.dataset.basePrice);
+                const rentId = this.dataset.rentId;
+
+                if (!months || !basePrice) return;
+
+                let total = basePrice * months;
+
+                // giảm giá
+                if (months === 2) total *= 0.9;
+                if (months === 3) total *= 0.85;
+
+                total = Math.round(total);
+
+                const totalEl = document.getElementById("totalPrice" + rentId);
+                if (totalEl) {
+                    totalEl.innerText = total.toLocaleString("vi-VN") + " ₫";
+                }
+            });
+        });
+    });
+</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.btn-info-account').forEach(btn => {
