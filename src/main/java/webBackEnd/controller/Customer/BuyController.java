@@ -190,6 +190,17 @@ public class BuyController {
             return ResponseEntity.badRequest()
                     .body(Map.of("success", false, "message", "Số dư không đủ"));
         }
+        boolean hasWaitingOrder =
+                ordersRepositories.existsByCustomerAndStatus(customer, "WAIT");
+
+        if (hasWaitingOrder) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Đơn hàng đang được xử lý. Vui lòng đợi admin duyệt đơn."
+                    ));
+        }
+
         customer.setBalance(customer.getBalance().subtract(totalAfterVoucher));
         customerRepositories.save(customer);
         Orders order = new Orders();
