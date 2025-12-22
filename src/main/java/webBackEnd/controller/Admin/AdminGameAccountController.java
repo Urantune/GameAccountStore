@@ -113,8 +113,8 @@ public class AdminGameAccountController {
         ga.setRank(rank.trim());
 
         String d = duration == null ? "" : duration.trim().toUpperCase();
-        if ("RENT".equals(d)) ga.setDuration("RENT");
-        else if ("BUY".equals(d)) ga.setDuration(null);
+        if ("RENT".equalsIgnoreCase(d)) ga.setDuration("RENT");
+        else if ("Permanent".equalsIgnoreCase(d)) ga.setDuration(null);
         else throw new IllegalArgumentException("Invalid type. Allowed: BUY, RENT.");
 
 
