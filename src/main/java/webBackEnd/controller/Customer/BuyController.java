@@ -261,7 +261,7 @@ public class BuyController {
         return ResponseEntity.ok(
                 Map.of(
                         "success", true,
-                        "message", "Mua acc random thành công! Vui lòng chờ admin xử lý."
+                        "message", "Mua acc thành công! Vui lòng chờ admin xử lý."
                 )
         );
     }

@@ -451,13 +451,6 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-5 fw-bold">Giá:</div>
-                        <div class="col-7">
-                            <input class="form-control" readonly th:value="${p.price} + ' đ'">
-                            <!-- GIÁ GỐC ĐỂ JS TÍNH -->
-                        </div>
-                    </div>
-                    <div class="row mb-3">
                         <div class="col-5 fw-bold">Voucher:</div>
                         <div class="col-7 d-flex gap-2">
                             <input type="text" id="voucherInput" class="form-control" placeholder="Nhập mã giảm giá">
@@ -472,18 +465,42 @@
                             <small id="voucherMsg" class="text-success d-none"></small>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-5 fw-bold">Total price:</div>
-                        <div class="col-7">
-                            <input class="form-control"
-                                   id="priceInput"
-                                   readonly
-                                   th:value="${price} + ' đ'">
+                    <!-- ================= THÔNG TIN THANH TOÁN ================= -->
+                    <div class="border rounded-3 p-3 bg-light">
+                        <!-- GIÁ GỐC -->
+                        <div class="row mb-2">
+                            <div class="col-6 text-muted">Giá gốc:</div>
+                            <div class="col-6 text-end fw-semibold">
+        <span id="basePriceText"
+              th:text="${p.price} + ' đ'"
+              th:classappend="${p.duration == 'RENT'} ? 'text-decoration-line-through text-muted' : ''">
+        </span>
+                            </div>
+                        </div>
+                        <!-- GIÁ GÓI -->
+                        <div class="row mb-2 d-none" id="packagePriceRow">
+                            <div class="col-6 text-muted">Giá gói thuê:</div>
+                            <div class="col-6 text-end fw-semibold text-dark">
+                                <span id="packagePriceText">0 đ</span>
+                            </div>
+                        </div>
+                        <!-- VOUCHER -->
+                        <div class="row mb-2">
+                            <div class="col-6 text-muted">Voucher giảm:</div>
+                            <div class="col-6 text-end fw-semibold text-danger">
+                                - <span id="voucherDiscountText">0 đ</span>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <!-- TỔNG THANH TOÁN -->
+                        <div class="row align-items-center">
+                            <div class="col-6 fw-bold fs-6">Tổng thanh toán:</div>
+                            <div class="col-6 text-end fw-bold fs-4 text-primary">
+                                <span id="finalPriceText">0 đ</span>
+                            </div>
                         </div>
                     </div>
-                    <h1 style="margin-top: 20px; font-size: 16px;color: red">
-                        Total price = Giá gốc × Số tháng × (1 − % giảm)
-                    </h1>
                 </div>
                 <form th:if="${#authorization.expression('isAuthenticated()')}" th:action="@{/home/payment}"
                       method="post" onsubmit="syncBeforeSubmit()">
@@ -546,108 +563,55 @@
         </div>
     </div>
 </section>
-<script>
-    function addToCart(button) {
-        const accountId = button.getAttribute('data-account-id');
-        const basePrice = parseFloat(button.getAttribute('data-base-price')) || 0;
 
-        const durationInput = document.querySelector('input[name="accountType"]:checked');
-        const duration = durationInput && durationInput.value === 'rent'
-            ? parseInt(document.getElementById('rentMonth').value) || 0
-            : 0;
-
-        const voucherInput = document.getElementById('voucherPercent');
-        const voucherPercent = voucherInput ? parseInt(voucherInput.value) : 0;
-        if (voucherPercent > 0) {
-            const errorDiv = document.getElementById('buyError');
-            errorDiv.innerText = 'Không thể thêm vào giỏ hàng khi áp dụng voucher!';
-            errorDiv.classList.remove('d-none');
-            setTimeout(() => errorDiv.classList.add('d-none'), 3000);
-            return;
-        }
-
-        // Thông số account
-        const rank = document.getElementById('rank')?.value || '';
-        const skin = parseInt(document.getElementById('skinRangeInput')?.value) || 0;
-        const level = parseInt(document.getElementById('level')?.value) || 0;
-        const vip = parseInt(document.getElementById('vip')?.value) || 0;
-
-        const formData = new FormData();
-        formData.append('basePrice', basePrice);
-        formData.append('duration', duration);
-        formData.append('rank', rank);
-        formData.append('skin', skin);
-        formData.append('level', level);
-        formData.append('vip', vip);
-
-        fetch(`/home/cart/add/${accountId}`, {
-            method: 'POST',
-            body: formData,
-            credentials: 'same-origin',
-        })
-            .then(res => res.text())
-            .then(data => {
-                const successDiv = document.getElementById('buySuccess');
-                const errorDiv = document.getElementById('buyError');
-
-                if (data.includes("Đã thêm vào giỏ hàng")) {
-                    successDiv.innerText = data;
-                    successDiv.classList.remove('d-none');
-                    errorDiv.classList.add('d-none');
-                    setTimeout(() => successDiv.classList.add('d-none'), 3000);
-                } else {
-                    errorDiv.innerText = data;
-                    errorDiv.classList.remove('d-none');
-                    successDiv.classList.add('d-none');
-                    setTimeout(() => errorDiv.classList.add('d-none'), 3000);
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                const errorDiv = document.getElementById('buyError');
-                const successDiv = document.getElementById('buySuccess');
-                errorDiv.innerText = 'Có lỗi xảy ra, vui lòng thử lại.';
-                errorDiv.classList.remove('d-none');
-                successDiv.classList.add('d-none');
-                setTimeout(() => errorDiv.classList.add('d-none'), 3000);
-            });
-    }
-
-</script>
 <script>
     /* ================== GIÁ GỐC ================== */
+    function formatMoney(v) {
+        return Math.round(v).toLocaleString("vi-VN") + " đ";
+    }
+
     function getBasePrice() {
-        return parseInt(document.getElementById('basePriceHidden').value || 0, 10);
+        return parseInt(document.getElementById("basePriceHidden").value || 0);
     }
 
-    /* ================== TÍNH GIÁ ================== */
-    function getCurrentPrice() {
+    function getPackagePrice() {
         const base = getBasePrice();
-        let price = base;
-        const accType = document.querySelector('input[name="accountType"]:checked')?.value || 'permanent';
-        if (accType === 'rent') {
-            const month = parseInt(document.getElementById('rentMonth')?.value || 1, 10);
+        const accType =
+            document.querySelector('input[name="accountType"]:checked')?.value || 'permanent';
 
-            let rate = 1;
-            if (month === 2) rate = 0.9;
-            if (month === 3) rate = 0.85;
+        if (accType !== "rent") {
+            return base;
+        }
 
-            price = base * month * rate;
-        }
-        const percent = parseInt(document.getElementById('voucherPercent').value || 0, 10);
-        if (percent > 0) {
-            price -= price * (percent / 100);
-        }
-        return Math.round(price);
+        const month = parseInt(document.getElementById("rentMonth")?.value || 1);
+        let rate = 1;
+        if (month === 2) rate = 0.9;
+        if (month === 3) rate = 0.85;
+
+        return base * month * rate;
     }
 
-    /* ================== CẬP NHẬT GIÁ ================== */
     function updatePriceDisplay() {
-        const price = getCurrentPrice();
-        const input = document.getElementById('priceInput');
-        input.value = price.toLocaleString('vi-VN') + ' đ';
-        document.getElementById('finalPriceHidden').value = price;
+        const base = getBasePrice();
+        const packagePrice = getPackagePrice();
+        const percent = parseInt(document.getElementById("voucherPercent").value || 0);
+
+        const discount = percent > 0
+            ? packagePrice * percent / 100
+            : 0;
+
+        const finalPrice = packagePrice - discount;
+
+        // Update UI
+        document.getElementById("packagePriceText").innerText = formatMoney(packagePrice);
+        document.getElementById("voucherDiscountText").innerText = formatMoney(discount);
+        document.getElementById("finalPriceText").innerText = formatMoney(finalPrice);
+
+        // Sync hidden
+        document.getElementById("finalPriceHidden").value = Math.round(finalPrice);
     }
+
+    document.addEventListener("DOMContentLoaded", updatePriceDisplay);
 
     /* ================== THUÊ / VĨNH VIỄN ================== */
     function toggleRent(isRent) {
@@ -788,6 +752,31 @@
     /* ================== KHỞI TẠO ================== */
     document.addEventListener("DOMContentLoaded", updatePriceDisplay);
 </script>
+<script>
+    function togglePackagePrice() {
+        const accType =
+            document.querySelector('input[name="accountType"]:checked')?.value
+            || document.getElementById('accountTypeHidden')?.value
+            || 'permanent';
+
+        const packageRow = document.getElementById("packagePriceRow");
+
+        if (accType === 'rent') {
+            packageRow.classList.remove("d-none");
+        } else {
+            packageRow.classList.add("d-none");
+        }
+    }
+
+    // Gọi khi đổi loại tài khoản
+    document.querySelectorAll('input[name="accountType"]').forEach(radio => {
+        radio.addEventListener("change", togglePackagePrice);
+    });
+
+    // Gọi khi load trang
+    document.addEventListener("DOMContentLoaded", togglePackagePrice);
+</script>
+
 <div th:if="${error}" class="d-none" id="serverError" th:text="${error}"></div>
 
 <script th:inline="javascript">
@@ -795,6 +784,74 @@
     if (msg && msg.trim().length > 0) {
         alert(msg);
     }
+</script>
+<script>
+    function addToCart(button) {
+        const accountId = button.getAttribute('data-account-id');
+        const basePrice = parseFloat(button.getAttribute('data-base-price')) || 0;
+
+        const durationInput = document.querySelector('input[name="accountType"]:checked');
+        const duration = durationInput && durationInput.value === 'rent'
+            ? parseInt(document.getElementById('rentMonth').value) || 0
+            : 0;
+
+        const voucherInput = document.getElementById('voucherPercent');
+        const voucherPercent = voucherInput ? parseInt(voucherInput.value) : 0;
+        if (voucherPercent > 0) {
+            const errorDiv = document.getElementById('buyError');
+            errorDiv.innerText = 'Không thể thêm vào giỏ hàng khi áp dụng voucher!';
+            errorDiv.classList.remove('d-none');
+            setTimeout(() => errorDiv.classList.add('d-none'), 3000);
+            return;
+        }
+
+        // Thông số account
+        const rank = document.getElementById('rank')?.value || '';
+        const skin = parseInt(document.getElementById('skinRangeInput')?.value) || 0;
+        const level = parseInt(document.getElementById('level')?.value) || 0;
+        const vip = parseInt(document.getElementById('vip')?.value) || 0;
+
+        const formData = new FormData();
+        formData.append('basePrice', basePrice);
+        formData.append('duration', duration);
+        formData.append('rank', rank);
+        formData.append('skin', skin);
+        formData.append('level', level);
+        formData.append('vip', vip);
+
+        fetch(`/home/cart/add/${accountId}`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin',
+        })
+            .then(res => res.text())
+            .then(data => {
+                const successDiv = document.getElementById('buySuccess');
+                const errorDiv = document.getElementById('buyError');
+
+                if (data.includes("Đã thêm vào giỏ hàng")) {
+                    successDiv.innerText = data;
+                    successDiv.classList.remove('d-none');
+                    errorDiv.classList.add('d-none');
+                    setTimeout(() => successDiv.classList.add('d-none'), 3000);
+                } else {
+                    errorDiv.innerText = data;
+                    errorDiv.classList.remove('d-none');
+                    successDiv.classList.add('d-none');
+                    setTimeout(() => errorDiv.classList.add('d-none'), 3000);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                const errorDiv = document.getElementById('buyError');
+                const successDiv = document.getElementById('buySuccess');
+                errorDiv.innerText = 'Có lỗi xảy ra, vui lòng thử lại.';
+                errorDiv.classList.remove('d-none');
+                successDiv.classList.add('d-none');
+                setTimeout(() => errorDiv.classList.add('d-none'), 3000);
+            });
+    }
+
 </script>
 
 <script>
