@@ -102,7 +102,6 @@
             resize: vertical;
         }
 
-
         @media (max-width: 992px){
             body{
                 padding-left: 0;
@@ -115,7 +114,6 @@
 <body>
 
 <div th:replace="fragments/adminSidebar :: adminSidebar"></div>
-
 
 <div class="bar-top">
     <h4 class="text-white m-0">
@@ -155,6 +153,25 @@
                         <option value="100000">100,000</option>
                         <option value="150000">150,000</option>
                         <option value="200000">200,000</option>
+                    </select>
+                </div>
+
+
+                <div class="col-md-6">
+                    <label class="form-label">Duration</label>
+                    <select class="form-select" name="duration" required>
+                        <option value="" disabled selected>Select duration</option>
+                        <option value="BUY">Permanent</option>
+                        <option value="RENT">Rent</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" name="duration" required>
+                        <option value="" disabled selected>Select type</option>
+                        <option value="BUY">BUY (Permanent)</option>
+                        <option value="RENT">RENT</option>
                     </select>
                 </div>
 

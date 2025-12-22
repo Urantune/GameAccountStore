@@ -73,6 +73,7 @@ public class AdminGameAccountController {
             @RequestParam("classify") String classify,
             @RequestParam("status") String status,
             @RequestParam("rank") String rank,
+            @RequestParam("duration") String duration,
             @RequestParam(value = "skin", defaultValue = "0") int skin,
             @RequestParam(value = "lovel", defaultValue = "0") int lovel,
             @RequestParam(value = "vip", defaultValue = "0") int vip,
@@ -82,7 +83,7 @@ public class AdminGameAccountController {
 
         validateCreateGameAccountInput(
                 gameAccountName, gamePassword, price, description,
-                classify, status, rank, skin, lovel, vip, gameId, imageFile
+                classify, status, rank, duration, skin, lovel, vip, gameId, imageFile
         );
 
         Game game = gameService.findById(gameId);
@@ -110,6 +111,14 @@ public class AdminGameAccountController {
         ga.setClassify(classify.trim());
         ga.setStatus(status.trim());
         ga.setRank(rank.trim());
+
+        String d = duration == null ? "" : duration.trim().toUpperCase();
+        if ("RENT".equals(d)) ga.setDuration("RENT");
+        else if ("BUY".equals(d)) ga.setDuration(null);
+        else throw new IllegalArgumentException("Invalid type. Allowed: BUY, RENT.");
+
+
+
 
         ga.setSkin(skin);
         ga.setLovel(lovel);
@@ -151,7 +160,6 @@ public class AdminGameAccountController {
         return "redirect:/adminHome/gameList?nameGame=" + game.getGameName();
     }
 
-
     private void validateCreateGameAccountInput(
             String gameAccountName,
             String gamePassword,
@@ -160,6 +168,7 @@ public class AdminGameAccountController {
             String classify,
             String status,
             String rank,
+            String duration,
             int skin,
             int lovel,
             int vip,
@@ -222,6 +231,14 @@ public class AdminGameAccountController {
         Set<String> statusAllow = Set.of("ACTIVE", "INACTIVE", "HIDDEN");
         if (!statusAllow.contains(status.trim().toUpperCase())) {
             throw new IllegalArgumentException("Invalid status. Allowed: ACTIVE, INACTIVE, HIDDEN.");
+        }
+
+        if (duration == null || duration.trim().isEmpty()) {
+            throw new IllegalArgumentException("Type is required (BUY/RENT).");
+        }
+        String d = duration.trim().toUpperCase();
+        if (!("BUY".equals(d) || "RENT".equals(d))) {
+            throw new IllegalArgumentException("Invalid type. Allowed: BUY, RENT.");
         }
 
         if (rank == null || rank.trim().isEmpty()) {
