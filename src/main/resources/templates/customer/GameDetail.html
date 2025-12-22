@@ -473,17 +473,24 @@
                             <div class="col-6 text-end fw-semibold">
         <span id="basePriceText"
               th:text="${p.price} + ' đ'"
-              th:classappend="${p.duration == 'RENT'} ? 'text-decoration-line-through text-muted' : ''">
+              th:classappend="${p.duration == 'RENT' and #authorization.expression('isAuthenticated()')}
+                               ? 'text-decoration-line-through text-muted'
+                               : ''">
         </span>
                             </div>
                         </div>
+
                         <!-- GIÁ GÓI -->
-                        <div class="row mb-2 d-none" id="packagePriceRow">
+                        <!-- GIÁ GÓI -->
+                        <div class="row mb-2 d-none"
+                             id="packagePriceRow"
+                             th:if="${#authorization.expression('isAuthenticated()') and p.duration == 'RENT'}">
                             <div class="col-6 text-muted">Giá gói thuê:</div>
                             <div class="col-6 text-end fw-semibold text-dark">
                                 <span id="packagePriceText">0 đ</span>
                             </div>
                         </div>
+
                         <!-- VOUCHER -->
                         <div class="row mb-2">
                             <div class="col-6 text-muted">Voucher giảm:</div>
@@ -494,9 +501,22 @@
 
                         <hr>
                         <!-- TỔNG THANH TOÁN -->
-                        <div class="row align-items-center">
-                            <div class="col-6 fw-bold fs-6">Tổng thanh toán:</div>
-                            <div class="col-6 text-end fw-bold fs-4 text-primary">
+                        <div class="row align-items-center mt-2">
+
+                            <!-- CHƯA ĐĂNG NHẬP -->
+                            <div class="col-12 text-center"
+                                 th:if="${!#authorization.expression('isAuthenticated()')}">
+        <span class="fw-bold text-danger fs-5">
+            🔒 Đăng nhập để xem giá
+        </span>
+                            </div>
+                            <!-- ĐÃ ĐĂNG NHẬP -->
+                            <div class="col-6 fw-bold fs-6"
+                                 th:if="${#authorization.expression('isAuthenticated()')}">
+                                Tổng thanh toán:
+                            </div>
+                            <div class="col-6 text-end fw-bold fs-4 text-primary"
+                                 th:if="${#authorization.expression('isAuthenticated()')}">
                                 <span id="finalPriceText">0 đ</span>
                             </div>
                         </div>
@@ -593,23 +613,70 @@
 
     function updatePriceDisplay() {
         const base = getBasePrice();
-        const packagePrice = getPackagePrice();
-        const percent = parseInt(document.getElementById("voucherPercent").value || 0);
+        const percent = parseInt(
+            document.getElementById("voucherPercent")?.value || 0
+        );
 
+        const isRent = document.getElementById("packagePriceRow") !== null
+            && !document.getElementById("packagePriceRow").classList.contains("d-none");
+
+        let packagePrice = 0;
+        let finalPrice = 0;
+
+        // ======================
+        // XÁC ĐỊNH GIÁ GỐC DÙNG
+        // ======================
+        if (isRent) {
+            packagePrice = getPackagePrice();
+
+            // 🔹 Chưa chọn gói → dùng giá gốc
+            if (!packagePrice || packagePrice <= 0) {
+                finalPrice = base;
+            } else {
+                finalPrice = packagePrice;
+            }
+        } else {
+            // 🔹 VĨNH VIỄN
+            finalPrice = base;
+        }
+
+        // ======================
+        // VOUCHER
+        // ======================
         const discount = percent > 0
-            ? packagePrice * percent / 100
+            ? Math.round(finalPrice * percent / 100)
             : 0;
 
-        const finalPrice = packagePrice - discount;
+        finalPrice = Math.max(finalPrice - discount, 0);
 
-        // Update UI
-        document.getElementById("packagePriceText").innerText = formatMoney(packagePrice);
-        document.getElementById("voucherDiscountText").innerText = formatMoney(discount);
-        document.getElementById("finalPriceText").innerText = formatMoney(finalPrice);
+        // ======================
+        // UPDATE UI
+        // ======================
+        const pkgText = document.getElementById("packagePriceText");
+        const voucherText = document.getElementById("voucherDiscountText");
+        const finalText = document.getElementById("finalPriceText");
 
-        // Sync hidden
-        document.getElementById("finalPriceHidden").value = Math.round(finalPrice);
+        if (pkgText) {
+            pkgText.innerText = formatMoney(packagePrice);
+        }
+
+        if (voucherText) {
+            voucherText.innerText = formatMoney(discount);
+        }
+
+        if (finalText) {
+            finalText.innerText = formatMoney(finalPrice);
+        }
+
+        // ======================
+        // SYNC HIDDEN
+        // ======================
+        const hidden = document.getElementById("finalPriceHidden");
+        if (hidden) {
+            hidden.value = Math.round(finalPrice);
+        }
     }
+
 
     document.addEventListener("DOMContentLoaded", updatePriceDisplay);
 
